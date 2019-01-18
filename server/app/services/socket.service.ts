@@ -1,5 +1,4 @@
 import { injectable, inject } from "inversify";
-import { Socket } from "dgram";
 import { EventEmitter } from "events";
 import Types from "../types";
 import { Logger } from "./logger.service";
@@ -20,6 +19,14 @@ export class SocketService {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
         });
+
+        this.server.on("disconnect", (socket: SocketIO.Socket) => {
+            Logger.debug("SocketService", `Socket ${socket.id} left.`);
+            this.handleEvent("disconnection", socket.id);
+            this.sockets.delete(socket.id);
+        });
+
+        Logger.debug("SocketService", "Socket server initialized");
     }
 
     public emit(id: string, event: string, ...args: any[]): void {
