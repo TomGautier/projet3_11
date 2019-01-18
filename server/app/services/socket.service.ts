@@ -23,10 +23,13 @@ export class SocketService {
     }
 
     public emit(id: string, event: string, ...args: any[]): void {
-        this.server.to(id).emit(event, args);
+        Logger.debug("SocketService", `Emitting ${event} to ${id}`);
+        const success: boolean = this.server.to(id).emit(event, args);
+        Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
     private handleEvent(event: string, socketId: string, ...args: any[]): void {
+        Logger.debug("SocketService", `Recieved ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
     }
 }
