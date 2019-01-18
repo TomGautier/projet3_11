@@ -2,6 +2,7 @@ import { injectable, inject } from "inversify";
 import { Socket } from "dgram";
 import { EventEmitter } from "events";
 import Types from "../types";
+import { Logger } from "./logger.service";
 
 @injectable()
 export class SocketService {
@@ -14,6 +15,11 @@ export class SocketService {
 
     public init(server: SocketIO.Server): void {
         this.server = server;
+
+        this.server.on("connection", (socket: SocketIO.Socket) => {
+            Logger.debug("SocketService", "New connection: " + socket.id);
+            this.sockets.set(socket.id, socket);
+        });
     }
 
     public emit(id: string, event: string, ...args: any[]): void {
