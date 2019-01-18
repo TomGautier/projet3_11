@@ -2,6 +2,7 @@ import { injectable, inject } from "inversify";
 import { EventEmitter } from "events";
 import Types from "../types";
 import { Logger } from "./logger.service";
+import SocketEvents from "../../../common/communication/socketEvents"
 
 @injectable()
 export class SocketService {
@@ -22,7 +23,7 @@ export class SocketService {
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
-            this.handleEvent("disconnection", socket.id);
+            this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
         });
 
@@ -36,7 +37,7 @@ export class SocketService {
     }
 
     private handleEvent(event: string, socketId: string, ...args: any[]): void {
-        Logger.debug("SocketService", `Recieved ${event} event from ${socketId}.`);
+        Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
     }
 }
