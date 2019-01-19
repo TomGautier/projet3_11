@@ -29,6 +29,19 @@ namespace Prototype.ViewModels
         {
             get { return "Prototype"; }
         }
+        private string _message = string.Empty;
+        public string Message
+        {
+            get
+            {
+                return _message;
+            }
+            set
+            {
+                _message = value;
+                NotifyPropertyChanged("Message");
+            }
+        }
         #endregion
 
         #region Constructors
@@ -53,6 +66,7 @@ namespace Prototype.ViewModels
         public ICommand OpenCmd { get { return new RelayCommand(OnOpenTest, AlwaysFalse); } }
         public ICommand ShowAboutDialogCmd { get { return new RelayCommand(OnShowAboutDialog, AlwaysTrue); } }
         public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
+        public ICommand SendMessage { get { return new RelayCommand(OnSendMessage); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
@@ -112,6 +126,14 @@ namespace Prototype.ViewModels
         private void OnExitApp()
         {
             System.Windows.Application.Current.MainWindow.Close();
+        }
+        private void OnSendMessage()
+        {
+            if (!string.IsNullOrWhiteSpace(Message))
+            {
+                System.Diagnostics.Debug.WriteLine(Message);
+                Message = string.Empty;
+            }
         }
         #endregion
 

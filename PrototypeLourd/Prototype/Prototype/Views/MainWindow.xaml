@@ -11,7 +11,7 @@
         xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
         md:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="350" Width="525"
+        Title="{Binding Title}" Height="360" Width="450"
         WindowState="Normal">
 
     <Window.Resources>
@@ -19,7 +19,7 @@
         <DataTemplate x:Key="SampleTemplate">
             <StackPanel/>
         </DataTemplate>
-        
+
     </Window.Resources>
     <Window.InputBindings>
         <!-- Example of Keyboard shortcuts -->
@@ -45,7 +45,20 @@
         </Menu>
 
         <StackPanel>
-            <!-- Place here your content -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="423*"/>
+                    <ColumnDefinition Width="95*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="11,274,0,0" Name="messageText" VerticalAlignment="Top" Width="341" MaxLines="1" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding SendMessage}" Key="Return"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Content="Send" Height="23" Margin="11,274,10.333,0" Name="sendMessageButton" VerticalAlignment="Top" Grid.Column="1" Command="{Binding SendMessage}" IsEnabled="{Binding ElementName=messageText, Path=Text.Length, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Height="259" HorizontalAlignment="Left" Margin="11,10,0,0" Name="chatBox" VerticalAlignment="Top" Width="341" IsReadOnly="True" VerticalScrollBarVisibility="Visible" />
+            </Grid>
         </StackPanel>
     </DockPanel>
 </Window>
