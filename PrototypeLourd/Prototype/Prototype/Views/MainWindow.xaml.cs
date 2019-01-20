@@ -43,5 +43,11 @@ namespace Prototype.Views
             */
             Log.Info("Closing App");
         }
+
+        private void SendMessageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var textBox = (TextBox)FindName("messageText");
+            textBox.Focus();
+        }
     }
 }

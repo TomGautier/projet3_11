@@ -14,7 +14,7 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using Prototype.Views;
 using Prototype.Utils;
-
+//TODO - Clean unused pre-generated code
 namespace Prototype.ViewModels
 {
     class MainViewModel : ViewModelBase
@@ -42,6 +42,19 @@ namespace Prototype.ViewModels
                 NotifyPropertyChanged("Message");
             }
         }
+        private string _history = "Welcome!"; 
+        public string History
+        {
+            get
+            {
+                return _history;
+            }
+            set
+            {
+                _history = value;
+                NotifyPropertyChanged("History");
+            }
+        }
         #endregion
 
         #region Constructors
@@ -66,10 +79,11 @@ namespace Prototype.ViewModels
         public ICommand OpenCmd { get { return new RelayCommand(OnOpenTest, AlwaysFalse); } }
         public ICommand ShowAboutDialogCmd { get { return new RelayCommand(OnShowAboutDialog, AlwaysTrue); } }
         public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
-        public ICommand SendMessage { get { return new RelayCommand(OnSendMessage); } }
+        public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
+        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
 
         private void OnSampleCmdWithArgument(object obj)
         {
@@ -129,11 +143,14 @@ namespace Prototype.ViewModels
         }
         private void OnSendMessage()
         {
-            if (!string.IsNullOrWhiteSpace(Message))
-            {
-                System.Diagnostics.Debug.WriteLine(Message);
-                Message = string.Empty;
-            }
+            //TODO - Networking
+            ReceiveMessage(Message);
+            Message = string.Empty;
+        }
+        private void ReceiveMessage(string message)
+        {
+            //TODO - Networking, Format Time Proprely
+            History += Environment.NewLine + "AuthorName - " + System.DateTime.Now + " - " + message;
         }
         #endregion
 

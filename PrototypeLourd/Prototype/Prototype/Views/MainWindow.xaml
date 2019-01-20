@@ -56,8 +56,8 @@
                         <KeyBinding Command="{Binding SendMessage}" Key="Return"/>
                     </TextBox.InputBindings>
                 </TextBox>
-                <Button Content="Send" Height="23" Margin="11,274,10.333,0" Name="sendMessageButton" VerticalAlignment="Top" Grid.Column="1" Command="{Binding SendMessage}" IsEnabled="{Binding ElementName=messageText, Path=Text.Length, UpdateSourceTrigger=PropertyChanged}"/>
-                <TextBox Height="259" HorizontalAlignment="Left" Margin="11,10,0,0" Name="chatBox" VerticalAlignment="Top" Width="341" IsReadOnly="True" VerticalScrollBarVisibility="Visible" />
+                <Button Content="Send" Height="23" Margin="11,274,10.333,0" Name="sendMessageButton" VerticalAlignment="Top" Grid.Column="1" Command="{Binding SendMessage}" Click="SendMessageButton_Click"/>
+                <TextBox Height="259" HorizontalAlignment="Left" Margin="11,10,0,0" Name="chatBox" VerticalAlignment="Top" Width="341" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Text="{Binding History, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Bottom"/>
             </Grid>
         </StackPanel>
     </DockPanel>
