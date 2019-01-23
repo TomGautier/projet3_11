@@ -1,60 +1,64 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
-INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-28:12
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
+INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:1-29:12
 	package
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:3:5-36
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:4:5-36
 		INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:5:5-30
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:6:5-30
 		INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:3:5-51
 	xmlns:android
 		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:4:5-28
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:5:5-28
 		INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml
 		INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml
 application
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:7:5-26:19
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:8:5-27:19
 	android:label
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:10:9-41
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:11:9-41
+	tools:ignore
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:13:9-48
 	android:icon
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:9:9-45
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:10:9-45
 	android:allowBackup
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:8:9-35
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:9:9-35
 	android:theme
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:11:9-40
-activity#com.projet3.polypaint.MainActivity
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:12:9-20:20
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:12:9-40
+activity#com.projet3.polypaint.ConnexionActivity
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:14:9-22:20
 	android:label
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:14:13-45
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:16:13-47
 	android:name
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:13:13-41
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:15:13-46
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:15:13-19:29
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:17:13-21:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:16:17-69
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:18:17-69
 	android:name
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:16:25-66
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:18:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:18:17-77
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:20:17-77
 	android:name
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:18:27-74
-activity#com.projet3.polypaint.ChatActivity
-ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:21:9-25:25
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:20:27-74
+activity#com.projet3.polypaint.HomeActivity
+ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:23:9-26:62
 	android:parentActivityName
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:24:13-55
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:26:13-60
 	android:label
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:23:13-43
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:25:13-43
 	android:name
-		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:22:13-41
+		ADDED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml:24:13-41
 uses-sdk
 INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\beaul\StudioProjects\PolyPaint\app\src\main\AndroidManifest.xml

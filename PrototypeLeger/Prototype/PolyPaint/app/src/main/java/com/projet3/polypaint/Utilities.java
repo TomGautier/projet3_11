@@ -1,12 +1,14 @@
 package com.projet3.polypaint;
 
+import android.app.Activity;
 import android.graphics.PorterDuff;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageButton;
 
 public class Utilities {
 
-    public static void buttonEffect(View button){
+    public static void SetButtonEffect(View button){
         button.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -27,4 +29,7 @@ public class Utilities {
             }
         });
     }
+
+
+
 }
