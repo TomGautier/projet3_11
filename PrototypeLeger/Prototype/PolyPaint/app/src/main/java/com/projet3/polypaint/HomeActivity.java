@@ -12,6 +12,8 @@ import android.widget.RelativeLayout;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.sql.Time;
 import java.text.DateFormat;
 import java.util.Date;
@@ -84,8 +86,8 @@ public class HomeActivity extends Activity  {
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 
 		for(int i = 0; i < chatMessageZoneTable.getChildCount(); i++){
-			if (chatMessageZoneTable.getChildAt(i).getClass() == EditText.class){
-				EditText text = (EditText)chatMessageZoneTable.getChildAt(i);
+			if (chatMessageZoneTable.getChildAt(i).getClass() == TextView.class){
+				TextView text = (TextView)chatMessageZoneTable.getChildAt(i);
 				savedInstanceState.putString(Integer.toString(i), text.getText().toString());
 			}
 
