@@ -29,6 +29,11 @@ namespace Prototype.Views
         {
             InitializeComponent();
             this.Closing += MainView_Closing;
+            var textBox = (TextBox)FindName("chatBox");
+            textBox.TextChanged += (sender, e) =>
+            {
+                textBox.ScrollToEnd();
+            };
         }
 
         private void MainView_Closing(object sender, System.ComponentModel.CancelEventArgs e)
