@@ -11,6 +11,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.view.MotionEvent;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
@@ -35,6 +36,7 @@ public class HomeActivity extends Activity  {
 	private ArrayList<String> chatHistory;
 	private RelativeLayout chatMessageZone;
 	private LinearLayout chatMessageZoneTable;
+	private ScrollView chatMessageZoneScrollView;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,7 @@ public class HomeActivity extends Activity  {
 		chatMessageZone = (RelativeLayout)findViewById(R.id.chatMessageZone);
 		chatMessageZoneTable = (LinearLayout)findViewById(R.id.chatMessageZoneTable);
 		chatHistory = new ArrayList<>();
+		chatMessageZoneScrollView = (ScrollView)findViewById(R.id.chatVerticalScrollView);
 
 
 		Utilities.SetButtonEffect(chatEnterButton);
@@ -74,21 +77,25 @@ public class HomeActivity extends Activity  {
 				else {
 					chatMessageZone.getLayoutParams().height /= 2;
 					chatIsExpended = false;
+					ScrollDownMessages();
 				}
 			}
 		});
 	}
-
+	private void WriteMessage(String message) {
+		TextView newView = (TextView)View.inflate(getBaseContext(), R.layout.chat_message, null);
+		String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+		newView.setText(currentDateTimeString + ": " + message);
+		chatMessageZoneTable.addView(newView);
+		chatHistory.add(newView.getText().toString());
+		ScrollDownMessages();
+	}
     private void SetupChatEnterButton() {
         chatEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
-                TextView newView = (TextView)View.inflate(getBaseContext(), R.layout.chat_message, null);
-				String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                newView.setText(currentDateTimeString + ": " + chatEntry.getText());
-                chatMessageZoneTable.addView(newView);
-                chatHistory.add(newView.getText().toString());
+                WriteMessage(chatEntry.getText().toString());
                 chatEntry.setText("");
             }
         });
@@ -120,6 +127,17 @@ public class HomeActivity extends Activity  {
 			}
 		});
 	}
+	private void ScrollDownMessages() {
+
+		chatMessageZoneScrollView.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				//replace this line to scroll up or down
+				chatMessageZoneScrollView.fullScroll(ScrollView.FOCUS_DOWN);
+			}
+		}, 100);
+	}
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		// save chat history
