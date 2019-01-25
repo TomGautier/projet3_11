@@ -2,6 +2,7 @@ package com.projet3.polypaint;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,12 @@ import org.w3c.dom.Text;
 
 import java.sql.Time;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.zip.Inflater;
 
 public class HomeActivity extends Activity  {
@@ -26,6 +32,7 @@ public class HomeActivity extends Activity  {
 	private ImageButton chatEnterButton;
 	private ImageButton chatExpendButton;
 	private boolean chatIsExpended;
+	private ArrayList<String> chatHistory;
 	private RelativeLayout chatMessageZone;
 	private LinearLayout chatMessageZoneTable;
 
@@ -38,6 +45,7 @@ public class HomeActivity extends Activity  {
 
 	private void InitializeChat(){
 		chatEntry = (EditText)findViewById(R.id.chatEditText);
+		SetupChatEntry();
 		chatEnterButton = (ImageButton)findViewById(R.id.chatEnterButton);
 		SetupChatEnterButton();
 		chatExpendButton = (ImageButton) findViewById(R.id.chatExtendButton);
@@ -45,6 +53,8 @@ public class HomeActivity extends Activity  {
 		SetupChatExtendButton();
 		chatMessageZone = (RelativeLayout)findViewById(R.id.chatMessageZone);
 		chatMessageZoneTable = (LinearLayout)findViewById(R.id.chatMessageZoneTable);
+		chatHistory = new ArrayList<>();
+
 
 		Utilities.SetButtonEffect(chatEnterButton);
 		Utilities.SetButtonEffect(chatExpendButton);
@@ -78,34 +88,56 @@ public class HomeActivity extends Activity  {
 				String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
                 newView.setText(currentDateTimeString + ": " + chatEntry.getText());
                 chatMessageZoneTable.addView(newView);
+                chatHistory.add(newView.getText().toString());
                 chatEntry.setText("");
             }
         });
     }
-	@Override
-	public void onSaveInstanceState(Bundle savedInstanceState) {
+    private void SetupChatEntry() {
+		chatEntry.addTextChangedListener(new android.text.TextWatcher() {
 
-		for(int i = 0; i < chatMessageZoneTable.getChildCount(); i++){
-			if (chatMessageZoneTable.getChildAt(i).getClass() == TextView.class){
-				TextView text = (TextView)chatMessageZoneTable.getChildAt(i);
-				savedInstanceState.putString(Integer.toString(i), text.getText().toString());
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				if(s.toString().trim().length()==0){
+					chatEnterButton.setEnabled(false);
+					chatEnterButton.setColorFilter(Color.GRAY);
+				} else {
+					chatEnterButton.setEnabled(true);
+					chatEnterButton.clearColorFilter();
+				}
 			}
 
-		}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+										  int after) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void afterTextChanged(android.text.Editable s) {
+				// TODO Auto-generated method stub
+			}
+		});
+	}
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		// save chat history
 		savedInstanceState.putInt("ChatTableChildCount",chatMessageZoneTable.getChildCount());
+		savedInstanceState.putStringArray("chatHistory", chatHistory.toArray(new String[chatHistory.size()]));
 		super.onSaveInstanceState(savedInstanceState);
 	}
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-
 		super.onRestoreInstanceState(savedInstanceState);
-		for(int i = 0 ; i < savedInstanceState.getInt("ChatTableChildCount"); i++ ){
-
+		// restore chat history
+		String[] restoredChatHistory = savedInstanceState.getStringArray("chatHistory");
+		for(String elem : restoredChatHistory){
 			TextView newView = (TextView)View.inflate(getBaseContext(), R.layout.chat_message, null);
-			newView.setText(savedInstanceState.getString(Integer.toString(i)));
+			newView.setText(elem);
 			chatMessageZoneTable.addView((newView));
-		}
+			chatHistory.add(elem);	}
 	}
 
 }
