@@ -55,6 +55,45 @@ namespace Prototype.ViewModels
                 NotifyPropertyChanged("History");
             }
         }
+        private string _username;
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+            set
+            {
+                _username = value;
+                NotifyPropertyChanged("Username");
+            }
+        }
+        private string _serverAdress;
+        public string ServerAdress
+        {
+            get
+            {
+                return _serverAdress;
+            }
+            set
+            {
+                _serverAdress = value;
+                NotifyPropertyChanged("ServerAdress");
+            }
+        }
+        private string _connectionStatus = "disconnected";
+        public string ConnectionStatus
+        {
+            get
+            {
+                return _connectionStatus;
+            }
+            set
+            {
+                _connectionStatus = value;
+                NotifyPropertyChanged("ConnectionStatus");
+            }
+        }
         #endregion
 
         #region Constructors
@@ -80,10 +119,12 @@ namespace Prototype.ViewModels
         public ICommand ShowAboutDialogCmd { get { return new RelayCommand(OnShowAboutDialog, AlwaysTrue); } }
         public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
         public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
+        public ICommand Connect { get { return new RelayCommand(OnConnect, InfosValid); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
         private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
+        private bool InfosValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && !string.IsNullOrWhiteSpace(Username); } // TODO : regex for server adress
 
         private void OnSampleCmdWithArgument(object obj)
         {
@@ -151,6 +192,11 @@ namespace Prototype.ViewModels
         {
             //TODO - Networking, Format Time Proprely
             History += Environment.NewLine + "AuthorName - " + System.DateTime.Now + " - " + message;
+        }
+        private void OnConnect()
+        {
+            //TODO - Networking + check
+            ConnectionStatus = "connected";
         }
         #endregion
 
