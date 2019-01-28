@@ -6,14 +6,32 @@
     android:background="#ffffff"
     android:layout_gravity="center"
     tools:context="${relativePackage}.${activityClass}">
+
     <RelativeLayout
-        android:id="@+id/chatMessageZone"
+        android:id="@+id/chatToolbar"
         android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        android:background="@drawable/stroke_bg"
-        android:layout_margin="20dp"
-        android:layout_alignParentBottom="true">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/chatMessageZone"
+        android:layout_alignRight="@id/chatMessageZone"
+        android:layout_marginLeft="20dp">
+    <Spinner
+        android:id="@+id/conversationSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layerlist"
+        android:layout_alignParentLeft="true"
+        android:textAlignment="center"
+        android:padding="5dp" />
+    </RelativeLayout>
+<RelativeLayout
+android:id="@+id/chatMessageZone"
+android:layout_width="fill_parent"
+android:layout_height="150dp"
+android:orientation="vertical"
+android:background="@drawable/stroke_bg"
+android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
+    android:layout_alignParentBottom="true">
 
         <ScrollView
             android:id="@+id/chatVerticalScrollView"
