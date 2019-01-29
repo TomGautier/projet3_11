@@ -23,7 +23,7 @@ setlocal enabledelayedexpansion
 SET ARTIFACTS=%~dp0%..\artifacts
 
 IF NOT DEFINED DEPLOYMENT_SOURCE (
-  SET DEPLOYMENT_SOURCE=%~dp0%.
+  SET DEPLOYMENT_SOURCE=%ARTIFACTS%\wwwroot\server
 )
 
 IF NOT DEFINED DEPLOYMENT_TARGET (
