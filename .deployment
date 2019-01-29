@@ -1,4 +1,4 @@
 [config]
 
 command = deploy.cmd
-project = server, common
+project = server
