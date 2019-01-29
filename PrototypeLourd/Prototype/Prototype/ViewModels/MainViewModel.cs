@@ -24,8 +24,10 @@ namespace Prototype.ViewModels
     {
         #region Constant
         // TODO : Set to true value
-        private const string SERVER_PORT = "8000";
+        private const string SERVER_ADRESS = "52.173.184.147";
+        private const string SERVER_PORT = "3000";
         private const string MESSAGE_ID = "message";
+        private const string CONNECTION_ANSWER = "connection_answer";
         #endregion
 
         #region Parameters
@@ -77,7 +79,7 @@ namespace Prototype.ViewModels
                 NotifyPropertyChanged("Username");
             }
         }
-        private string _serverAdress;
+        private string _serverAdress = SERVER_ADRESS;
         public string ServerAdress
         {
             get
@@ -124,7 +126,7 @@ namespace Prototype.ViewModels
             var messageFormat = new
             {
                 username = Username,
-                time = System.DateTime.Now.ToString("HH:mm:ss"),
+                time = DateTime.Now.ToString("HH:mm:ss"),
                 message = Message
             };
             socket.Emit(MESSAGE_ID, JsonConvert.SerializeObject(messageFormat));
@@ -136,21 +138,25 @@ namespace Prototype.ViewModels
         }
         private void OnConnect()
         {
+            ConnectionStatus = "connecting";
+
             Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
             if (!rgx.IsMatch(ServerAdress))
             {
                 System.Windows.MessageBox.Show("Wrong Adress format", "Error");
+                ConnectionStatus = "disconnected";
                 return;
             }
 
             IO.Options op = new IO.Options
             {
-                Reconnection = false
+                Query = new Dictionary<string, string>
+                {
+                    { "username", Username }
+                }
             };
 
             socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT, op);
-
-            socket.On(Socket.EVENT_CONNECT_ERROR, EventConnectError);
 
             socket.On(Socket.EVENT_CONNECT, EventConnect);
         }
@@ -168,28 +174,34 @@ namespace Prototype.ViewModels
         #endregion
 
         #region Events
-        private void EventConnectError(object error)
-        {
-            // if error == username already exists
-            System.Windows.MessageBox.Show("Username already exists", "Error");
-            socket.Disconnect();
-            // else
-            // socket.Connect();
-        }
-
         private void EventConnect()
         {
-            ConnectionStatus = "connected";
-            socket.On(MESSAGE_ID, (data) =>
+            socket.On(CONNECTION_ANSWER, (answer) =>
             {
-                var messageFormat = new
+                var answerFormat = new
                 {
-                    username = "",
-                    time = "",
-                    message = ""
+                    usernameValid = false
                 };
-                var message = JsonConvert.DeserializeAnonymousType((string)data, messageFormat);
-                ReceiveMessage(message.username, message.time, message.message);
+                if(!JsonConvert.DeserializeAnonymousType((string)answer, answerFormat).usernameValid)
+                {
+                    System.Windows.MessageBox.Show("Username already exists.", "Error");
+                    ConnectionStatus = "disconnected";
+                }
+                else
+                {
+                    ConnectionStatus = "connected";
+                    socket.On(MESSAGE_ID, (data) =>
+                    {
+                        var messageFormat = new
+                        {
+                            username = "",
+                            time = "",
+                            message = ""
+                        };
+                        var message = JsonConvert.DeserializeAnonymousType((string)data, messageFormat);
+                        ReceiveMessage(message.username, message.time, message.message);
+                    });
+                }
             });
         }
         #endregion

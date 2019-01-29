@@ -24,6 +24,9 @@
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="connected">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
             </Style.Triggers>
             
         </Style>
@@ -34,6 +37,9 @@
                     <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="disconnected">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
                     <Setter Property="Visibility" Value="Hidden"/>
                 </DataTrigger>
             </Style.Triggers>
