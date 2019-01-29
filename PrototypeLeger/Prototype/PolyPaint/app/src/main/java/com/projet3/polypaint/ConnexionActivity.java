@@ -12,4 +12,17 @@ public class ConnexionActivity extends Activity {
 		android.content.Intent intent = new android.content.Intent(this, HomeActivity.class);
 		this.startActivity(intent);
 	}
+
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+
+		super.onSaveInstanceState(savedInstanceState);
+
+	}
+
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+	}
+
 }

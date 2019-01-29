@@ -33,7 +33,10 @@ public class HomeActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		chat = new Chat(this);
+		if (savedInstanceState == null)
+			chat = new Chat(this);
+		else
+			chat = new Chat(this, savedInstanceState.getBundle("chat"));
 	}
 
 
@@ -43,16 +46,15 @@ public class HomeActivity extends Activity  {
 		// save chat history
 		//savedInstanceState.putStringArray("chatHistory", chat.chatHistory.toArray(new String[chat.chatHistory.size()]));
 		super.onSaveInstanceState(savedInstanceState);
+		savedInstanceState.putBundle("chat", chat.GetChatBundle());
 	}
 
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-		// restore chat history
-		//String[] restoredChatHistory = savedInstanceState.getStringArray("chatHistory");
-		//for(String elem : restoredChatHistory) {
-		//	chat.WriteMessage(elem, true);
-		//}
+		//restore chat
+		//Bundle chatBundle = savedInstanceState.getBundle("chat");
+
 	}
 
 }

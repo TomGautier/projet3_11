@@ -2,6 +2,9 @@ package com.projet3.polypaint;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -16,6 +19,8 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class Chat {
@@ -23,42 +28,55 @@ public class Chat {
     private EditText chatEntry;
     private ImageButton chatEnterButton;
     private ImageButton chatExpendButton;
-    private boolean chatIsExpended;
-    public ArrayList<String> chatHistory;
     public LinearLayout chatMessageZoneTable;
     private RelativeLayout chatMessageZone;
     private ScrollView chatMessageZoneScrollView;
-    public Activity currentActivity;
-    public static Chat currentInstance;
     private Spinner conversationSpinner;
+
     private ArrayList<Conversation> conversations;
     private Conversation currentConversation;
+    private boolean chatIsExpended;
+    public ArrayList<String> chatHistory;
+    public Activity currentActivity;
 
     public  Chat(Activity currentActivity_){
             currentActivity = currentActivity_;
+            conversations = new ArrayList<>();
+            conversations.add(new Conversation("allo"));
+            conversations.add(new Conversation("allo2"));
+            currentConversation = conversations.get(0);
             InitializeChat();
-            currentInstance = this;
     }
+
+    public  Chat(Activity currentActivity_, Bundle bundle){
+        currentActivity = currentActivity_;
+        conversations = bundle.getParcelableArrayList("conversations");
+        currentConversation = conversations.get(bundle.getInt("currentConversationIndex"));
+        InitializeChat();
+    }
+
+
 
     private void InitializeChat(){
         chatEntry = (EditText)currentActivity.findViewById(R.id.chatEditText);
-        SetupChatEntry();
         chatEnterButton = (ImageButton)currentActivity.findViewById(R.id.chatEnterButton);
-        SetupChatEnterButton();
         chatExpendButton = (ImageButton) currentActivity.findViewById(R.id.chatExtendButton);
-        chatIsExpended = false;
-        SetupChatExtendButton();
         chatMessageZone = (RelativeLayout)currentActivity.findViewById(R.id.chatMessageZone);
         chatMessageZoneTable = (LinearLayout)currentActivity.findViewById(R.id.chatMessageZoneTable);
-        chatHistory = new ArrayList<>();
         chatMessageZoneScrollView = (ScrollView)currentActivity.findViewById(R.id.chatVerticalScrollView);
-
-        conversations = new ArrayList<>();
-        conversations.add(new Conversation("allo"));
-        conversations.add(new Conversation("allo2"));
-        currentConversation = conversations.get(0);
-
         conversationSpinner = (Spinner)currentActivity.findViewById(R.id.conversationSpinner);
+
+        SetupChatEntry();
+        SetupChatEnterButton();
+        SetupChatExtendButton();
+
+        chatIsExpended = false;
+        chatHistory = new ArrayList<>();
+
+        if (currentConversation.GetHistorySize() > 0)
+            LoadConversation();
+
+
         SetupChatConversationSpinner();
 
 
@@ -94,6 +112,7 @@ public class Chat {
         ScrollDownMessages();
     }
     private void SetupChatEnterButton() {
+        chatEnterButton.setColorFilter(Color.GRAY);
         chatEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,15 +143,14 @@ public class Chat {
                 if (currentConversation.GetName() != selected) {
                     for (int j = 0; j < conversations.size(); j++) {
                         Conversation current = conversations.get(j);
-                        if (current.GetName() == selected){
-                            ChangeConversation(current);
+                        if (current.GetName() == selected && current.GetName() != currentConversation.GetName()){
+                            currentConversation = current;
+                            LoadConversation();
                             break;
                         }
-
                     }
                 }
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
@@ -179,17 +197,17 @@ public class Chat {
             }
         }, 100);
     }
-    private void ChangeConversation(Conversation convo) {
-
-
-        currentConversation = convo;
+    private void LoadConversation() {
         chatMessageZoneTable.removeAllViews();
-
-        for (int j = 0; j < currentConversation.GetHistorySize(); j++) {
+        for (int j = 0; j < currentConversation.GetHistorySize(); j++)
             WriteMessage(currentConversation.GetHistoryAt(j), false);
-        }
+    }
 
-
+    public Bundle GetChatBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("conversations",conversations);
+        bundle.putInt("currentConversationIndex", conversations.indexOf(currentConversation));
+        return bundle;
     }
 
 
