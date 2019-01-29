@@ -21,7 +21,7 @@ IF %ERRORLEVEL% NEQ 0 (
 setlocal enabledelayedexpansion
 
 SET ARTIFACTS=%~dp0%..\artifacts
-  SET DEPLOYMENT_SOURCE=%~dp0%\repository\server	
+  SET DEPLOYMENT_SOURCE=%~dp0%\server	
 
 IF NOT DEFINED DEPLOYMENT_SOURCE (
   SET DEPLOYMENT_SOURCE=%~dp0%\repository\server	
