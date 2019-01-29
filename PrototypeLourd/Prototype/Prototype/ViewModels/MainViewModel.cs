@@ -14,11 +14,20 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using Prototype.Views;
 using Prototype.Utils;
+using Quobject.SocketIoClientDotNet.Client;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 //TODO - Clean unused pre-generated code
 namespace Prototype.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
+        #region Constant
+        // TODO : Set to true value
+        private const string SERVER_PORT = "8000";
+        private const string MESSAGE_ID = "message";
+        #endregion
+
         #region Parameters
         private readonly IDialogService DialogService;
 
@@ -94,6 +103,7 @@ namespace Prototype.ViewModels
                 NotifyPropertyChanged("ConnectionStatus");
             }
         }
+        private Socket socket;
         #endregion
 
         #region Constructors
@@ -123,7 +133,7 @@ namespace Prototype.ViewModels
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
-        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
+        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message) && ConnectionStatus != "disconnected"; }
         private bool InfosValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && !string.IsNullOrWhiteSpace(Username); } // TODO : regex for server adress
 
         private void OnSampleCmdWithArgument(object obj)
@@ -184,19 +194,59 @@ namespace Prototype.ViewModels
         }
         private void OnSendMessage()
         {
-            //TODO - Networking
-            ReceiveMessage(Message);
+            var messageFormat = new
+            {
+                username = Username,
+                time = System.DateTime.Now.ToString("HH:mm:ss"),
+                message = Message
+            };
+            socket.Emit(MESSAGE_ID, JsonConvert.SerializeObject(messageFormat));
             Message = string.Empty;
         }
-        private void ReceiveMessage(string message)
+        private void ReceiveMessage(string username, string time, string message)
         {
-            //TODO - Networking, Format Time Proprely
-            History += Environment.NewLine + "AuthorName - " + System.DateTime.Now + " - " + message;
+            History += Environment.NewLine + username + " - " + time + " - " + message;
         }
         private void OnConnect()
         {
-            //TODO - Networking + check
-            ConnectionStatus = "connected";
+            Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+            if (!rgx.IsMatch(ServerAdress))
+            {
+                System.Windows.MessageBox.Show("Wrong Adress format", "Error");
+                return;
+            }
+
+            IO.Options op = new IO.Options
+            {
+                Reconnection = false
+            };
+
+            socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT, op);
+
+            socket.On(Socket.EVENT_CONNECT_ERROR, (error) =>
+            {
+                // if error == username already connected
+                System.Windows.MessageBox.Show("Username already connected", "Error");
+                socket.Disconnect();
+                // else
+                // socket.Connect();
+            });
+
+            socket.On(Socket.EVENT_CONNECT, () =>
+            {
+                ConnectionStatus = "connected";
+                socket.On(MESSAGE_ID, (data) =>
+                {
+                    var messageFormat = new
+                    {
+                        username = "",
+                        time = "",
+                        message = ""
+                    };
+                    var message = JsonConvert.DeserializeAnonymousType((string)data, messageFormat);
+                    ReceiveMessage(message.username, message.time, message.message);
+                });
+            });
         }
         #endregion
 
