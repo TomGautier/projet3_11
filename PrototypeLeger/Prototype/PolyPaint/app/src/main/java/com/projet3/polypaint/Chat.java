@@ -1,11 +1,17 @@
 package com.projet3.polypaint;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -32,6 +38,7 @@ public class Chat {
     private RelativeLayout chatMessageZone;
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
+    //private RelativeLayout rootChat;
 
     private ArrayList<Conversation> conversations;
     private Conversation currentConversation;
@@ -65,10 +72,12 @@ public class Chat {
         chatMessageZoneTable = (LinearLayout)currentActivity.findViewById(R.id.chatMessageZoneTable);
         chatMessageZoneScrollView = (ScrollView)currentActivity.findViewById(R.id.chatVerticalScrollView);
         conversationSpinner = (Spinner)currentActivity.findViewById(R.id.conversationSpinner);
+        //rootChat = (RelativeLayout)currentActivity.findViewById(R.id.rootChat);
 
         SetupChatEntry();
         SetupChatEnterButton();
         SetupChatExtendButton();
+
 
         chatIsExpended = false;
         chatHistory = new ArrayList<>();
@@ -86,17 +95,23 @@ public class Chat {
         //etc...
     }
 
+
     private void SetupChatExtendButton() {
+
         chatExpendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                WindowManager wm = (WindowManager) currentActivity.getSystemService(Context.WINDOW_SERVICE);
+                Display display = wm.getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
                 chatMessageZone.requestLayout();
                 if(!chatIsExpended){
-                    chatMessageZone.getLayoutParams().height *=2;
+                    chatMessageZone.getLayoutParams().height = size.y/3;
                     chatIsExpended = true;
                 }
                 else {
-                    chatMessageZone.getLayoutParams().height /= 2;
+                    chatMessageZone.getLayoutParams().height = size.y/4;
                     chatIsExpended = false;
                     ScrollDownMessages();
                 }
