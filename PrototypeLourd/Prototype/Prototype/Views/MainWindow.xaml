@@ -15,11 +15,6 @@
         WindowState="Normal">
 
     <Window.Resources>
-        <!-- Insert here your Data Templates -->
-        <DataTemplate x:Key="SampleTemplate">
-            <StackPanel/>
-        </DataTemplate>
-
         <Style x:Key="NotConnected" TargetType="Grid">
             <Setter Property="IsEnabled" Value="True"/>
             <Style.Triggers>
@@ -44,30 +39,13 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
+    
     <Window.InputBindings>
-        <!-- Example of Keyboard shortcuts -->
-        <KeyBinding Command="{Binding SaveCmd}" Key="S" Modifiers="Ctrl" />
-        <KeyBinding Command="{Binding SaveAsCmd}" Gesture="Ctrl+Shift+S" />
-        <KeyBinding Command="{Binding OpenCmd}" Gesture="Ctrl+O" />
-        <KeyBinding Command="{Binding NewCmd}" Gesture="Ctrl+N" />
         <KeyBinding Command="{Binding ExitCmd}" Gesture="Alt+F4" />
     </Window.InputBindings>
 
     <DockPanel>
-        <!-- File Menu -->
-        <Menu DockPanel.Dock="Top" Margin="0,0,0.4,0">
-            <MenuItem Header="File">
-                <MenuItem Header="New" Command="{Binding NewCmd}" InputGestureText="Ctrl+N" />
-                <MenuItem Header="Open" Command="{Binding OpenCmd}" InputGestureText="Ctrl+O" />
-                <MenuItem Header="Save" Command="{Binding SaveCmd}" InputGestureText="Ctrl+S" />
-                <MenuItem Header="Save As" Command="{Binding SaveAsCmd}" InputGestureText="Ctrl+Shift+S"/>
-                <Separator />
-                <MenuItem Header="Exit" Command="{Binding ExitCmd}" InputGestureText="Alt+F4"/>
-            </MenuItem>
-            <MenuItem Header="About" Command="{Binding ShowAboutDialogCmd}"/>
-        </Menu>
-
-        <StackPanel>
+        <StackPanel Margin="0,10,0,0">
             <Grid Style="{StaticResource NotConnected}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="71*"/>
@@ -77,9 +55,9 @@
                     <ColumnDefinition Width="89*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="Username : " Grid.ColumnSpan="2" Margin="0,0,102.667,0"/>
-                <TextBox Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0.667,0,8.667,0"/>
+                <TextBox Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0.667,0,8.667,0" VerticalContentAlignment="Center"/>
                 <Label Grid.Column="1" Content="Adress : " Grid.ColumnSpan="3" Margin="105.667,0,116,0"/>
-                <TextBox Grid.Column="3" Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,10,0"/>
+                <TextBox Grid.Column="3" Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,10,0" VerticalContentAlignment="Center"/>
                 <Button Grid.Column="4" Content="Connect" Margin="10,0,10.333,0" Name="connectButton" Command="{Binding Connect, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
@@ -89,7 +67,7 @@
                     <ColumnDefinition Width="95*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="11,274,0,0" Name="messageText" VerticalAlignment="Top" Width="341" MaxLines="1" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="11,274,0,0" Name="messageText" VerticalAlignment="Top" Width="341" MaxLines="1" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding SendMessage}" Key="Return"/>
                     </TextBox.InputBindings>
