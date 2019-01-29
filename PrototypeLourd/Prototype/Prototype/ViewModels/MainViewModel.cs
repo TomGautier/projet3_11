@@ -1,18 +1,7 @@
 ﻿using MvvmDialogs;
-using log4net;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
-using MvvmDialogs.FrameworkDialogs.SaveFile;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Windows.Input;
-using System.Xml.Linq;
-using Prototype.Views;
 using Prototype.Utils;
 using Quobject.SocketIoClientDotNet.Client;
 using System.Text.RegularExpressions;
@@ -25,7 +14,7 @@ namespace Prototype.ViewModels
         #region Constant
         // TODO : Set to true value
         private const string SERVER_ADRESS = "52.173.184.147";
-        private const string SERVER_PORT = "3000";
+        private const string SERVER_PORT = "80";
         private const string MESSAGE_ID = "message";
         private const string CONNECTION_ANSWER = "connection_answer";
         #endregion
@@ -178,6 +167,7 @@ namespace Prototype.ViewModels
         {
             socket.On(CONNECTION_ANSWER, (answer) =>
             {
+                ConnectionStatus = "connected";
                 var answerFormat = new
                 {
                     usernameValid = false
