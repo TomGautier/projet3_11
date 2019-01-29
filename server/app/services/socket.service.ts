@@ -2,7 +2,7 @@ import { injectable, inject } from "inversify";
 import { EventEmitter } from "events";
 import Types from "../types";
 import { Logger } from "./logger.service";
-import SocketEvents from "../../common/communication/socketEvents";
+import SocketEvents from "../../../common/communication/socketEvents";
 
 @injectable()
 export class SocketService {
