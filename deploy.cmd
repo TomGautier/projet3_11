@@ -100,10 +100,15 @@ call :SelectNodeVersion
 :: 3. Install npm packages
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
-  call :ExecuteCmd !NPM_CMD! install --production
+  call :ExecuteCmd !NPM_CMD! install
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
+
+:: 4\. Compile TypeScript
+echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
+call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\typescript\bin\tsc -p "%DEPLOYMENT_TARGET%"
+
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end
@@ -131,33 +136,3 @@ exit /b 1
 :end
 endlocal
 echo Finished successfully.
-
-# 3. Install npm packages
-
-if [ -e "$DEPLOYMENT_TARGET/package.json" ]; then
-
-  cd "$DEPLOYMENT_TARGET"
-
-  eval $NPM_CMD install --production
-
-  exitWithMessageOnError "npm failed"
-
-  cd - > /dev/null
-
-fi
-
-# 4. Install typescript definitions
-
-cd "$DEPLOYMENT_TARGET"
-
-#4. Run TSC
-
-TSC="$DEPLOYMENT_TARGET/node_modules/typescript/bin/tsc"
-
-echo "Building Typescript files."
-
-"$TSC"
-
-exitWithMessageOnError "Could not run 'tsc'.  Did 'npm install' run OK?"
-
-echo "Finished Typescript build."
