@@ -109,7 +109,8 @@ IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
 echo Transpiling TypeScript in %DEPLOYMENT_TARGET%...
 call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\typescript\bin\tsc -p "%DEPLOYMENT_TARGET%"
 
-
+echo JE SUIS UN TEST
+call :ExecuteCmd node %DEPLOYMENT_TARGET%\node_modules\typescript\bin\nodemon %DEPLOYMENT_TARGET%\out\server\app\www.js
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 goto end
 
