@@ -9,10 +9,16 @@ public class Conversation implements Parcelable  {
 
     private ArrayList<String> history;
     private String name;
+    //public ConversationTask conversationTask;
+
+
     public Conversation(String name_) {
         history = new ArrayList<>();
         name = name_;
+      //  conversationTask = new ConversationTask(this);
+
     }
+
 
     public String GetName()  {
         return name;

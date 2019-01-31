@@ -5,9 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,29 +24,43 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nkzawa.socketio.client.IO;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import com.github.nkzawa.socketio.client.IO;
+
+
 
 public class Chat {
+    //server
+    public final static String SERVER_ADDRESS = "https://polypaint-11.azurewebsites.net/";
+    public final static String SERVER_ADDRESS_TEST = "http://localhost:3000/";
+    public final static int SERVER_PORT = 80;
+
     //Chat
     private EditText chatEntry;
-    private ImageButton chatEnterButton;
+    public ImageButton chatEnterButton;
     private ImageButton chatExpendButton;
     public LinearLayout chatMessageZoneTable;
     private RelativeLayout chatMessageZone;
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
-    //private RelativeLayout rootChat;
+    public static Chat currentInstance;
 
     private ArrayList<Conversation> conversations;
-    private Conversation currentConversation;
+    public Conversation currentConversation;
     private boolean chatIsExpended;
-    public ArrayList<String> chatHistory;
     public Activity currentActivity;
+    private com.github.nkzawa.socketio.client.Socket mSocket;
 
     public  Chat(Activity currentActivity_){
             currentActivity = currentActivity_;
@@ -72,15 +88,12 @@ public class Chat {
         chatMessageZoneTable = (LinearLayout)currentActivity.findViewById(R.id.chatMessageZoneTable);
         chatMessageZoneScrollView = (ScrollView)currentActivity.findViewById(R.id.chatVerticalScrollView);
         conversationSpinner = (Spinner)currentActivity.findViewById(R.id.conversationSpinner);
-        //rootChat = (RelativeLayout)currentActivity.findViewById(R.id.rootChat);
 
         SetupChatEntry();
         SetupChatEnterButton();
         SetupChatExtendButton();
+        SetupSocket();
 
-
-        chatIsExpended = false;
-        chatHistory = new ArrayList<>();
 
         if (currentConversation.GetHistorySize() > 0)
             LoadConversation();
@@ -92,9 +105,16 @@ public class Chat {
         Utilities.SetButtonEffect(chatEnterButton);
         Utilities.SetButtonEffect(chatExpendButton);
 
-        //etc...
+        currentInstance = this;
+        chatIsExpended = false;
     }
-
+    private void SetupSocket()
+    {
+        try {
+            mSocket = IO.socket(SERVER_ADDRESS_TEST);
+            mSocket.connect();
+        } catch (URISyntaxException e) {}
+    }
 
     private void SetupChatExtendButton() {
 
@@ -122,10 +142,21 @@ public class Chat {
         TextView newView = (TextView)View.inflate(currentActivity, R.layout.chat_message, null);
         newView.setText(message);
         chatMessageZoneTable.addView(newView);
-        if (withHistory)
+        if (withHistory) {
             currentConversation.AddToHistory(newView.getText().toString());
+            mSocket.emit("chatMessage", newView.getText().toString());
+           /* if (currentConversation.conversationTask.getStatus() == AsyncTask.Status.RUNNING) {
+                try {
+                    currentConversation.conversationTask.dataOutputStream.writeUTF(newView.getText().toString());
+                }
+                catch(Exception e) {
+                    Log.d("EXCEPTION", "an error in sending message");
+                }
+            }*/
+        }
         ScrollDownMessages();
     }
+
     private void SetupChatEnterButton() {
         chatEnterButton.setColorFilter(Color.GRAY);
         chatEnterButton.setOnClickListener(new View.OnClickListener() {
@@ -227,3 +258,52 @@ public class Chat {
 
 
 }
+/*class ConversationTask extends AsyncTask<String, Void, String> {
+
+    private Socket socket;
+    private DataInputStream dataInputStream;
+    public DataOutputStream dataOutputStream;
+    private Conversation conversation;
+
+    public ConversationTask(Conversation conversation_) {
+        conversation = conversation_;
+        this.execute();
+    }
+    @Override
+    protected String doInBackground(String... args) {
+        while(socket.isConnected()){
+            try {
+                String read = dataInputStream.readUTF();
+                if (read != null) {
+                    if (conversation == Chat.currentInstance.currentConversation)
+                        Chat.currentInstance.WriteMessage(read, true);
+                    else
+                        conversation.AddToHistory(read);
+                        //envoyer alerte sonore ...
+                }
+            }
+            catch(Exception e) {
+                Log.d("EXCEPTION", "an error in reading a message");
+            }
+        }
+        return "finished";
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        Log.d("result", result);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        try {
+            socket = new Socket(Chat.SERVER_ADDRESS, Chat.SERVER_PORT);
+            dataInputStream = new DataInputStream(socket.getInputStream());
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        }
+        catch(Exception e) {
+            Log.d("exception", e.getMessage());
+        }
+    }
+}*/
+

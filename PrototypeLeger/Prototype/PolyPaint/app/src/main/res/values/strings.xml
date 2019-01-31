@@ -4,5 +4,9 @@
     <string name="app_name">PolyPaint</string>
     <string name="hello_world">Hello world!</string>
     <string name="chatTitle">Prototype de Chat :</string>
+    <string name="username">nom d\'utilisateur :</string>
+    <string name="password">mot de passe :</string>
+    <string name="ip">adresse IP :</string>
+    <string name="loginToast">Veuillez entrer vos informations de connection</string>
 
 </resources>
