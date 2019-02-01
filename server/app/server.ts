@@ -1,8 +1,10 @@
 import { Application } from "./app";
 import * as http from "http";
+import * as socketIO from "socket.io";
 import Types from "./types";
 import { injectable, inject } from "inversify";
 import { AddressInfo } from "net";
+import { SocketService } from "./services/socket.service";
 
 @injectable()
 export class Server {
@@ -11,7 +13,9 @@ export class Server {
     private readonly baseDix: number = 10;
     private server: http.Server;
 
-    public constructor(@inject(Types.Application) private application: Application) { }
+    public constructor(
+            @inject(Types.Application) private application: Application,
+            @inject(Types.SocketService) private socketService: SocketService) { }
 
     public init(): void {
         this.application.app.set("port", this.appPort);
@@ -21,6 +25,8 @@ export class Server {
         this.server.listen(this.appPort);
         this.server.on("error", (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on("listening", () => this.onListening());
+
+        this.socketService.init(socketIO.listen(this.server));
     }
 
     private normalizePort(val: number | string): number | string | boolean {
