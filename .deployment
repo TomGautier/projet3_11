@@ -1,0 +1,4 @@
+[config]
+
+command = deploy.cmd
+project = server
