@@ -1,25 +1,27 @@
 import * as express from "express";
-import * as path from "path";
 import * as logger from "morgan";
 import * as cookieParser from "cookie-parser";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
-import Types from "./types";
+import { TYPES } from "./types";
 import { injectable, inject } from "inversify";
-import { Routes } from "./routes";
+import { IndexController } from "./controllers/index.controller";
+import { DateController } from "./controllers/date.controller";
+import { ApplicationInterface } from "./interfaces";
+
 
 @injectable()
-export class Application {
+export class Application implements ApplicationInterface {
 
     private readonly internalError: number = 500;
     public app: express.Application;
 
-    public constructor(@inject(Types.Routes) private api: Routes) {
+    public constructor(
+            @inject(TYPES.IndexControllerInterface) private indexController: IndexController,
+            @inject(TYPES.DateControllerInterface) private dateController: DateController) {
         this.app = express();
-
         this.config();
-
-        this.routes();
+        this.bindRoutes();
     }
 
     private config(): void {
@@ -28,22 +30,16 @@ export class Application {
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
-        this.app.use(express.static(path.join(__dirname, "../client")));
         this.app.use(cors());
     }
 
-    public routes(): void {
-        const router: express.Router = express.Router();
-
-        router.use(this.api.routes);
-
-        this.app.use(router);
-
+    public bindRoutes(): void {
+        this.app.use("/api/index", this.indexController.router);
+        this.app.use("/api/date/", this.dateController.router);
         this.errorHandeling();
     }
 
     private errorHandeling(): void {
-        // Gestion des erreurs
         this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
             const err: Error = new Error("Not Found");
             next(err);
