@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -24,11 +25,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.nkzawa.socketio.client.IO;
+
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.net.Socket;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -36,15 +36,15 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import com.github.nkzawa.socketio.client.IO;
 
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
 
 
 public class Chat {
     //server
-    public final static String SERVER_ADDRESS = "https://polypaint-11.azurewebsites.net/";
-    public final static String SERVER_ADDRESS_TEST = "http://localhost:3000/";
-    public final static int SERVER_PORT = 80;
+
 
     //Chat
     private EditText chatEntry;
@@ -60,7 +60,8 @@ public class Chat {
     public Conversation currentConversation;
     private boolean chatIsExpended;
     public Activity currentActivity;
-    private com.github.nkzawa.socketio.client.Socket mSocket;
+    private SocketManager socketManager;
+
 
     public  Chat(Activity currentActivity_){
             currentActivity = currentActivity_;
@@ -89,10 +90,10 @@ public class Chat {
         chatMessageZoneScrollView = (ScrollView)currentActivity.findViewById(R.id.chatVerticalScrollView);
         conversationSpinner = (Spinner)currentActivity.findViewById(R.id.conversationSpinner);
 
+
         SetupChatEntry();
         SetupChatEnterButton();
         SetupChatExtendButton();
-        SetupSocket();
 
 
         if (currentConversation.GetHistorySize() > 0)
@@ -107,15 +108,7 @@ public class Chat {
 
         currentInstance = this;
         chatIsExpended = false;
-    }
-    private void SetupSocket()
-    {
-        try {
-            IO.Options options = new IO.Options();
-            options.port = 3000;
-            mSocket = IO.socket(SERVER_ADDRESS_TEST, options);
-            mSocket.connect();
-        } catch (URISyntaxException e) {}
+        socketManager = new SocketManager();
     }
 
     private void SetupChatExtendButton() {
@@ -146,7 +139,7 @@ public class Chat {
         chatMessageZoneTable.addView(newView);
         if (withHistory) {
             currentConversation.AddToHistory(newView.getText().toString());
-            mSocket.emit("chatMessage", newView.getText().toString());
+            socketManager.emit("chatMessage", newView.getText().toString());
            /* if (currentConversation.conversationTask.getStatus() == AsyncTask.Status.RUNNING) {
                 try {
                     currentConversation.conversationTask.dataOutputStream.writeUTF(newView.getText().toString());
