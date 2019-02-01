@@ -111,7 +111,9 @@ public class Chat {
     private void SetupSocket()
     {
         try {
-            mSocket = IO.socket(SERVER_ADDRESS_TEST);
+            IO.Options options = new IO.Options();
+            options.port = 3000;
+            mSocket = IO.socket(SERVER_ADDRESS_TEST, options);
             mSocket.connect();
         } catch (URISyntaxException e) {}
     }

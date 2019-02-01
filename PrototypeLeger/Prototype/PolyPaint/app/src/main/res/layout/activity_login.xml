@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <RelativeLayout
         android:id="@+id/connexionLayout"
         android:layout_width="match_parent"
@@ -78,6 +79,13 @@
                 android:background="@drawable/chat_entry"
                 android:inputType="text"/>
         </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/loginProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ipModule"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"/>
 
 
         <ImageButton
