@@ -1,8 +1,8 @@
 import { injectable, inject } from "inversify";
-import { EventEmitter } from "events";
-import Types from "../types";
+import { TYPES } from "../types";
 import { Logger } from "./logger.service";
-import SocketEvents from "../communication/socketEvents";
+import SocketEvents from "../../../common/communication/socketEvents";
+import { UnsaucedEventEmitter } from "../interfaces/events";
 
 @injectable()
 export class SocketService {
@@ -10,7 +10,7 @@ export class SocketService {
     private sockets: Map<string, SocketIO.Socket> = new Map();
 
     public constructor(
-        @inject(Types.EventEmitter) private eventEmitter: EventEmitter
+        @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
     ) { }
 
     public init(server: SocketIO.Server): void {
@@ -19,15 +19,18 @@ export class SocketService {
         this.server.on("connection", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
+            console.log("Socket id" + socket.id + " connected.");
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
             this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
+
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
         });
 
-        Logger.debug("SocketService", "Socket server initialized");
+        Logger.warn("SocketService", `Socket service initialized.`);
     }
 
     public emit(id: string, event: string, ...args: any[]): void {

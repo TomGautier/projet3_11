@@ -1,8 +1,12 @@
-export default  {
-        Server: Symbol("Server"),
-        Application: Symbol("Application"),
-        Routes: Symbol("Routes"),
-        Index: Symbol("Index"),
-        EventEmitter: Symbol("EventEmitter"),
-        SocketService: Symbol("SocketService")
+const TYPES =  {
+        ServerInterface: Symbol.for("ServerInterface"),
+        ApplicationInterface: Symbol.for("ApplicationInterface"),
+        DateControllerInterface: Symbol.for("DateControllerInterface"),
+        IndexControllerInterface: Symbol.for("IndexControllerInterface"),
+        IndexServiceInterface: Symbol.for("IndexServiceInterface"),
+        DateServiceInterface: Symbol.for("DateServiceInterface"),
+        EventEmitter: Symbol.for("EventEmitter"),
+        SocketService: Symbol.for("SocketService")
 };
+
+export  { TYPES };
