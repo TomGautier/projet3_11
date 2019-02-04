@@ -42,7 +42,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 
 
-public class Chat {
+public class Chat implements NewMessageListener {
     //server
 
 
@@ -109,6 +109,7 @@ public class Chat {
         currentInstance = this;
         chatIsExpended = false;
         socketManager = new SocketManager();
+        socketManager.setupNewMessageListener(this);
     }
 
     private void SetupChatExtendButton() {
@@ -133,22 +134,15 @@ public class Chat {
             }
         });
     }
-    public void WriteMessage(String message, boolean withHistory) {
+    public void WriteMessage(String message, boolean withHistory, boolean withSending) {
         TextView newView = (TextView)View.inflate(currentActivity, R.layout.chat_message, null);
         newView.setText(message);
         chatMessageZoneTable.addView(newView);
-        if (withHistory) {
+        if (withHistory)
             currentConversation.AddToHistory(newView.getText().toString());
-            socketManager.emit("chatMessage", newView.getText().toString());
-           /* if (currentConversation.conversationTask.getStatus() == AsyncTask.Status.RUNNING) {
-                try {
-                    currentConversation.conversationTask.dataOutputStream.writeUTF(newView.getText().toString());
-                }
-                catch(Exception e) {
-                    Log.d("EXCEPTION", "an error in sending message");
-                }
-            }*/
-        }
+        if (withSending)
+            socketManager.sendMessage(message);
+
         ScrollDownMessages();
     }
 
@@ -159,7 +153,7 @@ public class Chat {
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
                 String message = DateFormat.getDateTimeInstance().format(new Date()) + " " + chatEntry.getText().toString();
-                WriteMessage(message, true);
+                WriteMessage(message, true, true);
                 chatEntry.setText("");
             }
         });
@@ -241,7 +235,7 @@ public class Chat {
     private void LoadConversation() {
         chatMessageZoneTable.removeAllViews();
         for (int j = 0; j < currentConversation.GetHistorySize(); j++)
-            WriteMessage(currentConversation.GetHistoryAt(j), false);
+            WriteMessage(currentConversation.GetHistoryAt(j), false, false);
     }
 
     public Bundle GetChatBundle() {
@@ -252,6 +246,15 @@ public class Chat {
     }
 
 
+    @Override
+    public void onNewMessage(final String message) {
+        currentActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                WriteMessage(message,true, false);
+            }
+        });
+    }
 }
 /*class ConversationTask extends AsyncTask<String, Void, String> {
 

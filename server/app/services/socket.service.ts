@@ -3,6 +3,7 @@ import { TYPES } from "../types";
 import { Logger } from "./logger.service";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { UnsaucedEventEmitter } from "../interfaces/events";
+import socketEvents from "../../../common/communication/socketEvents";
 
 @injectable()
 export class SocketService {
@@ -21,7 +22,9 @@ export class SocketService {
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
 
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args[0]));
+           // socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args[0]));
+           socket.on(SocketEvents.MessageSent, args =>  this.emit(socket.id, socketEvents.MessageSent, args));
+
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
@@ -42,5 +45,6 @@ export class SocketService {
     private handleEvent(event: string, socketId: string, ...args: any[]): void {
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
+        console.log("recu un event de type" + event);
     }
 }
