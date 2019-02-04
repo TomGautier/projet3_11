@@ -33,6 +33,10 @@ export class SocketService {
         Logger.warn("SocketService", `Socket service initialized.`);
     }
 
+    public subscribe(event: string, action: ((...args: any[]) => any)) {
+        this.eventEmitter.on(event, action);
+    }
+
     public joinRoom(roomId: string, ...socketIds: string[]) {
         for (const socketId of socketIds) {
             const socket = this.sockets.get(socketId);
