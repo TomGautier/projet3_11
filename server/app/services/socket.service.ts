@@ -21,7 +21,7 @@ export class SocketService {
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
 
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args[0]));
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
