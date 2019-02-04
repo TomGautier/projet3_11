@@ -20,14 +20,14 @@ export class SocketService {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
+
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
             this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
-
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
         });
 
         Logger.warn("SocketService", `Socket service initialized.`);
