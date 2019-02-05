@@ -61,10 +61,12 @@ public class Chat implements NewMessageListener {
     private boolean chatIsExpended;
     public Activity currentActivity;
     private SocketManager socketManager;
+    private UserInformation userInformation;
 
 
-    public  Chat(Activity currentActivity_){
+    public  Chat(Activity currentActivity_, UserInformation userInformation_){
             currentActivity = currentActivity_;
+            userInformation = userInformation_;
             conversations = new ArrayList<>();
             conversations.add(new Conversation("allo"));
             conversations.add(new Conversation("allo2"));
@@ -72,8 +74,9 @@ public class Chat implements NewMessageListener {
             InitializeChat();
     }
 
-    public  Chat(Activity currentActivity_, Bundle bundle){
+    public  Chat(Activity currentActivity_, UserInformation userInformation_, Bundle bundle){
         currentActivity = currentActivity_;
+        userInformation = userInformation_;
         conversations = bundle.getParcelableArrayList("conversations");
         currentConversation = conversations.get(bundle.getInt("currentConversationIndex"));
         InitializeChat();
@@ -108,7 +111,7 @@ public class Chat implements NewMessageListener {
 
         currentInstance = this;
         chatIsExpended = false;
-        socketManager = new SocketManager();
+        socketManager = new SocketManager(userInformation.ipAddress);
         socketManager.setupNewMessageListener(this);
     }
 

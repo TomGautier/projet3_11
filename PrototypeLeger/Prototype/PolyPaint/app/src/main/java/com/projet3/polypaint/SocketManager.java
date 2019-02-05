@@ -11,12 +11,16 @@ public class SocketManager {
 
     public final String SENDMESSAGE_TAG = "MessageSent";
     public final String SERVER_ADDRESS = "https://polypaint-11.azurewebsites.net/";
-    public final String SERVER_ADDRESS_TEST = "http://192.168.0.107:3000/";
-    public final String SERVER_ADDRESS_TEST2 ="http://localhost:3000/";
+    //public final String SERVER_ADDRESS_TEST = "http://192.168.0.101:3000/"; // mon laptop
+    //public final String SERVER_ADDRESS_TEST = "http://192.168.0.107:3000/"; // ma tour
+    //public final String SERVER_ADDRESS_TEST = "http://10.200.2.171:3000/"; //poly
+
     private Socket socket;
     private NewMessageListener listener;
+    private String uri;
 
-    public SocketManager() {
+    public SocketManager(String ipAdress_) {
+        uri = formatIpToUri(ipAdress_);
         setupSocket();
     }
 
@@ -26,7 +30,7 @@ public class SocketManager {
     private void setupSocket() {
         try {
             Log.d("setupSocket", "setupSocket appele");
-            socket = IO.socket(SERVER_ADDRESS_TEST);
+            socket = IO.socket(uri);
             socket.connect();
             socket.on(SENDMESSAGE_TAG, new Emitter.Listener() {
                 @Override
@@ -42,6 +46,10 @@ public class SocketManager {
         if (socket.connected()){
             socket.emit(SENDMESSAGE_TAG, message);
         }
+    }
+
+    private String formatIpToUri(String ip) {
+        return "http://" + ip + ":3000/";
     }
 
 

@@ -28,15 +28,17 @@ import java.util.zip.Inflater;
 
 public class HomeActivity extends Activity  {
 	private Chat chat;
+	private UserInformation userInformation;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		userInformation = getIntent().getExtras().getParcelable("USER_INFORMATION");
 		if (savedInstanceState == null)
-			chat = new Chat(this);
+			chat = new Chat(this, userInformation);
 		else
-			chat = new Chat(this, savedInstanceState.getBundle("chat"));
+			chat = new Chat(this, userInformation, savedInstanceState.getBundle("chat"));
 	}
 
 
