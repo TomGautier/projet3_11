@@ -6,13 +6,17 @@ import android.os.Parcelable;
 public class UserInformation implements Parcelable {
     String username;
     String password;
-    String ipAddress;
+    String serverAddress;
 
-    public UserInformation(String username_, String password_, String ipAddress_){
+    public UserInformation(String username_, String password_, String serverAddress_){
         username = username_;
         password = password_;
-        ipAddress = ipAddress_;
+        serverAddress = serverAddress_;
     }
+
+    public String getServerAddress() {return serverAddress;}
+    public String getUsername() {return username;}
+    public String getPassword() {return password;}
 
     @Override
     public int describeContents() {
@@ -22,7 +26,7 @@ public class UserInformation implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(username);
         parcel.writeString(password);
-        parcel.writeString(ipAddress);
+        parcel.writeString(serverAddress);
     }
     public static final Parcelable.Creator<UserInformation> CREATOR
             = new Parcelable.Creator<UserInformation>() {

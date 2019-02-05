@@ -1,7 +1,8 @@
 package com.projet3.polypaint;
 
-import android.graphics.Color;
 import android.util.Log;
+
+import com.projet3.polypaint.Chat.NewMessageListener;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -10,7 +11,7 @@ import io.socket.emitter.Emitter;
 public class SocketManager {
 
     public final String SENDMESSAGE_TAG = "MessageSent";
-    public final String SERVER_ADDRESS = "https://polypaint-11.azurewebsites.net/";
+   // public final String SERVER_ADDRESS = "https://polypaint-11.azurewebsites.net/";
     //public final String SERVER_ADDRESS_TEST = "http://192.168.0.101:3000/"; // mon laptop
     //public final String SERVER_ADDRESS_TEST = "http://192.168.0.107:3000/"; // ma tour
     //public final String SERVER_ADDRESS_TEST = "http://10.200.2.171:3000/"; //poly

@@ -1,18 +1,11 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.Chat;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -23,23 +16,16 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
+import com.projet3.polypaint.R;
+import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.UserInformation;
+import com.projet3.polypaint.Utilities;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
-
-
-import io.socket.client.IO;
-import io.socket.client.Socket;
 
 
 public class Chat implements NewMessageListener {
@@ -111,7 +97,7 @@ public class Chat implements NewMessageListener {
 
         currentInstance = this;
         chatIsExpended = false;
-        socketManager = new SocketManager(userInformation.ipAddress);
+        socketManager = new SocketManager(userInformation.getServerAddress());
         socketManager.setupNewMessageListener(this);
     }
 
