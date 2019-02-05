@@ -1,6 +1,6 @@
 import { User } from "./user";
 
-export class Chat {
+export class Room {
 
     constructor(
         public id: string,
