@@ -12,6 +12,8 @@ export class SocketService {
     private server: SocketIO.Server;
     private sockets: Map<string, SocketIO.Socket> = new Map();
 
+    private users: Set<string>;
+
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
     ) { }
@@ -24,9 +26,11 @@ export class SocketService {
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
 
-            this.joinRoom(GENERAL_ROOM.id, socket.id);
-
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args[0]));
+            socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(
+                                                            socket,
+                                                            args[0])
+                    );
+            console.log("Socket " + socket.id + " now listening on LoginAttempt.");
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
@@ -66,13 +70,28 @@ export class SocketService {
         }
     }
 
-    public emit(id: string, event: string, ...args: any[]): void {
+    public emit(id: string, event: string, args?: any): void {
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
         const success: boolean = this.server.to(id).emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
-    private handleEvent(event: string, socketId: string, ...args: any[]): void {
+    private handleLogin(socket: SocketIO.Socket, username: string) {
+        if (this.users.has(username)) {
+            this.emit(socket.id, SocketEvents.UsernameAlreadyExists);
+            console.log("The username of " + socket.id + " exists already.");
+        }
+        else {
+            this.users.add(username);
+            this.joinRoom(GENERAL_ROOM.id, socket.id);
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args[0]));
+            
+            this.emit(socket.id, SocketEvents.UserLogged);
+            console.log("The socket " + socket.id + " has been logged in.");
+        }
+    }
+
+    private handleEvent(event: string, socketId: string, args?: string): void {
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.emit(socketId, event, args);
         // BUG: Client doesn't receive emit when using eventEmitter
