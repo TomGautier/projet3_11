@@ -123,16 +123,21 @@ public class Chat implements NewMessageListener {
             }
         });
     }
-    public void WriteMessage(String message, boolean withHistory, boolean withSending) {
+    public void WriteMessage(String message, boolean withHistory) {
         TextView newView = (TextView)View.inflate(currentActivity, R.layout.chat_message, null);
-        newView.setText(formatMessageWithDate(message));
         chatMessageZoneTable.addView(newView);
-        if (withHistory)
+        if (withHistory) {
+            newView.setText(formatMessageWithDate(message));
             currentConversation.AddToHistory(newView.getText().toString());
-        if (withSending)
-            socketManager.sendMessage(message);
-
+        }
+        else {
+            newView.setText(message);
+        }
         ScrollDownMessages();
+    }
+
+    public void sendMessage(String message) {
+        socketManager.sendMessage(formatMessageWithUser(message));
     }
 
     private void SetupChatEnterButton() {
@@ -141,7 +146,7 @@ public class Chat implements NewMessageListener {
             @Override
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
-                onNewMessage(formatMessageWithUser(chatEntry.getText().toString()));
+                sendMessage(chatEntry.getText().toString());
                 //WriteMessage(formatMessageWithUser(chatEntry.getText().toString()), true, true);
                 chatEntry.setText("");
             }
@@ -150,7 +155,7 @@ public class Chat implements NewMessageListener {
 
     // Message format
     private String formatMessageWithDate(String message) {
-        return DateFormat.getDateTimeInstance().format(new Date()) + " " + message;
+        return DateFormat.getTimeInstance().format(new Date()) + " " + message;
     }
     private String formatMessageWithUser(String message) {
         return "[ " + userInformation.getUsername() +  " ] : " + message;
@@ -234,7 +239,7 @@ public class Chat implements NewMessageListener {
     private void LoadConversation() {
         chatMessageZoneTable.removeAllViews();
         for (int j = 0; j < currentConversation.GetHistorySize(); j++)
-            WriteMessage(currentConversation.GetHistoryAt(j), false, false);
+            WriteMessage(currentConversation.GetHistoryAt(j), false);
     }
 
     public Bundle GetChatBundle() {
@@ -250,7 +255,7 @@ public class Chat implements NewMessageListener {
         currentActivity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                WriteMessage(message,true, false);
+                WriteMessage(message,true);
             }
         });
     }

@@ -3,6 +3,7 @@ package com.projet3.polypaint.Chat;
 import android.util.Log;
 
 import com.projet3.polypaint.Chat.NewMessageListener;
+import com.projet3.polypaint.LoginListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,9 +15,14 @@ import io.socket.emitter.Emitter;
 public class SocketManager {
 
     public final String SENDMESSAGE_TAG = "MessageSent";
+    public final String LOGINATTEMPT_TAG = "LoginAttempt";
+    public final String USEREXIST_TAG = "UsernameAlreadyExists";
+
 
     private Socket socket;
-    private NewMessageListener listener;
+    private NewMessageListener newMessagelistener;
+    private LoginListener loginListener;
+
     private String uri;
 
     public SocketManager(String ipAddress_) {
@@ -25,25 +31,44 @@ public class SocketManager {
     }
 
     public void setupNewMessageListener(NewMessageListener listener_) {
-        listener = listener_;
+        newMessagelistener = listener_;
+    }
+    public void setupLoginListener(LoginListener listener_) {
+        loginListener = listener_;
     }
     private void setupSocket() {
         try {
             socket = IO.socket(uri);
             socket.connect();
+
+
             socket.on(SENDMESSAGE_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
                     try {
                         JSONArray array = ((JSONArray)args[0]).getJSONArray(0);
                         String message =  array.getString(0);
-                        listener.onNewMessage(message);
+                        newMessagelistener.onNewMessage(message);
                     }catch (JSONException e) {
                         Log.d("SOCKET_ERROR", "un erreur JSON est survenu lors d'une reception de message");
                     }
                 }
             });
+
+            socket.on(USEREXIST_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    loginListener.onUserAlreadyExists();
+                }
+            });
         }catch(Exception e) {}
+
+    }
+
+    public void isNewUser(String username) {
+        boolean response = true;
+
+        socket.emit(LOGINATTEMPT_TAG, username);
 
     }
     public void sendMessage(String message) {

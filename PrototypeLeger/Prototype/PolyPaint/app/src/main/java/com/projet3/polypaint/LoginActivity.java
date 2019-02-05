@@ -8,14 +8,19 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class LoginActivity extends Activity {
+import com.projet3.polypaint.Chat.SocketManager;
 
-	ImageButton connexionButton;
+public class LoginActivity extends Activity implements LoginListener {
+
+	ImageButton userConnexionButton;
+    ImageButton serverConnexionButton;
 	EditText usernameEntry;
 	EditText passwordEntry;
 	EditText ipEntry;
 	ProgressBar progressBar;
 	UserInformation userInformation;
+	SocketManager socketManager;
+	boolean enableLogin;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -23,17 +28,18 @@ public class LoginActivity extends Activity {
 		Initialize();
 	}
 	private void Initialize() {
-		connexionButton = (ImageButton)findViewById(R.id.connectButton);
+		userConnexionButton = (ImageButton)findViewById(R.id.connectUserButton);
+		serverConnexionButton = (ImageButton)findViewById(R.id.connectServerButton);
 		usernameEntry = (EditText)findViewById(R.id.usernameEditText);
 		passwordEntry = (EditText)findViewById(R.id.passwordEditText);
 		progressBar = (ProgressBar)findViewById(R.id.loginProgressBar);
 		ipEntry = (EditText)findViewById(R.id.ipEditText);
+		enableLogin = false;
 		progressBar.setVisibility(View.GONE);
-		connexionButton.setOnClickListener(new View.OnClickListener() {
+		userConnexionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0
-						&& isIPAddress(ipEntry.getText().toString())){
+				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 
 					progressBar.setVisibility(View.VISIBLE);
 					android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
@@ -46,7 +52,20 @@ public class LoginActivity extends Activity {
 					Toast.makeText(getBaseContext(), getString(R.string.loginToast), Toast.LENGTH_LONG).show();
 			}
 		});
-		Utilities.SetButtonEffect(connexionButton);
+		serverConnexionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isIPAddress(ipEntry.getText().toString())) {
+                    socketManager = new SocketManager(ipEntry.getText().toString());
+                }
+            }
+        });
+
+
+
+
+        Utilities.SetButtonEffect(serverConnexionButton);
+		Utilities.SetButtonEffect(userConnexionButton);
 
 	}
 
@@ -79,4 +98,13 @@ public class LoginActivity extends Activity {
 
 	}
 
+    @Override
+    public void onUserAlreadyExists() {
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        });
+    }
 }
