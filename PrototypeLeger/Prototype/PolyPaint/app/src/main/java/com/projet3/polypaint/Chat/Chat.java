@@ -141,7 +141,8 @@ public class Chat implements NewMessageListener {
             @Override
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
-                WriteMessage(formatMessageWithUser(chatEntry.getText().toString()), true, true);
+                onNewMessage(formatMessageWithUser(chatEntry.getText().toString()));
+                //WriteMessage(formatMessageWithUser(chatEntry.getText().toString()), true, true);
                 chatEntry.setText("");
             }
         });
@@ -155,7 +156,7 @@ public class Chat implements NewMessageListener {
         return "[ " + userInformation.getUsername() +  " ] : " + message;
     }
 
-    
+
     private ArrayList<String> GetConversationsNames() {
         ArrayList<String> stringConversations = new ArrayList<>();
         for (Conversation elem : conversations) {

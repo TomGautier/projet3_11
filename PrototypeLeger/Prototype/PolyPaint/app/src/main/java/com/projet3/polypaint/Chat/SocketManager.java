@@ -19,8 +19,8 @@ public class SocketManager {
     private NewMessageListener listener;
     private String uri;
 
-    public SocketManager(String ipAdress_) {
-        uri = formatIpToUri(ipAdress_);
+    public SocketManager(String ipAddress_) {
+        uri = formatIpToUri(ipAddress_);
         setupSocket();
     }
 
@@ -29,7 +29,6 @@ public class SocketManager {
     }
     private void setupSocket() {
         try {
-            Log.d("setupSocket", "setupSocket appele");
             socket = IO.socket(uri);
             socket.connect();
             socket.on(SENDMESSAGE_TAG, new Emitter.Listener() {
