@@ -29,11 +29,17 @@ export class SocketService {
             this.joinRoom(GENERAL_ROOM.id, socket.id);
 
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+
+            this.joinRoom(GENERAL_ROOM.id, socket.id);
+
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(
                                                             socket,
                                                             args[0])
                     );
             console.log("Socket " + socket.id + " now listening on LoginAttempt.");
+
+
+
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
@@ -73,7 +79,9 @@ export class SocketService {
         }
     }
 
+
     public emit(id: string, event: string, args?: any): void {
+
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
         const success: boolean = this.server.to(id).emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
