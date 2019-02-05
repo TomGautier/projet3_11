@@ -13,9 +13,9 @@ namespace Prototype.ViewModels
     {
         #region Constant
         // TODO : Set to true value
-        private const string SERVER_ADRESS = "52.173.184.147";
-        private const string SERVER_PORT = "80";
-        private const string MESSAGE_ID = "message";
+        private const string SERVER_ADRESS = "127.0.0.1"; //"52.173.184.147";
+        private const string SERVER_PORT = "3000"; //"80";
+        private const string MESSAGE_ID = "MessageSent";
         private const string CONNECTION_ANSWER = "connection_answer";
         #endregion
 
@@ -139,13 +139,10 @@ namespace Prototype.ViewModels
 
             IO.Options op = new IO.Options
             {
-                Query = new Dictionary<string, string>
-                {
-                    { "username", Username }
-                }
+                ForceNew = true
             };
 
-            socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT, op);
+            socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT/*, op*/);
 
             socket.On(Socket.EVENT_CONNECT, EventConnect);
         }
@@ -159,40 +156,41 @@ namespace Prototype.ViewModels
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
         private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message) && ConnectionStatus != "disconnected"; }
-        private bool InfosValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && !string.IsNullOrWhiteSpace(Username); } // TODO : regex for server adress
+        private bool InfosValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && !string.IsNullOrWhiteSpace(Username); }
         #endregion
 
         #region Events
         private void EventConnect()
         {
-            socket.On(CONNECTION_ANSWER, (answer) =>
-            {
-                ConnectionStatus = "connected";
-                var answerFormat = new
-                {
-                    usernameValid = false
-                };
-                if(!JsonConvert.DeserializeAnonymousType((string)answer, answerFormat).usernameValid)
-                {
-                    System.Windows.MessageBox.Show("Username already exists.", "Error");
-                    ConnectionStatus = "disconnected";
-                }
-                else
-                {
-                    ConnectionStatus = "connected";
-                    socket.On(MESSAGE_ID, (data) =>
-                    {
-                        var messageFormat = new
-                        {
-                            username = "",
-                            time = "",
-                            message = ""
-                        };
-                        var message = JsonConvert.DeserializeAnonymousType((string)data, messageFormat);
-                        ReceiveMessage(message.username, message.time, message.message);
-                    });
-                }
-            });
+            ConnectionStatus = "connected";
+            //socket.On(CONNECTION_ANSWER, (answer) =>
+            //{
+            //    ConnectionStatus = "connected";
+            //    var answerFormat = new
+            //    {
+            //        usernameValid = false
+            //    };
+            //    if(!JsonConvert.DeserializeAnonymousType((string)answer, answerFormat).usernameValid)
+            //    {
+            //        System.Windows.MessageBox.Show("Username already exists.", "Error");
+            //        ConnectionStatus = "disconnected";
+            //    }
+            //    else
+            //    {
+            //        ConnectionStatus = "connected";
+            //        socket.On(MESSAGE_ID, (data) =>
+            //        {
+            //            var messageFormat = new
+            //            {
+            //                username = "",
+            //                time = "",
+            //                message = ""
+            //            };
+            //            var message = JsonConvert.DeserializeAnonymousType((string)data, messageFormat);
+            //            ReceiveMessage(message.username, message.time, message.message);
+            //        });
+            //    }
+            //});
         }
         #endregion
     }
