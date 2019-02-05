@@ -6,6 +6,8 @@ using Prototype.Utils;
 using Quobject.SocketIoClientDotNet.Client;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 
 namespace Prototype.ViewModels
 {
@@ -114,16 +116,17 @@ namespace Prototype.ViewModels
         {
             var messageFormat = new
             {
-                username = Username,
                 time = DateTime.Now.ToString("HH:mm:ss"),
+                username = Username,
                 message = Message
             };
             socket.Emit(MESSAGE_ID, JsonConvert.SerializeObject(messageFormat));
+            //Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
             Message = string.Empty;
         }
         private void ReceiveMessage(string username, string time, string message)
         {
-            History += Environment.NewLine + username + " - " + time + " - " + message;
+            History += Environment.NewLine + time + " - " + username + " - " + message;
         }
         private void OnConnect()
         {
@@ -137,12 +140,7 @@ namespace Prototype.ViewModels
                 return;
             }
 
-            IO.Options op = new IO.Options
-            {
-                ForceNew = true
-            };
-
-            socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT/*, op*/);
+            socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT);
 
             socket.On(Socket.EVENT_CONNECT, EventConnect);
         }
@@ -163,6 +161,17 @@ namespace Prototype.ViewModels
         private void EventConnect()
         {
             ConnectionStatus = "connected";
+            socket.On(MESSAGE_ID, (data) =>
+                    {
+                        var messageFormat = new
+                        {
+                            time = "",
+                            username = "",
+                            message = ""
+                        };
+                        var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
+                        ReceiveMessage(message.username, message.time, message.message);
+                    });
             //socket.On(CONNECTION_ANSWER, (answer) =>
             //{
             //    ConnectionStatus = "connected";
