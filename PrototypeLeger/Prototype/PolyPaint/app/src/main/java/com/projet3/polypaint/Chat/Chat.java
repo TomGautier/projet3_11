@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.UserInformation;
 import com.projet3.polypaint.Utilities;
 
@@ -125,7 +125,7 @@ public class Chat implements NewMessageListener {
     }
     public void WriteMessage(String message, boolean withHistory, boolean withSending) {
         TextView newView = (TextView)View.inflate(currentActivity, R.layout.chat_message, null);
-        newView.setText(message);
+        newView.setText(formatMessageWithDate(message));
         chatMessageZoneTable.addView(newView);
         if (withHistory)
             currentConversation.AddToHistory(newView.getText().toString());
@@ -141,12 +141,21 @@ public class Chat implements NewMessageListener {
             @Override
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
-                String message = DateFormat.getDateTimeInstance().format(new Date()) + " " + chatEntry.getText().toString();
-                WriteMessage(message, true, true);
+                WriteMessage(formatMessageWithUser(chatEntry.getText().toString()), true, true);
                 chatEntry.setText("");
             }
         });
     }
+
+    // Message format
+    private String formatMessageWithDate(String message) {
+        return DateFormat.getDateTimeInstance().format(new Date()) + " " + message;
+    }
+    private String formatMessageWithUser(String message) {
+        return "[ " + userInformation.getUsername() +  " ] : " + message;
+    }
+
+    
     private ArrayList<String> GetConversationsNames() {
         ArrayList<String> stringConversations = new ArrayList<>();
         for (Conversation elem : conversations) {

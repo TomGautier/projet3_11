@@ -4,6 +4,9 @@ import android.util.Log;
 
 import com.projet3.polypaint.Chat.NewMessageListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -11,10 +14,6 @@ import io.socket.emitter.Emitter;
 public class SocketManager {
 
     public final String SENDMESSAGE_TAG = "MessageSent";
-   // public final String SERVER_ADDRESS = "https://polypaint-11.azurewebsites.net/";
-    //public final String SERVER_ADDRESS_TEST = "http://192.168.0.101:3000/"; // mon laptop
-    //public final String SERVER_ADDRESS_TEST = "http://192.168.0.107:3000/"; // ma tour
-    //public final String SERVER_ADDRESS_TEST = "http://10.200.2.171:3000/"; //poly
 
     private Socket socket;
     private NewMessageListener listener;
@@ -36,8 +35,13 @@ public class SocketManager {
             socket.on(SENDMESSAGE_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    Log.d("message", args[0].toString());
-                   listener.onNewMessage(args[0].toString());
+                    try {
+                        JSONArray array = ((JSONArray)args[0]).getJSONArray(0);
+                        String message =  array.getString(0);
+                        listener.onNewMessage(message);
+                    }catch (JSONException e) {
+                        Log.d("SOCKET_ERROR", "un erreur JSON est survenu lors d'une reception de message");
+                    }
                 }
             });
         }catch(Exception e) {}

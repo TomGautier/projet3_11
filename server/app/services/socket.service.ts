@@ -26,7 +26,7 @@ export class SocketService {
 
             this.joinRoom(GENERAL_ROOM.id, socket.id);
 
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args[0]));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
