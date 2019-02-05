@@ -36,6 +36,34 @@ export class SocketService {
         Logger.warn("SocketService", `Socket service initialized.`);
     }
 
+    public subscribe(event: string, action: ((...args: any[]) => any)) {
+        this.eventEmitter.on(event, action);
+    }
+
+    public joinRoom(roomId: string, ...socketIds: string[]) {
+        for (const socketId of socketIds) {
+            const socket = this.sockets.get(socketId);
+            if (socket) {
+                socket.join(roomId);
+            }
+            else {
+                Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
+            }
+        }
+    }
+
+    public leaveRoom(roomId: string, ...socketIds: string[]) {
+        for (const socketId of socketIds) {
+            const socket = this.sockets.get(socketId);
+            if (socket) {
+                socket.leave(roomId);
+            }
+            else {
+                Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
+            }
+        }
+    }
+
     public emit(id: string, event: string, ...args: any[]): void {
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
         const success: boolean = this.server.to(id).emit(event, args);

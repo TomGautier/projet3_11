@@ -1,4 +1,6 @@
 export default {
     UserLeft:"UserLeft",
-    MessageSent:"MessageSent"
+    MessageSent:"MessageSent",
+    CannotJoin:"CannotJoin",
+    NewUserJoined:"NewUserJoined"
 }
