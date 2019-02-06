@@ -2,37 +2,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootChat"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#ffffff"
-    android:layout_gravity="center"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:layout_alignParentBottom="true"
+    android:layout_marginRight="20dp"
+    android:layout_marginLeft="20dp"
     tools:context="${relativePackage}.${activityClass}">
+
     <RelativeLayout
-        android:id="@+id/chatMessageZone"
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:orientation="vertical"
-        android:background="@drawable/stroke_bg"
-        android:layout_margin="20dp"
-        android:layout_alignParentBottom="true">
+        android:id="@+id/chatToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/chatMessageZone"
+        android:layout_alignRight="@id/chatMessageZone">
+    <Spinner
+        android:id="@+id/conversationSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chat_spinner"
+        android:layout_alignParentLeft="true"
+        android:textAlignment="center"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"/>
+    </RelativeLayout>
+<RelativeLayout
+android:id="@+id/chatMessageZone"
+android:layout_width="match_parent"
+android:layout_height="120dp"
+android:orientation="vertical"
+android:background="@drawable/stroke_bg"
+    android:layout_alignParentBottom="true">
 
         <ScrollView
             android:id="@+id/chatVerticalScrollView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:scrollbars="vertical"
-            android:layout_marginBottom="55dp">
-            <!--<HorizontalScrollView
-                android:id="@+id/chatHorizontalScrollView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">-->
+            android:layout_marginBottom="60dp">
 
             <LinearLayout
                 android:id="@+id/chatMessageZoneTable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginLeft="10dp"></LinearLayout>
-           <!-- </HorizontalScrollView> -->
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp">
+
+            </LinearLayout>
+
 
     </ScrollView>
 
@@ -48,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_switch_vertical_orientation_arrows"
-                android:background="@color/chatZone"
+                android:background="@color/chat"
                 android:layout_marginBottom="5dp"
                 android:layout_marginLeft="5dp"
                 android:layout_alignParentLeft="true"/>
@@ -69,7 +87,7 @@
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="5dp"
                 android:src="@drawable/ic_baseline_arrow_forward_24px"
-                android:background="@color/chatZone"
+                android:background="@color/chat"
                 android:layout_alignParentRight="true"/>
         </RelativeLayout>
     </RelativeLayout>

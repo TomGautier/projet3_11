@@ -11,6 +11,7 @@ const GENERAL_ROOM = new Room("generalRoom")
 export class SocketService {
     private server: SocketIO.Server;
     private sockets: Map<string, SocketIO.Socket> = new Map();
+  
     private users: Set<string>  = new Set<string>();
 
     public constructor(
@@ -24,7 +25,6 @@ export class SocketService {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
-
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(socket, args));
             socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
             
