@@ -15,10 +15,8 @@ namespace Prototype.ViewModels
     {
         #region Constant
         // TODO : Set to true value
-        private const string SERVER_ADRESS = "127.0.0.1"; //"52.173.184.147";
+        private const string SERVER_ADDRESS = "127.0.0.1"; //"52.173.184.147";
         private const string SERVER_PORT = "3000"; //"80";
-        private const string MESSAGE_ID = "MessageSent";
-        private const string CONNECTION_ANSWER = "connection_answer";
         #endregion
 
         #region Parameters
@@ -70,17 +68,17 @@ namespace Prototype.ViewModels
                 NotifyPropertyChanged("Username");
             }
         }
-        private string _serverAdress = SERVER_ADRESS;
-        public string ServerAdress
+        private string _serverAddress = SERVER_ADDRESS;
+        public string ServerAddress
         {
             get
             {
-                return _serverAdress;
+                return _serverAddress;
             }
             set
             {
-                _serverAdress = value;
-                NotifyPropertyChanged("ServerAdress");
+                _serverAddress = value;
+                NotifyPropertyChanged("ServerAddress");
             }
         }
         private string _connectionStatus = "disconnected";
@@ -110,6 +108,9 @@ namespace Prototype.ViewModels
         #region Methods
         private void OnExitApp()
         {
+            if(ConnectionStatus == "connected")
+                socket.Emit("UserLeft");
+            socket.Disconnect();
             System.Windows.Application.Current.MainWindow.Close();
         }
         private void OnSendMessage()
@@ -120,40 +121,61 @@ namespace Prototype.ViewModels
                 username = Username,
                 message = Message
             };
-            socket.Emit(MESSAGE_ID, JsonConvert.SerializeObject(messageFormat));
-            //Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
+            Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
+            socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
             Message = string.Empty;
         }
-        private void ReceiveMessage(string username, string time, string message)
+        private void ReceiveMessage(string time, string username, string message)
         {
             History += Environment.NewLine + time + " - " + username + " - " + message;
         }
         private void OnConnect()
         {
-            ConnectionStatus = "connecting";
-
             Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
-            if (!rgx.IsMatch(ServerAdress))
+            if (!rgx.IsMatch(ServerAddress))
             {
-                System.Windows.MessageBox.Show("Wrong Adress format", "Error");
+                System.Windows.MessageBox.Show("Wrong Address format", "Error");
                 ConnectionStatus = "disconnected";
                 return;
             }
 
-            socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT);
+            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT);
 
-            socket.On(Socket.EVENT_CONNECT, EventConnect);//TODO : CHANGE?
+            socket.On(Socket.EVENT_CONNECT, () =>
+            {
+                ConnectionStatus = "connecting";
+            });
         }
 
         private void OnLogin()
         {
-            //TODO
-            ConnectionStatus = "connected";
+            socket.Emit("LoginAttempt", Username);
+            socket.On("UsernameAlreadyExists", () =>
+            {
+                System.Windows.MessageBox.Show("Username already exists.", "Error");
+            });
+            socket.On("UserLogged", () =>
+            {
+                ConnectionStatus = "connected";
+                socket.On("MessageSent", (data) =>
+                {
+                    var messageFormat = new
+                    {
+                        time = "",
+                        username = "",
+                        message = ""
+                    };
+                    Console.WriteLine(data);
+                    var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
+                    ReceiveMessage(message.time, message.username, message.message);
+                });
+            });
         }
 
         private void OnDisconnect()
         {
-            //TODO
+            socket.Emit("UserLeft");
+            socket.Disconnect();
             ConnectionStatus = "disconnected";
             History = "Welcome!";
             Username = string.Empty;
@@ -163,62 +185,16 @@ namespace Prototype.ViewModels
         #region Commands 
         public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
         public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
-        public ICommand Connect { get { return new RelayCommand(OnConnect, AdressValid); } }
+        public ICommand Connect { get { return new RelayCommand(OnConnect, AddressValid); } }
         public ICommand Disconnect { get { return new RelayCommand(OnDisconnect, AlwaysTrue); } }
         public ICommand Login { get { return new RelayCommand(OnLogin, UsernameValid); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
         private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
-        private bool AdressValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && ConnectionStatus == "disconnected"; }
+        private bool AddressValid() { return !string.IsNullOrWhiteSpace(ServerAddress) && ConnectionStatus == "disconnected"; }
         private bool UsernameValid() { return !string.IsNullOrWhiteSpace(Username); }
         #endregion
-
-        #region Events
-        private void EventConnect()
-        {
-            //TODO : CHANGE TO USERNAME CHECKUP
-            ConnectionStatus = "connected";
-            socket.On(MESSAGE_ID, (data) =>
-                    {
-                        var messageFormat = new
-                        {
-                            time = "",
-                            username = "",
-                            message = ""
-                        };
-                        var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
-                        ReceiveMessage(message.username, message.time, message.message);
-                    });
-            //socket.On(CONNECTION_ANSWER, (answer) =>
-            //{
-            //    ConnectionStatus = "connected";
-            //    var answerFormat = new
-            //    {
-            //        usernameValid = false
-            //    };
-            //    if(!JsonConvert.DeserializeAnonymousType((string)answer, answerFormat).usernameValid)
-            //    {
-            //        System.Windows.MessageBox.Show("Username already exists.", "Error");
-            //        ConnectionStatus = "disconnected";
-            //    }
-            //    else
-            //    {
-            //        ConnectionStatus = "connected";
-            //        socket.On(MESSAGE_ID, (data) =>
-            //        {
-            //            var messageFormat = new
-            //            {
-            //                username = "",
-            //                time = "",
-            //                message = ""
-            //            };
-            //            var message = JsonConvert.DeserializeAnonymousType((string)data, messageFormat);
-            //            ReceiveMessage(message.username, message.time, message.message);
-            //        });
-            //    }
-            //});
-        }
-        #endregion
+        
     }
 }

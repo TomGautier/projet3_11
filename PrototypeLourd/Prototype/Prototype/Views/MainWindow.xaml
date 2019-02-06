@@ -10,7 +10,20 @@
         WindowState="Normal">
 
     <Window.Resources>
-        <Style x:Key="AdressInput" TargetType="TextBox">
+        <Style x:Key="AddressInput" TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="disconnected">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connected">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ConnectInput" TargetType="Button">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="disconnected">
                     <Setter Property="IsEnabled" Value="True"/>
@@ -79,17 +92,17 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="57*"/>
-                    <ColumnDefinition Width="208*"/>
+                    <ColumnDefinition Width="197*"/>
                     <ColumnDefinition Width="95"/>
                     <ColumnDefinition Width="95"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Content="Adress : " Grid.ColumnSpan="2" Margin="0,0,102.667,0"/>
-                <TextBox Grid.Column="1" Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" Margin="0.667,0,8.667,0" VerticalContentAlignment="Center" Style="{StaticResource AdressInput}">
+                <Label Grid.Column="0" Content="Address : " Grid.ColumnSpan="2" Margin="0,0,103,0"/>
+                <TextBox Grid.Column="1" Text="{Binding ServerAddress, UpdateSourceTrigger=PropertyChanged}" Margin="0.667,0,9,0" VerticalContentAlignment="Center" Style="{StaticResource AddressInput}">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding Connect}" Key="Return"/>
                     </TextBox.InputBindings>
                 </TextBox>
-                <Button Grid.Column="2" Content="Connect" Margin="7,0,9.667,0" Name="connectButton" Command="{Binding Connect, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="2" Content="Connect" Margin="7,0,9.667,0" Name="connectButton" Command="{Binding Connect, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource ConnectInput}"/>
                 <Button Grid.Column="3" Content="Disconnect" Margin="6.333,0,10.333,0" Name="disconnectButton" Command="{Binding Disconnect, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisconnectInput}"/>
             </Grid>
 
