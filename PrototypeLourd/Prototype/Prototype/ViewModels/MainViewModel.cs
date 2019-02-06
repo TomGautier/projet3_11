@@ -110,7 +110,7 @@ namespace Prototype.ViewModels
         public void OnExitApp(object sender, CancelEventArgs e)
         {
             if (ConnectionStatus == "connected")
-                socket.Emit("UserLeft");
+                socket.Emit("UserLeft", Username);
             if (ConnectionStatus != "disconnected")
                 socket.Emit("disconnect");
         }
@@ -144,8 +144,12 @@ namespace Prototype.ViewModels
                 ConnectionStatus = "disconnected";
                 return;
             }
+            IO.Options op = new IO.Options
+            {
+                Reconnection = false
+            };
 
-            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT);
+            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT, op);
 
             socket.On(Socket.EVENT_CONNECT, () =>
             {
@@ -190,7 +194,7 @@ namespace Prototype.ViewModels
 
         private void OnDisconnect()
         {
-            socket.Emit("UserLeft");
+            socket.Emit("UserLeft", Username);
             socket.Disconnect();
             ConnectionStatus = "disconnected";
             History = "Welcome!";
