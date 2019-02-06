@@ -6,12 +6,11 @@
         xmlns:md="https://github.com/fantasticfiasco/mvvm-dialogs"
         md:DialogServiceViews.IsRegistered="True"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="380" Width="450"
+        Title="{Binding Title}" Height="390" Width="450"
         WindowState="Normal">
 
     <Window.Resources>
-        <Style x:Key="NotConnected" TargetType="Grid">
-            <Setter Property="IsEnabled" Value="True"/>
+        <Style x:Key="AdressInput" TargetType="TextBox">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="disconnected">
                     <Setter Property="IsEnabled" Value="True"/>
@@ -23,7 +22,37 @@
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
             </Style.Triggers>
-            
+        </Style>
+
+        <Style x:Key="DisconnectInput" TargetType="Button">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connected">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="disconnected">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="UsernameInput" TargetType="Grid">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connected">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="disconnected">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
+                    <Setter Property="Visibility" Value="Visible"/>
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="ChatVisibility" TargetType="Grid">
@@ -40,26 +69,43 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    
+
     <Window.InputBindings>
         <KeyBinding Command="{Binding ExitCmd}" Gesture="Alt+F4" />
     </Window.InputBindings>
 
     <DockPanel>
         <StackPanel Margin="0,10,0,0">
-            <Grid Style="{StaticResource NotConnected}">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="71*"/>
-                    <ColumnDefinition Width="107*"/>
-                    <ColumnDefinition Width="51*"/>
-                    <ColumnDefinition Width="124*"/>
-                    <ColumnDefinition Width="89*"/>
+                    <ColumnDefinition Width="57*"/>
+                    <ColumnDefinition Width="208*"/>
+                    <ColumnDefinition Width="95"/>
+                    <ColumnDefinition Width="95"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="0" Content="Adress : " Grid.ColumnSpan="2" Margin="0,0,102.667,0"/>
+                <TextBox Grid.Column="1" Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" Margin="0.667,0,8.667,0" VerticalContentAlignment="Center" Style="{StaticResource AdressInput}">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding Connect}" Key="Return"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="2" Content="Connect" Margin="7,0,9.667,0" Name="connectButton" Command="{Binding Connect, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Grid.Column="3" Content="Disconnect" Margin="6.333,0,10.333,0" Name="disconnectButton" Command="{Binding Disconnect, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource DisconnectInput}"/>
+            </Grid>
+
+            <Grid Style="{StaticResource UsernameInput}" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="73*"/>
+                    <ColumnDefinition Width="271*"/>
+                    <ColumnDefinition Width="99*"/>
                 </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Content="Username : " Grid.ColumnSpan="2" Margin="0,0,102.667,0"/>
-                <TextBox Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="0.667,0,8.667,0" VerticalContentAlignment="Center"/>
-                <Label Grid.Column="1" Content="Adress : " Grid.ColumnSpan="3" Margin="105.667,0,116,0"/>
-                <TextBox Grid.Column="3" Text="{Binding ServerAdress, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,10,0" VerticalContentAlignment="Center"/>
-                <Button Grid.Column="4" Content="Connect" Margin="10,0,10.333,0" Name="connectButton" Command="{Binding Connect, UpdateSourceTrigger=PropertyChanged}"/>
+                <TextBox Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" Margin="1.667,0,8.667,0" VerticalContentAlignment="Center">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding Login}" Key="Return"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Column="2" Content="Login" Margin="10.333,0" Name="loginButton" Command="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
             </Grid>
 
             <Grid Style="{StaticResource ChatVisibility}">
@@ -68,13 +114,13 @@
                     <ColumnDefinition Width="95*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="11,274,0,0" Name="messageText" VerticalAlignment="Top" Width="341" MaxLines="1" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center">
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="11,248,0,0" Name="messageText" VerticalAlignment="Top" Width="341" MaxLines="1" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center">
                     <TextBox.InputBindings>
                         <KeyBinding Command="{Binding SendMessage}" Key="Return"/>
                     </TextBox.InputBindings>
                 </TextBox>
-                <Button Content="Send" Height="23" Margin="11,274,10.333,0" Name="sendMessageButton" VerticalAlignment="Top" Grid.Column="1" Command="{Binding SendMessage}" Click="SendMessageButton_Click"/>
-                <TextBox Height="259" HorizontalAlignment="Left" Margin="11,10,0,0" Name="chatBox" VerticalAlignment="Top" Width="341" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Text="{Binding History, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Bottom"/>
+                <Button Content="Send" Height="23" Margin="11,248,10.333,0" Name="sendMessageButton" VerticalAlignment="Top" Grid.Column="1" Command="{Binding SendMessage}" Click="SendMessageButton_Click"/>
+                <TextBox Height="232" HorizontalAlignment="Left" Margin="11,7,0,0" Name="chatBox" VerticalAlignment="Top" Width="341" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Text="{Binding History, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Bottom"/>
             </Grid>
         </StackPanel>
     </DockPanel>

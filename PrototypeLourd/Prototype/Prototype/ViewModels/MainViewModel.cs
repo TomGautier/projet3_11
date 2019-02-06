@@ -142,24 +142,42 @@ namespace Prototype.ViewModels
 
             socket = IO.Socket("http://" + ServerAdress + ":" + SERVER_PORT);
 
-            socket.On(Socket.EVENT_CONNECT, EventConnect);
+            socket.On(Socket.EVENT_CONNECT, EventConnect);//TODO : CHANGE?
+        }
+
+        private void OnLogin()
+        {
+            //TODO
+            ConnectionStatus = "connected";
+        }
+
+        private void OnDisconnect()
+        {
+            //TODO
+            ConnectionStatus = "disconnected";
+            History = "Welcome!";
+            Username = string.Empty;
         }
         #endregion
 
         #region Commands 
         public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
         public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
-        public ICommand Connect { get { return new RelayCommand(OnConnect, InfosValid); } }
+        public ICommand Connect { get { return new RelayCommand(OnConnect, AdressValid); } }
+        public ICommand Disconnect { get { return new RelayCommand(OnDisconnect, AlwaysTrue); } }
+        public ICommand Login { get { return new RelayCommand(OnLogin, UsernameValid); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
-        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message) && ConnectionStatus != "disconnected"; }
-        private bool InfosValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && !string.IsNullOrWhiteSpace(Username); }
+        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
+        private bool AdressValid() { return !string.IsNullOrWhiteSpace(ServerAdress) && ConnectionStatus == "disconnected"; }
+        private bool UsernameValid() { return !string.IsNullOrWhiteSpace(Username); }
         #endregion
 
         #region Events
         private void EventConnect()
         {
+            //TODO : CHANGE TO USERNAME CHECKUP
             ConnectionStatus = "connected";
             socket.On(MESSAGE_ID, (data) =>
                     {
