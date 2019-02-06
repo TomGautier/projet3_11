@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 
 import com.projet3.polypaint.Chat.Chat;
+import com.projet3.polypaint.Chat.SocketManager;
 
 public class HomeActivity extends Activity  {
 	private Chat chat;
@@ -21,6 +22,7 @@ public class HomeActivity extends Activity  {
             userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
             chat = new Chat(this, userInformation, savedInstanceState.getBundle("chat"));
         }
+		SocketManager.currentInstance.setupNewMessageListener(chat);
 	}
 
 
@@ -37,6 +39,11 @@ public class HomeActivity extends Activity  {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
+	}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		SocketManager.currentInstance.disconnect();
 	}
 
 }

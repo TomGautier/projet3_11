@@ -27,7 +27,7 @@ export class SocketService {
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
 
-            this.joinRoom(GENERAL_ROOM.id, socket.id);
+           // this.joinRoom(GENERAL_ROOM.id, socket.id);
 
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(
                                                             socket,

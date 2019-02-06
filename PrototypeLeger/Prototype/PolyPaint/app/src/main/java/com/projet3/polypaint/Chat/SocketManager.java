@@ -85,6 +85,10 @@ public class SocketManager {
         }
     }
 
+    public void disconnect() {
+        socket.disconnect();
+    }
+
     private String formatIpToUri(String ip) {
         return "http://" + ip + ":3000/";
     }

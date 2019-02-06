@@ -50,16 +50,16 @@ public class LoginActivity extends Activity  {
 
 					progressBar.setVisibility(View.VISIBLE);
 					socketManager.verifyUser(userInformation.username);
-					while(loginManager.enableLogin == null) {}
+					while(loginManager.waitingForResponse()) {}
 
-					if (loginManager.enableLogin){
+					if (loginManager.isLogged()){
                         android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
                         intent.putExtra("USER_INFORMATION", userInformation);
                         startActivity(intent);
                     }
                     else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
-						loginManager.enableLogin = null;
+						loginManager.reset();
 						progressBar.setVisibility(View.GONE);
                     }
 				}

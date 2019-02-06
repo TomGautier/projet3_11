@@ -97,7 +97,7 @@ public class Chat implements NewMessageListener {
 
         currentInstance = this;
         chatIsExpended = false;
-        SocketManager.currentInstance.setupNewMessageListener(this);
+        //SocketManager.currentInstance.setupNewMessageListener(this);
         //socketManager = new SocketManager(userInformation.getServerAddress());
     }
 

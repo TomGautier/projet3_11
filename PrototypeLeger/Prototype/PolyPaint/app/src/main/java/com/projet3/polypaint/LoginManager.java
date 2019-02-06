@@ -5,7 +5,7 @@ import com.projet3.polypaint.Chat.SocketManager;
 public class LoginManager implements LoginListener{
 
 
-    Boolean enableLogin;
+    private Boolean enableLogin;
     public LoginManager() {}
 
 
@@ -16,5 +16,15 @@ public class LoginManager implements LoginListener{
     @Override
     public void onUserLogged() {
         enableLogin = true;
+    }
+
+    public boolean isLogged() {
+        return enableLogin;
+    }
+    public void reset() {
+        enableLogin = null;
+    }
+    public Boolean waitingForResponse() {
+        return enableLogin == null;
     }
 }
