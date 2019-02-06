@@ -7,16 +7,15 @@ using Quobject.SocketIoClientDotNet.Client;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
+using System.ComponentModel;
 
 namespace Prototype.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
         #region Constant
-        // TODO : Set to true value
         private const string SERVER_ADDRESS = "127.0.0.1"; //"52.173.184.147";
-        private const string SERVER_PORT = "3000"; //"80";
+        private const string SERVER_PORT = "3000";
         #endregion
 
         #region Parameters
@@ -102,22 +101,28 @@ namespace Prototype.ViewModels
         {
             // DialogService is used to handle dialogs
             this.DialogService = new MvvmDialogs.DialogService();
+
+            System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
         }
         #endregion
 
         #region Methods
+        public void OnExitApp(object sender, CancelEventArgs e)
+        {
+            if (ConnectionStatus == "connected")
+                socket.Emit("UserLeft");
+            if (ConnectionStatus != "disconnected")
+                socket.Disconnect();
+        }
         private void OnExitApp()
         {
-            if(ConnectionStatus == "connected")
-                socket.Emit("UserLeft");
-            socket.Disconnect();
             System.Windows.Application.Current.MainWindow.Close();
         }
         private void OnSendMessage()
         {
             var messageFormat = new
             {
-                time = DateTime.Now.ToString("HH:mm:ss"),
+                date = DateTime.Now.ToString("tt hh:mm:ss"),
                 username = Username,
                 message = Message
             };
@@ -125,9 +130,9 @@ namespace Prototype.ViewModels
             socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
             Message = string.Empty;
         }
-        private void ReceiveMessage(string time, string username, string message)
+        private void ReceiveMessage(string date, string username, string message)
         {
-            History += Environment.NewLine + time + " - " + username + " - " + message;
+            History += Environment.NewLine + date + " - " + username + " - " + message;
         }
         private void OnConnect()
         {
@@ -161,13 +166,13 @@ namespace Prototype.ViewModels
                 {
                     var messageFormat = new
                     {
-                        time = "",
+                        date = "",
                         username = "",
                         message = ""
                     };
                     Console.WriteLine(data);
                     var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
-                    ReceiveMessage(message.time, message.username, message.message);
+                    ReceiveMessage(message.date, message.username, message.message);
                 });
             });
         }
