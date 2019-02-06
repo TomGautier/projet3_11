@@ -29,8 +29,6 @@ public class HomeActivity extends Activity  {
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
-		// save chat history
-		//savedInstanceState.putStringArray("chatHistory", chat.chatHistory.toArray(new String[chat.chatHistory.size()]));
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putBundle("chat", chat.GetChatBundle());
 		savedInstanceState.putParcelable("USER_INFORMATION",userInformation);
@@ -43,7 +41,7 @@ public class HomeActivity extends Activity  {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		SocketManager.currentInstance.disconnect();
+		SocketManager.currentInstance.leave(userInformation.username);
 	}
 
 }

@@ -45,8 +45,7 @@ public class LoginActivity extends Activity  {
 			@Override
 			public void onClick(View view) {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
-                    userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString(),
-                            ipEntry.getText().toString());
+                    userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					progressBar.setVisibility(View.VISIBLE);
 					socketManager.verifyUser(userInformation.username);

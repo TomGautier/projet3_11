@@ -18,7 +18,7 @@ public class SocketManager {
     public final String LOGINATTEMPT_TAG = "LoginAttempt";
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
     public final String USERLOGGED_TAG = "UserLogged";
-
+    public final String USERLEFT_TAG = "UserLeft";
 
     public static SocketManager currentInstance;
     private Socket socket;
@@ -85,8 +85,8 @@ public class SocketManager {
         }
     }
 
-    public void disconnect() {
-        socket.disconnect();
+    public void leave(String username) {
+        socket.emit(USERLEFT_TAG, username);
     }
 
     private String formatIpToUri(String ip) {

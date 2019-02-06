@@ -12,7 +12,7 @@ export class SocketService {
     private server: SocketIO.Server;
     private sockets: Map<string, SocketIO.Socket> = new Map();
 
-    private users: Set<string>;
+    private users: Set<string>  = new Set<string>();
 
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
@@ -20,19 +20,21 @@ export class SocketService {
 
     public init(server: SocketIO.Server): void {
         this.server = server;
-        this.users = new Set<string>();
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
 
-           // this.joinRoom(GENERAL_ROOM.id, socket.id);
+           
 
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(
                                                             socket,
                                                             args)
                     );
+
+            socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
+            
             console.log("Socket " + socket.id + " now listening on LoginAttempt.");
 
 
@@ -43,6 +45,7 @@ export class SocketService {
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
             this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
+            console.log("un socket a disconnect");
         });
 
         Logger.warn("SocketService", `Socket service initialized.`);
@@ -64,16 +67,16 @@ export class SocketService {
         }
     }
 
-    public leaveRoom(roomId: string, ...socketIds: string[]) {
-        for (const socketId of socketIds) {
+    public leaveRoom(roomId: string, socketId: string, username: string) {
             const socket = this.sockets.get(socketId);
             if (socket) {
                 socket.leave(roomId);
+                this.users.delete(username);
             }
             else {
                 Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
             }
-        }
+        
     }
 
 
@@ -100,7 +103,7 @@ export class SocketService {
     }
 
     private handleEvent(event: string, socketId: string, args?: string): void {
-        console.log("passe dans handleEvent");
+        console.log("sockets connected:" + this.sockets);
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.emit(socketId, event, args);
         // BUG: Client doesn't receive emit when using eventEmitter
