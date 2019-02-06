@@ -20,6 +20,7 @@ export class SocketService {
 
     public init(server: SocketIO.Server): void {
         this.server = server;
+        this.users = new Set<string>();
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", "New connection: " + socket.id);
@@ -28,13 +29,9 @@ export class SocketService {
 
             this.joinRoom(GENERAL_ROOM.id, socket.id);
 
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
-
-            this.joinRoom(GENERAL_ROOM.id, socket.id);
-
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(
                                                             socket,
-                                                            args[0])
+                                                            args)
                     );
             console.log("Socket " + socket.id + " now listening on LoginAttempt.");
 
@@ -95,7 +92,7 @@ export class SocketService {
         else {
             this.users.add(username);
             this.joinRoom(GENERAL_ROOM.id, socket.id);
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args[0]));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
             
             this.emit(socket.id, SocketEvents.UserLogged);
             console.log("The socket " + socket.id + " has been logged in.");
@@ -103,6 +100,7 @@ export class SocketService {
     }
 
     private handleEvent(event: string, socketId: string, args?: string): void {
+        console.log("passe dans handleEvent");
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.emit(socketId, event, args);
         // BUG: Client doesn't receive emit when using eventEmitter

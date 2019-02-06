@@ -8,5 +8,6 @@
     <string name="password">mot de passe :</string>
     <string name="ip">adresse IP :</string>
     <string name="loginToast">Veuillez entrer vos informations de connection</string>
+    <string name="loginUserAlreadyExistsToast">ce username est deja pris.Veuillez en choisir un autre</string>
 
 </resources>

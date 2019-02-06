@@ -46,7 +46,7 @@ public class Chat implements NewMessageListener {
     public Conversation currentConversation;
     private boolean chatIsExpended;
     public Activity currentActivity;
-    private SocketManager socketManager;
+   // private SocketManager socketManager;
     private UserInformation userInformation;
 
 
@@ -97,8 +97,8 @@ public class Chat implements NewMessageListener {
 
         currentInstance = this;
         chatIsExpended = false;
-        socketManager = new SocketManager(userInformation.getServerAddress());
-        socketManager.setupNewMessageListener(this);
+        SocketManager.currentInstance.setupNewMessageListener(this);
+        //socketManager = new SocketManager(userInformation.getServerAddress());
     }
 
     private void SetupChatExtendButton() {
@@ -137,7 +137,7 @@ public class Chat implements NewMessageListener {
     }
 
     public void sendMessage(String message) {
-        socketManager.sendMessage(formatMessageWithUser(message));
+        SocketManager.currentInstance.sendMessage(formatMessageWithUser(message));
     }
 
     private void SetupChatEnterButton() {

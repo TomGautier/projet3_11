@@ -17,8 +17,10 @@ public class SocketManager {
     public final String SENDMESSAGE_TAG = "MessageSent";
     public final String LOGINATTEMPT_TAG = "LoginAttempt";
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
+    public final String USERLOGGED_TAG = "UserLogged";
 
 
+    public static SocketManager currentInstance;
     private Socket socket;
     private NewMessageListener newMessagelistener;
     private LoginListener loginListener;
@@ -28,6 +30,7 @@ public class SocketManager {
     public SocketManager(String ipAddress_) {
         uri = formatIpToUri(ipAddress_);
         setupSocket();
+        currentInstance = this;
     }
 
     public void setupNewMessageListener(NewMessageListener listener_) {
@@ -45,13 +48,14 @@ public class SocketManager {
             socket.on(SENDMESSAGE_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    try {
-                        JSONArray array = ((JSONArray)args[0]).getJSONArray(0);
-                        String message =  array.getString(0);
+                    //try {
+                       // JSONArray array = ((JSONArray)args[0]).getJSONArray(0);
+                        //String message =  array.getString(0);
+                        String message = (String)args[0];
                         newMessagelistener.onNewMessage(message);
-                    }catch (JSONException e) {
-                        Log.d("SOCKET_ERROR", "un erreur JSON est survenu lors d'une reception de message");
-                    }
+                    //}//catch (JSONException e) {
+                       // Log.d("SOCKET_ERROR", "un erreur JSON est survenu lors d'une reception de message");
+                    //}
                 }
             });
 
@@ -61,15 +65,19 @@ public class SocketManager {
                     loginListener.onUserAlreadyExists();
                 }
             });
+
+            socket.on(USERLOGGED_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    loginListener.onUserLogged();
+                }
+            });
         }catch(Exception e) {}
 
     }
 
-    public void isNewUser(String username) {
-        boolean response = true;
-
+    public void verifyUser(String username) {
         socket.emit(LOGINATTEMPT_TAG, username);
-
     }
     public void sendMessage(String message) {
         if (socket.connected()){

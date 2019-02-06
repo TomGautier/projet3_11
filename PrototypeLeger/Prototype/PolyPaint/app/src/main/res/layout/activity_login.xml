@@ -2,12 +2,57 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <RelativeLayout
+        android:id="@+id/IpLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/stroke_bg">
 
+    <RelativeLayout
+        android:id="@+id/ipModule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp">
+        <TextView
+            android:id="@+id/ipTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ip"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"/>
+        <EditText
+            android:id="@+id/ipEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/ipTextView"
+            android:background="@drawable/chat_entry"
+            android:inputType="text"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"/>
+        <ImageButton
+            android:id="@+id/connectServerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_forward_24px"
+            android:background="@color/chat"
+            android:layout_below="@id/ipEditText"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"
+            android:scaleY="0.7"/>
+
+    </RelativeLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/connexionLayout"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="150dp"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
@@ -80,37 +125,5 @@
 
 
     </RelativeLayout>
-    <RelativeLayout
-        android:id="@+id/ipModule"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp">
-        <TextView
-            android:id="@+id/ipTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ip" />
-        <EditText
-            android:id="@+id/ipEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:gravity="center_horizontal"
-            android:layout_below="@id/ipTextView"
-            android:background="@drawable/chat_entry"
-            android:inputType="text"
-            android:layout_marginRight="100dp"/>
-        <ImageButton
-            android:id="@+id/connectServerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
-            android:src="@drawable/ic_baseline_arrow_forward_24px"
-            android:background="@color/chat"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="5dp"
-            android:scaleY="0.7"/>
 
-    </RelativeLayout>
 </RelativeLayout>
