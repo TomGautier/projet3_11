@@ -11,7 +11,7 @@ const GENERAL_ROOM = new Room("generalRoom")
 export class SocketService {
     private server: SocketIO.Server;
     private sockets: Map<string, SocketIO.Socket> = new Map();
-
+  
     private users: Set<string>  = new Set<string>();
 
     public constructor(
@@ -25,14 +25,7 @@ export class SocketService {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
-
-           
-
-            socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(
-                                                            socket,
-                                                            args)
-                    );
-
+            socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(socket, args));
             socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
             
             console.log("Socket " + socket.id + " now listening on LoginAttempt.");
@@ -55,28 +48,25 @@ export class SocketService {
         this.eventEmitter.on(event, action);
     }
 
-    public joinRoom(roomId: string, ...socketIds: string[]) {
-        for (const socketId of socketIds) {
-            const socket = this.sockets.get(socketId);
-            if (socket) {
-                socket.join(roomId);
-            }
-            else {
-                Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
-            }
+    public joinRoom(roomId: string, socketId: string) {
+        const socket = this.sockets.get(socketId);
+        if (socket) {
+            socket.join(roomId);
+        }
+        else {
+            Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
         }
     }
 
     public leaveRoom(roomId: string, socketId: string, username: string) {
-            const socket = this.sockets.get(socketId);
-            if (socket) {
-                socket.leave(roomId);
-                this.users.delete(username);
-            }
-            else {
-                Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
-            }
-        
+        const socket = this.sockets.get(socketId);
+        if (socket) {
+            socket.leave(roomId);
+            this.users.delete(username);
+        }
+        else {
+            Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
+        }
     }
 
 
