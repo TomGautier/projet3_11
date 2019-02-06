@@ -112,7 +112,7 @@ namespace Prototype.ViewModels
             if (ConnectionStatus == "connected")
                 socket.Emit("UserLeft");
             if (ConnectionStatus != "disconnected")
-                socket.Disconnect();
+                socket.Emit("disconnect");
         }
         private void OnExitApp()
         {
