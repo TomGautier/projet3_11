@@ -20,6 +20,7 @@ public class SocketManager {
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
     public final String USERLOGGED_TAG = "UserLogged";
     public final String USERLEFT_TAG = "UserLeft";
+    public final String SERVER_CONNECTED_TAG = "ServerConnected";
 
     private final String DATE = "date";
     private final String USERNAME = "username";
@@ -56,7 +57,6 @@ public class SocketManager {
                     String date = "";
                     String username = "";
                     String message = "";
-                    String fullMessage = "";
                     try {
                         JSONObject json = new JSONObject((String)args[0]);
                         date = json.getString(DATE);
@@ -64,10 +64,7 @@ public class SocketManager {
                         message = json.getString(MESSAGE);
                     }
                     catch(JSONException e) {}
-
-                    fullMessage = date + " " + username + " " + message;
-
-                    newMessagelistener.onNewMessage(fullMessage);
+                    newMessagelistener.onNewMessage(formatMessage(date,username,message));
                 }
             });
 
@@ -100,7 +97,9 @@ public class SocketManager {
             socket.emit(SENDMESSAGE_TAG, messageJSON);
 
     }
-
+    public boolean isConnected() {
+        return socket.connected();
+    }
     public void leave(String username) {
         socket.emit(USERLEFT_TAG, username);
         socket.disconnect();
@@ -109,6 +108,10 @@ public class SocketManager {
     private String formatIpToUri(String ip) {
         return "http://" + ip + ":3000/";
     }
+    private String formatMessage(String date, String username, String message){
+        return date + " " + "[ " + username + " ] : " + message;
+    }
+
 
 
 

@@ -1,13 +1,14 @@
 package com.projet3.polypaint;
 
-import com.projet3.polypaint.Chat.SocketManager;
 
 public class LoginManager implements LoginListener{
 
 
     private Boolean enableLogin;
-    public LoginManager() {}
 
+    public LoginManager() {
+        reset();
+    }
 
     @Override
     public void onUserAlreadyExists() {

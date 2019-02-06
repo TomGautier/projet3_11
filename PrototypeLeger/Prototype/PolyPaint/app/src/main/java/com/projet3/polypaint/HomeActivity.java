@@ -7,6 +7,9 @@ import com.projet3.polypaint.Chat.Chat;
 import com.projet3.polypaint.Chat.SocketManager;
 
 public class HomeActivity extends Activity  {
+
+	private final String CHAT_BUNDLE_TAG = "chat";
+	private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
 	private Chat chat;
 	private UserInformation userInformation;
 
@@ -15,12 +18,12 @@ public class HomeActivity extends Activity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		if (savedInstanceState == null) {
-            userInformation = getIntent().getExtras().getParcelable("USER_INFORMATION");
+            userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
             chat = new Chat(this, userInformation);
         }
 		else {
-            userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
-            chat = new Chat(this, userInformation, savedInstanceState.getBundle("chat"));
+            userInformation = savedInstanceState.getParcelable(USER_INFORMATION_PARCELABLE_TAG);
+            chat = new Chat(this, userInformation, savedInstanceState.getBundle(CHAT_BUNDLE_TAG));
         }
 		SocketManager.currentInstance.setupNewMessageListener(chat);
 	}
@@ -30,8 +33,8 @@ public class HomeActivity extends Activity  {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putBundle("chat", chat.GetChatBundle());
-		savedInstanceState.putParcelable("USER_INFORMATION",userInformation);
+		savedInstanceState.putBundle(CHAT_BUNDLE_TAG, chat.getChatBundle());
+		savedInstanceState.putParcelable(USER_INFORMATION_PARCELABLE_TAG,userInformation);
 	}
 
 	@Override

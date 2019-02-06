@@ -27,7 +27,6 @@ export class SocketService {
             console.log("Socket id" + socket.id + " connected.");
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(socket, args));
             socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
-            
             console.log("Socket " + socket.id + " now listening on LoginAttempt.");
 
 
