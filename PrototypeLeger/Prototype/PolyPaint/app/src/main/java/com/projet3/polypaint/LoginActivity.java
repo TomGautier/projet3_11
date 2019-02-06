@@ -71,10 +71,13 @@ public class LoginActivity extends Activity  {
             public void onClick(View view) {
             	String ipAddress = ipEntry.getText().toString();
                 if (isIPAddress(ipAddress)) {
-                    loginManager = new LoginManager();
-					socketManager = new SocketManager(ipAddress);
-					socketManager.setupLoginListener(loginManager);
-					userEntriesLayout.setVisibility(View.VISIBLE);
+                	if (socketManager == null) {
+						loginManager = new LoginManager();
+						socketManager = new SocketManager(ipAddress);
+						socketManager.setupLoginListener(loginManager);
+						userEntriesLayout.setVisibility(View.VISIBLE);
+					}
+
                 }
             }
         });
@@ -110,6 +113,12 @@ public class LoginActivity extends Activity  {
 		}
 		return false;
 
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		SocketManager.currentInstance.leave(userInformation.username);
 	}
 
 

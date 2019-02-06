@@ -43,7 +43,7 @@ export class SocketService {
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
-            this.handleEvent(SocketEvents.UserLeft, socket.id);
+            //this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
             console.log("un socket a disconnect");
         });
@@ -55,16 +55,15 @@ export class SocketService {
         this.eventEmitter.on(event, action);
     }
 
-    public joinRoom(roomId: string, ...socketIds: string[]) {
-        for (const socketId of socketIds) {
-            const socket = this.sockets.get(socketId);
-            if (socket) {
-                socket.join(roomId);
-            }
-            else {
-                Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
-            }
+    public joinRoom(roomId: string, socketId: string) {
+        const socket = this.sockets.get(socketId);
+        if (socket) {
+            socket.join(roomId);
         }
+        else {
+            Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
+        }
+        
     }
 
     public leaveRoom(roomId: string, socketId: string, username: string) {
@@ -102,11 +101,8 @@ export class SocketService {
         }
     }
 
-    private handleEvent(event: string, socketId: string, args?: string): void {
-        console.log("sockets connected:" + this.sockets);
+    private handleEvent(event: string, socketId: string, args?: string): void { 
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.emit(socketId, event, args);
-        // BUG: Client doesn't receive emit when using eventEmitter
-        // this.eventEmitter.emit(event, socketId, args);
     }
 }

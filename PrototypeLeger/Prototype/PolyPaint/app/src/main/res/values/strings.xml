@@ -9,5 +9,8 @@
     <string name="ip">adresse IP :</string>
     <string name="loginToast">Veuillez entrer vos informations de connection</string>
     <string name="loginUserAlreadyExistsToast">ce username est deja pris.Veuillez en choisir un autre</string>
+    <string name="loginSocketConnected">Vous etes connecte au chat</string>
+    <string name="loginSocketNotConnected">connexion impossible avec cette adresse IP</string>
+    <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
 
 </resources>

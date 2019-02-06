@@ -126,18 +126,15 @@ public class Chat implements NewMessageListener {
     public void WriteMessage(String message, boolean withHistory) {
         TextView newView = (TextView)View.inflate(currentActivity, R.layout.chat_message, null);
         chatMessageZoneTable.addView(newView);
+        newView.setText(message);
         if (withHistory) {
-            newView.setText(formatMessageWithDate(message));
             currentConversation.AddToHistory(newView.getText().toString());
-        }
-        else {
-            newView.setText(message);
         }
         ScrollDownMessages();
     }
 
     public void sendMessage(String message) {
-        SocketManager.currentInstance.sendMessage(formatMessageWithUser(message));
+        SocketManager.currentInstance.sendMessage(getDate(), userInformation.getUsername(), message);
     }
 
     private void SetupChatEnterButton() {
@@ -154,11 +151,8 @@ public class Chat implements NewMessageListener {
     }
 
     // Message format
-    private String formatMessageWithDate(String message) {
-        return DateFormat.getTimeInstance().format(new Date()) + " " + message;
-    }
-    private String formatMessageWithUser(String message) {
-        return "[ " + userInformation.getUsername() +  " ] : " + message;
+    private String getDate() {
+        return DateFormat.getTimeInstance().format(new Date());
     }
 
 

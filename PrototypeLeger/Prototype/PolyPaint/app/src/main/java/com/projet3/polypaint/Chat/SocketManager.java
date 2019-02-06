@@ -1,12 +1,13 @@
 package com.projet3.polypaint.Chat;
 
 import android.util.Log;
-
 import com.projet3.polypaint.Chat.NewMessageListener;
+
 import com.projet3.polypaint.LoginListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -19,6 +20,10 @@ public class SocketManager {
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
     public final String USERLOGGED_TAG = "UserLogged";
     public final String USERLEFT_TAG = "UserLeft";
+
+    private final String DATE = "date";
+    private final String USERNAME = "username";
+    private final String MESSAGE = "message";
 
     public static SocketManager currentInstance;
     private Socket socket;
@@ -48,14 +53,21 @@ public class SocketManager {
             socket.on(SENDMESSAGE_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    //try {
-                       // JSONArray array = ((JSONArray)args[0]).getJSONArray(0);
-                        //String message =  array.getString(0);
-                        String message = (String)args[0];
-                        newMessagelistener.onNewMessage(message);
-                    //}//catch (JSONException e) {
-                       // Log.d("SOCKET_ERROR", "un erreur JSON est survenu lors d'une reception de message");
-                    //}
+                    String date = "";
+                    String username = "";
+                    String message = "";
+                    String fullMessage = "";
+                    try {
+                        JSONObject json = new JSONObject((String)args[0]);
+                        date = json.getString(DATE);
+                        username = json.getString(USERNAME);
+                        message = json.getString(MESSAGE);
+                    }
+                    catch(JSONException e) {}
+
+                    fullMessage = date + " " + username + " " + message;
+
+                    newMessagelistener.onNewMessage(fullMessage);
                 }
             });
 
@@ -75,18 +87,23 @@ public class SocketManager {
         }catch(Exception e) {}
 
     }
-
     public void verifyUser(String username) {
         socket.emit(LOGINATTEMPT_TAG, username);
     }
-    public void sendMessage(String message) {
-        if (socket.connected()){
-            socket.emit(SENDMESSAGE_TAG, message);
-        }
+    public void sendMessage(String date, String username, String message) {
+        String messageJSON = "";
+        try {
+            messageJSON = new JSONObject().put(DATE,date).put(USERNAME, username).put(MESSAGE, message).toString();
+        }catch(JSONException e) {}
+
+        if (!messageJSON.isEmpty())
+            socket.emit(SENDMESSAGE_TAG, messageJSON);
+
     }
 
     public void leave(String username) {
         socket.emit(USERLEFT_TAG, username);
+        socket.disconnect();
     }
 
     private String formatIpToUri(String ip) {

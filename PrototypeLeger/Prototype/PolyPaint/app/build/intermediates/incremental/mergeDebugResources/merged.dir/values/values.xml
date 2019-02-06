@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="chat">#e2e2e2 </color>
+    <item name="chatEditText" type="id"/>
+    <string name="app_name">PolyPaint</string>
+    <string name="chatTitle">Prototype de Chat :</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="ip">adresse IP :</string>
+    <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
+    <string name="loginSocketConnected">Vous etes connecte au chat</string>
+    <string name="loginSocketNotConnected">connexion impossible avec cette adresse IP</string>
+    <string name="loginToast">Veuillez entrer vos informations de connection</string>
+    <string name="loginUserAlreadyExistsToast">ce username est deja pris.Veuillez en choisir un autre</string>
+    <string name="password">mot de passe :</string>
+    <string name="username">nom d\'utilisateur :</string>
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        
+    </style>
+</resources>
