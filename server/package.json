@@ -27,7 +27,8 @@
     "serve-favicon": "^2.5.0",
     "socket.io": "^2.2.0",
     "systemjs": "0.21.4",
-    "ts-node": "^7.0.1"
+    "ts-node": "^7.0.1",
+    "typemoq": "^2.1.0"
   },
   "devDependencies": {
     "@types/body-parser": "1.17.0",
