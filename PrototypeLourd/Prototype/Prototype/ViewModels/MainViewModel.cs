@@ -132,10 +132,11 @@ namespace Prototype.ViewModels
         }
         private void ReceiveMessage(string date, string username, string message)
         {
-            History += Environment.NewLine + date + " - " + username + " - " + message;
+            History += Environment.NewLine + date + "  [" + username + "] : " + message;
         }
         private void OnConnect()
         {
+            ConnectionStatus = "connectAttempt";
             Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
             if (!rgx.IsMatch(ServerAddress))
             {
@@ -149,6 +150,16 @@ namespace Prototype.ViewModels
             socket.On(Socket.EVENT_CONNECT, () =>
             {
                 ConnectionStatus = "connecting";
+            });
+            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
+            {
+                System.Windows.MessageBox.Show("Connection timeout", "Error");
+                ConnectionStatus = "disconnected";
+            });
+            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
+            {
+                System.Windows.MessageBox.Show("Connection error", "Error");
+                ConnectionStatus = "disconnected";
             });
         }
 
