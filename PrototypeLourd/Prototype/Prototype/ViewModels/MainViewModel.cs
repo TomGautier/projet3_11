@@ -110,7 +110,7 @@ namespace Prototype.ViewModels
         public void OnExitApp(object sender, CancelEventArgs e)
         {
             if (ConnectionStatus == "connected")
-                socket.Emit("UserLeft");
+                socket.Emit("UserLeft", Username);
             if (ConnectionStatus != "disconnected")
                 socket.Emit("disconnect");
         }
@@ -132,10 +132,11 @@ namespace Prototype.ViewModels
         }
         private void ReceiveMessage(string date, string username, string message)
         {
-            History += Environment.NewLine + date + " - " + username + " - " + message;
+            History += Environment.NewLine + date + "  [" + username + "] : " + message;
         }
         private void OnConnect()
         {
+            ConnectionStatus = "connectAttempt";
             Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
             if (!rgx.IsMatch(ServerAddress))
             {
@@ -143,12 +144,26 @@ namespace Prototype.ViewModels
                 ConnectionStatus = "disconnected";
                 return;
             }
+            IO.Options op = new IO.Options
+            {
+                Reconnection = false
+            };
 
-            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT);
+            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT, op);
 
             socket.On(Socket.EVENT_CONNECT, () =>
             {
                 ConnectionStatus = "connecting";
+            });
+            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
+            {
+                System.Windows.MessageBox.Show("Connection timeout", "Error");
+                ConnectionStatus = "disconnected";
+            });
+            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
+            {
+                System.Windows.MessageBox.Show("Connection error", "Error");
+                ConnectionStatus = "disconnected";
             });
         }
 
@@ -179,7 +194,7 @@ namespace Prototype.ViewModels
 
         private void OnDisconnect()
         {
-            socket.Emit("UserLeft");
+            socket.Emit("UserLeft", Username);
             socket.Disconnect();
             ConnectionStatus = "disconnected";
             History = "Welcome!";

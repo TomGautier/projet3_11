@@ -21,6 +21,9 @@
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connectAttempt">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
         <Style x:Key="ConnectInput" TargetType="Button">
@@ -32,6 +35,9 @@
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connectAttempt">
                     <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
             </Style.Triggers>
@@ -47,6 +53,9 @@
                 </DataTrigger>
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
                     <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connectAttempt">
+                    <Setter Property="IsEnabled" Value="False"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -65,6 +74,10 @@
                     <Setter Property="Visibility" Value="Visible"/>
                     <Setter Property="IsEnabled" Value="True"/>
                 </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connectAttempt">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
 
@@ -77,6 +90,9 @@
                     <Setter Property="Visibility" Value="Hidden"/>
                 </DataTrigger>
                 <DataTrigger Binding="{Binding ConnectionStatus}" Value="connecting">
+                    <Setter Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ConnectionStatus}" Value="connectAttempt">
                     <Setter Property="Visibility" Value="Hidden"/>
                 </DataTrigger>
             </Style.Triggers>
