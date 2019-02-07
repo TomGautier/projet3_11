@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class UserInformation implements Parcelable {
-    String username;
-    String password;
+    private String username;
+    private String password;
 
     public UserInformation(String username_, String password_){
         username = username_;

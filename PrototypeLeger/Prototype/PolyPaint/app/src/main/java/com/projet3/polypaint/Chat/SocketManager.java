@@ -1,5 +1,6 @@
 package com.projet3.polypaint.Chat;
 
+import android.os.Bundle;
 import android.util.Log;
 import com.projet3.polypaint.Chat.NewMessageListener;
 
@@ -13,7 +14,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-public class SocketManager {
+public class SocketManager  {
 
     public final String SENDMESSAGE_TAG = "MessageSent";
     public final String LOGINATTEMPT_TAG = "LoginAttempt";

@@ -1,6 +1,7 @@
 package com.projet3.polypaint;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import com.projet3.polypaint.Chat.Chat;
@@ -17,6 +18,7 @@ public class HomeActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		if (savedInstanceState == null) {
             userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
             chat = new Chat(this, userInformation);
@@ -35,6 +37,8 @@ public class HomeActivity extends Activity  {
 		super.onSaveInstanceState(savedInstanceState);
 		savedInstanceState.putBundle(CHAT_BUNDLE_TAG, chat.getChatBundle());
 		savedInstanceState.putParcelable(USER_INFORMATION_PARCELABLE_TAG,userInformation);
+		if(SocketManager.currentInstance.isConnected())
+			SocketManager.currentInstance.leave(userInformation.getUsername());
 	}
 
 	@Override
@@ -44,7 +48,7 @@ public class HomeActivity extends Activity  {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		SocketManager.currentInstance.leave(userInformation.username);
+		SocketManager.currentInstance.leave(userInformation.getUsername());
 	}
 
 }

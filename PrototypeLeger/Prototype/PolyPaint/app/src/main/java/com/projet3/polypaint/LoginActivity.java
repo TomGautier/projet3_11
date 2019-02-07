@@ -1,6 +1,8 @@
 package com.projet3.polypaint;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -8,12 +10,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.SocketManager;
 
+import java.net.InetAddress;
+
 public class LoginActivity extends Activity  {
 
+	private final int CONNECT_DELAY = 1500;
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
 	EditText usernameEntry;
@@ -25,10 +31,12 @@ public class LoginActivity extends Activity  {
 	LoginManager loginManager;
 	SocketManager socketManager;
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		initialize();
 	}
 	private void initialize() {
@@ -57,7 +65,7 @@ public class LoginActivity extends Activity  {
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					progressBar.setVisibility(View.VISIBLE);
-					socketManager.verifyUser(userInformation.username);
+					socketManager.verifyUser(userInformation.getUsername());
 					while(loginManager.waitingForResponse()) {}
 
 					if (loginManager.isLogged()){
@@ -83,16 +91,47 @@ public class LoginActivity extends Activity  {
 			public void onClick(View view) {
 				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
-					if (socketManager == null || !socketManager.isConnected() ){
+					if (socketManager == null ||!socketManager.isConnected()){
 						socketManager = new SocketManager(ipAddress);
 						handleSocketConnect();
 					}
+
 				}
 				else
 					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();
 			}
 		});
 	}
+
+    public boolean isIPAddress(String ipAddress) {
+        String PATTERN = "^((0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)\\.){3}(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)$";
+        return ipAddress.matches(PATTERN);
+    }
+
+    private void handleSocketConnect(){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(socketManager.isConnected()){
+                    Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
+                    loginManager = new LoginManager();
+                    socketManager.setupLoginListener(loginManager);
+                    changeToUserUI();
+                }
+                else
+                    Toast.makeText(getBaseContext(), getString(R.string.loginFailedSocketConnect), Toast.LENGTH_LONG).show();
+            }
+        }, CONNECT_DELAY);
+    }
+
+    private void changeToUserUI() {
+        ipEntry.setBackgroundColor(Color.GREEN);
+        ipEntry.setEnabled(false);
+        serverConnexionButton.setEnabled(false);
+        serverConnexionButton.setColorFilter(Color.GRAY);
+        userEntriesLayout.setVisibility(View.VISIBLE);
+    }
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
@@ -101,45 +140,6 @@ public class LoginActivity extends Activity  {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-	public boolean isIPAddress(String ipAddress) {
-		if (ipAddress.isEmpty())
-			return false;
-		String[] octals = ipAddress.split("\\.");
-		if (octals != null && octals.length == 4) {
-			for (int i = 0; i < octals.length; i++) {
-				if (octals[i].isEmpty() || Integer.parseInt(octals[i]) < 0 || Integer.parseInt(octals[i]) > 255) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-
-	}
-
-	private void handleSocketConnect(){
-		final Handler handler = new Handler();
-		handler.postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				if(socketManager.isConnected()){
-					Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
-					loginManager = new LoginManager();
-					socketManager.setupLoginListener(loginManager);
-					userEntriesLayout.setVisibility(View.VISIBLE);
-				}
-				else
-					Toast.makeText(getBaseContext(), getString(R.string.loginFailedSocketConnect), Toast.LENGTH_LONG).show();
-			}
-		}, 1500);
-	}
-
-	@Override
-	public void onDestroy() {
-		super.onDestroy();
-		SocketManager.currentInstance.leave(userInformation.username);
 	}
 
 
