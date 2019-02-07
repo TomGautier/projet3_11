@@ -7,7 +7,12 @@
     <string name="username">nom d\'utilisateur :</string>
     <string name="password">mot de passe :</string>
     <string name="ip">adresse IP :</string>
-    <string name="loginToast">Veuillez entrer vos informations de connection</string>
-    <string name="loginUserAlreadyExistsToast">ce username est deja pris.Veuillez en choisir un autre</string>
+    <string name="loginToast">Veuillez entrer vos identifiants de connection</string>
+    <string name="loginUserAlreadyExistsToast">ce username est deja pris. Veuillez en choisir un autre</string>
+    <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
+    <string name="loginFailedSocketConnect">La connexion a echouee. veuillez reessayez </string>
+    <string name="loginSuccessSocketConnect">La connexion a reussie </string>
+
+
 
 </resources>
