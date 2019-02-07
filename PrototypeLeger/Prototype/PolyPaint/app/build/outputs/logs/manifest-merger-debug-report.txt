@@ -1,79 +1,79 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:1-32:12
 	package
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:4:5-36
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:4:5-36
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
 	android:versionName
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:6:5-30
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:6:5-30
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
 	xmlns:tools
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:3:5-51
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:3:5-51
 	xmlns:android
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:11-69
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:2:11-69
 	android:versionCode
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:5:5-28
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:5:5-28
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
 uses-permission#android.permission.INTERNET
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:7:5-67
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:7:5-67
 	android:name
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:7:22-64
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:7:22-64
 application
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:11:5-30:19
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:11:5-30:19
 	android:label
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:14:9-41
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:14:9-41
 	tools:ignore
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:16:9-48
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:16:9-48
 	android:icon
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:13:9-45
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:13:9-45
 	android:allowBackup
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:12:9-35
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:12:9-35
 	android:theme
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:15:9-40
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:15:9-40
 activity#com.projet3.polypaint.LoginActivity
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:17:9-25:20
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:17:9-25:20
 	android:label
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:19:13-43
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:19:13-43
 	android:name
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:18:13-42
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:18:13-42
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:20:13-24:29
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:20:13-24:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:21:17-69
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:21:17-69
 	android:name
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:21:25-66
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:21:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:23:17-77
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:23:17-77
 	android:name
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:23:27-74
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:23:27-74
 activity#com.projet3.polypaint.HomeActivity
-ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:26:9-29:58
+ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:26:9-29:58
 	android:parentActivityName
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:29:13-56
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:29:13-56
 	android:label
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:28:13-43
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:28:13-43
 	android:name
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:27:13-41
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml:27:13-41
 uses-sdk
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
 	android:targetSdkVersion
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
 	android:minSdkVersion
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
-		INJECTED from C:\Users\beaul\Desktop\fichiers_scolaires\Annee_2018-2019\hiver\Projet3\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\Tristan\Desktop\Universite\3ieme_annee\hiver\log3900-11\PrototypeLeger\Prototype\PolyPaint\app\src\main\AndroidManifest.xml

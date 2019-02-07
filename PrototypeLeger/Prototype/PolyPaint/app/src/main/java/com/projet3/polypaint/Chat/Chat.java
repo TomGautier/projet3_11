@@ -31,8 +31,8 @@ import java.util.Date;
 
 public class Chat implements NewMessageListener {
 
-    private final int CHAT_OPEN_COFF = 2;
-    private final int CHAT_CLOSE_COFF = 4;
+    private final int CHAT_OPEN_COEF= 2;
+    private final int CHAT_CLOSE_COEF = 4;
 
 
     private EditText chatEntry;
@@ -76,7 +76,7 @@ public class Chat implements NewMessageListener {
         chatEnterButton = (ImageButton)currentActivity.findViewById(R.id.chatEnterButton);
         chatExpendButton = (ImageButton) currentActivity.findViewById(R.id.chatExtendButton);
         chatMessageZone = (RelativeLayout)currentActivity.findViewById(R.id.chatMessageZone);
-        chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COFF;
+        chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COEF;
         chatMessageZoneTable = (LinearLayout)currentActivity.findViewById(R.id.chatMessageZoneTable);
         chatMessageZoneScrollView = (ScrollView)currentActivity.findViewById(R.id.chatVerticalScrollView);
         conversationSpinner = (Spinner)currentActivity.findViewById(R.id.conversationSpinner);
@@ -116,11 +116,11 @@ public class Chat implements NewMessageListener {
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
                 if(!chatIsExpended){
-                    chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_OPEN_COFF;
+                    chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_OPEN_COEF;
                     chatIsExpended = true;
                 }
                 else {
-                    chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COFF;
+                    chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COEF;
                     chatIsExpended = false;
                     scrollDownMessages();
                 }

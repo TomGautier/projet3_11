@@ -22,9 +22,11 @@ public class LoginManager implements LoginListener{
     public boolean isLogged() {
         return enableLogin;
     }
+
     public void reset() {
         enableLogin = null;
     }
+
     public Boolean waitingForResponse() {
         return enableLogin == null;
     }

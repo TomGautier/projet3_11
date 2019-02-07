@@ -20,6 +20,7 @@ import java.net.InetAddress;
 public class LoginActivity extends Activity  {
 
 	private final int CONNECT_DELAY = 1500;
+
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
 	EditText usernameEntry;
@@ -67,7 +68,7 @@ public class LoginActivity extends Activity  {
 					progressBar.setVisibility(View.VISIBLE);
 					socketManager.verifyUser(userInformation.getUsername());
 					while(loginManager.waitingForResponse()) {}
-
+					progressBar.setVisibility(View.GONE);
 					if (loginManager.isLogged()){
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
@@ -76,7 +77,6 @@ public class LoginActivity extends Activity  {
 					else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
 						loginManager.reset();
-						progressBar.setVisibility(View.GONE);
 					}
 				}
 				else
@@ -95,7 +95,6 @@ public class LoginActivity extends Activity  {
 						socketManager = new SocketManager(ipAddress);
 						handleSocketConnect();
 					}
-
 				}
 				else
 					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();
