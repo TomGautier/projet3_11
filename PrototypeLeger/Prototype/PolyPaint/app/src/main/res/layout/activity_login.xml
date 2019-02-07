@@ -55,7 +55,8 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/stroke_bg">
+        android:background="@drawable/stroke_bg"
+        android:visibility="gone">
 
         <RelativeLayout
             android:id="@+id/usernameModule"
@@ -100,15 +101,6 @@
             android:inputType="text"
             android:gravity="center_horizontal"/>
         </RelativeLayout>
-
-
-        <ProgressBar
-            android:id="@+id/loginProgressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/passwordModule"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"/>
 
 
         <ImageButton

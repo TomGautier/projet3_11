@@ -1,7 +1,7 @@
 package com.projet3.polypaint;
 
 
-public class LoginManager implements LoginListener{
+public class LoginManager implements LoginListener {
 
 
     private Boolean enableLogin;

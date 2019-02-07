@@ -138,7 +138,7 @@ public class Chat implements NewMessageListener {
     }
 
     public void sendMessage(String message) {
-        SocketManager.currentInstance.sendMessage(getDate(), userInformation.getUsername(), message);
+        SocketManager.currentInstance.sendMessage(getDate(),userInformation.getUsername(), message);
     }
 
     private void SetupChatEnterButton() {

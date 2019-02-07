@@ -26,7 +26,6 @@ public class LoginActivity extends Activity  {
 	EditText usernameEntry;
 	EditText passwordEntry;
 	EditText ipEntry;
-	ProgressBar progressBar;
 	RelativeLayout userEntriesLayout;
 	UserInformation userInformation;
 	LoginManager loginManager;
@@ -37,7 +36,6 @@ public class LoginActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 		initialize();
 	}
 	private void initialize() {
@@ -45,11 +43,15 @@ public class LoginActivity extends Activity  {
 		serverConnexionButton = (ImageButton)findViewById(R.id.connectServerButton);
 		usernameEntry = (EditText)findViewById(R.id.usernameEditText);
 		passwordEntry = (EditText)findViewById(R.id.passwordEditText);
-		progressBar = (ProgressBar)findViewById(R.id.loginProgressBar);
 		ipEntry = (EditText)findViewById(R.id.ipEditText);
 		userEntriesLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
-		userEntriesLayout.setVisibility(View.GONE);
-		progressBar.setVisibility(View.GONE);
+
+		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected()){
+			changeToUserUI();
+			assignLoginManager();
+		}
+
+
 
 		setUserLoginButton();
 		setServerLoginButton();
@@ -64,11 +66,9 @@ public class LoginActivity extends Activity  {
 			public void onClick(View view) {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
-
-					progressBar.setVisibility(View.VISIBLE);
-					socketManager.verifyUser(userInformation.getUsername());
+					socketManager.currentInstance.verifyUser(userInformation.getUsername());
 					while(loginManager.waitingForResponse()) {}
-					progressBar.setVisibility(View.GONE);
+
 					if (loginManager.isLogged()){
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
@@ -91,10 +91,9 @@ public class LoginActivity extends Activity  {
 			public void onClick(View view) {
 				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
-					if (socketManager == null ||!socketManager.isConnected()){
+					if (SocketManager.currentInstance == null)
 						socketManager = new SocketManager(ipAddress);
-						handleSocketConnect();
-					}
+					handleSocketConnect();
 				}
 				else
 					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();
@@ -112,10 +111,9 @@ public class LoginActivity extends Activity  {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(socketManager.isConnected()){
+                if(SocketManager.currentInstance.isConnected()){
                     Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
-                    loginManager = new LoginManager();
-                    socketManager.setupLoginListener(loginManager);
+                   	assignLoginManager();
                     changeToUserUI();
                 }
                 else
@@ -123,6 +121,11 @@ public class LoginActivity extends Activity  {
             }
         }, CONNECT_DELAY);
     }
+
+    private void assignLoginManager() {
+		loginManager = new LoginManager();
+		SocketManager.currentInstance.setupLoginListener(loginManager);
+	}
 
     private void changeToUserUI() {
         ipEntry.setBackgroundColor(Color.GREEN);

@@ -21,11 +21,11 @@ public class SocketManager  {
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
     public final String USERLOGGED_TAG = "UserLogged";
     public final String USERLEFT_TAG = "UserLeft";
-    public final String SERVER_CONNECTED_TAG = "ServerConnected";
 
-    private final String DATE = "date";
-    private final String USERNAME = "username";
-    private final String MESSAGE = "message";
+
+    private final String DATE_TAG = "date";
+    private final String USERNAME_TAG = "username";
+    private final String MESSAGE_TAG = "message";
 
     public static SocketManager currentInstance;
     private Socket socket;
@@ -39,6 +39,9 @@ public class SocketManager  {
         setupSocket();
         currentInstance = this;
     }
+
+
+
 
     public void setupNewMessageListener(NewMessageListener listener_) {
         newMessagelistener = listener_;
@@ -56,13 +59,13 @@ public class SocketManager  {
                 @Override
                 public void call(Object... args) {
                     String date = "";
-                    String username = "";
                     String message = "";
+                    String username = "";
                     try {
                         JSONObject json = new JSONObject((String)args[0]);
-                        date = json.getString(DATE);
-                        username = json.getString(USERNAME);
-                        message = json.getString(MESSAGE);
+                        date = json.getString(DATE_TAG);
+                        username = json.getString(USERNAME_TAG);
+                        message = json.getString(MESSAGE_TAG);
                     }
                     catch(JSONException e) {}
                     newMessagelistener.onNewMessage(formatMessage(date,username,message));
@@ -88,19 +91,21 @@ public class SocketManager  {
     public void verifyUser(String username) {
         socket.emit(LOGINATTEMPT_TAG, username);
     }
-    public void sendMessage(String date, String username, String message) {
+    public void sendMessage(String date,String username, String message) {
         String messageJSON = "";
         try {
-            messageJSON = new JSONObject().put(DATE,date).put(USERNAME, username).put(MESSAGE, message).toString();
+            messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, username).put(MESSAGE_TAG, message).toString();
         }catch(JSONException e) {}
 
         if (!messageJSON.isEmpty())
             socket.emit(SENDMESSAGE_TAG, messageJSON);
 
     }
+
     public boolean isConnected() {
         return socket.connected();
     }
+
     public void leave(String username) {
         socket.emit(USERLEFT_TAG, username);
         socket.disconnect();
@@ -109,7 +114,7 @@ public class SocketManager  {
     private String formatIpToUri(String ip) {
         return "http://" + ip + ":3000/";
     }
-    private String formatMessage(String date, String username, String message){
+    private String formatMessage(String date,String username, String message){
         return date + " " + "[ " + username + " ] : " + message;
     }
 
