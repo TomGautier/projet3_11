@@ -19,14 +19,15 @@ import java.net.InetAddress;
 
 public class LoginActivity extends Activity  {
 
-	private final int CONNECT_DELAY = 1500;
+	private final int CONNECT_DELAY = 5000;
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
 	EditText usernameEntry;
 	EditText passwordEntry;
 	EditText ipEntry;
-	RelativeLayout userEntriesLayout;
+	RelativeLayout userModuleLayout;
+	RelativeLayout ipModuleLayout;
 	UserInformation userInformation;
 	LoginManager loginManager;
 	SocketManager socketManager;
@@ -44,7 +45,7 @@ public class LoginActivity extends Activity  {
 		usernameEntry = (EditText)findViewById(R.id.usernameEditText);
 		passwordEntry = (EditText)findViewById(R.id.passwordEditText);
 		ipEntry = (EditText)findViewById(R.id.ipEditText);
-		userEntriesLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
+		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
 
 		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected()){
 			changeToUserUI();
@@ -91,12 +92,13 @@ public class LoginActivity extends Activity  {
 			public void onClick(View view) {
 				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
-					if (SocketManager.currentInstance == null)
-						socketManager = new SocketManager(ipAddress);
+					socketManager = new SocketManager(ipAddress);
 					handleSocketConnect();
+                    changeIpModuleState(false);
 				}
 				else
 					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();
+
 			}
 		});
 	}
@@ -116,8 +118,10 @@ public class LoginActivity extends Activity  {
                    	assignLoginManager();
                     changeToUserUI();
                 }
-                else
-                    Toast.makeText(getBaseContext(), getString(R.string.loginFailedSocketConnect), Toast.LENGTH_LONG).show();
+                else{
+					changeIpModuleState(true);
+					Toast.makeText(getBaseContext(), getString(R.string.loginFailedSocketConnect), Toast.LENGTH_LONG).show();
+				}
             }
         }, CONNECT_DELAY);
     }
@@ -126,13 +130,18 @@ public class LoginActivity extends Activity  {
 		loginManager = new LoginManager();
 		SocketManager.currentInstance.setupLoginListener(loginManager);
 	}
-
+	private void changeIpModuleState(boolean state) {
+		serverConnexionButton.setEnabled(state);
+		ipEntry.setEnabled(state);
+		if (state)
+			serverConnexionButton.clearColorFilter();
+		else
+			serverConnexionButton.setColorFilter(Color.GRAY);
+	}
     private void changeToUserUI() {
+        changeIpModuleState(false);
         ipEntry.setBackgroundColor(Color.GREEN);
-        ipEntry.setEnabled(false);
-        serverConnexionButton.setEnabled(false);
-        serverConnexionButton.setColorFilter(Color.GRAY);
-        userEntriesLayout.setVisibility(View.VISIBLE);
+        userModuleLayout.setVisibility(View.VISIBLE);
     }
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
