@@ -122,7 +122,7 @@ namespace Prototype.ViewModels
         {
             var messageFormat = new
             {
-                date = DateTime.Now.ToString("tt hh:mm:ss"),
+                date = DateTime.Now.ToString("hh:mm:ss tt"),
                 username = Username,
                 message = Message
             };
