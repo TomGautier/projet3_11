@@ -25,6 +25,8 @@ import com.projet3.polypaint.UserInformation;
 import com.projet3.polypaint.Utilities;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -55,8 +57,8 @@ public class Chat implements NewMessageListener {
             currentActivity = currentActivity_;
             userInformation = userInformation_;
             conversations = new ArrayList<>();
-            conversations.add(new Conversation("conversation1"));
-            conversations.add(new Conversation("conversation2"));
+            conversations.add(new Conversation("Conversation1"));
+            conversations.add(new Conversation("Conversation2"));
             currentConversation = conversations.get(0);
             initializeChat();
     }
@@ -151,9 +153,9 @@ public class Chat implements NewMessageListener {
         });
     }
     private String getDate() {
-        return DateFormat.getTimeInstance().format(new Date());
+        String timeStamp = new SimpleDateFormat("HH:mm:ss a").format(Calendar.getInstance().getTime());
+        return timeStamp;
     }
-
 
     private ArrayList<String> getConversationsNames() {
         ArrayList<String> stringConversations = new ArrayList<>();
