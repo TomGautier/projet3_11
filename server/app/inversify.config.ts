@@ -1,3 +1,7 @@
+/* From : https://github.com/Aboisier/Projet2-Equipe6
+* Written by : Dylan Farvacque
+*/
+
 import { Container } from "inversify";
 import { TYPES } from "./types";
 import { Server } from "./server";

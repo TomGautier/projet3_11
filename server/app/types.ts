@@ -1,3 +1,7 @@
+/* From : https://github.com/Aboisier/Projet2-Equipe6
+* Written by : Dylan Farvacque
+*/
+
 const TYPES =  {
         ServerInterface: Symbol.for("ServerInterface"),
         ApplicationInterface: Symbol.for("ApplicationInterface"),

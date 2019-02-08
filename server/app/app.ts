@@ -1,3 +1,7 @@
+/* From : https://github.com/Aboisier/Projet2-Equipe6
+* Written by : Dylan Farvacque
+*/
+
 import * as express from "express";
 import * as logger from "morgan";
 import * as cookieParser from "cookie-parser";

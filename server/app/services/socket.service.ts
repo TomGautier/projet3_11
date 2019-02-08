@@ -1,3 +1,8 @@
+
+/* Inspired from : https://github.com/Aboisier/Projet2-Equipe6
+* Written by : Antoine Boisier-Michaud, Tom Gautier
+*/
+
 import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
 import { Logger } from "./logger.service";

@@ -1,3 +1,7 @@
+/* From : https://github.com/Aboisier/Projet2-Equipe6
+* Written by : Dylan Farvacque
+*/
+
 import { Message } from "../../common/communication/message";
 import { Router } from "express";
 import { Application } from "express";
