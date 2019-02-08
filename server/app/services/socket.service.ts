@@ -30,19 +30,17 @@ export class SocketService {
             Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
+            
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(socket, args));
             socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
-            console.log("Socket " + socket.id + " now listening on LoginAttempt.");
-
-
-
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
             //this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
-            console.log("un socket a disconnect");
+            console.log("un socket a disconnect");  
         });
 
         Logger.warn("SocketService", `Socket service initialized.`);
