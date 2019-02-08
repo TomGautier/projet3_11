@@ -1,24 +1,23 @@
 ﻿using MvvmDialogs;
-using log4net;
-using MvvmDialogs.FrameworkDialogs.OpenFile;
-using MvvmDialogs.FrameworkDialogs.SaveFile;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
 using System.Windows.Input;
-using System.Xml.Linq;
-using Prototype.Views;
 using Prototype.Utils;
-//TODO - Clean unused pre-generated code
+using Quobject.SocketIoClientDotNet.Client;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.ComponentModel;
+
 namespace Prototype.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
+        #region Constant
+        private const string SERVER_ADDRESS = "127.0.0.1"; //"52.173.184.147";
+        private const string SERVER_PORT = "3000";
+        #endregion
+
         #region Parameters
         private readonly IDialogService DialogService;
 
@@ -55,6 +54,46 @@ namespace Prototype.ViewModels
                 NotifyPropertyChanged("History");
             }
         }
+        private string _username;
+        public string Username
+        {
+            get
+            {
+                return _username;
+            }
+            set
+            {
+                _username = value;
+                NotifyPropertyChanged("Username");
+            }
+        }
+        private string _serverAddress = SERVER_ADDRESS;
+        public string ServerAddress
+        {
+            get
+            {
+                return _serverAddress;
+            }
+            set
+            {
+                _serverAddress = value;
+                NotifyPropertyChanged("ServerAddress");
+            }
+        }
+        private string _connectionStatus = "disconnected";
+        public string ConnectionStatus
+        {
+            get
+            {
+                return _connectionStatus;
+            }
+            set
+            {
+                _connectionStatus = value;
+                NotifyPropertyChanged("ConnectionStatus");
+            }
+        }
+        private Socket socket;
         #endregion
 
         #region Constructors
@@ -62,80 +101,18 @@ namespace Prototype.ViewModels
         {
             // DialogService is used to handle dialogs
             this.DialogService = new MvvmDialogs.DialogService();
-        }
 
+            System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
+        }
         #endregion
 
         #region Methods
-
-        #endregion
-
-        #region Commands
-        public RelayCommand<object> SampleCmdWithArgument { get { return new RelayCommand<object>(OnSampleCmdWithArgument); } }
-
-        public ICommand SaveAsCmd { get { return new RelayCommand(OnSaveAsTest, AlwaysFalse); } }
-        public ICommand SaveCmd { get { return new RelayCommand(OnSaveTest, AlwaysFalse); } }
-        public ICommand NewCmd { get { return new RelayCommand(OnNewTest, AlwaysFalse); } }
-        public ICommand OpenCmd { get { return new RelayCommand(OnOpenTest, AlwaysFalse); } }
-        public ICommand ShowAboutDialogCmd { get { return new RelayCommand(OnShowAboutDialog, AlwaysTrue); } }
-        public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
-        public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
-
-        private bool AlwaysTrue() { return true; }
-        private bool AlwaysFalse() { return false; }
-        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
-
-        private void OnSampleCmdWithArgument(object obj)
+        public void OnExitApp(object sender, CancelEventArgs e)
         {
-            // TODO
-        }
-
-        private void OnSaveAsTest()
-        {
-            var settings = new SaveFileDialogSettings
-            {
-                Title = "Save As",
-                Filter = "Sample (.xml)|*.xml",
-                CheckFileExists = false,
-                OverwritePrompt = true
-            };
-
-            bool? success = DialogService.ShowSaveFileDialog(this, settings);
-            if (success == true)
-            {
-                // Do something
-                Log.Info("Saving file: " + settings.FileName);
-            }
-        }
-        private void OnSaveTest()
-        {
-            // TODO
-        }
-        private void OnNewTest()
-        {
-            // TODO
-        }
-        private void OnOpenTest()
-        {
-            var settings = new OpenFileDialogSettings
-            {
-                Title = "Open",
-                Filter = "Sample (.xml)|*.xml",
-                CheckFileExists = false
-            };
-
-            bool? success = DialogService.ShowOpenFileDialog(this, settings);
-            if (success == true)
-            {
-                // Do something
-                Log.Info("Opening file: " + settings.FileName);
-            }
-        }
-        private void OnShowAboutDialog()
-        {
-            Log.Info("Opening About dialog");
-            AboutViewModel dialog = new AboutViewModel();
-            var result = DialogService.ShowDialog<About>(this, dialog);
+            if (ConnectionStatus == "connected")
+                socket.Emit("UserLeft", Username);
+            if (ConnectionStatus != "disconnected")
+                socket.Emit("disconnect");
         }
         private void OnExitApp()
         {
@@ -143,19 +120,101 @@ namespace Prototype.ViewModels
         }
         private void OnSendMessage()
         {
-            //TODO - Networking
-            ReceiveMessage(Message);
+            var messageFormat = new
+            {
+                date = DateTime.Now.ToString("hh:mm:ss tt"),
+                username = Username,
+                message = Message
+            };
+            Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
+            socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
             Message = string.Empty;
         }
-        private void ReceiveMessage(string message)
+        private void ReceiveMessage(string date, string username, string message)
         {
-            //TODO - Networking, Format Time Proprely
-            History += Environment.NewLine + "AuthorName - " + System.DateTime.Now + " - " + message;
+            History += Environment.NewLine + date + "  [" + username + "] : " + message;
+        }
+        private void OnConnect()
+        {
+            ConnectionStatus = "connectAttempt";
+            Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+            if (!rgx.IsMatch(ServerAddress))
+            {
+                System.Windows.MessageBox.Show("Wrong Address format", "Error");
+                ConnectionStatus = "disconnected";
+                return;
+            }
+            IO.Options op = new IO.Options
+            {
+                Reconnection = false
+            };
+
+            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT, op);
+
+            socket.On(Socket.EVENT_CONNECT, () =>
+            {
+                ConnectionStatus = "connecting";
+            });
+            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
+            {
+                System.Windows.MessageBox.Show("Connection timeout", "Error");
+                ConnectionStatus = "disconnected";
+            });
+            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
+            {
+                System.Windows.MessageBox.Show("Connection error", "Error");
+                ConnectionStatus = "disconnected";
+            });
+        }
+
+        private void OnLogin()
+        {
+            socket.Emit("LoginAttempt", Username);
+            socket.On("UsernameAlreadyExists", () =>
+            {
+                System.Windows.MessageBox.Show("Username already exists.", "Error");
+            });
+            socket.On("UserLogged", () =>
+            {
+                ConnectionStatus = "connected";
+                socket.On("MessageSent", (data) =>
+                {
+                    var messageFormat = new
+                    {
+                        date = "",
+                        username = "",
+                        message = ""
+                    };
+                    Console.WriteLine(data);
+                    var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
+                    ReceiveMessage(message.date, message.username, message.message);
+                });
+            });
+        }
+
+        private void OnDisconnect()
+        {
+            socket.Emit("UserLeft", Username);
+            socket.Disconnect();
+            ConnectionStatus = "disconnected";
+            History = "Welcome!";
+            Username = string.Empty;
         }
         #endregion
 
-        #region Events
+        #region Commands 
+        public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
+        public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
+        public ICommand Connect { get { return new RelayCommand(OnConnect, AddressValid); } }
+        public ICommand Disconnect { get { return new RelayCommand(OnDisconnect, AlwaysTrue); } }
+        public ICommand Login { get { return new RelayCommand(OnLogin, UsernameValid); } }
 
+        private bool AlwaysTrue() { return true; }
+        private bool AlwaysFalse() { return false; }
+        private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
+        private bool AddressValid() { return !string.IsNullOrWhiteSpace(ServerAddress) && ConnectionStatus == "disconnected"; }
+        private bool UsernameValid() { return !string.IsNullOrWhiteSpace(Username); }
         #endregion
+        
     }
 }

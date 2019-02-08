@@ -5,5 +5,5 @@ export default {
     NewUserJoined:"NewUserJoined",
     LoginAttempt:"LoginAttempt",
     UsernameAlreadyExists:"UsernameAlreadyExists",
-    UserLogged:"UserLogged"
+    UserLogged:"UserLogged",
 }

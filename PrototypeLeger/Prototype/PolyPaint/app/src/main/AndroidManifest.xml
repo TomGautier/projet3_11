@@ -4,6 +4,9 @@
     package="com.projet3.polypaint"
     android:versionCode="1"
     android:versionName="1.0" >
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
 
     <application
         android:allowBackup="true"
@@ -12,8 +15,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".ConnexionActivity"
-            android:label="Connexion Activity" >
+            android:name=".LoginActivity"
+            android:label="Login Activity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +26,7 @@
         <activity
             android:name=".HomeActivity"
             android:label=	"Home Activity"
-            android:parentActivityName=".ConnexionActivity"/>
+            android:parentActivityName=".LoginActivity"/>
     </application>
 
 </manifest>
