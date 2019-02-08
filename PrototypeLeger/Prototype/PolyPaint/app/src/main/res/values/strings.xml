@@ -4,14 +4,14 @@
     <string name="app_name">PolyPaint</string>
     <string name="hello_world">Hello world!</string>
     <string name="chatTitle">Prototype de Chat :</string>
-    <string name="username">nom d\'utilisateur :</string>
-    <string name="password">mot de passe :</string>
-    <string name="ip">adresse IP :</string>
-    <string name="loginToast">Veuillez entrer vos identifiants de connection</string>
-    <string name="loginUserAlreadyExistsToast">ce username est deja pris. Veuillez en choisir un autre</string>
+    <string name="username">Nom d\'utilisateur :</string>
+    <string name="password">Mot de passe :</string>
+    <string name="ip">Adresse IP :</string>
+    <string name="loginToast">Veuillez entrer vos identifiants de connexion.</string>
+    <string name="loginUserAlreadyExistsToast">Ce nom d\'utilisateur est déjà pris. Veuillez en choisir un autre.</string>
     <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
-    <string name="loginFailedSocketConnect">La connexion a echouee. veuillez reessayez </string>
-    <string name="loginSuccessSocketConnect">La connexion a reussie </string>
+    <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
+    <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
 
 
 
