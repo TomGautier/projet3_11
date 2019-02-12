@@ -43,5 +43,7 @@ namespace PolyPaint
         }
 
         private void SupprimerSelection(object sender, RoutedEventArgs e) => surfaceDessin.CutSelection();
+
+        private void ChatControl_Loaded(object sender, RoutedEventArgs e) { }
     }
 }
