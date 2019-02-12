@@ -10,7 +10,9 @@ const TYPES =  {
         IndexServiceInterface: Symbol.for("IndexServiceInterface"),
         DateServiceInterface: Symbol.for("DateServiceInterface"),
         EventEmitter: Symbol.for("EventEmitter"),
-        SocketService: Symbol.for("SocketService")
+        SocketService: Symbol.for("SocketService"),
+        DatabaseConnection: Symbol.for("DatabaseConnection"),
+        DatabaseService: Symbol.for("DatabaseService")
 };
 
 export  { TYPES };
