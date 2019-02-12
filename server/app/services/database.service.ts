@@ -17,7 +17,7 @@ export class DatabaseConnection {
         if (this.isInit) { return; }
 
         await new Promise(resolve => {
-            mongoose.connect(connectionString, { useMongoClient: true });
+            mongoose.connect(connectionString, { useNewUrlParser: true });
 
             mongoose.connection.on("connected", () => {
                 Logger.debug('DatabaseService', 'Mongoose default connection opened.');

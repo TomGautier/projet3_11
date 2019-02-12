@@ -20,7 +20,7 @@ import { DateServiceInterface,
          ApplicationInterface } from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
-import { DatabaseService } from "./services/database.service";
+import { DatabaseService, DatabaseConnection } from "./services/database.service";
 
 const container: Container = new Container();
 
@@ -28,6 +28,7 @@ container.bind<ServerInterface>(TYPES.ServerInterface).to(Server);
 container.bind<ApplicationInterface>(TYPES.ApplicationInterface).to(Application);
 container.bind<IndexControllerInterface>(TYPES.IndexControllerInterface).to(IndexController);
 container.bind<IndexServiceInterface>(TYPES.IndexServiceInterface).to(IndexService);
+container.bind<DatabaseConnection>(TYPES.DatabaseConnection).to(DatabaseConnection).inSingletonScope();
 
 container.bind<DateControllerInterface>(TYPES.DateControllerInterface).to(DateController);
 container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService);
