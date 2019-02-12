@@ -77,8 +77,6 @@ namespace PolyPaint.VueModeles
             Depiler = new RelayCommand<object>(editeur.Depiler, editeur.PeutDepiler);
             // Pour les commandes suivantes, il est toujours possible des les activer.
             // Donc, aucune vérification de type Peut"Action" à faire.
-            //02-12-2019 MP: To delete
-         /*   ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);*/
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);            
         }

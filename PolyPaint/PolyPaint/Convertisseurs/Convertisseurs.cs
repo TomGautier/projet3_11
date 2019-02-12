@@ -45,9 +45,7 @@ namespace PolyPaint.Convertisseurs
                     return InkCanvasEditingMode.Select;
                     //02-12-2019 MP: TO DELETE
                /* case "efface_segment":
-                    return InkCanvasEditingMode.EraseByPoint;
-                case "efface_trait":
-                    return InkCanvasEditingMode.EraseByStroke;*/
+                    return InkCanvasEditingMode.EraseByPoint;*/
                 default:
                     return InkCanvasEditingMode.Ink;
             }
