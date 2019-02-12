@@ -17,15 +17,16 @@ namespace PolyPaint.Modeles
         private StrokeCollection traitsRetires = new StrokeCollection();
 
         // Outil actif dans l'éditeur
-        private string outilSelectionne = "crayon";
+        private string outilSelectionne = "lasso";
         public string OutilSelectionne
         {
             get { return outilSelectionne; }
             set { outilSelectionne = value; ProprieteModifiee(); }
         }
 
+        //02-12-2019 MP: To delete
         // Forme de la pointe du crayon
-        private string pointeSelectionnee = "ronde";
+       /* private string pointeSelectionnee = "ronde";
         public string PointeSelectionnee
         {
             get { return pointeSelectionnee; }
@@ -35,10 +36,10 @@ namespace PolyPaint.Modeles
                 pointeSelectionnee = value;                                
                 ProprieteModifiee();
             }
-        }
+        }*/
 
         // Couleur des traits tracés par le crayon.
-        private string couleurSelectionnee = "Black";
+      /*  private string couleurSelectionnee = "Black";
         public string CouleurSelectionnee
         {
             get { return couleurSelectionnee; }
@@ -50,10 +51,10 @@ namespace PolyPaint.Modeles
                 OutilSelectionne = "crayon";
                 ProprieteModifiee();
             }
-        }
+        }*/
 
         // Grosseur des traits tracés par le crayon.
-        private int tailleTrait = 11;
+       /* private int tailleTrait = 11;
         public int TailleTrait
         {
             get { return tailleTrait; }
@@ -65,7 +66,7 @@ namespace PolyPaint.Modeles
                 OutilSelectionne = "crayon";
                 ProprieteModifiee();
             }
-        }
+        }*/
 
         /// <summary>
         /// Appelee lorsqu'une propriété d'Editeur est modifiée.
@@ -108,8 +109,9 @@ namespace PolyPaint.Modeles
             catch { }         
         }
         
+        //02-12-2019 MP: To delete
         // On assigne une nouvelle forme de pointe passée en paramètre.
-        public void ChoisirPointe(string pointe) => PointeSelectionnee = pointe;
+       /* public void ChoisirPointe(string pointe) => PointeSelectionnee = pointe;*/
 
         // L'outil actif devient celui passé en paramètre.
         public void ChoisirOutil(string outil) => OutilSelectionne = outil;

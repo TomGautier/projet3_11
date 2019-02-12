@@ -43,10 +43,11 @@ namespace PolyPaint.Convertisseurs
             {
                 case "lasso":
                     return InkCanvasEditingMode.Select;
-                case "efface_segment":
+                    //02-12-2019 MP: TO DELETE
+               /* case "efface_segment":
                     return InkCanvasEditingMode.EraseByPoint;
                 case "efface_trait":
-                    return InkCanvasEditingMode.EraseByStroke;
+                    return InkCanvasEditingMode.EraseByStroke;*/
                 default:
                     return InkCanvasEditingMode.Ink;
             }
