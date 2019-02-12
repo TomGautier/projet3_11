@@ -13,6 +13,7 @@
     <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
     <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
 
+    <string name="addShape">Forme de base</string>
 
 
 </resources>

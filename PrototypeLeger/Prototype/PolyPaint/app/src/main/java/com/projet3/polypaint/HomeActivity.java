@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.projet3.polypaint.Chat.Chat;
 import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.Image.ImageEditingActivity;
 
 public class HomeActivity extends Activity  {
 

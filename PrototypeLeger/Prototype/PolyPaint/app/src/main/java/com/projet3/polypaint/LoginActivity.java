@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.Image.ImageEditingActivity;
 
 import java.net.InetAddress;
 
@@ -90,14 +91,18 @@ public class LoginActivity extends Activity  {
 		serverConnexionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				String ipAddress = ipEntry.getText().toString();
+
+				System.out.println("LoginActivity onClick");
+				startActivity(new android.content.Intent(getBaseContext(), ImageEditingActivity.class));//TEMP
+
+				/*String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
 					socketManager = new SocketManager(ipAddress);
 					handleSocketConnect();
                     changeIpModuleState(false);
 				}
 				else
-					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();
+					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();*/
 
 			}
 		});
