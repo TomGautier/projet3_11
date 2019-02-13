@@ -10,15 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <Button
-            android:id="@+id/shapeButton"
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/addShape" />
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/buttonClass"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setShapeTypeToUmlClass"
+                    android:text="@string/buttonClass" />
+
+                <Button
+                    android:id="@+id/buttonActivity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="setShapeTypeToUmlActivity"
+                    android:text="@string/buttonActivity" />
+            </LinearLayout>
+        </ScrollView>
 
         <ImageView
             android:id="@+id/canvasView"
-            android:layout_width="900dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srcCompat="@android:color/background_light" />
 

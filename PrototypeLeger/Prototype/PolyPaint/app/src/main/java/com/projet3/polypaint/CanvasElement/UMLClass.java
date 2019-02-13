@@ -7,10 +7,6 @@ public class UMLClass extends GenericShape {
     private final int DEFAULT_WIDTH = 200;
     private final int DEFAULT_HEIGHT = 150;
 
-    public UMLClass(int x, int y, int width, int height, Paint paint) {
-        super(x, y, width, height, paint);
-    }
-
     public UMLClass(int x, int y, Paint paint) {
         super(x, y, 0, 0, paint);
         width = DEFAULT_WIDTH;

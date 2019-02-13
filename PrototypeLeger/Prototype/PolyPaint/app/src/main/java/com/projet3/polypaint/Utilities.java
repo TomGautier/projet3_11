@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageButton;
 
 public class Utilities {
+    public enum ShapeType{uml_class, uml_activity}
 
     public static void SetButtonEffect(View button){
         button.setOnTouchListener(new View.OnTouchListener() {
