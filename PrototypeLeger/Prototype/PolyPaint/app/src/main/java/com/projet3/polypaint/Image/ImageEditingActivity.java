@@ -12,7 +12,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.R;
+
+import java.util.ArrayList;
 
 public class ImageEditingActivity extends AppCompatActivity {
 
@@ -21,6 +25,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private ImageView iView;
     private int shapeColor;
+    private ArrayList<GenericShape> shapes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,8 @@ public class ImageEditingActivity extends AppCompatActivity {
         shapeColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         defaultPaint.setColor(shapeColor);
         iView = (ImageView) findViewById(R.id.canvasView);
+
+        shapes = new ArrayList<GenericShape>();
 
         setTouchListener();
     }
@@ -46,12 +53,17 @@ public class ImageEditingActivity extends AppCompatActivity {
                 int posX = (int)event.getX(0);
                 int posY = (int)event.getY(0);
 
-                Rect r = new Rect(posX - 10,posY - 10,posX + 10,posY + 10);
-                canvas.drawRect(r, defaultPaint);
+                shapes.add(new UMLClass(posX, posY, defaultPaint));
+                drawAllShapes();
 
                 view.invalidate();
                 return false;
             }
         });
+    }
+
+    private void drawAllShapes() {
+        for(GenericShape shape : shapes)
+            shape.drawOnCanvas(canvas);
     }
 }
