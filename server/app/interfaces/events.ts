@@ -10,6 +10,7 @@ export class UnsaucedEventEmitter {
     }
 
     public on(event: string, action: ((...args: any[]) => any)) {
+        console.log('Events', 'New subscription for ' + event);
         Logger.debug('Events', 'New subscription for ' + event);
         this.eventEmitter.on(event, action);
     }
