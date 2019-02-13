@@ -21,7 +21,9 @@ import java.util.ArrayList;
 
 public class ImageEditingActivity extends AppCompatActivity {
 
-    public enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
+    private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
+
+    private final float DEFAULT_STROKE_WIDTH = 2f;
 
     private Canvas canvas;
     private Paint defaultPaint = new Paint();
@@ -37,14 +39,21 @@ public class ImageEditingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_editing);
 
-        shapeColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
-        defaultPaint.setColor(shapeColor);
-        defaultPaint.setStyle(Paint.Style.STROKE);
         iView = (ImageView) findViewById(R.id.canvasView);
-
         shapes = new ArrayList<>();
+        initializePaint();
 
         setTouchListener();
+    }
+
+    private void initializePaint() {
+        shapeColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
+
+        defaultPaint.setColor(shapeColor);
+        defaultPaint.setStyle(Paint.Style.STROKE);
+        defaultPaint.setStrokeWidth(DEFAULT_STROKE_WIDTH);
+        defaultPaint.setStrokeCap(Paint.Cap.ROUND);
+        defaultPaint.setAntiAlias(true);
     }
 
     private void setTouchListener() {
