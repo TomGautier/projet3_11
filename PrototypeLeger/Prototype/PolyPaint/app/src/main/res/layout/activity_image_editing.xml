@@ -17,6 +17,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/chat"
                 android:orientation="vertical">
 
                 <Button
@@ -32,6 +33,20 @@
                     android:layout_height="wrap_content"
                     android:onClick="setShapeTypeToUmlActivity"
                     android:text="@string/buttonActivity" />
+
+                <Button
+                    android:id="@+id/buttonArtefact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setShapeTypeToUmlArtefact"
+                    android:text="@string/buttonArtefact" />
+
+                <Button
+                    android:id="@+id/buttonRole"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="setShapeTypeToUmlRole"
+                    android:text="@string/buttonRole" />
             </LinearLayout>
         </ScrollView>
 

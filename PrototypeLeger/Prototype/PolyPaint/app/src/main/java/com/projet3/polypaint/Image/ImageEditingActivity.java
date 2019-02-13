@@ -1,27 +1,27 @@
 package com.projet3.polypaint.Image;
 
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
+import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
+import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.Utilities;
 
 import java.util.ArrayList;
 
 public class ImageEditingActivity extends AppCompatActivity {
+
+    public enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
 
     private Canvas canvas;
     private Paint defaultPaint = new Paint();
@@ -29,7 +29,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private ImageView iView;
     private int shapeColor;
     private ArrayList<GenericShape> shapes;
-    private Utilities.ShapeType currentShapeType = Utilities.ShapeType.uml_class;
+    private ShapeType currentShapeType = ShapeType.uml_class;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class ImageEditingActivity extends AppCompatActivity {
 
         shapeColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         defaultPaint.setColor(shapeColor);
+        defaultPaint.setStyle(Paint.Style.STROKE);
         iView = (ImageView) findViewById(R.id.canvasView);
 
         shapes = new ArrayList<>();
@@ -74,6 +75,12 @@ public class ImageEditingActivity extends AppCompatActivity {
             case uml_activity :
                 shapes.add(new UMLActivity(posX, posY, defaultPaint));
                 break;
+            case uml_artefact :
+                shapes.add(new UMLArtefact(posX, posY, defaultPaint));
+                break;
+            case uml_role :
+                shapes.add(new UMLRole(posX, posY, defaultPaint));
+                break;
         }
     }
 
@@ -82,6 +89,8 @@ public class ImageEditingActivity extends AppCompatActivity {
             shape.drawOnCanvas(canvas);
     }
 
-    public void setShapeTypeToUmlClass(View button) { currentShapeType = Utilities.ShapeType.uml_class; }
-    public void setShapeTypeToUmlActivity(View button) { currentShapeType = Utilities.ShapeType.uml_activity; }
+    public void setShapeTypeToUmlClass(View button) { currentShapeType = ShapeType.uml_class; }
+    public void setShapeTypeToUmlActivity(View button) { currentShapeType = ShapeType.uml_activity; }
+    public void setShapeTypeToUmlArtefact(View button) { currentShapeType = ShapeType.uml_artefact; }
+    public void setShapeTypeToUmlRole(View button) { currentShapeType = ShapeType.uml_role; }
 }

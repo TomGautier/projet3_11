@@ -17,10 +17,6 @@ public class UMLClass extends GenericShape {
     public void drawOnCanvas(Canvas canvas) {
         int w2 = width/2;
         int h2 = height/2;
-        canvas.drawLines(new float[]{posX - w2, posY - h2, posX + w2, posY - h2,
-                                     posX + w2, posY - h2, posX + w2, posY + h2,
-                                     posX + w2, posY + h2, posX - w2, posY + h2,
-                                     posX - w2, posY + h2, posX - w2, posY - h2},
-                         paint);
+        canvas.drawRect(posX - w2, posY - h2, posX + w2, posY + h2, paint);
     }
 }
