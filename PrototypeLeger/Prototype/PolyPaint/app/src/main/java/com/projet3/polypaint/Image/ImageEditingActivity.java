@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
@@ -26,10 +27,9 @@ public class ImageEditingActivity extends AppCompatActivity {
     private final float DEFAULT_STROKE_WIDTH = 2f;
 
     private Canvas canvas;
-    private Paint defaultPaint = new Paint();
+    private PaintStyle defaultStyle;
     private Bitmap bitmap;
     private ImageView iView;
-    private int shapeColor;
     private ArrayList<GenericShape> shapes;
     private ShapeType currentShapeType = ShapeType.uml_class;
 
@@ -47,13 +47,20 @@ public class ImageEditingActivity extends AppCompatActivity {
     }
 
     private void initializePaint() {
-        shapeColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
+        int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
+        Paint borderPaint = new Paint();
+        borderPaint.setColor(borderColor);
+        borderPaint.setStyle(Paint.Style.STROKE);
+        borderPaint.setStrokeWidth(DEFAULT_STROKE_WIDTH);
+        borderPaint.setStrokeCap(Paint.Cap.ROUND);
+        borderPaint.setAntiAlias(true);
 
-        defaultPaint.setColor(shapeColor);
-        defaultPaint.setStyle(Paint.Style.STROKE);
-        defaultPaint.setStrokeWidth(DEFAULT_STROKE_WIDTH);
-        defaultPaint.setStrokeCap(Paint.Cap.ROUND);
-        defaultPaint.setAntiAlias(true);
+        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(backgroundColor);
+        backgroundPaint.setStyle(Paint.Style.FILL);
+
+        defaultStyle = new PaintStyle(borderPaint, backgroundPaint);
     }
 
     private void setTouchListener() {
@@ -79,16 +86,16 @@ public class ImageEditingActivity extends AppCompatActivity {
     private void addShape(int posX, int posY) {
         switch (currentShapeType) {
             case uml_class :
-                shapes.add(new UMLClass(posX, posY, defaultPaint));
+                shapes.add(new UMLClass(posX, posY, defaultStyle));
                 break;
             case uml_activity :
-                shapes.add(new UMLActivity(posX, posY, defaultPaint));
+                shapes.add(new UMLActivity(posX, posY, defaultStyle));
                 break;
             case uml_artefact :
-                shapes.add(new UMLArtefact(posX, posY, defaultPaint));
+                shapes.add(new UMLArtefact(posX, posY, defaultStyle));
                 break;
             case uml_role :
-                shapes.add(new UMLRole(posX, posY, defaultPaint));
+                shapes.add(new UMLRole(posX, posY, defaultStyle));
                 break;
         }
     }

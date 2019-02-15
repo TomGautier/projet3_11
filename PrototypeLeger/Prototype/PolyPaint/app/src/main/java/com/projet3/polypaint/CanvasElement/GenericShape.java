@@ -11,14 +11,14 @@ public abstract class GenericShape {
     protected int posY;
     protected int width;
     protected int height;
-    protected Paint paint;
+    protected PaintStyle style;
 
-    public GenericShape(int x, int y, int width, int height, Paint paint) {
+    public GenericShape(int x, int y, int width, int height, PaintStyle style) {
         this.posX = x;
         this.posY = y;
         this.width = width;
         this.height = height;
-        this.paint = paint;
+        this.style = style;
     }
 
     public abstract void drawOnCanvas(Canvas canvas);

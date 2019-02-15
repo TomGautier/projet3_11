@@ -2,13 +2,14 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 
 public class UMLRole extends GenericShape {
     private final int DEFAULT_WIDTH = 60;
     private final int DEFAULT_HEIGHT = 90;
 
-    public UMLRole(int x, int y, Paint paint) {
-        super(x, y, 0, 0, paint);
+    public UMLRole(int x, int y, PaintStyle style) {
+        super(x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
@@ -20,11 +21,16 @@ public class UMLRole extends GenericShape {
         int w4 = width/4;
         int h4 = height/4;
 
-        canvas.drawLines(new float[]{posX - w4, posY,      posX + w4, posY,
-                                     posX + w4, posY,      posX + w2, posY + h2,
-                                     posX + w2, posY + h2, posX - w2, posY + h2,
-                                     posX - w2, posY + h2, posX - w4, posY},
-                         paint);
-        canvas.drawCircle(posX, posY - h4, h4, paint);
+        Path p = new Path();
+
+        p.moveTo(posX - w4, posY);
+        p.lineTo(posX + w4, posY);
+        p.lineTo(posX + w2, posY + h2);
+        p.lineTo(posX - w2, posY + h2);
+        p.lineTo(posX - w4, posY);
+        p.addCircle(posX, posY - h4, h4, Path.Direction.CW);
+
+        canvas.drawPath(p, style.getBackgroundPaint());
+        canvas.drawPath(p, style.getBorderPaint());
     }
 }

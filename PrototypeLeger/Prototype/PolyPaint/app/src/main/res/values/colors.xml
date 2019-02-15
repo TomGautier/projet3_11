@@ -2,4 +2,5 @@
 <resources>
         <color name="chat">#E2E2E2</color>
         <color name="shape">#000000</color>
+        <color name="shapeFillTest">#6666CC</color>
 </resources>
