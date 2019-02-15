@@ -10,7 +10,7 @@ import SocketEvents from "../../../common/communication/socketEvents";
 import { UnsaucedEventEmitter } from "../interfaces/events";
 import { Room } from "../../../common/room";
 
-const GENERAL_ROOM = new Room("generalRoom")
+export const GENERAL_ROOM = new Room("generalRoom")
 
 @injectable()
 export class SocketService {
@@ -51,18 +51,12 @@ export class SocketService {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.join(roomId);
-            // this.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1]));
         }
         else {
             Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
         }
     }
-/*
-    public onMessageSent(channelId: string, message: string) {
-        console.log('onMessageSent, channelID: ' + channelId + ', message: ' + message);
-        this.emit(channelId, SocketEvents.MessageSent, message);
-    }
-*/
+
     public leaveRoom(roomId: string, socketId: string, username: string) {
         const socket = this.sockets.get(socketId);
         if (socket) {
@@ -87,20 +81,18 @@ export class SocketService {
         }
         else {
             this.users.add(username);
-            this.joinRoom(GENERAL_ROOM.id, socket.id);
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
             socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+            
+            this.joinRoom(GENERAL_ROOM.id, socket.id);
             
             this.emit(socket.id, SocketEvents.UserLogged);
             console.log("The socket " + socket.id + " has been logged in.");
         }
-        console.log(' Hey : ' + this.eventEmitter.print());
     }
 
     private handleEvent(event: string, socketId: string, args?: string): void { 
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
-        //this.emit(socketId, event, args);
-        console.log('handleEvent:' + event);
         this.eventEmitter.emit(event, socketId, args);
     }
 }
