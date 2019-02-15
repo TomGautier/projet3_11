@@ -34,6 +34,7 @@ container.bind<DateControllerInterface>(TYPES.DateControllerInterface).to(DateCo
 container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService);
 
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
+container.bind<LoginService>(TYPES.LoginService).to(LoginService);
 container.bind<ChannelsManager>(TYPES.ChannelsManager).to(ChannelsManager);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
 

@@ -11,7 +11,7 @@ export class ChannelsManager {
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService
     ) {
-        this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1]));
+        this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1][0]));
     }
 
     public onMessageSent(channelId: string, message: string) {

@@ -13,7 +13,8 @@ const TYPES =  {
         // Services 
         EventEmitter: Symbol.for("EventEmitter"),
         SocketService: Symbol.for("SocketService"),
-        ChannelsManager:Symbol.for("ChannelsManager")
+        ChannelsManager:Symbol.for("ChannelsManager"),
+        LoginService:Symbol.for("LoginService")
 };
 
 export  { TYPES };
