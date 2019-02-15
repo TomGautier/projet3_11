@@ -92,17 +92,14 @@ public class LoginActivity extends Activity  {
 			@Override
 			public void onClick(View view) {
 
-				System.out.println("LoginActivity onClick");
-				startActivity(new android.content.Intent(getBaseContext(), ImageEditingActivity.class));//TEMP
-
-				/*String ipAddress = ipEntry.getText().toString();
+				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
 					socketManager = new SocketManager(ipAddress);
 					handleSocketConnect();
                     changeIpModuleState(false);
 				}
 				else
-					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();*/
+					Toast.makeText(getBaseContext(), getString(R.string.loginInvalidIp), Toast.LENGTH_LONG).show();
 
 			}
 		});
@@ -158,5 +155,8 @@ public class LoginActivity extends Activity  {
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
-
+	/*Fonction temporaire pour passer directement à l'édition d'images*/
+	public void gotoImageEditing(View button) {
+		startActivity(new android.content.Intent(getBaseContext(), ImageEditingActivity.class));
+	}
 }
