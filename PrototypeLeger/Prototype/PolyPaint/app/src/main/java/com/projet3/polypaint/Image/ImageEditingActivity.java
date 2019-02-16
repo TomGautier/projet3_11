@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
@@ -25,6 +27,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
+    private final float SELECTION_STROKE_WIDTH = 4f;
 
     private Canvas canvas;
     private PaintStyle defaultStyle;
@@ -32,6 +35,10 @@ public class ImageEditingActivity extends AppCompatActivity {
     private ImageView iView;
     private ArrayList<GenericShape> shapes;
     private ShapeType currentShapeType = ShapeType.uml_class;
+
+    private Paint selectionPaint;
+    private boolean selectionMode = false;
+    private GenericShape currentSelection = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,7 @@ public class ImageEditingActivity extends AppCompatActivity {
         initializePaint();
 
         setTouchListener();
+        setToggleListener();
     }
 
     private void initializePaint() {
@@ -61,6 +69,15 @@ public class ImageEditingActivity extends AppCompatActivity {
         backgroundPaint.setStyle(Paint.Style.FILL);
 
         defaultStyle = new PaintStyle(borderPaint, backgroundPaint);
+
+        int selectionColor = ResourcesCompat.getColor(getResources(), R.color.shapeSelection, null);
+        selectionPaint = new Paint();
+        selectionPaint.setColor(selectionColor);
+        selectionPaint.setStyle(Paint.Style.STROKE);
+        selectionPaint.setStrokeWidth(SELECTION_STROKE_WIDTH);
+        selectionPaint.setStrokeCap(Paint.Cap.ROUND);
+        selectionPaint.setAntiAlias(true);
+
     }
 
     private void setTouchListener() {
@@ -74,13 +91,38 @@ public class ImageEditingActivity extends AppCompatActivity {
                 int posX = (int)event.getX(0);
                 int posY = (int)event.getY(0);
 
-                addShape(posX, posY);
+                if (selectionMode)
+                    checkSelection(posX, posY);
+                else
+                    addShape(posX, posY);
+
                 drawAllShapes();
 
                 view.invalidate();
                 return false;
             }
         });
+    }
+    
+    private void setToggleListener() {
+        ToggleButton toggle = (ToggleButton) findViewById(R.id.buttonSelection);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+                selectionMode = isChecked;
+            }
+        });
+    }
+
+    private boolean checkSelection(int x, int y) {
+        for (int i = shapes.size() - 1; i >= 0; i--) {
+            if (shapes.get(i).isOverPoint(x, y)){
+                currentSelection = shapes.get(i);
+                return true;
+            }
+        }
+
+        currentSelection = null;
+        return false;
     }
 
     private void addShape(int posX, int posY) {
@@ -103,6 +145,9 @@ public class ImageEditingActivity extends AppCompatActivity {
     private void drawAllShapes() {
         for(GenericShape shape : shapes)
             shape.drawOnCanvas(canvas);
+
+        if (currentSelection != null)
+            currentSelection.drawSelectionBox(canvas, selectionPaint);
     }
 
     public void setShapeTypeToUmlClass(View button) { currentShapeType = ShapeType.uml_class; }

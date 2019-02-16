@@ -17,6 +17,7 @@
     <string name="buttonActivity">Activité</string>
     <string name="buttonRole">Rôle</string>
     <string name="buttonArtefact">Artéfact</string>
+    <string name="buttonSelection">Sélection</string>
 
 
 </resources>

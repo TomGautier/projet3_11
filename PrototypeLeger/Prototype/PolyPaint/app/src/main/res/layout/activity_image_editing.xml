@@ -20,6 +20,14 @@
                 android:background="@color/chat"
                 android:orientation="vertical">
 
+                <ToggleButton
+                    android:id="@+id/buttonSelection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonSelection"
+                    android:textOff="@string/buttonSelection"
+                    android:textOn="@string/buttonSelection" />
+
                 <Button
                     android:id="@+id/buttonClass"
                     android:layout_width="match_parent"
