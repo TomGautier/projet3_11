@@ -17,4 +17,12 @@ export class ChannelsManager {
     public onMessageSent(channelId: string, message: string) {
         this.socketService.emit(channelId, SocketEvents.MessageSent, message);
     }
+
+    public joinChannel(roomId: string, socketId: string) {
+        this.socketService.joinRoom(roomId, socketId);
+    }
+
+    public leaveChannel(roomId: string, socketId: string, username: string) {
+        this.socketService.leaveRoom(roomId, socketId, username);
+    }
 }

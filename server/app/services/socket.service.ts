@@ -20,7 +20,6 @@ export class SocketService {
     public getSocket(socketId: string): SocketIO.Socket | undefined {
         return this.sockets.get(socketId);
     }
-    private users: Set<string>  = new Set<string>();
 
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
@@ -35,7 +34,6 @@ export class SocketService {
             this.sockets.set(socket.id, socket);
             console.log("Socket id" + socket.id + " connected.");
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
-            //socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(socket, args));
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
@@ -76,7 +74,6 @@ export class SocketService {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.leave(roomId);
-            this.users.delete(username);
         }
         else {
             Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
