@@ -3,6 +3,7 @@ package com.projet3.polypaint.CanvasElement;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 
 public abstract class GenericShape {
 
@@ -35,11 +36,10 @@ public abstract class GenericShape {
         canvas.drawPath(p, paint);
     }
 
-    public boolean isOverPoint(int x, int y) {
+    public Rect getBoundingBox() {
         int w2 = width/2;
         int h2 = height/2;
 
-        return x > posX - w2 && x < posX + w2 &&
-                y > posY - h2 && y < posY + h2;
+        return new Rect(posX - w2, posY - h2, posX + w2, posY + h2);
     }
 }

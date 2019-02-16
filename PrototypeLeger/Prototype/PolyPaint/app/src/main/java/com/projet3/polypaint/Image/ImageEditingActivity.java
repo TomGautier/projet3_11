@@ -3,6 +3,9 @@ package com.projet3.polypaint.Image;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.Region;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -39,6 +42,8 @@ public class ImageEditingActivity extends AppCompatActivity {
     private Paint selectionPaint;
     private boolean selectionMode = false;
     private GenericShape currentSelection = null;
+    private ArrayList<GenericShape> selections = null;
+    private Path selectionPath = new Path();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,19 +96,37 @@ public class ImageEditingActivity extends AppCompatActivity {
                 int posX = (int)event.getX(0);
                 int posY = (int)event.getY(0);
 
-                if (selectionMode)
-                    checkSelection(posX, posY);
-                else
+                if (selectionMode) {
+                    //checkSelection(posX, posY);
+                    switch (event.getAction()) {
+                        case MotionEvent.ACTION_DOWN:
+                            selectionPath.reset();
+                            selectionPath.moveTo(posX, posY);
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            selectionPath.lineTo(posX, posY);
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            selectionPath.close();
+                            checkLassoSelection();
+                            break;
+                    }
+                    canvas.drawPath(selectionPath, selectionPaint);
+                    drawAllShapes();
+                    view.invalidate();
+                    return true;
+                }
+                else {
                     addShape(posX, posY);
 
-                drawAllShapes();
-
-                view.invalidate();
-                return false;
+                    drawAllShapes();
+                    view.invalidate();
+                    return false;
+                }
             }
         });
     }
-    
+
     private void setToggleListener() {
         ToggleButton toggle = (ToggleButton) findViewById(R.id.buttonSelection);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -113,16 +136,33 @@ public class ImageEditingActivity extends AppCompatActivity {
         });
     }
 
-    private boolean checkSelection(int x, int y) {
+    private void checkSelection(int x, int y) {
         for (int i = shapes.size() - 1; i >= 0; i--) {
-            if (shapes.get(i).isOverPoint(x, y)){
+            if (shapes.get(i).getBoundingBox().contains(x, y)){
                 currentSelection = shapes.get(i);
-                return true;
+                return;
             }
         }
 
         currentSelection = null;
-        return false;
+    }
+
+    private void checkLassoSelection() {
+        selections = new ArrayList<>();
+
+        for (GenericShape shape : shapes) {
+            canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
+
+            // Check if entire bounding box is contained in selectionPath
+            if (!canvas.clipPath(selectionPath, Region.Op.DIFFERENCE))
+                selections.add(shape);
+        }
+
+        // Reset clip to full canvas
+        canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
+
+        if (selections.isEmpty())
+            selections = null;
     }
 
     private void addShape(int posX, int posY) {
@@ -148,6 +188,10 @@ public class ImageEditingActivity extends AppCompatActivity {
 
         if (currentSelection != null)
             currentSelection.drawSelectionBox(canvas, selectionPaint);
+
+        if (selections != null)
+            for (GenericShape shape : selections)
+                shape.drawSelectionBox(canvas, selectionPaint);
     }
 
     public void setShapeTypeToUmlClass(View button) { currentShapeType = ShapeType.uml_class; }
