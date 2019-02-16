@@ -23,6 +23,7 @@ import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";
 import { ChannelsManager } from "./services/channels.manager";
 import { LoginService } from "./services/login.service";
+import { UserService } from "./services/user.service";
 
 const container: Container = new Container();
 
@@ -39,6 +40,7 @@ container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
 container.bind<LoginService>(TYPES.LoginService).to(LoginService);
 container.bind<ChannelsManager>(TYPES.ChannelsManager).to(ChannelsManager);
+container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
 
 export { container };

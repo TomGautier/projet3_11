@@ -16,7 +16,8 @@ const TYPES =  {
         DatabaseConnection: Symbol.for("DatabaseConnection"),
         DatabaseService: Symbol.for("DatabaseService"),
         ChannelsManager:Symbol.for("ChannelsManager"),
-        LoginService:Symbol.for("LoginService")
+        LoginService:Symbol.for("LoginService"),
+        UserService:Symbol.for("UserService")
 };
 
 export  { TYPES };
