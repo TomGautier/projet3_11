@@ -53,4 +53,22 @@ export class DatabaseService {
     public async init() {
         await this.databaseConnection.connect(this.MONGODB_CONNECTION);
     }
+
+    public async create(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.create(doc, (err: any, document: any) => {
+                if (err) { throw err; };
+                resolve(document);
+            });
+        });
+    }
+
+    public async delete(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.remove({ 'id': doc }, (err: any, document: any) => {
+                if (err) { throw err; };
+                resolve(document);
+            });
+        });
+    }
 }
