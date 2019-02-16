@@ -5,6 +5,7 @@ import SocketEvents from "../../../common/communication/socketEvents";
 import { Room } from "../../../common/room";
 import { Logger } from "./logger.service";
 import { ChannelsManager } from "./channels.manager";
+import { UserService } from "./user.service";
 
 
 // TODO: 
@@ -16,34 +17,47 @@ export class LoginService {
 
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService,
-        @inject(TYPES.ChannelsManager) private channelsManager: ChannelsManager
+        @inject(TYPES.ChannelsManager) private channelsManager: ChannelsManager,
+        @inject(TYPES.UserService) private userService: UserService
     ) {
         this.socketService.subscribe(SocketEvents.LoginAttempt, args => this.onUserConnection(args[0], args[1][0]));
         this.socketService.subscribe(SocketEvents.UserLeft, args => this.onUserDisconnection(args[0], args[1][0], args[1][1]));
     }
 
-    public onUserConnection(socketId: string, username: string) {
-        if (this.users.has(username)) {
-            this.socketService.emit(socketId, SocketEvents.UsernameAlreadyExists);
-            console.log("The username of " + socketId + " exists already.");
-        }
-        else {
-            this.users.add(username);
+    public async onUserConnection(socketId: string, username: string) {
+        try {
+            // TEMPORAL UNTIL FRONT END SENDS THE RIGHT INFO.
+            const user = { 
+                username: username,
+                password: 'basicpwd' 
+            };
+            await this.userService.create(user);
+            
             this.socketService.authSocket(socketId);
             this.channelsManager.joinChannel(GENERAL_ROOM.id, socketId);
+            
             this.socketService.emit(socketId, SocketEvents.UserLogged);
-            console.log("The socket " + socketId + " has been logged in.");
+            Logger.info('LoginService', `The user ${username} from socket ${socketId} has been logged in.`);
+        }
+        catch (err) {
+            this.socketService.emit(socketId, SocketEvents.UsernameAlreadyExists);
+            Logger.warn('LoginService', `The username ${username} already exists.`);
         }
     }
 
-    public onUserDisconnection(roomId: string, socketId:string, username: string) {
+    public async onUserDisconnection(roomId: string, socketId:string, username: string) {
         const socket = this.socketService.getSocket(socketId);
         if (socket) {
-            this.channelsManager.leaveChannel(roomId, socketId, username);
-            this.users.delete(username);
+            try {
+                await this.userService.removeByUsername(username);
+                this.channelsManager.leaveChannel(roomId, socketId, username);
+            }
+            catch (err) {
+                Logger.warn('LoginService', `This username doesn't exist : ${username}`);
+            }
         }
         else {
-            Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
+            Logger.warn('LoginService', `This socket doesn't exist : ${socketId}`);
         }
     }
 }

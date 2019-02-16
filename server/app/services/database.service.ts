@@ -63,9 +63,18 @@ export class DatabaseService {
         });
     }
 
-    public async delete(model: any, doc: any): Promise<{}> {
+    public async getByCriteria(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
-            model.remove({ 'id': doc }, (err: any, document: any) => {
+            model.findOne({ [criteria]: doc }, (err: any, document: any) => {
+                if (err) { return reject(err); };
+                resolve(document);
+            });
+        });
+    }
+
+    public async remove(model: any, criteria: string, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.remove({ [criteria]: doc }, (err: any, document: any) => {
                 if (err) { throw err; };
                 resolve(document);
             });
