@@ -38,7 +38,4 @@ container.bind<LoginService>(TYPES.LoginService).to(LoginService);
 container.bind<ChannelsManager>(TYPES.ChannelsManager).to(ChannelsManager);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
 
-//const x = new SocketService(container.get(TYPES.EventEmitter));
-//container.bind<SocketService>(TYPES.SocketService).toConstantValue(x);
-
 export { container };
