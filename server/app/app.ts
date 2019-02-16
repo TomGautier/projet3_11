@@ -12,7 +12,7 @@ import { injectable, inject } from "inversify";
 import { IndexController } from "./controllers/index.controller";
 import { DateController } from "./controllers/date.controller";
 import { ApplicationInterface } from "./interfaces";
-import { ChannelsManager } from "./services/channels.manager";
+import { ConversationManager } from "./services/conversation.manager";
 import { LoginService } from "./services/login.service";
 
 
@@ -25,7 +25,7 @@ export class Application implements ApplicationInterface {
     public constructor(
             @inject(TYPES.IndexControllerInterface) private indexController: IndexController,
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
-            @inject(TYPES.ChannelsManager) private channelsManager: ChannelsManager,
+            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
             @inject(TYPES.LoginService) private loginService: LoginService) {
         this.app = express();
         this.config();

@@ -15,7 +15,7 @@ const TYPES =  {
         SocketService: Symbol.for("SocketService"),
         DatabaseConnection: Symbol.for("DatabaseConnection"),
         DatabaseService: Symbol.for("DatabaseService"),
-        ChannelsManager:Symbol.for("ChannelsManager"),
+        ConversationManager:Symbol.for("ConversationManager"),
         LoginService:Symbol.for("LoginService"),
         UserService:Symbol.for("UserService")
 };

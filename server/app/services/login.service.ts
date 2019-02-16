@@ -4,7 +4,7 @@ import { SocketService, GENERAL_ROOM } from "./socket.service";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { Room } from "../../../common/room";
 import { Logger } from "./logger.service";
-import { ChannelsManager } from "./channels.manager";
+import { ConversationManager } from "./conversation.manager";
 import { UserService } from "./user.service";
 
 
@@ -17,11 +17,10 @@ export class LoginService {
 
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService,
-        @inject(TYPES.ChannelsManager) private channelsManager: ChannelsManager,
+        @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
         @inject(TYPES.UserService) private userService: UserService
     ) {
         this.socketService.subscribe(SocketEvents.LoginAttempt, args => this.onUserConnection(args[0], args[1][0]));
-        this.socketService.subscribe(SocketEvents.UserLeft, args => this.onUserDisconnection(args[0], args[1][0], args[1][1]));
     }
 
     public async onUserConnection(socketId: string, username: string) {
@@ -32,9 +31,10 @@ export class LoginService {
                 password: 'basicpwd' 
             };
             await this.userService.create(user);
-            
+
+            this.socketService.subscribe(SocketEvents.UserLeft, args => this.onUserDisconnection(args[0], args[1][0], args[1][1]));
             this.socketService.authSocket(socketId);
-            this.channelsManager.joinChannel(GENERAL_ROOM.id, socketId);
+            this.conversationManager.joinConversation(GENERAL_ROOM.id, socketId);
             
             this.socketService.emit(socketId, SocketEvents.UserLogged);
             Logger.info('LoginService', `The user ${username} from socket ${socketId} has been logged in.`);
@@ -50,7 +50,7 @@ export class LoginService {
         if (socket) {
             try {
                 await this.userService.removeByUsername(username);
-                this.channelsManager.leaveChannel(roomId, socketId, username);
+                this.conversationManager.leaveConversation(roomId, socketId, username);
             }
             catch (err) {
                 Logger.warn('LoginService', `This username doesn't exist : ${username}`);

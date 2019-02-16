@@ -5,7 +5,7 @@ import SocketEvents from "../../../common/communication/socketEvents";
 import { Room } from "../../../common/room";
 
 @injectable()
-export class ChannelsManager {
+export class ConversationManager {
     //private channels: Set<string>  = new Set<string>();
 
     constructor(
@@ -14,15 +14,15 @@ export class ChannelsManager {
         this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1][0]));
     }
 
-    public onMessageSent(channelId: string, message: string) {
-        this.socketService.emit(channelId, SocketEvents.MessageSent, message);
+    public onMessageSent(conversationId: string, message: string) {
+        this.socketService.emit(conversationId, SocketEvents.MessageSent, message);
     }
 
-    public joinChannel(roomId: string, socketId: string) {
-        this.socketService.joinRoom(roomId, socketId);
+    public joinConversation(conversationId: string, socketId: string) {
+        this.socketService.joinRoom(conversationId, socketId);
     }
 
-    public leaveChannel(roomId: string, socketId: string, username: string) {
-        this.socketService.leaveRoom(roomId, socketId, username);
+    public leaveConversation(conversationId: string, socketId: string, username: string) {
+        this.socketService.leaveRoom(conversationId, socketId, username);
     }
 }

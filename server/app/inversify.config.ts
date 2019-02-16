@@ -21,7 +21,7 @@ import { DateServiceInterface,
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";
-import { ChannelsManager } from "./services/channels.manager";
+import { ConversationManager } from "./services/conversation.manager";
 import { LoginService } from "./services/login.service";
 import { UserService } from "./services/user.service";
 
@@ -39,7 +39,7 @@ container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService)
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
 container.bind<LoginService>(TYPES.LoginService).to(LoginService);
-container.bind<ChannelsManager>(TYPES.ChannelsManager).to(ChannelsManager);
+container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
 
