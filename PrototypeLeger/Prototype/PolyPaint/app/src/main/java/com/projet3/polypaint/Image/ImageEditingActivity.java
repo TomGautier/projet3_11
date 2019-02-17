@@ -175,6 +175,8 @@ public class ImageEditingActivity extends AppCompatActivity {
     }
 
     private void addShape(int posX, int posY) {
+        selections = null;
+
         switch (currentShapeType) {
             case uml_class :
                 shapes.add(new UMLClass(posX, posY, defaultStyle));
@@ -201,6 +203,10 @@ public class ImageEditingActivity extends AppCompatActivity {
     }
 
 
+
+    public void setModeToSelection(View button) { currentMode = Mode.selection; }
+    public void setModeToLasso(View button) { currentMode = Mode.lasso; }
+
     public void setShapeTypeToUmlClass(View button) { setShapeType(ShapeType.uml_class); }
     public void setShapeTypeToUmlActivity(View button) { setShapeType(ShapeType.uml_activity); }
     public void setShapeTypeToUmlArtefact(View button) { setShapeType(ShapeType.uml_artefact); }
@@ -211,6 +217,19 @@ public class ImageEditingActivity extends AppCompatActivity {
         currentMode = Mode.creation;
     }
 
-    public void setModeToSelection(View button) { currentMode = Mode.selection; }
-    public void setModeToLasso(View button) { currentMode = Mode.lasso; }
+    public void deleteSelection(View button) {
+        if (selections != null) {
+            for (GenericShape shape : selections) {
+                shapes.remove(shape);
+            }
+        }
+
+        selections = null;
+
+        bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
+        iView.setImageBitmap(bitmap);
+        canvas = new Canvas(bitmap);
+        drawAllShapes();
+        iView.invalidate();
+    }
 }

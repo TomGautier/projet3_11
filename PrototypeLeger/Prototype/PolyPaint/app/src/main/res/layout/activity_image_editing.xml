@@ -34,6 +34,10 @@
                     android:onClick="setModeToLasso"
                     android:text="@string/buttonLasso" />
 
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp" />
+
                 <Button
                     android:id="@+id/buttonClass"
                     android:layout_width="match_parent"
@@ -61,6 +65,17 @@
                     android:layout_height="wrap_content"
                     android:onClick="setShapeTypeToUmlRole"
                     android:text="@string/buttonRole" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="15dp" />
+
+                <Button
+                    android:id="@+id/buttonDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="deleteSelection"
+                    android:text="@string/buttonDelete" />
             </LinearLayout>
         </ScrollView>
 

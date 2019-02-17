@@ -19,6 +19,7 @@
     <string name="buttonArtefact">Artéfact</string>
     <string name="buttonSelection">Sélection</string>
     <string name="buttonLasso">Lasso</string>
+    <string name="buttonDelete">Effacer</string>
 
 
 </resources>
