@@ -3,7 +3,9 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Ink;
+using System.Windows.Input;
 using PolyPaint.Utilitaires;
+
 
 namespace PolyPaint.Modeles
 {
@@ -115,18 +117,37 @@ namespace PolyPaint.Modeles
                 case "form_class":
                     System.Windows.Input.StylusPointCollection pts = new System.Windows.Input.StylusPointCollection();
 
-                    pts.Add(new System.Windows.Input.StylusPoint(10, 10));
+                    pts.Add(new StylusPoint(10, 10));
+                    pts.Add(new StylusPoint(120, 10));
+                    pts.Add(new StylusPoint(120, 220));
+                    pts.Add(new StylusPoint(10, 220));
+                    pts.Add(new StylusPoint(10, 10));
+                    pts.Add(new StylusPoint(10, 40));
+                    pts.Add(new StylusPoint(120, 40));
+                    pts.Add(new StylusPoint(120, 100));
+                    pts.Add(new StylusPoint(10, 100));
+                    UMLClass ShapeUno = new UMLClass(pts);
+                    ShapeUno.Name = "My Class";
+                    ShapeUno.AddAttribute("Attribut1");
+                    ShapeUno.AddAttribute("Attribut2");
+                    ShapeUno.AddAttribute("Attribut3");
+                    ShapeUno.AddAttribute("Attribut4");
+                    ShapeUno.AddAttribute("Attribut5");
+                    ShapeUno.AddAttribute("Attribut6");
+                    ShapeUno.AddAttribute("Attribut7");
+                    ShapeUno.AddMethod("takeMeHome()");
+                    ShapeUno.AddMethod("countryRoad()");
+                    ShapeUno.AddMethod("toThePlace()");
+                    ShapeUno.AddMethod("iBelong()");
+                    ShapeUno.AddMethod("westVirginia()");
+                    ShapeUno.AddMethod("takeMeHome()");
+                    ShapeUno.AddMethod("countryRoad()");
+                    ShapeUno.AddMethod("toThePlace()");
+                    ShapeUno.AddMethod("iBelong()");
+                    ShapeUno.AddMethod("westVirginia()");
 
-                    pts.Add(new System.Windows.Input.StylusPoint(10, 100));
 
-                    pts.Add(new System.Windows.Input.StylusPoint(100, 100));
-
-                    pts.Add(new System.Windows.Input.StylusPoint(100, 10));
-
-                    pts.Add(new System.Windows.Input.StylusPoint(10, 10));
-                    UMLClass s = new UMLClass(pts);
-                    
-                    traits.Add(s);
+                    traits.Add(ShapeUno);
                     break;
 
             }       
