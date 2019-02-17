@@ -46,7 +46,7 @@
                             Background="Transparent"                                
                             Click="SupprimerSelection" FontSize="14">
                     </Button>
-                </StackPanel>                
+                </StackPanel>
                 <Button Name="lasso" Width="40" Height="40" Margin="5" 
                             BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=lasso, UpdateSourceTrigger=PropertyChanged}" 
                             Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=lasso, UpdateSourceTrigger=PropertyChanged}" 
@@ -126,7 +126,7 @@
                             <Rectangle Width="10" Height="2" Fill="Black" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center"/>
                         </Button>
                     </StackPanel>
-                </StackPanel>                
+                </StackPanel>
                 <xctk:ColorPicker x:Name="selecteurCouleur"                             
                   VerticalContentAlignment="Stretch"
                   Background="#00000000"
@@ -148,12 +148,27 @@
                         TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False">
                 </Slider>
             </StackPanel>
-            
+        </Border>
+        <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000">
+            <StackPanel Orientation="Vertical"  Width="80">
+                <StackPanel.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0.01">
+                        <GradientStop Color="Gray"/>
+                        <GradientStop Color="#FFFFFFFF"/>
+                        <GradientStop Color="#FFE0E0E0" Offset="1"/>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+                <Button Name="form_class" Width="40" Height="40" Margin="5" Command="{Binding Path=AddForm}" CommandParameter="form_class">
+                    <StackPanel>
+                        <Image Source="/Resources/form_class.png" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
         </Border>
 
         <Border DockPanel.Dock="Bottom" Height="25" BorderThickness="0,0.75,0,0.75" BorderBrush="#77000000">
             <StackPanel Orientation="Horizontal" Background="#FFF0F0F0">
-                <Image Source="Resources/position.png" Margin="5,5,5,5" VerticalAlignment="Center"/>
+                <Image Source="/Resources/position.png" Margin="5,5,5,5" VerticalAlignment="Center"/>
                 <TextBlock Name="textBlockPosition" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             </StackPanel>
         </Border>

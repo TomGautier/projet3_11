@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Ink;
+using PolyPaint.Utilitaires;
 
 namespace PolyPaint.Modeles
 {
@@ -17,13 +19,12 @@ namespace PolyPaint.Modeles
         private StrokeCollection traitsRetires = new StrokeCollection();
 
         // Outil actif dans l'éditeur
-        private string outilSelectionne = "crayon";
+        private string outilSelectionne = "lasso";
         public string OutilSelectionne
         {
             get { return outilSelectionne; }
             set { outilSelectionne = value; ProprieteModifiee(); }
         }
-
         // Forme de la pointe du crayon
         private string pointeSelectionnee = "ronde";
         public string PointeSelectionnee
@@ -106,6 +107,29 @@ namespace PolyPaint.Modeles
                 traitsRetires.Remove(trait);
             }
             catch { }         
+        }
+        public void AddForm(string forme)
+        {
+            switch (forme)
+            {
+                case "form_class":
+                    System.Windows.Input.StylusPointCollection pts = new System.Windows.Input.StylusPointCollection();
+
+                    pts.Add(new System.Windows.Input.StylusPoint(10, 10));
+
+                    pts.Add(new System.Windows.Input.StylusPoint(10, 100));
+
+                    pts.Add(new System.Windows.Input.StylusPoint(100, 100));
+
+                    pts.Add(new System.Windows.Input.StylusPoint(100, 10));
+
+                    pts.Add(new System.Windows.Input.StylusPoint(10, 10));
+                    UMLClass s = new UMLClass(pts);
+                    
+                    traits.Add(s);
+                    break;
+
+            }       
         }
         
         // On assigne une nouvelle forme de pointe passée en paramètre.

@@ -25,8 +25,7 @@ namespace PolyPaint.VueModeles
         {
             get { return editeur.OutilSelectionne; }            
             set { ProprieteModifiee(); }
-        }        
-        
+        }
         public string CouleurSelectionnee
         {
             get { return editeur.CouleurSelectionnee; }
@@ -52,7 +51,10 @@ namespace PolyPaint.VueModeles
         public RelayCommand<object> Depiler { get; set; }
         public RelayCommand<string> ChoisirPointe { get; set; }
         public RelayCommand<string> ChoisirOutil { get; set; }
-        public RelayCommand<object> Reinitialiser { get; set; }        
+        public RelayCommand<object> Reinitialiser { get; set; }
+
+        public RelayCommand<string> ChoisirForme { get; set; }
+        public RelayCommand<string> AddForm { get; set; }
 
         /// <summary>
         /// Constructeur de VueModele
@@ -74,11 +76,12 @@ namespace PolyPaint.VueModeles
             // Pour chaque commande, on effectue la liaison avec des méthodes du modèle.            
             Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);            
             Depiler = new RelayCommand<object>(editeur.Depiler, editeur.PeutDepiler);
-            // Pour les commandes suivantes, il est toujours possible des les activer.
-            // Donc, aucune vérification de type Peut"Action" à faire.
-            ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
+            AddForm = new RelayCommand<string>(editeur.AddForm);
+        // Pour les commandes suivantes, il est toujours possible des les activer.
+        // Donc, aucune vérification de type Peut"Action" à faire.
+        ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
-            Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);            
+            Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
         }
 
         /// <summary>
