@@ -1,5 +1,6 @@
 package com.projet3.polypaint.Image;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 
 public class ImageEditingActivity extends AppCompatActivity {
 
+    private enum Mode{selection, lasso, creation}
     private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
@@ -37,11 +39,12 @@ public class ImageEditingActivity extends AppCompatActivity {
     private Bitmap bitmap;
     private ImageView iView;
     private ArrayList<GenericShape> shapes;
+
+    private Mode currentMode = Mode.creation;
     private ShapeType currentShapeType = ShapeType.uml_class;
 
     private Paint selectionPaint;
     private boolean selectionMode = false;
-    private GenericShape currentSelection = null;
     private ArrayList<GenericShape> selections = null;
     private Path selectionPath = new Path();
 
@@ -56,7 +59,6 @@ public class ImageEditingActivity extends AppCompatActivity {
         initializePaint();
 
         setTouchListener();
-        setToggleListener();
     }
 
     private void initializePaint() {
@@ -85,6 +87,7 @@ public class ImageEditingActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -93,58 +96,66 @@ public class ImageEditingActivity extends AppCompatActivity {
                 iView.setImageBitmap(bitmap);
                 canvas = new Canvas(bitmap);
 
+                boolean continueListening = false;
+
                 int posX = (int)event.getX(0);
                 int posY = (int)event.getY(0);
 
-                if (selectionMode) {
-                    //checkSelection(posX, posY);
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            selectionPath.reset();
-                            selectionPath.moveTo(posX, posY);
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            selectionPath.lineTo(posX, posY);
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            selectionPath.close();
-                            checkLassoSelection();
-                            break;
-                    }
-                    canvas.drawPath(selectionPath, selectionPaint);
-                    drawAllShapes();
-                    view.invalidate();
-                    return true;
+                switch (currentMode) {
+                    case selection :
+                        checkSelection(posX, posY);
+                        break;
+                    case lasso :
+                        doLassoSelection(event);
+                        continueListening = true;
+                        break;
+                    case creation :
+                        addShape(posX, posY);
+                        break;
                 }
-                else {
-                    addShape(posX, posY);
 
-                    drawAllShapes();
-                    view.invalidate();
-                    return false;
-                }
-            }
-        });
-    }
+                drawAllShapes();
+                view.invalidate();
 
-    private void setToggleListener() {
-        ToggleButton toggle = (ToggleButton) findViewById(R.id.buttonSelection);
-        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-                selectionMode = isChecked;
+                return continueListening;
             }
         });
     }
 
     private void checkSelection(int x, int y) {
+        selections = new ArrayList<>();
+
         for (int i = shapes.size() - 1; i >= 0; i--) {
             if (shapes.get(i).getBoundingBox().contains(x, y)){
-                currentSelection = shapes.get(i);
+                selections.add(shapes.get(i));
                 return;
             }
         }
 
-        currentSelection = null;
+        selections = null;
+    }
+
+    private void doLassoSelection(MotionEvent event) {
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                selectionPath.reset();
+                selectionPath.moveTo(posX, posY);
+                break;
+            case MotionEvent.ACTION_MOVE:
+                selectionPath.lineTo(posX, posY);
+                Path tempPath = new Path(selectionPath);
+                tempPath.close();
+                canvas.drawPath(tempPath, selectionPaint);
+                break;
+            case MotionEvent.ACTION_UP:
+                selectionPath.close();
+                checkLassoSelection();
+                selectionPath.reset();
+                break;
+        }
     }
 
     private void checkLassoSelection() {
@@ -186,16 +197,22 @@ public class ImageEditingActivity extends AppCompatActivity {
         for(GenericShape shape : shapes)
             shape.drawOnCanvas(canvas);
 
-        if (currentSelection != null)
-            currentSelection.drawSelectionBox(canvas, selectionPaint);
-
         if (selections != null)
             for (GenericShape shape : selections)
                 shape.drawSelectionBox(canvas, selectionPaint);
     }
 
-    public void setShapeTypeToUmlClass(View button) { currentShapeType = ShapeType.uml_class; }
-    public void setShapeTypeToUmlActivity(View button) { currentShapeType = ShapeType.uml_activity; }
-    public void setShapeTypeToUmlArtefact(View button) { currentShapeType = ShapeType.uml_artefact; }
-    public void setShapeTypeToUmlRole(View button) { currentShapeType = ShapeType.uml_role; }
+
+    public void setShapeTypeToUmlClass(View button) { setShapeType(ShapeType.uml_class); }
+    public void setShapeTypeToUmlActivity(View button) { setShapeType(ShapeType.uml_activity); }
+    public void setShapeTypeToUmlArtefact(View button) { setShapeType(ShapeType.uml_artefact); }
+    public void setShapeTypeToUmlRole(View button) { setShapeType(ShapeType.uml_role); }
+
+    private void setShapeType(ShapeType type) {
+        currentShapeType = type;
+        currentMode = Mode.creation;
+    }
+
+    public void setModeToSelection(View button) { currentMode = Mode.selection; }
+    public void setModeToLasso(View button) { currentMode = Mode.lasso; }
 }

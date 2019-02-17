@@ -20,13 +20,19 @@
                 android:background="@color/chat"
                 android:orientation="vertical">
 
-                <ToggleButton
+                <Button
                     android:id="@+id/buttonSelection"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonSelection"
-                    android:textOff="@string/buttonSelection"
-                    android:textOn="@string/buttonSelection" />
+                    android:onClick="setModeToSelection"
+                    android:text="@string/buttonSelection" />
+
+                <Button
+                    android:id="@+id/buttonLasso"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="setModeToLasso"
+                    android:text="@string/buttonLasso" />
 
                 <Button
                     android:id="@+id/buttonClass"
