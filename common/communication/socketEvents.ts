@@ -4,6 +4,8 @@ export default {
     CannotJoin:"CannotJoin",
     NewUserJoined:"NewUserJoined",
     LoginAttempt:"LoginAttempt",
-    UsernameAlreadyExists:"UsernameAlreadyExists",
     UserLogged:"UserLogged",
+    UsernameAlreadyExists:"UsernameAlreadyExists",
+    InvalidCredentials:"InvalidCredentials",
+    SignUp:"SignUp",
 }

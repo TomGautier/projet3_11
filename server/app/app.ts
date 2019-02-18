@@ -14,6 +14,7 @@ import { DateController } from "./controllers/date.controller";
 import { ApplicationInterface } from "./interfaces";
 import { ConversationManager } from "./services/conversation.manager";
 import { LoginService } from "./services/login.service";
+import { ConversationController } from "./controllers/conversation.controller";
 
 
 @injectable()
@@ -25,6 +26,8 @@ export class Application implements ApplicationInterface {
     public constructor(
             @inject(TYPES.IndexControllerInterface) private indexController: IndexController,
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
+            @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
+            
             @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
             @inject(TYPES.LoginService) private loginService: LoginService) {
         this.app = express();
@@ -42,6 +45,8 @@ export class Application implements ApplicationInterface {
     }
 
     public bindRoutes(): void {
+        this.app.use("/api/conversation/", this.conversationController.router);
+        this.app.use("/api/message/", this.conversationController.router);
         this.app.use("/api/index", this.indexController.router);
         this.app.use("/api/date/", this.dateController.router);
         this.errorHandeling();

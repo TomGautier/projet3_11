@@ -84,8 +84,4 @@ export class LoginService {
         this.socketService.emit(socketId, SocketEvents.UserLogged);
         Logger.info('LoginService', `The user ${username} from socket ${socketId} has been logged in.`);    
     }
-
-    private verifyPassword(expectedPassword: string, enteredPassword: string) {
-        console.log(expectedPassword, enteredPassword);
-    }
 }
