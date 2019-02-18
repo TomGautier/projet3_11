@@ -90,9 +90,7 @@ public class ImageEditingActivity extends AppCompatActivity {
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
-                iView.setImageBitmap(bitmap);
-                canvas = new Canvas(bitmap);
+                updateCanvas();
 
                 boolean continueListening = false;
 
@@ -202,6 +200,12 @@ public class ImageEditingActivity extends AppCompatActivity {
                 shape.drawSelectionBox(canvas, selectionPaint);
     }
 
+    private void updateCanvas() {
+        bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
+        iView.setImageBitmap(bitmap);
+        canvas = new Canvas(bitmap);
+    }
+
 
 
     public void setModeToSelection(View button) { currentMode = Mode.selection; }
@@ -226,9 +230,7 @@ public class ImageEditingActivity extends AppCompatActivity {
 
         selections = null;
 
-        bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
-        iView.setImageBitmap(bitmap);
-        canvas = new Canvas(bitmap);
+        updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
