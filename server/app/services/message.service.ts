@@ -17,29 +17,18 @@ export class MessageService implements MessageServiceInterface {
     }
 
     public async getAllFromConversation(conversation: string): Promise<{}> {
-        try {
-            return await this.databaseService.getAll(Message);
-        }
-        catch (err) {
-            Logger.warn('ConversationService', `Couldn't get conversations.`);
-            return {
-                title: "Error",
-                body: err.toString()
-            };
-        }
+        return await this.databaseService.getAll(Message)
+            .catch(err => {
+                Logger.warn('ConversationService', `Couldn't get conversations.`);
+                throw err;
+            });
     } 
 
     public async sendMessage(doc: any): Promise<{}> {
-        try {
-
-            return await this.databaseService.create(Message, doc);
-        }
-        catch (err) {
-            Logger.warn('ConversationService', `Couldn't create conversation : ${doc}`);
-            return {
-                title: "Error",
-                body: err.toString()
-            };
-        }
+        return await this.databaseService.create(Message, doc)
+            .catch(err => {
+                Logger.warn('ConversationService', `Couldn't create conversation : ${doc}`);
+                throw err;
+            });
     }
 }
