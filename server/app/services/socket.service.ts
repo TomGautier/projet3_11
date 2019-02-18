@@ -30,10 +30,9 @@ export class SocketService {
         this.server = server;
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
-            Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
-            console.log("Socket id" + socket.id + " connected.");
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
+            Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
@@ -42,7 +41,18 @@ export class SocketService {
             this.sockets.delete(socket.id);
         });
 
-        Logger.warn("SocketService", `Socket service initialized.`);
+        Logger.debug("SocketService", `Socket service initialized.`);
+    }
+
+    public authSocket(socketId: string) {
+        const socket = this.sockets.get(socketId);
+        if (socket) {
+            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+        }
+        else {
+            Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
+        }
     }
 
     public subscribe(event: string, action: ((...args: any[]) => any)) {
@@ -56,17 +66,6 @@ export class SocketService {
         }
         else {
             Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
-        }
-    }
-
-    public authSocket(socketId: string) {
-        const socket = this.sockets.get(socketId);
-        if (socket) {
-            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
-        }
-        else {
-            Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
         }
     }
 

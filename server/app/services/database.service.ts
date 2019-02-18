@@ -57,7 +57,26 @@ export class DatabaseService {
     public async create(model: any, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.create(doc, (err: any, document: any) => {
-                if (err) { throw err; };
+                if (err) { return reject(err); };
+                resolve(document);
+            });
+        });
+    }
+
+    public async getAllByCriteria(model: any, criteria: string, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.find({ [criteria]: doc }, (err: any, document: any) => {
+
+                if (err) { return reject(err); };
+                resolve(document);
+            });
+        });
+    }
+
+    public async getAll(model: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.find({}, (err: any, document: any) => {
+                if (err) { return reject(err); };
                 resolve(document);
             });
         });
@@ -75,7 +94,7 @@ export class DatabaseService {
     public async remove(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.remove({ [criteria]: doc }, (err: any, document: any) => {
-                if (err) { throw err; };
+                if (err) { return reject(err);; };
                 resolve(document);
             });
         });
