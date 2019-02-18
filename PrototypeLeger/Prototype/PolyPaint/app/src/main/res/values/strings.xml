@@ -20,6 +20,7 @@
     <string name="buttonSelection">Sélection</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>
+    <string name="buttonMove">Déplacer</string>
 
 
 </resources>

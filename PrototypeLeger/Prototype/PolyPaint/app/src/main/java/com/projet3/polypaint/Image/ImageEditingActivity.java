@@ -26,7 +26,7 @@ import java.util.ArrayList;
 
 public class ImageEditingActivity extends AppCompatActivity {
 
-    private enum Mode{selection, lasso, creation}
+    private enum Mode{selection, lasso, creation, move}
     private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
@@ -34,7 +34,6 @@ public class ImageEditingActivity extends AppCompatActivity {
 
     private Canvas canvas;
     private PaintStyle defaultStyle;
-    private Bitmap bitmap;
     private ImageView iView;
     private ArrayList<GenericShape> shapes;
 
@@ -42,9 +41,11 @@ public class ImageEditingActivity extends AppCompatActivity {
     private ShapeType currentShapeType = ShapeType.uml_class;
 
     private Paint selectionPaint;
-    private boolean selectionMode = false;
     private ArrayList<GenericShape> selections = null;
     private Path selectionPath = new Path();
+    private boolean isMovingSelection = false;
+    private int lastTouchPosX;
+    private int lastTouchPosY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +109,10 @@ public class ImageEditingActivity extends AppCompatActivity {
                     case creation :
                         addShape(posX, posY);
                         break;
+                    case move :
+                        moveSelectedShape(event);
+                        continueListening = true;
+                        break;
                 }
 
                 drawAllShapes();
@@ -116,6 +121,34 @@ public class ImageEditingActivity extends AppCompatActivity {
                 return continueListening;
             }
         });
+    }
+
+    private void moveSelectedShape(MotionEvent event) {
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (GenericShape shape : selections)
+                    if (shape.getBoundingBox().contains(posX, posY)) {
+                        isMovingSelection = true;
+                        lastTouchPosX = posX;
+                        lastTouchPosY = posY;
+                    }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (isMovingSelection) {
+                    for (GenericShape shape : selections)
+                        shape.relativeMove(posX - lastTouchPosX, posY - lastTouchPosY);
+
+                    lastTouchPosX = posX;
+                    lastTouchPosY = posY;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                isMovingSelection = false;
+                break;
+        }
     }
 
     private void checkSelection(int x, int y) {
@@ -201,7 +234,7 @@ public class ImageEditingActivity extends AppCompatActivity {
     }
 
     private void updateCanvas() {
-        bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
         iView.setImageBitmap(bitmap);
         canvas = new Canvas(bitmap);
     }
@@ -210,6 +243,7 @@ public class ImageEditingActivity extends AppCompatActivity {
 
     public void setModeToSelection(View button) { currentMode = Mode.selection; }
     public void setModeToLasso(View button) { currentMode = Mode.lasso; }
+    public void setModeToMove(View button) { currentMode = Mode.move; }
 
     public void setShapeTypeToUmlClass(View button) { setShapeType(ShapeType.uml_class); }
     public void setShapeTypeToUmlActivity(View button) { setShapeType(ShapeType.uml_activity); }
