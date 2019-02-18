@@ -17,6 +17,9 @@ public class UMLArtefact extends GenericShape {
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
+    public UMLArtefact clone() {
+        return new UMLArtefact(this.posX + 30, this.posY + 30, this.style);
+    }
 
     @Override
     public void drawOnCanvas(Canvas canvas) {

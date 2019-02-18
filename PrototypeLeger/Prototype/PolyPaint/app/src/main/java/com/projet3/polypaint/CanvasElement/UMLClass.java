@@ -13,6 +13,9 @@ public class UMLClass extends GenericShape {
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
+    public UMLClass clone() {
+        return new UMLClass(this.posX + 30, this.posY + 30, this.style);
+    }
 
     @Override
     public void drawOnCanvas(Canvas canvas) {

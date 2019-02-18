@@ -25,6 +25,8 @@ public abstract class GenericShape {
 
     public abstract void drawOnCanvas(Canvas canvas);
 
+    public abstract GenericShape clone();
+
     public void drawSelectionBox(Canvas canvas, Paint paint) {
         int w2 = width/2 + SELECTION_GAP;
         int h2 = height/2 + SELECTION_GAP;

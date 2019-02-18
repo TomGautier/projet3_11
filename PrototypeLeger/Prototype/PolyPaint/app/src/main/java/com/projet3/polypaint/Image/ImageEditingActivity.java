@@ -10,6 +10,7 @@ import android.graphics.Region;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,7 +23,9 @@ import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class ImageEditingActivity extends AppCompatActivity {
 
@@ -31,12 +34,16 @@ public class ImageEditingActivity extends AppCompatActivity {
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
     private final float SELECTION_STROKE_WIDTH = 4f;
+    private final String ADD_ACTION = "ADD";
+    private final String REMOVE_ACTION = "REMOVE";
 
     private Canvas canvas;
     private PaintStyle defaultStyle;
     private Bitmap bitmap;
     private ImageView iView;
     private ArrayList<GenericShape> shapes;
+    private Stack<Pair<ArrayList<GenericShape>, String>> addStack;
+    private Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
 
     private Mode currentMode = Mode.creation;
     private ShapeType currentShapeType = ShapeType.uml_class;
@@ -54,6 +61,8 @@ public class ImageEditingActivity extends AppCompatActivity {
 
         iView = (ImageView) findViewById(R.id.canvasView);
         shapes = new ArrayList<>();
+        addStack = new Stack<>();
+        removeStack = new Stack<>();
         initializePaint();
 
         setTouchListener();
@@ -106,7 +115,9 @@ public class ImageEditingActivity extends AppCompatActivity {
                         continueListening = true;
                         break;
                     case creation :
-                        addShape(posX, posY);
+                        ArrayList stackElems = new ArrayList();
+                        stackElems.add(addShape(posX, posY));
+                        addToStack(stackElems, ADD_ACTION);
                         break;
                 }
 
@@ -172,24 +183,34 @@ public class ImageEditingActivity extends AppCompatActivity {
             selections = null;
     }
 
-    private void addShape(int posX, int posY) {
+    private GenericShape addShape(int posX, int posY) {
         selections = null;
-
+        GenericShape nShape = null;
         switch (currentShapeType) {
             case uml_class :
-                shapes.add(new UMLClass(posX, posY, defaultStyle));
+                nShape = new UMLClass(posX, posY, defaultStyle);
                 break;
             case uml_activity :
-                shapes.add(new UMLActivity(posX, posY, defaultStyle));
+                nShape = new UMLActivity(posX, posY, defaultStyle);
                 break;
             case uml_artefact :
-                shapes.add(new UMLArtefact(posX, posY, defaultStyle));
+                nShape = new UMLArtefact(posX, posY, defaultStyle);
                 break;
             case uml_role :
-                shapes.add(new UMLRole(posX, posY, defaultStyle));
+                nShape = new UMLRole(posX, posY, defaultStyle);
                 break;
         }
+        if (nShape != null)
+            shapes.add(nShape);
+
+        return nShape;
+
     }
+    private void addToStack(ArrayList<GenericShape> nShapes, String action){
+        Pair pair = new Pair(nShapes, action);
+        addStack.push(pair);
+    }
+
 
     private void drawAllShapes() {
         for(GenericShape shape : shapes)
@@ -223,15 +244,88 @@ public class ImageEditingActivity extends AppCompatActivity {
 
     public void deleteSelection(View button) {
         if (selections != null) {
+            ArrayList<GenericShape> stackElems = new ArrayList<>();
             for (GenericShape shape : selections) {
                 shapes.remove(shape);
+                stackElems.add(shape);
             }
+            selections = null;
+            addToStack(stackElems,REMOVE_ACTION);
+
+
         }
-
-        selections = null;
-
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
+    }
+    public void duplicateSelection(View button) {
+        if (selections != null && selections.size() > 0){
+            ArrayList<GenericShape> stackElems = new ArrayList<>();
+            for (GenericShape shape : selections){
+                GenericShape nShape = shape.clone();
+                shapes.add(nShape);
+                stackElems.add(nShape);
+            }
+            addToStack(stackElems, ADD_ACTION);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
+
+    }
+    public void reset(View button) {
+
+        if (shapes != null && shapes.size() > 0){
+            addToStack(new ArrayList(shapes),REMOVE_ACTION);
+            shapes.clear();
+        }
+        selections = null;
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+        /*if (selections != null && selections.size() > 0)
+            selections.clear();*/
+    }
+
+    public void backCanevas(View button) {
+        if (addStack != null && !addStack.empty()){
+            Pair pair = addStack.pop();
+            for (GenericShape shape : (ArrayList<GenericShape>)pair.first){
+                if (pair.second.equals(ADD_ACTION)){
+                        shapes.remove(shape);
+                }
+                else if(pair.second.equals(REMOVE_ACTION)){
+                    shapes.add(shape);
+
+                }
+
+            }
+            removeStack.push(pair);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
+
+
+    }
+    public void forthCanevas(View button) {
+        if (removeStack != null && !removeStack.empty()){
+            Pair pair = removeStack.pop();
+            for (GenericShape shape : (ArrayList<GenericShape>)pair.first){
+                if (pair.second.equals(ADD_ACTION)){
+                    shapes.add(shape);
+                }
+                else if(pair.second.equals(REMOVE_ACTION)){
+                    shapes.remove(shape);
+
+                }
+
+            }
+            addStack.push(pair);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
+
     }
 }

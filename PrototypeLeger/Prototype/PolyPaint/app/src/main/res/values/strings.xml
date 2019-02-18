@@ -20,6 +20,7 @@
     <string name="buttonSelection">Sélection</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>
-
+    <string name="buttonDuplicate">Duppliquer</string>
+    <string name="buttonReset">Réinitialiser</string>
 
 </resources>

@@ -13,6 +13,9 @@ public class UMLRole extends GenericShape {
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
+    public UMLRole clone() {
+        return new UMLRole(this.posX + 30, this.posY + 30, this.style);
+    }
 
     @Override
     public void drawOnCanvas(Canvas canvas) {

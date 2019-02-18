@@ -22,14 +22,14 @@
 
                 <Button
                     android:id="@+id/buttonSelection"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="setModeToSelection"
                     android:text="@string/buttonSelection" />
 
                 <Button
                     android:id="@+id/buttonLasso"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="setModeToLasso"
                     android:text="@string/buttonLasso" />
@@ -47,14 +47,14 @@
 
                 <Button
                     android:id="@+id/buttonActivity"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="setShapeTypeToUmlActivity"
                     android:text="@string/buttonActivity" />
 
                 <Button
                     android:id="@+id/buttonArtefact"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="setShapeTypeToUmlArtefact"
                     android:text="@string/buttonArtefact" />
@@ -72,10 +72,42 @@
 
                 <Button
                     android:id="@+id/buttonDelete"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="deleteSelection"
                     android:text="@string/buttonDelete" />
+                <Button
+                    android:id="@+id/buttonDuplicate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="duplicateSelection"
+                    android:text="@string/buttonDuplicate" />
+                <Button
+                    android:id="@+id/buttonReset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="reset"
+                    android:text="@string/buttonReset" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_horizontal">
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_back_arrow"
+                        android:onClick="backCanevas"
+                        />
+                    <ImageButton
+                        android:id="@+id/restoreButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_forward_arrow"
+                        android:onClick="forthCanevas"
+                        />
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
