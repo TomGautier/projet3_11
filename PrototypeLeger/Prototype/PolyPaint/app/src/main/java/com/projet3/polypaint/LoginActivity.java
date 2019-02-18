@@ -74,6 +74,8 @@ public class LoginActivity extends Activity  {
 					if (loginManager.isLogged()){
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
+						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingActivity.class);
+						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
 					else{

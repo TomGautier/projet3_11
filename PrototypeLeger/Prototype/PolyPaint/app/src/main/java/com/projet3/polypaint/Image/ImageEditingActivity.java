@@ -21,13 +21,23 @@ import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
+import com.projet3.polypaint.Chat.Chat;
+import com.projet3.polypaint.Chat.Conversation;
+import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
+import com.projet3.polypaint.UserInformation;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Stack;
 
 public class ImageEditingActivity extends AppCompatActivity {
+
+    //chat
+    private final String CHAT_BUNDLE_TAG = "chat";
+    private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
+    private UserInformation userInformation;
+    private Chat chat;
 
     private enum Mode{selection, lasso, creation}
     private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
@@ -66,6 +76,21 @@ public class ImageEditingActivity extends AppCompatActivity {
         initializePaint();
 
         setTouchListener();
+        HomeActivity.currentActivityInstance = this;
+
+        //Chat.currentInstance = new Chat(new UserInformation("o","b"));
+
+        //chat = getIntent().getParcelableExtra(CHAT_BUNDLE_TAG);
+       // }
+        //chat
+       /* if (savedInstanceState == null) {
+            userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
+           // Chat.currentInstance = new Chat(this, userInformation);
+        }
+        else {
+            userInformation = savedInstanceState.getParcelable(USER_INFORMATION_PARCELABLE_TAG);
+            Chat.currentInstance = new Chat(this, userInformation, savedInstanceState.getBundle(CHAT_BUNDLE_TAG));
+        }*/
     }
 
     private void initializePaint() {
