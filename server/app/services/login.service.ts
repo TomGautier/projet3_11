@@ -65,15 +65,9 @@ export class LoginService {
     }
 
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {
-        const socket = this.socketService.getSocket(socketId);
-        if (socket) {
-            await this.userService.removeByUsername(username)
-                .then(() => this.conversationManager.leaveConversation(roomId, socketId, username))
-                .catch(err => Logger.warn('LoginService', `This username doesn't exist : ${username}`));
-        }
-        else {
-            Logger.warn('LoginService', `This socket doesn't exist : ${socketId}`);
-        }
+        await this.userService.removeByUsername(username)
+            .then(() => this.conversationManager.leaveConversation(roomId, socketId, username))
+            .catch(err => Logger.warn('LoginService', `This username doesn't exist : ${username}`));
     }
 
     private onLoggedIn(socketId: string, username: string) {

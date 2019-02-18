@@ -7,17 +7,15 @@ import { Logger } from "./logger.service";
 
 require('reflect-metadata');
 
-require('reflect-metadata');
-
 @injectable()
 export class MessageService implements MessageServiceInterface {
-    private readonly ID_CRITERIA = "id";
+    private readonly CONV_ID_CRITERIA = "conversationId";
     
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async getAllFromConversation(conversation: string): Promise<{}> {
-        return await this.databaseService.getAll(Message)
+    public async getAllFromConversation(conversationId: string): Promise<{}> {
+        return await this.databaseService.getAllByCriteria(Message, this.CONV_ID_CRITERIA, conversationId)
             .catch(err => {
                 Logger.warn('ConversationService', `Couldn't get conversations.`);
                 throw err;
