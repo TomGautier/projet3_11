@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
+import com.projet3.polypaint.User.UserInformation;
+import com.projet3.polypaint.User.UserManager;
 
 public class LoginActivity extends Activity  {
 
@@ -65,7 +67,9 @@ public class LoginActivity extends Activity  {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
-					if (UserLoginManager.currentInstance.requestLogin(userInformation)) {
+					if (UserManager.currentInstance.requestLogin(userInformation)) {
+						UserManager.currentInstance.fetchUserConversations(userInformation);
+
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
@@ -110,7 +114,7 @@ public class LoginActivity extends Activity  {
             public void run() {
                 if(SocketManager.currentInstance.isConnected()){
                     Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
-                    UserLoginManager.currentInstance = new UserLoginManager(ipEntry.getText().toString());
+                    UserManager.currentInstance = new UserManager(ipEntry.getText().toString());
                     changeToUserUI();
                 }
                 else{

@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserInformation;
+import com.projet3.polypaint.User.UserInformation;
 import com.projet3.polypaint.Utilities;
 
 import java.text.SimpleDateFormat;

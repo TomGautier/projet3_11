@@ -11,6 +11,7 @@ import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
+import com.projet3.polypaint.User.UserInformation;
 
 import java.util.ArrayList;
 
