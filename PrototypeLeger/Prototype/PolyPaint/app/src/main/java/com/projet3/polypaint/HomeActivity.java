@@ -3,16 +3,14 @@ package com.projet3.polypaint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.projet3.polypaint.Chat.Chat;
+import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
-import com.projet3.polypaint.Image.ImageEditingActivity;
+import com.projet3.polypaint.Image.ImageEditingFragment;
 
 import java.util.ArrayList;
 
@@ -33,7 +31,7 @@ public class HomeActivity extends Activity  {
 			convos.add(new Conversation("convo2"));
 			FragmentManager manager = getFragmentManager();
 			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.add(R.id.chatFragment,Chat.newInstance(userInformation,convos),"CHAT_FRAGMENT");
+			transaction.add(R.id.chatFragment, ChatFragment.newInstance(userInformation,convos),"CHAT_FRAGMENT");
 			transaction.addToBackStack(null);
 			transaction.commit();
 		}
@@ -71,7 +69,7 @@ public class HomeActivity extends Activity  {
 	public void gotoImageEditing(View button) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingActivity(),"EDITING_FRAGMENT");
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}

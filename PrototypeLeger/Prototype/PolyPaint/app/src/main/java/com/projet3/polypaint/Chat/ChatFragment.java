@@ -1,13 +1,10 @@
 package com.projet3.polypaint.Chat;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -25,20 +22,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 
-import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.UserInformation;
 import com.projet3.polypaint.Utilities;
 
-import java.lang.reflect.Array;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.ArrayList;
-import java.util.Date;
 
 
-public class Chat extends Fragment implements NewMessageListener {
+public class ChatFragment extends Fragment implements NewMessageListener {
 
     private final int CHAT_OPEN_COEF= 2;
     private final int CHAT_CLOSE_COEF = 4;
@@ -58,10 +51,10 @@ public class Chat extends Fragment implements NewMessageListener {
     private UserInformation userInformation;
     public View rootView;
 
-    public Chat() { }
+    public ChatFragment() { }
 
-    public static Chat newInstance(UserInformation userInformation_, ArrayList<Conversation> conversations) {
-        Chat f = new Chat();
+    public static ChatFragment newInstance(UserInformation userInformation_, ArrayList<Conversation> conversations) {
+        ChatFragment f = new ChatFragment();
         Bundle args = new Bundle();
         args.putParcelable("USER_INFORMATION" ,userInformation_);
         args.putParcelableArrayList("CONVERSATIONS", conversations);

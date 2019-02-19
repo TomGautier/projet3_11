@@ -27,7 +27,7 @@
             android:label="Home Activity"
             android:parentActivityName=".LoginActivity" />
         <activity
-            android:name=".Image.ImageEditingActivity"/>
+            android:name=".Image.ImageEditingFragment"/>
     </application>
 
 </manifest>

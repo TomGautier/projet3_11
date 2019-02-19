@@ -2,17 +2,13 @@ package com.projet3.polypaint.Image;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.media.Image;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -29,18 +25,12 @@ import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
-import com.projet3.polypaint.Chat.Chat;
-import com.projet3.polypaint.Chat.Conversation;
-import com.projet3.polypaint.Chat.SocketManager;
-import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserInformation;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingActivity extends Fragment {
+public class ImageEditingFragment extends Fragment {
 
 
     private Button buttonClass;
@@ -82,7 +72,7 @@ public class ImageEditingActivity extends Fragment {
     private View rootView;
 
 
-    public ImageEditingActivity() {}
+    public ImageEditingFragment() {}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

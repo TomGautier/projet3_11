@@ -127,5 +127,10 @@
         android:layout_marginTop="5dp"
         android:onClick="gotoImageEditing"
         android:text="(TEMP) Canvas" />
+    <FrameLayout
+        android:id="@+id/imageEditingFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></FrameLayout>
 
 </RelativeLayout>

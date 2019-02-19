@@ -1,22 +1,19 @@
 package com.projet3.polypaint;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.SocketManager;
-import com.projet3.polypaint.Image.ImageEditingActivity;
-
-import java.net.InetAddress;
+import com.projet3.polypaint.Image.ImageEditingFragment;
 
 public class LoginActivity extends Activity  {
 
@@ -74,7 +71,7 @@ public class LoginActivity extends Activity  {
 					if (loginManager.isLogged()){
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
-						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingActivity.class);
+						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingFragment.class);
 						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
@@ -159,6 +156,11 @@ public class LoginActivity extends Activity  {
 
 	/*Fonction temporaire pour passer directement à l'édition d'images*/
 	public void gotoImageEditing(View button) {
-		startActivity(new android.content.Intent(getBaseContext(), ImageEditingActivity.class));
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
+		transaction.addToBackStack(null);
+		transaction.commit();
+
 	}
 }
