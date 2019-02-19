@@ -24,37 +24,6 @@ namespace PolyPaint.Modeles
             set { outilSelectionne = value; ProprieteModifiee(); }
         }
 
-        //02-12-2019 MP: To delete
-        // Couleur des traits tracés par le crayon.
-      /*  private string couleurSelectionnee = "Black";
-        public string CouleurSelectionnee
-        {
-            get { return couleurSelectionnee; }
-            // Lorsqu'on sélectionne une couleur c'est généralement pour ensuite dessiner un trait.
-            // C'est pourquoi lorsque la couleur est changée, l'outil est automatiquement changé pour le crayon.
-            set
-            {
-                couleurSelectionnee = value;
-                OutilSelectionne = "crayon";
-                ProprieteModifiee();
-            }
-        }*/
-
-        // Grosseur des traits tracés par le crayon.
-       /* private int tailleTrait = 11;
-        public int TailleTrait
-        {
-            get { return tailleTrait; }
-            // Lorsqu'on sélectionne une taille de trait c'est généralement pour ensuite dessiner un trait.
-            // C'est pourquoi lorsque la taille est changée, l'outil est automatiquement changé pour le crayon.
-            set
-            {
-                tailleTrait = value;
-                OutilSelectionne = "crayon";
-                ProprieteModifiee();
-            }
-        }*/
-
         /// <summary>
         /// Appelee lorsqu'une propriété d'Editeur est modifiée.
         /// Un évènement indiquant qu'une propriété a été modifiée est alors émis à partir d'Editeur.

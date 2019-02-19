@@ -27,31 +27,11 @@ namespace PolyPaint.VueModeles
               set { ProprieteModifiee(); }
           }
 
-        /*public string CouleurSelectionnee
-        {
-            get { return editeur.CouleurSelectionnee; }
-            set { editeur.CouleurSelectionnee = value; }
-        }*/
-
-        //02-12-2019 MP: To delete
-        /*  public string PointeSelectionnee
-          {
-              get { return editeur.PointeSelectionnee; }
-              set { ProprieteModifiee(); }
-          }*/
-
-        /*  public int TailleTrait
-          {
-              get { return editeur.TailleTrait; }
-              set { editeur.TailleTrait = value; }
-          }*/
-
         public StrokeCollection Traits { get; set; }
 
         // Commandes sur lesquels la vue pourra se connecter.
         public RelayCommand<object> Empiler { get; set; }
         public RelayCommand<object> Depiler { get; set; }
-        public RelayCommand<string> ChoisirPointe { get; set; }
         public RelayCommand<string> ChoisirOutil { get; set; }
         public RelayCommand<object> Reinitialiser { get; set; }        
 
@@ -67,8 +47,6 @@ namespace PolyPaint.VueModeles
 
             // On initialise les attributs de dessin avec les valeurs de départ du modèle.
             AttributsDessin = new DrawingAttributes();            
-         //   AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
-          /*  AjusterPointe();*/
 
             Traits = editeur.traits;
             
@@ -101,37 +79,11 @@ namespace PolyPaint.VueModeles
         /// <param name="e">Les paramètres de l'évènement. PropertyName est celui qui nous intéresse. 
         /// Il indique quelle propriété a été modifiée dans le modèle.</param>
         private void EditeurProprieteModifiee(object sender, PropertyChangedEventArgs e)
-        {
-            /*  if (e.PropertyName == "CouleurSelectionnee")
-             {
-                 AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
-             }    */            
+        {           
               if (e.PropertyName == "OutilSelectionne")
              {
                  OutilSelectionne = editeur.OutilSelectionne;
              }
-            /*  else if (e.PropertyName == "PointeSelectionnee")
-               {
-                   PointeSelectionnee = editeur.PointeSelectionnee;
-                   AjusterPointe();
-               }
-               else // e.PropertyName == "TailleTrait"
-               {               
-                   AjusterPointe();
-               }     */
         }
-
-        //02-12-2019 MP: To delete
-        /// <summary>
-        /// C'est ici qu'est défini la forme de la pointe, mais aussi sa taille (TailleTrait).
-        /// Pourquoi deux caractéristiques se retrouvent définies dans une même méthode? Parce que pour créer une pointe 
-        /// horizontale ou verticale, on utilise une pointe carrée et on joue avec les tailles pour avoir l'effet désiré.
-        /// </summary>
-      /*  private void AjusterPointe()
-        {
-            AttributsDessin.StylusTip = (editeur.PointeSelectionnee == "ronde") ? StylusTip.Ellipse : StylusTip.Rectangle;
-            AttributsDessin.Width = (editeur.PointeSelectionnee == "verticale") ? 1 : editeur.TailleTrait;
-            AttributsDessin.Height = (editeur.PointeSelectionnee == "horizontale") ? 1 : editeur.TailleTrait;
-        }*/
     }
 }

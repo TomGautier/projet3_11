@@ -62,26 +62,6 @@
                 <StackPanel Orientation="Horizontal">
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 </StackPanel>
-                <xctk:ColorPicker x:Name="selecteurCouleur"                             
-                  VerticalContentAlignment="Stretch"
-                  Background="#00000000"
-                  ShowDropDownButton="False"
-                  ShowRecentColors="True"
-                  BorderBrush="#80000000"
-                  Margin="5,0,0,0" Width="39" Height="38"
-                  SelectedColor="{Binding Path=CouleurSelectionnee, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                  AvailableColorsHeader="Palette"
-                  StandardColorsHeader="Couleurs de base"
-                  StandardButtonHeader="Standard"
-                  RecentColorsHeader="Récemment utilisées"
-                  UsingAlphaChannel="True"
-                  AdvancedButtonHeader="Personnalisé" />
-                <Slider Width="100" Height="26" Minimum="1" Maximum="50"
-                        Value="{Binding Path=TailleTrait, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                        Margin="12"
-                        Foreground="Gray"                        
-                        TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False">
-                </Slider>
             </StackPanel>
             
         </Border>

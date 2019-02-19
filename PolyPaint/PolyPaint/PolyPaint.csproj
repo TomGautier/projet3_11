@@ -126,9 +126,6 @@
     <Resource Include="Resources\position.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\efface.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="palette.ico" />
   </ItemGroup>
   <ItemGroup>
