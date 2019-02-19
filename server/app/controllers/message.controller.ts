@@ -3,13 +3,13 @@ import { Router, Request, Response, NextFunction } from "express";
 
 import { TYPES } from "../types";
 import { MessageService } from "../services/message.service";
-import { MessageControllerInterface } from "../interfaces";
+import { ConnectionServiceInterface, ConnectionControllerInterface } from "../interfaces";
 
 @injectable()
-export class MessageController implements MessageControllerInterface {
+export class MessageController implements ConnectionControllerInterface {
     
     public constructor(
-        @inject(TYPES.MessageServiceInterface) private messageService: MessageService
+        @inject(TYPES.ConnectionServiceInterface) private messageService: MessageService
     ) { }
 
     public get router(): Router {
