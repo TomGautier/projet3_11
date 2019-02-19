@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:convertisseurs="clr-namespace:PolyPaint.Convertisseurs"        
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"       
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Vues="clr-namespace:PolyPaint.Vues"
         xmlns:VueModels="clr-namespace:PolyPaint.VueModeles"
@@ -12,16 +11,15 @@
         mc:Ignorable="d"
         Title="Poly Paint" Height="700" Width="900" Background="#CBD4E4" MinWidth="627" MinHeight="200">
     <Window.Resources>
-        <convertisseurs:ConvertisseurBordure x:Key="convertisseurBordure" />
-        <convertisseurs:ConvertisseurCouleurFond x:Key="convertisseurCouleurFond" />
-        <convertisseurs:ConvertisseurModeEdition x:Key="convertisseurModeEdition" />
-        
         <DataTemplate x:Key="View1Template" DataType="{x:Type VueModels:VueModele}">
             <Vues:LoginControl VerticalAlignment="Center"/>
         </DataTemplate>
 
         <DataTemplate x:Key="View2Template" DataType="{x:Type VueModels:VueModele}">
-            <Vues:ChatControl/>
+            <DockPanel>
+                <Vues:ChatControl/>
+                <Vues:DrawControl/>
+            </DockPanel>
         </DataTemplate>
     </Window.Resources>
 

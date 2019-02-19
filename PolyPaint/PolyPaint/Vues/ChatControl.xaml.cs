@@ -53,10 +53,9 @@ namespace PolyPaint.Vues
             if (_chatWindow == null)
             {
                 ((FrameworkElement)((DockPanel)FindName("chatDockPanel")).Parent).Visibility = Visibility.Collapsed;
-                chatWindow = new ChatWindow
-                {
-                    Name = "chatWindow"
-                };
+                chatWindow = new ChatWindow();
+                chatWindow.Name = "chatWindow";
+                chatWindow.DataContext = DataContext;
                 chatWindow.Show();
                 chatWindow.Closed += (object _sender, EventArgs _e) =>
                 {
