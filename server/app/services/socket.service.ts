@@ -24,14 +24,15 @@ export class SocketService {
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
     ) { }
-
     
     public init(server: SocketIO.Server): void {
         this.server = server;
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
-            socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
+            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+            //socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
@@ -42,17 +43,6 @@ export class SocketService {
         });
 
         Logger.debug("SocketService", `Socket service initialized.`);
-    }
-
-    public authSocket(socketId: string) {
-        const socket = this.sockets.get(socketId);
-        if (socket) {
-            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
-        }
-        else {
-            Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
-        }
     }
 
     public subscribe(event: string, action: ((...args: any[]) => any)) {
@@ -69,7 +59,7 @@ export class SocketService {
         }
     }
 
-    public leaveRoom(roomId: string, socketId: string, username: string) {
+    public leaveRoom(roomId: string, socketId: string) {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.leave(roomId);

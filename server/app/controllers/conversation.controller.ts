@@ -11,7 +11,7 @@ export class ConversationController implements ConversationControllerInterface {
     
     public constructor(
         @inject(TYPES.ConversationServiceInterface) private conversationService: ConversationService,
-        @inject(TYPES.ConversationServiceInterface) private connectionManager: ConnectionManager
+        @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager
     ) { }
 
     public get router(): Router {
@@ -21,7 +21,8 @@ export class ConversationController implements ConversationControllerInterface {
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
                 if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json("User is not authenticated"); return; }
+                    { res.json(403); return; }
+                
                 this.conversationService.getAllByUsername(req.params.username).then(conversations => {
                     res.json(conversations);
                 });
@@ -30,7 +31,8 @@ export class ConversationController implements ConversationControllerInterface {
         router.post("/:sessionId/:username/:conversationName",
             (req: Request, res: Response, next: NextFunction) => {
                 if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json("User is not authenticated"); return; }
+                    { res.json(403); return; }
+                
                 this.conversationService.create(req.params.conversationName, req.params.username).then(conversation => {
                     res.json(conversation);
                 });

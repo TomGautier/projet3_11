@@ -11,7 +11,7 @@ import * as uuid from 'node-uuid';
 
 @injectable()
 export class ConnectionManager {
-    // The key is the username and the string the session ID.
+    // The key is the username and the 2nd field is the session ID.
     private connectedUsers: Map<String, String> = new Map();
 
     public addUser(sessionId: string, username: string) {
@@ -31,7 +31,6 @@ export class ConnectionManager {
 export class ConnectionService implements ConnectionServiceInterface {
     
     constructor(
-        @inject(TYPES.SocketService) private socketService: SocketService,
         @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
         @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager,
         @inject(TYPES.UserService) private userService: UserService
@@ -64,17 +63,12 @@ export class ConnectionService implements ConnectionServiceInterface {
     }
 
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {
+        this.connectionManager.removeUser(username);
         await this.userService.removeByUsername(username)
             .then(() => this.conversationManager.leaveConversation(roomId, socketId, username))
             .catch(err => Logger.warn('LoginService', `This username doesn't exist : ${username}`));
     }
 
-    private onLoggedIn(socketId: string, username: string) {
-        this.socketService.subscribe(SocketEvents.UserLeft, args => this.onUserDisconnection(args[0], args[1][0], args[1][1]));
-        this.socketService.authSocket(socketId);
-        this.conversationManager.joinConversation(GENERAL_ROOM.id, socketId);
+        //this.conversationManager.joinConversation(GENERAL_ROOM.id, socketId);
         
-        this.socketService.emit(socketId, SocketEvents.UserLogged);
-        Logger.info('LoginService', `The user ${username} from socket ${socketId} has been logged in.`);    
-    }
 }

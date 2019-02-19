@@ -8,6 +8,7 @@ import { Application } from "express";
 
 export interface ConversationServiceInterface {
     getAllByUsername(sessionId: string, username: string): Promise<{}>;
+    create(conversationName: string, creatorUsername: string): Promise<{}>;
 }
 
 export interface ConversationControllerInterface {
