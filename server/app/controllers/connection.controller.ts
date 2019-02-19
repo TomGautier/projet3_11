@@ -7,7 +7,7 @@ import { TYPES } from '.././types';
 @injectable()
 export class ConnectionController {
 
-    public constructor( @inject(TYPES.ConnectionService) private connectionService: ConnectionService) { }
+    public constructor( @inject(TYPES.ConnectionServiceInterface) private connectionService: ConnectionService) { }
 
     public get router(): Router {
         const router: Router = Router();

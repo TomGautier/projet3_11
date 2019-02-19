@@ -29,8 +29,7 @@ export class Application implements ApplicationInterface {
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
             @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
             @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
-            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
-            @inject(TYPES.ConnectionService) private connectionService: ConnectionService) {
+            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager) {
         this.app = express();
         this.config();
         this.bindRoutes();

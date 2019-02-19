@@ -6,12 +6,13 @@ import { Logger } from "./logger.service";
 import { ConversationManager } from "./conversation.manager";
 import { UserService } from "./user.service";
 import User from "../schemas/user"
+import { ConnectionServiceInterface } from "../interfaces";
 
 // TODO: 
 // - Find more elegant way than getting socket from socketService
 
 @injectable()
-export class ConnectionService {
+export class ConnectionService implements ConnectionServiceInterface {
     private users: Set<string>  = new Set<string>();
 
     constructor(
