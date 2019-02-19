@@ -9,8 +9,8 @@ const TYPES =  {
         // Interfaces
         ConversationControllerInterface: Symbol.for("ConversationControllerInterface"),
         ConversationServiceInterface: Symbol.for("ConversationServiceInterface"),
-        MessageControllerInterface:Symbol.for("MessageControllerInterface"),
-        MessageServiceInterface:Symbol.for("MessageServiceInterface"),
+        ConnectionControllerInterface:Symbol.for("ConnectionControllerInterface"),
+        ConnectionServiceInterface:Symbol.for("ConnectionServiceInterface"),
         
         DateControllerInterface: Symbol.for("DateControllerInterface"),
         IndexControllerInterface: Symbol.for("IndexControllerInterface"),
@@ -23,7 +23,7 @@ const TYPES =  {
         DatabaseConnection: Symbol.for("DatabaseConnection"),
         DatabaseService: Symbol.for("DatabaseService"),
         ConversationService: Symbol.for("ConversationService"),
-        LoginService:Symbol.for("LoginService"),
+        ConnectionService:Symbol.for("ConnectionService"),
         UserService:Symbol.for("UserService"),
 
         // Managers

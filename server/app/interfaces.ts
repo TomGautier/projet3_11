@@ -14,11 +14,11 @@ export interface ConversationControllerInterface {
     router: Router;
 }
 
-export interface MessageServiceInterface {
-    getAllFromConversation(conversation: string): Promise<{}>;
+export interface ConnectionServiceInterface {
+
 }
 
-export interface MessageControllerInterface {
+export interface ConnectionControllerInterface {
     router: Router;
 }
 
