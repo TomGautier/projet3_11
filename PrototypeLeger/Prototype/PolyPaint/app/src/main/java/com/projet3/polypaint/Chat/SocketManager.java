@@ -25,24 +25,17 @@ public class SocketManager  {
     public static SocketManager currentInstance;
     private Socket socket;
     private NewMessageListener newMessagelistener;
-    private SocketLoginListener socketLoginListener;
 
     private String uri;
 
     public SocketManager(String ipAddress_) {
         uri = formatIpToUri(ipAddress_);
         setupSocket();
-        currentInstance = this;
     }
-
-
 
 
     public void setupNewMessageListener(NewMessageListener listener_) {
         newMessagelistener = listener_;
-    }
-    public void setupLoginListener(SocketLoginListener listener_) {
-        socketLoginListener = listener_;
     }
     private void setupSocket() {
         try {
@@ -67,24 +60,8 @@ public class SocketManager  {
                 }
             });
 
-            socket.on(USEREXIST_TAG, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    socketLoginListener.onUserAlreadyExists();
-                }
-            });
-
-            socket.on(USERLOGGED_TAG, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    socketLoginListener.onUserLogged();
-                }
-            });
         }catch(Exception e) {}
 
-    }
-    public void verifyUser(String username) {
-        socket.emit(LOGINATTEMPT_TAG, username);
     }
     public void sendMessage(String date,String username, String message) {
         String messageJSON = "";

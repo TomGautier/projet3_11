@@ -25,10 +25,8 @@ public class LoginActivity extends Activity  {
 	EditText passwordEntry;
 	EditText ipEntry;
 	RelativeLayout userModuleLayout;
-	RelativeLayout ipModuleLayout;
 	UserInformation userInformation;
-	SocketLoginGuard socketLoginGuard;
-	SocketManager socketManager;
+
 
 
 	@Override
@@ -45,10 +43,11 @@ public class LoginActivity extends Activity  {
 		ipEntry = (EditText)findViewById(R.id.ipEditText);
 		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
 
-		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected()){
+
+		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected())
 			changeToUserUI();
-			assignLoginManager();
-		}
+
+
 
 
 
@@ -65,19 +64,14 @@ public class LoginActivity extends Activity  {
 			public void onClick(View view) {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
-					socketManager.currentInstance.verifyUser(userInformation.getUsername());
-					while(socketLoginGuard.waitingForResponse()) {}
 
-					if (socketLoginGuard.isLogged()){
+					if (UserLoginManager.currentInstance.requestLogin(userInformation)) {
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
-						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingFragment.class);
-						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
 					else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
-						socketLoginGuard.reset();
 					}
 				}
 				else
@@ -93,7 +87,7 @@ public class LoginActivity extends Activity  {
 
 				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
-					socketManager = new SocketManager(ipAddress);
+					SocketManager.currentInstance = new SocketManager(ipAddress);
 					handleSocketConnect();
                     changeIpModuleState(false);
 				}
@@ -116,7 +110,7 @@ public class LoginActivity extends Activity  {
             public void run() {
                 if(SocketManager.currentInstance.isConnected()){
                     Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
-                   	assignLoginManager();
+                    UserLoginManager.currentInstance = new UserLoginManager(ipEntry.getText().toString());
                     changeToUserUI();
                 }
                 else{
@@ -127,10 +121,6 @@ public class LoginActivity extends Activity  {
         }, CONNECT_DELAY);
     }
 
-    private void assignLoginManager() {
-		socketLoginGuard = new SocketLoginGuard();
-		SocketManager.currentInstance.setupLoginListener(socketLoginGuard);
-	}
 	private void changeIpModuleState(boolean state) {
 		serverConnexionButton.setEnabled(state);
 		ipEntry.setEnabled(state);
