@@ -163,6 +163,11 @@
                         <Image Source="/Resources/form_class.png" />
                     </StackPanel>
                 </Button>
+                <Button Name="rotation" Width="40" Height="40" Margin="5" Command="{Binding Path=RotateForm}" CommandParameter="selectedForm">
+                    <StackPanel>
+                        <Image Source="/Resources/position.png" />
+                    </StackPanel>
+                </Button>
             </StackPanel>
         </Border>
 

@@ -110,6 +110,11 @@ namespace PolyPaint.Modeles
             }
             catch { }         
         }
+        public void RotateForm(string forme)
+        {
+            UMLClass form = (UMLClass)traits.Last();
+            form.rotate();
+        }
         public void AddForm(string forme)
         {
             switch (forme)
@@ -126,6 +131,7 @@ namespace PolyPaint.Modeles
                     pts.Add(new StylusPoint(120, 40));
                     pts.Add(new StylusPoint(120, 100));
                     pts.Add(new StylusPoint(10, 100));
+                    pts.Add(new StylusPoint(65, 115));
                     UMLClass ShapeUno = new UMLClass(pts);
                     ShapeUno.Name = "My Class";
                     ShapeUno.AddAttribute("Attribut1");

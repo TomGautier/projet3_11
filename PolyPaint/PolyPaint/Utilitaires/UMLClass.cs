@@ -17,6 +17,8 @@ namespace PolyPaint.Utilitaires
         public string Name { get; set; }
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }
+       
+        private int CurrentRotation { get; set; }
         public UMLClass(StylusPointCollection pts)
             : base(pts)
         {
@@ -24,34 +26,81 @@ namespace PolyPaint.Utilitaires
             this.Name = "";
             this.Methods = new List<String>();
             this.Attributes = new List<String>();
+            this.CurrentRotation = 0;
         }
+       /* private void updatePivot()
+        {
+            this.Pivot = new StylusPoint(this.StylusPoints[0].X + ((this.StylusPoints[1].X - this.StylusPoints[0].X) / 2), this.StylusPoints[0].Y + ((this.StylusPoints[3].Y - this.StylusPoints[0].Y) / 2));
+        }*/
         public void AddMethod(string method)
         {
             this.Methods.Add(method);
+        }
+       //private ApplyRotation(StylusPoint point,
+        public void rotate()
+        {
+            this.CurrentRotation += 10;
+
+            StylusPoint pivot = this.StylusPoints.Last();
+
+            for (int i = 0; i< this.StylusPoints.Count-1; i++)
+            {
+ 
+                this.StylusPoints[i] = ApplyRotation(10, pivot, this.StylusPoints[i]);
+            }         
+            
+            
+        }
+        protected override void OnStylusPointsChanged(EventArgs e)
+        {
+            base.OnStylusPointsChanged(e);
         }
         public void AddAttribute(string attribute)
         {
             this.Attributes.Add(attribute);
         }
+        private StylusPoint ApplyRotation(double angle, StylusPoint pivot, StylusPoint point)
+        {
+            double rad = angle * Math.PI / 180;
+            double cos = Math.Cos(rad);
+            double sin = Math.Sin(rad);
+            double dx = (point.X - pivot.X);
+            double dy = (point.Y - pivot.Y);
+            double x = cos * dx - sin * dy + pivot.X;
+            double y = sin * dx + cos * dy + pivot.Y;
+            return new StylusPoint((int)Math.Round(x), (int)Math.Round(y));
+        }
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
          
         {
+           
             SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(255,0,0));
-            brush.Freeze();
+            //brush.Freeze();
             //FILL
-           // drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));
+            // drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));         
             DrawName(drawingContext);
-            DrawAttributes(drawingContext);
+             DrawAttributes(drawingContext);
             DrawMethods(drawingContext);
+           //  updatePivot();
             base.DrawCore(drawingContext, drawingAttributes);
         }
         private void DrawName(DrawingContext drawingContext)
         {
             if (this.Name != null && this.Name.Length != 0)
             {
-                Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2, this.StylusPoints[0].ToPoint().Y + 4);
+
+                Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2, this.StylusPoints[0].ToPoint().Y + 4);        
+                 //StylusPoint pivot = this.StylusPoints.Last();
+                //StylusPoint pivot = new StylusPoint(0, 0);
+                // origin = ApplyRotation(this.CurrentRotation, pivot, origin);
+                //  origin = ApplyRotation(this.CurrentRotation, new StylusPoint(0,0), origin);
+                //RotateTransform RT = new RotateTransform(this.CurrentRotation);
+               // drawingContext.PushTransform(RT);
+
+                //Point location = new Point(origin.X, origin.Y);
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 drawingContext.DrawText(new FormattedText(this.Name, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, Brushes.Black), origin);
+               // drawingContext.Pop();    
             }
         }
         private void DrawAttributes(DrawingContext drawingContext)
@@ -85,7 +134,7 @@ namespace PolyPaint.Utilitaires
                     drawingContext.DrawText(new FormattedText("+ " + this.Methods[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, Brushes.Black), origin);
 
                     origin.Y += increment;
-                    if (Math.Abs(this.StylusPoints[2].Y - origin.Y) < 10)
+                    if (Math.Abs(this.StylusPoints[2].Y - origin.Y) < 15)
                     {
                         this.StylusPoints[2] = new StylusPoint(this.StylusPoints[2].X, this.StylusPoints[2].Y + increment);
                         this.StylusPoints[3] = new StylusPoint(this.StylusPoints[3].X, this.StylusPoints[3].Y + increment);
