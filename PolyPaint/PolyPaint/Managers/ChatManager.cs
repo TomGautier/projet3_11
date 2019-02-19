@@ -101,7 +101,7 @@ namespace PolyPaint.Managers
         #endregion
 
         #region Constructors
-        public ChatManager() {  }
+        public ChatManager() { System.Windows.Application.Current.MainWindow.Closing += OnExitApp; }
         #endregion
 
         #region Methods
