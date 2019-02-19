@@ -80,6 +80,8 @@ public class ImageEditingFragment extends Fragment {
         rootView=inflater.inflate(R.layout.activity_image_editing, container, false);
         iView = (ImageView)rootView.findViewById(R.id.canvasView);
         shapes = new ArrayList<>();
+        selections = new ArrayList<>();
+
         addStack = new Stack<>();
         removeStack = new Stack<>();
 
@@ -247,7 +249,7 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void checkSelection(int x, int y) {
-        selections = new ArrayList<>();
+        //selections = new ArrayList<>();
 
         for (int i = shapes.size() - 1; i >= 0; i--) {
             if (shapes.get(i).getBoundingBox().contains(x, y)){
@@ -256,7 +258,7 @@ public class ImageEditingFragment extends Fragment {
             }
         }
 
-        selections = null;
+        selections.clear();
     }
 
     private void doLassoSelection(MotionEvent event) {
@@ -283,7 +285,7 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void checkLassoSelection() {
-        selections = new ArrayList<>();
+        //selections = new ArrayList<>();
 
         for (GenericShape shape : shapes) {
             canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
@@ -296,12 +298,12 @@ public class ImageEditingFragment extends Fragment {
         // Reset clip to full canvas
         canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
 
-        if (selections.isEmpty())
-            selections = null;
+        //if (selections.isEmpty())
+          //  selections = null;
     }
 
     private GenericShape addShape(int posX, int posY) {
-        selections = null;
+        selections.clear();
         GenericShape nShape = null;
         switch (currentShapeType) {
             case uml_class :
@@ -333,7 +335,7 @@ public class ImageEditingFragment extends Fragment {
         for(GenericShape shape : shapes)
             shape.drawOnCanvas(canvas);
 
-        if (selections != null)
+        if (selections.size() > 0)
             for (GenericShape shape : selections)
                 shape.drawSelectionBox(canvas, selectionPaint);
     }
@@ -360,13 +362,13 @@ public class ImageEditingFragment extends Fragment {
     }
 
     public void deleteSelection(View button) {
-        if (selections != null) {
+        if (selections.size() > 0) {
             ArrayList<GenericShape> stackElems = new ArrayList<>();
             for (GenericShape shape : selections) {
                 shapes.remove(shape);
                 stackElems.add(shape);
             }
-            selections = null;
+            selections.clear();
             addToStack(stackElems,REMOVE_ACTION);
 
 
@@ -383,6 +385,9 @@ public class ImageEditingFragment extends Fragment {
                 shapes.add(nShape);
                 stackElems.add(nShape);
             }
+            selections.clear();
+            selections.addAll(stackElems);
+
             addToStack(stackElems, ADD_ACTION);
             updateCanvas();
             drawAllShapes();
@@ -396,7 +401,7 @@ public class ImageEditingFragment extends Fragment {
             addToStack(new ArrayList(shapes),REMOVE_ACTION);
             shapes.clear();
         }
-        selections = null;
+        selections.clear();
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
@@ -407,6 +412,7 @@ public class ImageEditingFragment extends Fragment {
     public void backCanevas(View button) {
         if (addStack != null && !addStack.empty()){
             Pair pair = addStack.pop();
+            selections.clear();
             for (GenericShape shape : (ArrayList<GenericShape>)pair.first){
                 if (pair.second.equals(ADD_ACTION)){
                         shapes.remove(shape);
@@ -428,9 +434,11 @@ public class ImageEditingFragment extends Fragment {
     public void forthCanevas(View button) {
         if (removeStack != null && !removeStack.empty()){
             Pair pair = removeStack.pop();
+            selections.clear();
             for (GenericShape shape : (ArrayList<GenericShape>)pair.first){
                 if (pair.second.equals(ADD_ACTION)){
                     shapes.add(shape);
+                    selections.add(shape);
                 }
                 else if(pair.second.equals(REMOVE_ACTION)){
                     shapes.remove(shape);
