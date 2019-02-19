@@ -2,13 +2,13 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
 import { DatabaseService } from "./database.service";
 import Message from "../schemas/message";
-import { MessageServiceInterface } from "../interfaces";
+//import { MessageServiceInterface } from "../interfaces";
 import { Logger } from "./logger.service";
 
 require('reflect-metadata');
 
 @injectable()
-export class MessageService implements MessageServiceInterface {
+export class MessageService {
     private readonly CONV_ID_CRITERIA = "conversationId";
     
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
