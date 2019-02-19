@@ -22,5 +22,6 @@
     <string name="buttonDelete">Effacer</string>
     <string name="buttonDuplicate">Duppliquer</string>
     <string name="buttonReset">Réinitialiser</string>
+    <string name="buttonMove">Déplacer</string>
 
 </resources>

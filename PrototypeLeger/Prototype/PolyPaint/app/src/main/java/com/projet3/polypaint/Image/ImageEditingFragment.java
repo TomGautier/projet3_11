@@ -38,6 +38,7 @@ public class ImageEditingFragment extends Fragment {
     private Button buttonActivity;
     private Button buttonArtefact;
     private Button buttonCanvas;
+    private Button buttonMove;
     private Button buttonSelection;
     private Button buttonLasso;
     private Button buttonReset;
@@ -46,7 +47,7 @@ public class ImageEditingFragment extends Fragment {
     private ImageButton buttonRestore;
     private ImageButton buttonBack;
 
-    private enum Mode{selection, lasso, creation}
+    private enum Mode{selection, lasso, creation, move}
     private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
@@ -66,9 +67,11 @@ public class ImageEditingFragment extends Fragment {
     private ShapeType currentShapeType = ShapeType.uml_class;
 
     private Paint selectionPaint;
-    private boolean selectionMode = false;
     private ArrayList<GenericShape> selections = null;
-    private Path selectionPath = new Path();
+    private Path selectionPath = new Path();private boolean isMovingSelection = false;
+    private int lastTouchPosX;
+    private int lastTouchPosY;
+
     private View rootView;
 
 
@@ -168,6 +171,14 @@ public class ImageEditingFragment extends Fragment {
             }
         });
 
+        buttonMove = (Button)rootView.findViewById(R.id.buttonMove);
+        buttonMove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setModeToMove(v);
+            }
+        });
+
 
         //selections
         buttonLasso = (Button)rootView.findViewById(R.id.buttonLasso);
@@ -238,6 +249,10 @@ public class ImageEditingFragment extends Fragment {
                         stackElems.add(addShape(posX, posY));
                         addToStack(stackElems, ADD_ACTION);
                         break;
+                    case move :
+                        moveSelectedShape(event);
+                        continueListening = true;
+                        break;
                 }
 
                 drawAllShapes();
@@ -249,8 +264,6 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void checkSelection(int x, int y) {
-        //selections = new ArrayList<>();
-
         for (int i = shapes.size() - 1; i >= 0; i--) {
             if (shapes.get(i).getBoundingBox().contains(x, y)){
                 selections.add(shapes.get(i));
@@ -285,8 +298,6 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void checkLassoSelection() {
-        //selections = new ArrayList<>();
-
         for (GenericShape shape : shapes) {
             canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
 
@@ -297,9 +308,6 @@ public class ImageEditingFragment extends Fragment {
 
         // Reset clip to full canvas
         canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
-
-        //if (selections.isEmpty())
-          //  selections = null;
     }
 
     private GenericShape addShape(int posX, int posY) {
@@ -350,6 +358,7 @@ public class ImageEditingFragment extends Fragment {
 
     public void setModeToSelection(View button) { currentMode = Mode.selection; }
     public void setModeToLasso(View button) { currentMode = Mode.lasso; }
+    public void setModeToMove(View button) { currentMode = Mode.move; }
 
     public void setShapeTypeToUmlClass(View button) { setShapeType(ShapeType.uml_class); }
     public void setShapeTypeToUmlActivity(View button) { setShapeType(ShapeType.uml_activity); }
@@ -377,8 +386,35 @@ public class ImageEditingFragment extends Fragment {
         drawAllShapes();
         iView.invalidate();
     }
+    private void moveSelectedShape(MotionEvent event) {
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (GenericShape shape : selections)
+                    if (shape.getBoundingBox().contains(posX, posY)) {
+                        isMovingSelection = true;
+                        lastTouchPosX = posX;
+                        lastTouchPosY = posY;
+                    }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (isMovingSelection) {
+                    for (GenericShape shape : selections)
+                        shape.relativeMove(posX - lastTouchPosX, posY - lastTouchPosY);
+
+                    lastTouchPosX = posX;
+                    lastTouchPosY = posY;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                isMovingSelection = false;
+                break;
+        }
+    }
     public void duplicateSelection(View button) {
-        if (selections != null && selections.size() > 0){
+        if (!selections.isEmpty()){
             ArrayList<GenericShape> stackElems = new ArrayList<>();
             for (GenericShape shape : selections){
                 GenericShape nShape = shape.clone();
@@ -405,8 +441,6 @@ public class ImageEditingFragment extends Fragment {
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
-        /*if (selections != null && selections.size() > 0)
-            selections.clear();*/
     }
 
     public void backCanevas(View button) {

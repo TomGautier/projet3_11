@@ -44,4 +44,9 @@ public abstract class GenericShape {
 
         return new Rect(posX - w2, posY - h2, posX + w2, posY + h2);
     }
+
+    public void relativeMove(int x, int y) {
+        posX += x;
+        posY += y;
+    }
 }
