@@ -1,18 +1,26 @@
 package com.projet3.polypaint.Image;
 
 import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.media.Image;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
@@ -23,6 +31,7 @@ import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.Chat.Chat;
 import com.projet3.polypaint.Chat.Conversation;
+import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.UserInformation;
@@ -31,13 +40,21 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingActivity extends AppCompatActivity {
+public class ImageEditingActivity extends Fragment {
 
-    //chat
-    private final String CHAT_BUNDLE_TAG = "chat";
-    private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
-    private UserInformation userInformation;
-    private Chat chat;
+
+    private Button buttonClass;
+    private Button buttonRole;
+    private Button buttonActivity;
+    private Button buttonArtefact;
+    private Button buttonCanvas;
+    private Button buttonSelection;
+    private Button buttonLasso;
+    private Button buttonReset;
+    private Button buttonDuplicate;
+    private Button buttonDelete;
+    private ImageButton buttonRestore;
+    private ImageButton buttonBack;
 
     private enum Mode{selection, lasso, creation}
     private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
@@ -62,37 +79,122 @@ public class ImageEditingActivity extends AppCompatActivity {
     private boolean selectionMode = false;
     private ArrayList<GenericShape> selections = null;
     private Path selectionPath = new Path();
+    private View rootView;
 
+
+    public ImageEditingActivity() {}
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("ImageEditingActivity onCreate");
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_image_editing);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-        iView = (ImageView) findViewById(R.id.canvasView);
+        rootView=inflater.inflate(R.layout.activity_image_editing, container, false);
+        iView = (ImageView)rootView.findViewById(R.id.canvasView);
         shapes = new ArrayList<>();
         addStack = new Stack<>();
         removeStack = new Stack<>();
+
+        initializeButtons();
         initializePaint();
 
         setTouchListener();
-        HomeActivity.currentActivityInstance = this;
-
-        //Chat.currentInstance = new Chat(new UserInformation("o","b"));
-
-        //chat = getIntent().getParcelableExtra(CHAT_BUNDLE_TAG);
-       // }
-        //chat
-       /* if (savedInstanceState == null) {
-            userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-           // Chat.currentInstance = new Chat(this, userInformation);
-        }
-        else {
-            userInformation = savedInstanceState.getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-            Chat.currentInstance = new Chat(this, userInformation, savedInstanceState.getBundle(CHAT_BUNDLE_TAG));
-        }*/
+        return rootView;
     }
 
+    private void initializeButtons(){
+        //forms
+        buttonActivity = (Button)rootView.findViewById(R.id.buttonActivity);
+        buttonActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeTypeToUmlActivity(v);
+            }
+        });
+
+        buttonArtefact = (Button)rootView.findViewById(R.id.buttonArtefact);
+        buttonArtefact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeTypeToUmlArtefact(v);
+            }
+        });
+
+        buttonClass = (Button)rootView.findViewById(R.id.buttonClass);
+        buttonClass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeTypeToUmlClass(v);
+            }
+        });
+
+        buttonRole = (Button)rootView.findViewById(R.id.buttonRole);
+        buttonRole.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeTypeToUmlRole(v);
+            }
+        });
+
+
+        //actions
+        buttonDelete = (Button)rootView.findViewById(R.id.buttonDelete);
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteSelection(v);
+            }
+        });
+
+        buttonDuplicate = (Button)rootView.findViewById(R.id.buttonDuplicate);
+        buttonDuplicate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                duplicateSelection(v);
+            }
+        });
+
+        buttonReset = (Button)rootView.findViewById(R.id.buttonReset);
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reset(v);
+            }
+        });
+
+        buttonBack = (ImageButton)rootView.findViewById(R.id.backButton);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backCanevas(v);
+            }
+        });
+
+        buttonRestore = (ImageButton)rootView.findViewById(R.id.restoreButton);
+        buttonRestore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                forthCanevas(v);
+            }
+        });
+
+
+        //selections
+        buttonLasso = (Button)rootView.findViewById(R.id.buttonLasso);
+        buttonLasso.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setModeToLasso(v);
+            }
+        });
+
+        buttonSelection = (Button)rootView.findViewById(R.id.buttonSelection);
+        buttonSelection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setModeToSelection(v);
+            }
+        });
+
+    }
     private void initializePaint() {
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();

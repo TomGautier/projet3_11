@@ -17,11 +17,8 @@ import com.projet3.polypaint.Image.ImageEditingActivity;
 import java.util.ArrayList;
 
 public class HomeActivity extends Activity  {
-	public static Activity currentActivityInstance;
 
-	private final String CHAT_BUNDLE_TAG = "chat";
 	private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
-	//private Chat chat;
 	private UserInformation userInformation;
 
 
@@ -29,15 +26,6 @@ public class HomeActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		currentActivityInstance = this;
-		/*if (savedInstanceState == null) {
-           // userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-            //Chat.currentInstance = new Chat(userInformation);
-        }
-		else {
-            //userInformation = savedInstanceState.getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-            //Chat.currentInstance = new Chat(userInformation, savedInstanceState.getBundle(CHAT_BUNDLE_TAG));
-        }*/
 		if (savedInstanceState == null){
 			userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
 			ArrayList convos = new ArrayList();
@@ -48,7 +36,6 @@ public class HomeActivity extends Activity  {
 			transaction.add(R.id.chatFragment,Chat.newInstance(userInformation,convos),"CHAT_FRAGMENT");
 			transaction.addToBackStack(null);
 			transaction.commit();
-			//SocketManager.currentInstance.setupNewMessageListener(Chat.currentInstance);
 		}
 	}
 
@@ -57,8 +44,6 @@ public class HomeActivity extends Activity  {
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
-		//savedInstanceState.putBundle(CHAT_BUNDLE_TAG, Chat.currentInstance.getChatBundle());
-		//savedInstanceState.putParcelable(USER_INFORMATION_PARCELABLE_TAG,userInformation);
 	}
 
 	@Override
@@ -84,11 +69,11 @@ public class HomeActivity extends Activity  {
 	}
 	// INTEGRATION
 	public void gotoImageEditing(View button) {
-        android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingActivity.class);
-        startActivity(intent);
-        //Bundle chatBundle = Chat.currentInstance.getChatBundle();
-        //intent.putExtra(CHAT_BUNDLE_TAG, chatBundle);
-        //intent.putExtra(USER_INFORMATION_PARCELABLE_TAG,userInformation);
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingActivity(),"EDITING_FRAGMENT");
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 }
 

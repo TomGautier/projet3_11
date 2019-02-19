@@ -7,6 +7,7 @@
     tools:context=".Image.ImageEditingActivity">
 
     <TableRow
+        android:id="@+id/drawingCanevas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
@@ -24,14 +25,12 @@
                     android:id="@+id/buttonSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setModeToSelection"
                     android:text="@string/buttonSelection" />
 
                 <Button
                     android:id="@+id/buttonLasso"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setModeToLasso"
                     android:text="@string/buttonLasso" />
 
                 <Space
@@ -42,28 +41,24 @@
                     android:id="@+id/buttonClass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setShapeTypeToUmlClass"
                     android:text="@string/buttonClass" />
 
                 <Button
                     android:id="@+id/buttonActivity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setShapeTypeToUmlActivity"
                     android:text="@string/buttonActivity" />
 
                 <Button
                     android:id="@+id/buttonArtefact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setShapeTypeToUmlArtefact"
                     android:text="@string/buttonArtefact" />
 
                 <Button
                     android:id="@+id/buttonRole"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setShapeTypeToUmlRole"
                     android:text="@string/buttonRole" />
 
                 <Space
@@ -74,19 +69,16 @@
                     android:id="@+id/buttonDelete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="deleteSelection"
                     android:text="@string/buttonDelete" />
                 <Button
                     android:id="@+id/buttonDuplicate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="duplicateSelection"
                     android:text="@string/buttonDuplicate" />
                 <Button
                     android:id="@+id/buttonReset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="reset"
                     android:text="@string/buttonReset" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -98,14 +90,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_back_arrow"
-                        android:onClick="backCanevas"
                         />
                     <ImageButton
                         android:id="@+id/restoreButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_forward_arrow"
-                        android:onClick="forthCanevas"
                         />
                 </LinearLayout>
             </LinearLayout>
@@ -118,6 +108,6 @@
             app:srcCompat="@android:color/background_light" />
 
     </TableRow>
-    <include layout="@layout/activity_chat" />
+
 
 </RelativeLayout>

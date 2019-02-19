@@ -51,7 +51,6 @@ public class Chat extends Fragment implements NewMessageListener {
     private RelativeLayout chatMessageZone;
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
-   // public static Chat currentInstance;
 
     private ArrayList<Conversation> conversations;
     public Conversation currentConversation;
@@ -91,32 +90,6 @@ public class Chat extends Fragment implements NewMessageListener {
         SocketManager.currentInstance.setupNewMessageListener(this);
         return rootView;
     }
-
-    /*public  Chat(UserInformation userInformation_){
-
-            userInformation = userInformation_;
-            conversations = new ArrayList<>();
-            conversations.add(new Conversation("Conversation1"));
-            conversations.add(new Conversation("Conversation2"));
-            currentConversation = conversations.get(0);
-            initializeChat();
-    }
-
-    public  Chat(UserInformation userInformation_, Bundle bundle){
-        userInformation = userInformation_;
-        conversations = bundle.getParcelableArrayList("conversations");
-        currentConversation = conversations.get(bundle.getInt("currentConversationIndex"));
-        initializeChat();
-    }
-    public Chat(UserInformation userInformation_, ArrayList<Conversation> conversations_, int currentIndex){
-        userInformation = userInformation_;
-        conversations = conversations_;
-        currentConversation = conversations.get(currentIndex);
-        initializeChat();
-    }*/
-
-
-
 
     private void initializeChat(){
 
@@ -293,13 +266,6 @@ public class Chat extends Fragment implements NewMessageListener {
         chatMessageZoneTable.removeAllViews();
         for (int j = 0; j < currentConversation.GetHistorySize(); j++)
             WriteMessage(currentConversation.GetHistoryAt(j), false);
-    }
-
-    public Bundle getChatBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("conversations",conversations);
-        bundle.putInt("currentConversationIndex", conversations.indexOf(currentConversation));
-        return bundle;
     }
 
     @Override
