@@ -1,21 +1,19 @@
 package com.projet3.polypaint;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.SocketManager;
-
-import java.net.InetAddress;
+import com.projet3.polypaint.Image.ImageEditingFragment;
 
 public class LoginActivity extends Activity  {
 
@@ -29,7 +27,7 @@ public class LoginActivity extends Activity  {
 	RelativeLayout userModuleLayout;
 	RelativeLayout ipModuleLayout;
 	UserInformation userInformation;
-	LoginManager loginManager;
+	SocketLoginGuard socketLoginGuard;
 	SocketManager socketManager;
 
 
@@ -68,16 +66,18 @@ public class LoginActivity extends Activity  {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 					socketManager.currentInstance.verifyUser(userInformation.getUsername());
-					while(loginManager.waitingForResponse()) {}
+					while(socketLoginGuard.waitingForResponse()) {}
 
-					if (loginManager.isLogged()){
+					if (socketLoginGuard.isLogged()){
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
+						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingFragment.class);
+						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
 					else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
-						loginManager.reset();
+						socketLoginGuard.reset();
 					}
 				}
 				else
@@ -90,6 +90,7 @@ public class LoginActivity extends Activity  {
 		serverConnexionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
+
 				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
 					socketManager = new SocketManager(ipAddress);
@@ -127,8 +128,8 @@ public class LoginActivity extends Activity  {
     }
 
     private void assignLoginManager() {
-		loginManager = new LoginManager();
-		SocketManager.currentInstance.setupLoginListener(loginManager);
+		socketLoginGuard = new SocketLoginGuard();
+		SocketManager.currentInstance.setupLoginListener(socketLoginGuard);
 	}
 	private void changeIpModuleState(boolean state) {
 		serverConnexionButton.setEnabled(state);
@@ -153,5 +154,13 @@ public class LoginActivity extends Activity  {
 		super.onRestoreInstanceState(savedInstanceState);
 	}
 
+	/*Fonction temporaire pour passer directement à l'édition d'images*/
+	public void gotoImageEditing(View button) {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
+		transaction.addToBackStack(null);
+		transaction.commit();
 
+	}
 }
