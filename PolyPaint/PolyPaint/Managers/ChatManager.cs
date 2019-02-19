@@ -122,7 +122,7 @@ namespace PolyPaint.Managers
             {
                 date = DateTime.Now.ToString("hh:mm:ss tt"),
                 username = Username,
-                message = Message
+                message = Message.Trim()
             };
             Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
             socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
@@ -167,6 +167,7 @@ namespace PolyPaint.Managers
 
         private void OnLogin()
         {
+            Username = Username.Trim();
             socket.Emit("LoginAttempt", Username);
             socket.On("UsernameAlreadyExists", () =>
             {
