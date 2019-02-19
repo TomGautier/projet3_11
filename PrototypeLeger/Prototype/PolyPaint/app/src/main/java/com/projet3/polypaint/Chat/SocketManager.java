@@ -1,12 +1,7 @@
 package com.projet3.polypaint.Chat;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.projet3.polypaint.Chat.NewMessageListener;
+import com.projet3.polypaint.SocketLoginListener;
 
-import com.projet3.polypaint.LoginListener;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,7 +25,7 @@ public class SocketManager  {
     public static SocketManager currentInstance;
     private Socket socket;
     private NewMessageListener newMessagelistener;
-    private LoginListener loginListener;
+    private SocketLoginListener socketLoginListener;
 
     private String uri;
 
@@ -46,8 +41,8 @@ public class SocketManager  {
     public void setupNewMessageListener(NewMessageListener listener_) {
         newMessagelistener = listener_;
     }
-    public void setupLoginListener(LoginListener listener_) {
-        loginListener = listener_;
+    public void setupLoginListener(SocketLoginListener listener_) {
+        socketLoginListener = listener_;
     }
     private void setupSocket() {
         try {
@@ -75,14 +70,14 @@ public class SocketManager  {
             socket.on(USEREXIST_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    loginListener.onUserAlreadyExists();
+                    socketLoginListener.onUserAlreadyExists();
                 }
             });
 
             socket.on(USERLOGGED_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    loginListener.onUserLogged();
+                    socketLoginListener.onUserLogged();
                 }
             });
         }catch(Exception e) {}

@@ -1,12 +1,12 @@
 package com.projet3.polypaint;
 
 
-public class LoginManager implements LoginListener {
+public class SocketLoginGuard implements SocketLoginListener {
 
 
     private Boolean enableLogin;
 
-    public LoginManager() {
+    public SocketLoginGuard() {
         reset();
     }
 
