@@ -27,7 +27,7 @@ public class LoginActivity extends Activity  {
 	RelativeLayout userModuleLayout;
 	RelativeLayout ipModuleLayout;
 	UserInformation userInformation;
-	LoginManager loginManager;
+	SocketLoginGuard socketLoginGuard;
 	SocketManager socketManager;
 
 
@@ -66,9 +66,9 @@ public class LoginActivity extends Activity  {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 					socketManager.currentInstance.verifyUser(userInformation.getUsername());
-					while(loginManager.waitingForResponse()) {}
+					while(socketLoginGuard.waitingForResponse()) {}
 
-					if (loginManager.isLogged()){
+					if (socketLoginGuard.isLogged()){
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
 						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingFragment.class);
@@ -77,7 +77,7 @@ public class LoginActivity extends Activity  {
 					}
 					else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
-						loginManager.reset();
+						socketLoginGuard.reset();
 					}
 				}
 				else
@@ -128,8 +128,8 @@ public class LoginActivity extends Activity  {
     }
 
     private void assignLoginManager() {
-		loginManager = new LoginManager();
-		SocketManager.currentInstance.setupLoginListener(loginManager);
+		socketLoginGuard = new SocketLoginGuard();
+		SocketManager.currentInstance.setupLoginListener(socketLoginGuard);
 	}
 	private void changeIpModuleState(boolean state) {
 		serverConnexionButton.setEnabled(state);
