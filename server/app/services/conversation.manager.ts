@@ -15,6 +15,7 @@ export class ConversationManager {
     }
 
     public onMessageSent(conversationId: string, message: string) {
+        //date.getHours()
         this.socketService.emit(conversationId, SocketEvents.MessageSent, message);
     }
 
