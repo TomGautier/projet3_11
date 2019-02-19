@@ -18,6 +18,11 @@ public class Conversation implements Parcelable  {
       //  conversationTask = new ConversationTask(this);
 
     }
+    public Conversation(String name_, ArrayList history_) {
+        history = history_;
+        name = name_;
+        //  conversationTask = new ConversationTask(this);
+    }
 
 
     public String GetName()  {
@@ -44,13 +49,13 @@ public class Conversation implements Parcelable  {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeStringList(history);
+        parcel.writeString(name);
+        parcel.writeList(history);
     }
     public static final Parcelable.Creator<Conversation> CREATOR
             = new Parcelable.Creator<Conversation>() {
         public Conversation createFromParcel(Parcel in) {
-            //return new Conversation(in);
-            return null;
+            return new Conversation(in.readString(),in.readArrayList(Conversation.class.getClassLoader()));
         }
 
         public Conversation[] newArray(int size) {

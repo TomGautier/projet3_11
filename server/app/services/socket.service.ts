@@ -33,7 +33,6 @@ export class SocketService {
             
             socket.on(SocketEvents.LoginAttempt, args => this.handleLogin(socket, args));
             socket.on(SocketEvents.UserLeft, args => this.leaveRoom(GENERAL_ROOM.id, socket.id, args));
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
