@@ -134,11 +134,5 @@
   <ItemGroup>
     <Resource Include="Resources\lasso.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\crayon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\efface_crayon.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
