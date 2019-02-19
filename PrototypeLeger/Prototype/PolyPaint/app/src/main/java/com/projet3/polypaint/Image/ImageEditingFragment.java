@@ -101,7 +101,7 @@ public class ImageEditingFragment extends Fragment {
         buttonActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeTypeToUmlActivity(v);
+                setShapeType(ShapeType.uml_activity);
             }
         });
 
@@ -109,7 +109,7 @@ public class ImageEditingFragment extends Fragment {
         buttonArtefact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeTypeToUmlArtefact(v);
+                setShapeType(ShapeType.uml_artefact);
             }
         });
 
@@ -117,7 +117,7 @@ public class ImageEditingFragment extends Fragment {
         buttonClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeTypeToUmlClass(v);
+                setShapeType(ShapeType.uml_class);
             }
         });
 
@@ -125,7 +125,7 @@ public class ImageEditingFragment extends Fragment {
         buttonRole.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeTypeToUmlRole(v);
+                setShapeType(ShapeType.uml_role);
             }
         });
 
@@ -175,7 +175,7 @@ public class ImageEditingFragment extends Fragment {
         buttonMove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setModeToMove(v);
+                setMode(Mode.move);
             }
         });
 
@@ -185,7 +185,7 @@ public class ImageEditingFragment extends Fragment {
         buttonLasso.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setModeToLasso(v);
+                setMode(Mode.lasso);
             }
         });
 
@@ -193,7 +193,7 @@ public class ImageEditingFragment extends Fragment {
         buttonSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setModeToSelection(v);
+                setMode(Mode.selection);
             }
         });
 
@@ -264,6 +264,8 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void checkSelection(int x, int y) {
+        selections.clear();
+
         for (int i = shapes.size() - 1; i >= 0; i--) {
             if (shapes.get(i).getBoundingBox().contains(x, y)){
                 selections.add(shapes.get(i));
@@ -298,6 +300,8 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void checkLassoSelection() {
+        selections.clear();
+
         for (GenericShape shape : shapes) {
             canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
 
@@ -354,20 +358,13 @@ public class ImageEditingFragment extends Fragment {
         canvas = new Canvas(bitmap);
     }
 
-
-
-    public void setModeToSelection(View button) { currentMode = Mode.selection; }
-    public void setModeToLasso(View button) { currentMode = Mode.lasso; }
-    public void setModeToMove(View button) { currentMode = Mode.move; }
-
-    public void setShapeTypeToUmlClass(View button) { setShapeType(ShapeType.uml_class); }
-    public void setShapeTypeToUmlActivity(View button) { setShapeType(ShapeType.uml_activity); }
-    public void setShapeTypeToUmlArtefact(View button) { setShapeType(ShapeType.uml_artefact); }
-    public void setShapeTypeToUmlRole(View button) { setShapeType(ShapeType.uml_role); }
-
     private void setShapeType(ShapeType type) {
         currentShapeType = type;
         currentMode = Mode.creation;
+    }
+
+    private void setMode(Mode mode) {
+        currentMode = mode;
     }
 
     public void deleteSelection(View button) {
