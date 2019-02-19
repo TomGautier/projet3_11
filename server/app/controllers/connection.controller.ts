@@ -16,19 +16,14 @@ export class ConnectionController {
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
                 const valid = this.connectionService.onUserLogin(req.params.username, req.params.password)
-                    .then(valid => valid ?
-                        res.send({success: true}) :
-                        res.send({success: false}))
+                    .then(connectionId => res.send(connectionId));
             });
             
         router.post("/signup/:username/:password",
             (req: Request, res: Response, next: NextFunction) => {
                 const valid = this.connectionService.onUserSignup(req.params.username, req.params.password)
-                    .then(valid => valid ?
-                        res.send({success: true}) :
-                        res.send({success: false}))
+                    .then(connectionId => res.send(connectionId))
             });
-
         return router;
     }
 }

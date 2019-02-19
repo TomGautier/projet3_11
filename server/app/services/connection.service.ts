@@ -7,41 +7,28 @@ import { ConversationManager } from "./conversation.manager";
 import { UserService } from "./user.service";
 import User from "../schemas/user"
 import { ConnectionServiceInterface } from "../interfaces";
+import * as uuid from 'node-uuid';
 
 @injectable()
 export class ConnectionService implements ConnectionServiceInterface {
-
+    // The key is the username and the string the session ID.
+    private connectedUsers: Map<String, String> = new Map();
+    
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService,
         @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
         @inject(TYPES.UserService) private userService: UserService
     ) {
-        // SHOULD BE OPPOSITE EVENTS + args[1][1] the password
-        //this.socketService.subscribe(SocketEvents.SignUp, args => this.onUserSignup(args[0], args[1][0], args[1][1]));
-        //this.socketService.subscribe(SocketEvents.LoginAttempt, args => this.onUserLogin(args[0], args[1][0], args[1][1]));
     }
 
-    public async onUserLogin(username: string, password: string): Promise<boolean> {     
+    public async onUserLogin(username: string, password: string): Promise<string> {     
         const user = new User(await this.userService.find(username));
-        return user.password === password;
-        /*
-            .then(() => {
-                if(userDoc !== undefined) {
-                    const user = new User(userDoc);
-                    if (user.password === password) {
-                        this.onLoggedIn(socketId, username);
-                    }
-                    else {
-                        this.socketService.emit(socketId, SocketEvents.InvalidCredentials);
-                        Logger.warn('LoginService', `Wrong credentials for ${username}.`);
-                    }    
-                }
-                else { this.socketService.emit(socketId, SocketEvents.InvalidCredentials); }
-            })
-            .catch(err => {
-                this.socketService.emit(socketId, SocketEvents.InvalidCredentials);
-                Logger.warn('LoginService', `Could not retrieve ${username}.`);
-            });*/
+        if (user.password === password) {
+            const sessionId = uuid.v1();
+            this.connectedUsers.set(username, sessionId)
+            return sessionId;
+        }
+        return '';
     }
 
     public async onUserSignup(username: string, password: string) {   
