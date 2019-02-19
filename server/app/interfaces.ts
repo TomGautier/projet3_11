@@ -7,7 +7,7 @@ import { Router } from "express";
 import { Application } from "express";
 
 export interface ConversationServiceInterface {
-    getAllByUsername(username: string): Promise<{}>;
+    getAllByUsername(sessionId: string, username: string): Promise<{}>;
 }
 
 export interface ConversationControllerInterface {

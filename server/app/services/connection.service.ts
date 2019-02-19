@@ -10,13 +10,30 @@ import { ConnectionServiceInterface } from "../interfaces";
 import * as uuid from 'node-uuid';
 
 @injectable()
-export class ConnectionService implements ConnectionServiceInterface {
+export class ConnectionManager {
     // The key is the username and the string the session ID.
     private connectedUsers: Map<String, String> = new Map();
+
+    public addUser(sessionId: string, username: string) {
+        this.connectedUsers.set(username, sessionId);
+    }
+
+    public removeUser(username: string) {
+        this.connectedUsers.delete(username);
+    }
+
+    public verifySession(sessionId: string, username: string) : boolean {
+        return this.connectedUsers.get(username) === sessionId;
+    }
+}
+
+@injectable()
+export class ConnectionService implements ConnectionServiceInterface {
     
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService,
         @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
+        @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager,
         @inject(TYPES.UserService) private userService: UserService
     ) {
     }
@@ -25,7 +42,7 @@ export class ConnectionService implements ConnectionServiceInterface {
         const user = new User(await this.userService.find(username));
         if (user.password === password) {
             const sessionId = uuid.v1();
-            this.connectedUsers.set(username, sessionId)
+            this.connectionManager.addUser(sessionId, username);
             return sessionId;
         }
         return '';

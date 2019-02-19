@@ -26,6 +26,7 @@ const TYPES =  {
 
         // Managers
         ConversationManager:Symbol.for("ConversationManager"),
+        ConnectionManager:Symbol.for("ConnectionManager")
 };
 
 export  { TYPES };
