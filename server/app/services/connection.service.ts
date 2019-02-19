@@ -8,12 +8,8 @@ import { UserService } from "./user.service";
 import User from "../schemas/user"
 import { ConnectionServiceInterface } from "../interfaces";
 
-// TODO: 
-// - Find more elegant way than getting socket from socketService
-
 @injectable()
 export class ConnectionService implements ConnectionServiceInterface {
-    private users: Set<string>  = new Set<string>();
 
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService,
@@ -23,24 +19,6 @@ export class ConnectionService implements ConnectionServiceInterface {
         // SHOULD BE OPPOSITE EVENTS + args[1][1] the password
         //this.socketService.subscribe(SocketEvents.SignUp, args => this.onUserSignup(args[0], args[1][0], args[1][1]));
         //this.socketService.subscribe(SocketEvents.LoginAttempt, args => this.onUserLogin(args[0], args[1][0], args[1][1]));
-    }
-
-    public async onUserSignup(socketId: string, username: string, password: string) {   
-        // TEMPORAL UNTIL FRONT END SENDS THE RIGHT PASSWORD.
-        const user = { 
-            username: username,
-            password: 'basicpwd' 
-        };
-        
-        await this.userService.create(user)
-            .then(() => this.onLoggedIn(socketId, username))
-            .catch(err => {
-                if (err.name === 'MongoError' && err.code === 11000) {
-                    // Duplicate username
-                    this.socketService.emit(socketId, SocketEvents.UsernameAlreadyExists);
-                    Logger.warn('LoginService', `The username ${username} already exists.`);
-                }    
-        });
     }
 
     public async onUserLogin(username: string, password: string): Promise<boolean> {     
@@ -64,6 +42,21 @@ export class ConnectionService implements ConnectionServiceInterface {
                 this.socketService.emit(socketId, SocketEvents.InvalidCredentials);
                 Logger.warn('LoginService', `Could not retrieve ${username}.`);
             });*/
+    }
+
+    public async onUserSignup(username: string, password: string) {   
+        let createdUser = {};
+        try {
+            createdUser = await this.userService.create(new User({username: username, password: password}));
+        }
+        catch (err) {
+            if (err.name === 'MongoError' && err.code === 11000) {
+                // Duplicate username
+                Logger.warn('LoginService', `The username ${username} already exists.`);
+                return false;
+            }    
+        }
+        return createdUser ? true : false;
     }
 
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {
