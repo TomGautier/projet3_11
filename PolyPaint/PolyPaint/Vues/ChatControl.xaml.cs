@@ -20,13 +20,11 @@ namespace PolyPaint.Vues
     /// </summary>
     public partial class ChatControl : UserControl
     {
-
         private ChatWindow chatWindow;
         private int windowCount;
 
         public ChatControl()
         {
-
             InitializeComponent();
             var textBox = (TextBox)FindName("chatBox");
             textBox.TextChanged += (sender, e) =>

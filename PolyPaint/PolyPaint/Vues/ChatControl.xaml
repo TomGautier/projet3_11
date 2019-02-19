@@ -31,13 +31,13 @@
                     <ColumnDefinition Width="55"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Height="23" HorizontalAlignment="Left" Margin="7,248,0,0" Name="messageText" VerticalAlignment="Top" Width="235" MaxLines="1" Text="{Binding Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center">
+                <TextBox Height="23" HorizontalAlignment="Left" Margin="7,248,0,0" Name="messageText" VerticalAlignment="Top" Width="235" MaxLines="1" Text="{Binding ChatManager.Message, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalContentAlignment="Center">
                     <TextBox.InputBindings>
-                        <KeyBinding Command="{Binding SendMessage}" Key="Return"/>
+                        <KeyBinding Command="{Binding ChatManager.SendMessage}" Key="Return"/>
                     </TextBox.InputBindings>
                 </TextBox>
-                <Button Content="Send" Height="23" Margin="1,248,4.667,-0.333" Name="sendMessageButton" VerticalAlignment="Top" Command="{Binding SendMessage}" Click="SendMessageButton_Click" Grid.Column="1"/>
-                <TextBox Height="232" HorizontalAlignment="Left" Margin="7,7,0,0" Name="chatBox" VerticalAlignment="Top" Width="235" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Text="{Binding History, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Bottom"/>
+                <Button Content="Send" Height="23" Margin="1,248,4.667,-0.333" Name="sendMessageButton" VerticalAlignment="Top" Command="{Binding ChatManager.SendMessage}" Click="SendMessageButton_Click" Grid.Column="1"/>
+                <TextBox Height="232" HorizontalAlignment="Left" Margin="7,7,0,0" Name="chatBox" VerticalAlignment="Top" Width="235" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Text="{Binding ChatManager.History, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Bottom"/>
             </Grid>
         </StackPanel>
     </DockPanel>

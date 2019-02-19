@@ -4,6 +4,7 @@ using System.Windows.Ink;
 using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
+using PolyPaint.Managers;
 
 namespace PolyPaint.VueModeles
 {
@@ -18,9 +19,11 @@ namespace PolyPaint.VueModeles
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
 
+        public ChatManager ChatManager = new ChatManager();
+
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
-
+        
         public string OutilSelectionne
         {
             get { return editeur.OutilSelectionne; }            
