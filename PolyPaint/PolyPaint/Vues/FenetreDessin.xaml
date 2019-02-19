@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cmd ="http://www.galasoft.ch/mvvmlight"
+    
         xmlns:convertisseurs="clr-namespace:PolyPaint.Convertisseurs"        
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="PolyPaint.FenetreDessin"
         mc:Ignorable="d"
@@ -158,8 +160,13 @@
                         <GradientStop Color="#FFE0E0E0" Offset="1"/>
                     </LinearGradientBrush>
                 </StackPanel.Background>
-                <Button Name="form_class" Width="40" Height="40" Margin="5" Command="{Binding Path=AddForm}" CommandParameter="form_class">
-                    <StackPanel>
+                <Button Name="form_class" Width="40" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
+                        Command="{Binding Path=ChoisirOutil}"
+                        CommandParameter="form_class">
+                
+                  <StackPanel>
                         <Image Source="/Resources/form_class.png" />
                     </StackPanel>
                 </Button>
@@ -199,16 +206,27 @@
                       Width="6" Height="6" DragDelta="GlisserMouvementRecu" 
                       DragStarted="GlisserCommence" DragCompleted="GlisserTermine"
                       />
-            <Border BorderThickness="5,5,0,0">
-                <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin" 
-                           HorizontalAlignment="Stretch" VerticalAlignment="Stretch"                           
-                           MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"                                              
-                           Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                           DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}"/>
-                <Border.Effect>
-                    <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
-                </Border.Effect>
-            </Border>
+          <Border BorderThickness="5,5,0,0">
+            <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin"
+                       HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                       MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
+             
+                       Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
+                       
+                       DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
+
+              <i:Interaction.Triggers>
+                <i:EventTrigger EventName="PreviewMouseDown" >
+                  <cmd:EventToCommand Command="{Binding HandleMouseDown}" PassEventArgsToCommand="True" />
+                </i:EventTrigger>
+              </i:Interaction.Triggers>
+            </InkCanvas>                     
+           
+           
+            <Border.Effect>
+              <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
+            </Border.Effect>
+          </Border>
         </Grid>
     </DockPanel>
 </Window>

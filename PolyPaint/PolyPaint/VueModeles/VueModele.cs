@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Ink;
+using System.Windows.Input;
 using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
@@ -45,6 +46,7 @@ namespace PolyPaint.VueModeles
         }
        
         public StrokeCollection Traits { get; set; }
+        public StrokeCollection SelectedStrokes { get; set; }
 
         // Commandes sur lesquels la vue pourra se connecter.
         public RelayCommand<object> Empiler { get; set; }
@@ -56,6 +58,8 @@ namespace PolyPaint.VueModeles
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
         public RelayCommand<string> RotateForm { get; set; }
+        public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
+
 
         /// <summary>
         /// Constructeur de VueModele
@@ -68,22 +72,25 @@ namespace PolyPaint.VueModeles
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
             // On initialise les attributs de dessin avec les valeurs de départ du modèle.
-            AttributsDessin = new DrawingAttributes();            
+            AttributsDessin = new DrawingAttributes();
             AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
             AjusterPointe();
 
             Traits = editeur.traits;
-            
+            SelectedStrokes = editeur.selectedStrokes;
+
+
             // Pour chaque commande, on effectue la liaison avec des méthodes du modèle.            
-            Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);            
+            Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);
             Depiler = new RelayCommand<object>(editeur.Depiler, editeur.PeutDepiler);
-            AddForm = new RelayCommand<string>(editeur.AddForm);
+            //AddForm = new RelayCommand<string>(editeur.AddForm);
             RotateForm = new RelayCommand<string>(editeur.RotateForm);
             // Pour les commandes suivantes, il est toujours possible des les activer.
             // Donc, aucune vérification de type Peut"Action" à faire.
             ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
+            HandleMouseDown = new RelayCommand<MouseButtonEventArgs>(editeur.HandleMouseDown);
         }
 
         /// <summary>

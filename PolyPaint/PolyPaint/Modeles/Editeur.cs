@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
-using System.Drawing;
+//using System.Drawing;
+using System.Windows;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Ink;
@@ -18,6 +19,7 @@ namespace PolyPaint.Modeles
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public StrokeCollection traits = new StrokeCollection();
+        public StrokeCollection selectedStrokes = new StrokeCollection();
         private StrokeCollection traitsRetires = new StrokeCollection();
 
         // Outil actif dans l'éditeur
@@ -96,6 +98,15 @@ namespace PolyPaint.Modeles
             catch { }
 
         }
+        public void HandleMouseDown(MouseButtonEventArgs e)
+        {
+            Point position  = e.GetPosition((UIElement)e.OriginalSource);
+            if (outilSelectionne.Contains("form"))
+            {
+                AddForm(new Point((int)position.X, (int)position.Y));
+            }
+           // System.Windows.Point a = new System.Windows.Point((int)e.GetPosition(null).X -5, (int)e.GetPosition(null).Y - 65);
+        }
 
         // S'il y a au moins 1 trait sur la pile de traits retirés, il est possible d'exécuter Depiler.
         public bool PeutDepiler(object o) => (traitsRetires.Count > 0);
@@ -112,26 +123,26 @@ namespace PolyPaint.Modeles
         }
         public void RotateForm(string forme)
         {
-            UMLClass form = (UMLClass)traits.Last();
+            UMLClass form = (UMLClass)selectedStrokes[0]; //(UMLClass)traits.Last();
             form.rotate();
         }
-        public void AddForm(string forme)
+        public void AddForm(Point p)
         {
-            switch (forme)
+            switch (outilSelectionne)
             {
                 case "form_class":
-                    System.Windows.Input.StylusPointCollection pts = new System.Windows.Input.StylusPointCollection();
-
-                    pts.Add(new StylusPoint(10, 10));
-                    pts.Add(new StylusPoint(120, 10));
-                    pts.Add(new StylusPoint(120, 220));
-                    pts.Add(new StylusPoint(10, 220));
-                    pts.Add(new StylusPoint(10, 10));
-                    pts.Add(new StylusPoint(10, 40));
-                    pts.Add(new StylusPoint(120, 40));
-                    pts.Add(new StylusPoint(120, 100));
-                    pts.Add(new StylusPoint(10, 100));
-                    pts.Add(new StylusPoint(65, 115));
+                    StylusPointCollection pts = new StylusPointCollection();
+                    
+                    pts.Add(new StylusPoint(p.X, p.Y));
+                    pts.Add(new StylusPoint(p.X+110, p.Y));
+                    pts.Add(new StylusPoint(p.X+110, p.Y+210));
+                    pts.Add(new StylusPoint(p.X, p.Y+210));
+                    pts.Add(new StylusPoint(p.X, p.Y));
+                    pts.Add(new StylusPoint(p.X, p.Y+30));
+                    pts.Add(new StylusPoint(p.X+110, p.Y+30));
+                    pts.Add(new StylusPoint(p.X+110, p.Y+90));
+                    pts.Add(new StylusPoint(p.X, p.Y+90));
+                    //pts.Add(new StylusPoint(65, 115));
                     UMLClass ShapeUno = new UMLClass(pts);
                     ShapeUno.Name = "My Class";
                     ShapeUno.AddAttribute("Attribut1");
@@ -145,12 +156,12 @@ namespace PolyPaint.Modeles
                     ShapeUno.AddMethod("countryRoad()");
                     ShapeUno.AddMethod("toThePlace()");
                     ShapeUno.AddMethod("iBelong()");
-                    ShapeUno.AddMethod("westVirginia()");
+                   /* ShapeUno.AddMethod("westVirginia()");
                     ShapeUno.AddMethod("takeMeHome()");
                     ShapeUno.AddMethod("countryRoad()");
                     ShapeUno.AddMethod("toThePlace()");
                     ShapeUno.AddMethod("iBelong()");
-                    ShapeUno.AddMethod("westVirginia()");
+                    ShapeUno.AddMethod("westVirginia()");*/
 
 
                     traits.Add(ShapeUno);
