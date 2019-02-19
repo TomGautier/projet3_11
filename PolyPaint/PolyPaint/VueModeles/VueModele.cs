@@ -19,7 +19,19 @@ namespace PolyPaint.VueModeles
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
 
-        public ChatManager ChatManager = new ChatManager();
+        private int switchView = 0;
+        public int SwitchView
+        {
+            get { return switchView; }
+            set { switchView = value; ProprieteModifiee(); }
+        }
+        
+        private ChatManager chatManager = new ChatManager();
+        public ChatManager ChatManager
+        {
+            get { return chatManager; }
+            set { ProprieteModifiee(); }
+        }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();

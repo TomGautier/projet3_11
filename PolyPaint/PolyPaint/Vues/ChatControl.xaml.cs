@@ -21,7 +21,6 @@ namespace PolyPaint.Vues
     public partial class ChatControl : UserControl
     {
         private ChatWindow chatWindow;
-        private int windowCount;
 
         public ChatControl()
         {
@@ -31,7 +30,6 @@ namespace PolyPaint.Vues
             {
                 textBox.ScrollToEnd();
             };
-            windowCount = Application.Current.Windows.Count;
             chatWindow = null;
         }
 
@@ -43,7 +41,16 @@ namespace PolyPaint.Vues
 
         private void ToggleButton_Click(object sender, RoutedEventArgs e)
         {
-            if (windowCount == 1)
+            Window _chatWindow = null;
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window.Name == "chatWindow")
+                {
+                    _chatWindow = window;
+                }
+            }
+
+            if (_chatWindow == null)
             {
                 ((FrameworkElement)((DockPanel)FindName("chatDockPanel")).Parent).Visibility = Visibility.Collapsed;
                 chatWindow = new ChatWindow
@@ -59,13 +66,7 @@ namespace PolyPaint.Vues
             }
             else
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if(window.Name == "chatWindow")
-                    {
-                        window.Close();
-                    }
-                }
+                _chatWindow.Close();
             }
         }
     }
