@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
-import { SocketService, GENERAL_ROOM } from "./socket.service";
+import { SocketService } from "./socket.service";
 import SocketEvents from "../../../common/communication/socketEvents";
 
 @injectable()
@@ -10,7 +10,8 @@ export class ConversationManager {
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService
     ) {
-        this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1]));
+        this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1][0]));
+        this.socketService.subscribe(SocketEvents.UserJoinedRoom, args => this.onMessageSent(args[0], args[1]));
         this.socketService.subscribe(SocketEvents.UserLeft, args => this.onMessageSent(args[0], args[1]));
     }
 

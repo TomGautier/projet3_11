@@ -5,6 +5,7 @@ export default {
     NewUserJoined:"NewUserJoined",
     LoginAttempt:"LoginAttempt",
     UserLogged:"UserLogged",
+    UserJoinedRoom:"UserJoinedRoom",
     UsernameAlreadyExists:"UsernameAlreadyExists",
     InvalidCredentials:"InvalidCredentials",
     SignUp:"SignUp",

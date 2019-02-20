@@ -33,8 +33,10 @@ export class ConnectionService implements ConnectionServiceInterface {
     constructor(
         @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
         @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager,
-        @inject(TYPES.UserService) private userService: UserService
+        @inject(TYPES.UserService) private userService: UserService,
+        @inject(TYPES.SocketService) private socketService: SocketService
     ) {
+        this.socketService.subscribe(SocketEvents.UserLeft, args => this.connectionManager.removeUser(args[1]));
     }
 
     public async onUserLogin(username: string, password: string): Promise<string> {     
