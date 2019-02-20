@@ -11,5 +11,4 @@ script:
   - npm test
 
 notifications:
-   slack: log3990-11:EsNHJEkxopMINU2PnALD3AXZ
    email: false
