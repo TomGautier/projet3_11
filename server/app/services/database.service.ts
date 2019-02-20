@@ -66,7 +66,6 @@ export class DatabaseService {
     public async getAllByCriteria(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.find({ [criteria]: doc }, (err: any, document: any) => {
-
                 if (err) { return reject(err); };
                 resolve(document);
             });

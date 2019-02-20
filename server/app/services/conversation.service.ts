@@ -24,7 +24,6 @@ export class ConversationService implements ConversationServiceInterface {
     }
 
     public async getAllByUsername(username: string): Promise<{}> {
-        
         return await this.databaseService.getAllByCriteria(Conversation, this.PARTICIPANTS_CRITERIA, username)
             .catch(err => {
                 Logger.warn('ConversationService', `Couldn't get conversations from ${username}.`);
