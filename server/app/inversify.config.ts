@@ -20,6 +20,8 @@ import { DateServiceInterface,
          ApplicationInterface } from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
+import { ChannelsManager } from "./services/channels.manager";
+import { LoginService } from "./services/login.service";
 
 const container: Container = new Container();
 
@@ -31,8 +33,9 @@ container.bind<IndexServiceInterface>(TYPES.IndexServiceInterface).to(IndexServi
 container.bind<DateControllerInterface>(TYPES.DateControllerInterface).to(DateController);
 container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService);
 
-container.bind<SocketService>(TYPES.SocketService).to(SocketService);
+container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
+container.bind<LoginService>(TYPES.LoginService).to(LoginService);
+container.bind<ChannelsManager>(TYPES.ChannelsManager).to(ChannelsManager);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
-
 
 export { container };
