@@ -1,15 +1,3 @@
 language: node_js
 node_js:
   - "node"
-before_script:
-  - cd server
-  - npm install
-cache:
-  directories:
-    - "node_modules"
-script:
-  - npm test
-
-notifications:
-   slack: log3990-11:EsNHJEkxopMINU2PnALD3AXZ
-   email:false
