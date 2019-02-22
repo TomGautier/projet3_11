@@ -8,7 +8,8 @@ import SocketEvents from "../../../common/communication/socketEvents";
 export class DrawingSessionService implements DrawingSessionServiceInterface {
 
     constructor(@inject(TYPES.SocketService) private socketService: SocketService) { 
-        this.socketService.subscribe(SocketEvents.UserJoinedSession, args => this.joinSession(args[0], args[1]));
+        // args[0] contains the socket id, args[1][0] the drawing session id.
+        this.socketService.subscribe(SocketEvents.UserJoinedSession, args => this.joinSession(args[0], args[1][0]));
     }
 
     public joinSession(socketId: string, sessionId: string) {
