@@ -10,7 +10,7 @@ export default {
     UsernameAlreadyExists:"UsernameAlreadyExists",
     InvalidCredentials:"InvalidCredentials",
     // Collaborative session
-    
+    UserJoinedSession:"UserJoinedSession",
     // TODO: Te be cleared out
     CannotJoin:"CannotJoin",
     NewUserJoined:"NewUserJoined"
