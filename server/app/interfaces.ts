@@ -23,6 +23,10 @@ export interface ConnectionControllerInterface {
     router: Router;
 }
 
+export interface DrawingSessionServiceInterface {
+
+}
+
 export interface IndexServiceInterface {
     about(): Message;
     helloWorld(): Promise<Message>;
