@@ -1,7 +1,7 @@
 export default {
     // Chat
     MessageSent:"MessageSent",
-    UserJoinedRoom:"UserJoinedRoom",
+    UserJoinedConversation:"UserJoinedConversation",
     // Connexion
     LoginAttempt:"LoginAttempt",
     SignUp:"SignUp",

@@ -11,18 +11,18 @@ export class ConversationManager {
         @inject(TYPES.SocketService) private socketService: SocketService
     ) {
         this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1][0]));
-        this.socketService.subscribe(SocketEvents.UserJoinedRoom, args => this.onMessageSent(args[0], args[1]));
+        // arg [0] socketId, arg[1][0] sessionId, arg[1][1] username, arg[1][2] conversationName
+        this.socketService.subscribe(SocketEvents.UserJoinedConversation, args => this.joinConversation(args[0], args[1][0], args[1][1], args[1][2]));
         this.socketService.subscribe(SocketEvents.UserLeft, args => this.onMessageSent(args[0], args[1]));
     }
 
     public onMessageSent(conversationId: string, message: string) {
+        console.log('conversationId:', conversationId, message);
         this.socketService.emit(conversationId, SocketEvents.MessageSent, message);
     }
 
-    public joinConversation(socketId: string, ...conversationIds: string[]) {
-        for(const conversationId of conversationIds) {
-            this.socketService.joinRoom(conversationId, socketId);
-        }
+    public joinConversation(socketId: string, sessionId: string, username: string, conversationId: string) {
+        this.socketService.joinRoom(conversationId, socketId);
     }
 
     public leaveConversation(socketId: string, ...conversationIds: string[]) {

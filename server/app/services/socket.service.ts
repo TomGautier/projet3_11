@@ -32,7 +32,7 @@ export class SocketService {
             this.sockets.set(socket.id, socket);
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
-            socket.on(SocketEvents.UserJoinedRoom, args => this.handleEvent(SocketEvents.UserJoinedRoom, socket.id, args));
+            socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
@@ -76,6 +76,7 @@ export class SocketService {
     }
 
     private handleEvent(event: string, socketId: string, ...args: string[]): void { 
+        console.log('handleEvent:', event, socketId);
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
     }
