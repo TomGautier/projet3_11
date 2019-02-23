@@ -1,6 +1,7 @@
 package com.projet3.polypaint.Chat;
 
 import com.projet3.polypaint.SocketLoginListener;
+import com.projet3.polypaint.User.UserManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +17,7 @@ public class SocketManager  {
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
     public final String USERLOGGED_TAG = "UserLogged";
     public final String USERLEFT_TAG = "UserLeft";
+    public final String JOIN_CONVERSATION_TAG = "UserJoinedConversation";
 
 
     private final String DATE_TAG = "date";
@@ -73,8 +75,8 @@ public class SocketManager  {
             socket.emit(SENDMESSAGE_TAG, messageJSON);
 
     }
-    public void joinConversation(){
-
+    public void joinConversation(String sessionID, String conversationID){
+        socket.emit(JOIN_CONVERSATION_TAG, sessionID, UserManager.currentInstance.getUserUsername(), conversationID);
     }
 
     public boolean isConnected() {

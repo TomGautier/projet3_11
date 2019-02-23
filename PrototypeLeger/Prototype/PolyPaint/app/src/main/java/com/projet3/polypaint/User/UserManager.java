@@ -3,6 +3,7 @@ package com.projet3.polypaint.User;
 import android.util.JsonReader;
 
 import com.projet3.polypaint.Chat.Conversation;
+import com.projet3.polypaint.Chat.SocketManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,7 +80,10 @@ public class UserManager {
                  } catch (JSONException e) {
                      e.printStackTrace();
                  }
-                 conversations.add(new Conversation(name, new ArrayList()));
+                 if (!name.isEmpty()){
+                     conversations.add(new Conversation(name, new ArrayList()));
+                     SocketManager.currentInstance.joinConversation(sessionID, name);
+                 }
              }
              return conversations;
         }

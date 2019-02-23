@@ -17,7 +17,11 @@ export class ConversationManager {
     }
 
     public onMessageSent(conversationId: string, message: string) {
+<<<<<<< Updated upstream
         console.log('conversationId:', conversationId, message);
+=======
+        console.log("passe dans onMessageSent");
+>>>>>>> Stashed changes
         this.socketService.emit(conversationId, SocketEvents.MessageSent, message);
     }
 

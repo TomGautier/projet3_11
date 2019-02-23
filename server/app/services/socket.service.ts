@@ -76,7 +76,11 @@ export class SocketService {
     }
 
     private handleEvent(event: string, socketId: string, ...args: string[]): void { 
+<<<<<<< Updated upstream
         console.log('handleEvent:', event, socketId);
+=======
+        console.log("jai recu un message");
+>>>>>>> Stashed changes
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
     }

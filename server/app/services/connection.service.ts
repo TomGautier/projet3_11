@@ -8,6 +8,7 @@ import { UserService } from "./user.service";
 import User from "../schemas/user"
 import { ConnectionServiceInterface } from "../interfaces";
 import * as uuid from 'node-uuid';
+import user from "../schemas/user";
 
 @injectable()
 export class ConnectionManager {
@@ -15,6 +16,7 @@ export class ConnectionManager {
     private connectedUsers: Map<String, String> = new Map();
 
     public addUser(sessionId: string, username: string) {
+        console.log("added user ",username + "with sessionId ",sessionId);
         this.connectedUsers.set(username, sessionId);
     }
 
