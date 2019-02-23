@@ -51,8 +51,8 @@ container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService)
 
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
-container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager);
-container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager);
+container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager).inSingletonScope();
+container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
 
