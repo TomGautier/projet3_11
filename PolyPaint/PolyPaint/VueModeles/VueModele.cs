@@ -4,6 +4,7 @@ using System.Windows.Ink;
 using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
+using PolyPaint.Managers;
 
 namespace PolyPaint.VueModeles
 {
@@ -18,14 +19,28 @@ namespace PolyPaint.VueModeles
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
 
+        private int switchView = 0;
+        public int SwitchView
+        {
+            get { return switchView; }
+            set { switchView = value; ProprieteModifiee(); }
+        }
+        
+        private ChatManager chatManager = new ChatManager();
+        public ChatManager ChatManager
+        {
+            get { return chatManager; }
+            set { ProprieteModifiee(); }
+        }
+
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
 
-          public string OutilSelectionne
-          {
-              get { return editeur.OutilSelectionne; }            
-              set { ProprieteModifiee(); }
-          }
+        public string OutilSelectionne
+        {
+            get { return editeur.OutilSelectionne; }            
+            set { ProprieteModifiee(); }
+        }
 
         public StrokeCollection Traits { get; set; }
 
