@@ -35,11 +35,13 @@ class UserFetchConversationsTask extends AsyncTask<String, String, ArrayList<JSO
             //Get Response
             InputStream is = connection.getInputStream();
             BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-            StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
+            //StringBuilder response = new StringBuilder(); // or StringBuffer if Java version 5+
             String line;
             ArrayList<JSONObject> jsonObjects = new ArrayList<>();
             while ((line = rd.readLine()) != null) {
                 //response.append(line);
+                if (line == "403")
+                    return null;
                 jsonObjects.add(new JSONObject(line));
                // response.append('\r');
             }
@@ -56,9 +58,9 @@ class UserFetchConversationsTask extends AsyncTask<String, String, ArrayList<JSO
         }
     }
 
-    @Override
+    /*@Override
     protected void onPostExecute(ArrayList<JSONObject> s) {
         super.onPostExecute(s);
         UserManager.currentInstance.setUserConversations(s);
-    }
+    }*/
 }

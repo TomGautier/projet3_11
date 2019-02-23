@@ -73,6 +73,9 @@ public class SocketManager  {
             socket.emit(SENDMESSAGE_TAG, messageJSON);
 
     }
+    public void joinConversation(){
+
+    }
 
     public boolean isConnected() {
         return socket.connected();

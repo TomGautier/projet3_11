@@ -1,7 +1,13 @@
 package com.projet3.polypaint.User;
 
+import android.util.JsonReader;
+
+import com.projet3.polypaint.Chat.Conversation;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -14,21 +20,44 @@ public class UserManager {
     private String url;
     private String ip;
     private String sessionID;
-    private ArrayList<JSONObject> userConversations;
+    private ArrayList<Conversation> userConversations;
+    private UserInformation user;
 
 
     public static UserManager currentInstance;
 
     public UserManager(String ip_) {
         ip = ip_;
+        userConversations = new ArrayList<>();
+        sessionID = null;
+        user = null;
     }
 
-    public Boolean requestLogin(UserInformation userInformation_) {
+    public boolean requestLogin(UserInformation userInformation_) {
         url = formatUrl(userInformation_, Request.Connection);
         UserLoginTask loginTask = new UserLoginTask();
         loginTask.execute(url);
+        boolean response = false;
         try{
-            return configureLoginResponse(loginTask.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+            response = configureLoginResponse(loginTask.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+            if (response)
+                user = userInformation_;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+    public ArrayList<Conversation> fetchUserConversations(UserInformation userInformation_) {
+        url = formatUrl(userInformation_, Request.Fetch_Conversations);
+        UserFetchConversationsTask task = new UserFetchConversationsTask();
+        task.execute(url);
+        try{
+            userConversations = configureFetchConversationsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+            return userConversations;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -38,9 +67,24 @@ public class UserManager {
         }
         return null;
     }
-    public void fetchUserConversations(UserInformation userInformation_) {
-        url = formatUrl(userInformation_, Request.Fetch_Conversations);
-        new UserFetchConversationsTask().execute(url);
+    private ArrayList<Conversation> configureFetchConversationsResponse(ArrayList<JSONObject> jsons){
+        ArrayList<Conversation> conversations = new ArrayList<>();
+        if (jsons == null || jsons.size() == 0)
+            return conversations;
+        else{
+             for (JSONObject json : jsons){
+                 String name = "";
+                 try {
+                     name = json.getString("name");
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+                 conversations.add(new Conversation(name, new ArrayList()));
+             }
+             return conversations;
+        }
+
+
     }
 
     private boolean configureLoginResponse(String response_){
@@ -63,11 +107,18 @@ public class UserManager {
         return formatUrl;
     }
 
-    public void setUserConversations(ArrayList<JSONObject> conversations) {
-        userConversations = conversations;
-    }
-    public final ArrayList<JSONObject> getUserconversation() {
+    /*public void setUserConversations(ArrayList<JSONObject> conversations) {
+        //userConversations = conversations;
+        for(JSONObject convo : conversations){
+
+            Conversation conversation = new Conversation()
+        }
+    }*/
+    /*public final Conversation getUserconversation() {
         return userConversations;
+    }*/
+    public final String getUserUsername(){
+        return user.getUsername();
     }
 
 }

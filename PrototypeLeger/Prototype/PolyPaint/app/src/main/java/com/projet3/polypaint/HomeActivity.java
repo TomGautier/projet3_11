@@ -12,6 +12,7 @@ import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
 import com.projet3.polypaint.User.UserInformation;
+import com.projet3.polypaint.User.UserManager;
 
 import java.util.ArrayList;
 
@@ -26,13 +27,15 @@ public class HomeActivity extends Activity  {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		if (savedInstanceState == null){
-			userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-			ArrayList convos = new ArrayList();
-			convos.add(new Conversation("convo1"));
-			convos.add(new Conversation("convo2"));
+			//userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
+			//ArrayList convos = new ArrayList();
+			//convos.add(new Conversation("convo1"));
+			//convos.add(new Conversation("convo2"));
+
 			FragmentManager manager = getFragmentManager();
 			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.add(R.id.chatFragment, ChatFragment.newInstance(userInformation,convos),"CHAT_FRAGMENT");
+			transaction.add(R.id.chatFragment, ChatFragment.newInstance(
+					getIntent().getExtras().<Conversation>getParcelableArrayList("CONVERSATIONS")),"CHAT_FRAGMENT");
 			transaction.addToBackStack(null);
 			transaction.commit();
 		}
@@ -63,7 +66,7 @@ public class HomeActivity extends Activity  {
 	}
 	@Override
 	public void onBackPressed() {
-		SocketManager.currentInstance.leave(userInformation.getUsername());
+		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 	}
 	// INTEGRATION

@@ -12,20 +12,25 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
 import com.projet3.polypaint.User.UserInformation;
 import com.projet3.polypaint.User.UserManager;
 
+import java.util.ArrayList;
+
 public class LoginActivity extends Activity  {
 
-	private final int CONNECT_DELAY = 5000;
+	//private final int CONNECT_DELAY = 5000;
+	private final String AZURE_IP = "40.122.119.160";
+	private final String IP = "192.168.0.180";
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
 	EditText usernameEntry;
 	EditText passwordEntry;
-	EditText ipEntry;
+	//EditText ipEntry;
 	RelativeLayout userModuleLayout;
 	UserInformation userInformation;
 
@@ -39,24 +44,25 @@ public class LoginActivity extends Activity  {
 	}
 	private void initialize() {
 		userConnexionButton = (ImageButton)findViewById(R.id.connectUserButton);
-		serverConnexionButton = (ImageButton)findViewById(R.id.connectServerButton);
+		//serverConnexionButton = (ImageButton)findViewById(R.id.connectServerButton);
 		usernameEntry = (EditText)findViewById(R.id.usernameEditText);
 		passwordEntry = (EditText)findViewById(R.id.passwordEditText);
-		ipEntry = (EditText)findViewById(R.id.ipEditText);
+		//ipEntry = (EditText)findViewById(R.id.ipEditText);
 		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
 
+		UserManager.currentInstance = new UserManager(IP);
 
-		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected())
-			changeToUserUI();
+		//if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected())
+		//	changeToUserUI();
 
 
 
 
 
 		setUserLoginButton();
-		setServerLoginButton();
+		//setServerLoginButton();
 
-        Utilities.SetButtonEffect(serverConnexionButton);
+        //Utilities.SetButtonEffect(serverConnexionButton);
 		Utilities.SetButtonEffect(userConnexionButton);
 	}
 
@@ -68,10 +74,11 @@ public class LoginActivity extends Activity  {
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					if (UserManager.currentInstance.requestLogin(userInformation)) {
-						UserManager.currentInstance.fetchUserConversations(userInformation);
-
+						ArrayList<Conversation> fetchedConversations = UserManager.currentInstance.fetchUserConversations(userInformation);
+						SocketManager.currentInstance = new SocketManager(IP);
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
-						intent.putExtra("USER_INFORMATION", userInformation);
+						intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
+						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
 					else{
@@ -84,7 +91,8 @@ public class LoginActivity extends Activity  {
 		});
 	}
 
-	private void setServerLoginButton() {
+
+	/*private void setServerLoginButton() {
 		serverConnexionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -137,7 +145,7 @@ public class LoginActivity extends Activity  {
         changeIpModuleState(false);
         ipEntry.setBackgroundColor(Color.GREEN);
         userModuleLayout.setVisibility(View.VISIBLE);
-    }
+    }*/
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
