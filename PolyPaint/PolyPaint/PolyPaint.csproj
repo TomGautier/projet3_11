@@ -204,9 +204,6 @@
     <Resource Include="Resources\position.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\efface.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="palette.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -214,12 +211,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\lasso.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\crayon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\efface_crayon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

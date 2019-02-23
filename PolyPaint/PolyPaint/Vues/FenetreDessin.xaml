@@ -62,93 +62,9 @@
                 <StackPanel Orientation="Horizontal">
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 </StackPanel>
-                <Button x:Name="crayon" Width="40" Height="40" Margin="5" 
-                        BorderBrush="{Binding OutilSelectionne, ConverterParameter=crayon, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                        Background="{Binding OutilSelectionne, ConverterParameter=crayon, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}" 
-                        Command="{Binding ChoisirOutil}"
-                        CommandParameter="crayon">
-                    <StackPanel>
-                        <Image Source="/Resources/crayon.png"  />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="efface_segment" Width="40" Height="40" Margin="5" 
-                        BorderBrush="{Binding OutilSelectionne, ConverterParameter=efface_segment, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                        Background="{Binding OutilSelectionne, ConverterParameter=efface_segment, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}" 
-                        Command="{Binding ChoisirOutil}"
-                        CommandParameter="efface_segment">
-                    <StackPanel>
-                        <Image Source="/Resources/efface_crayon.png" />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="efface_trait" Width="40" Height="40" Margin="5" 
-                        BorderBrush="{Binding OutilSelectionne, ConverterParameter=efface_trait, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                        Background="{Binding OutilSelectionne, ConverterParameter=efface_trait, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}" 
-                        Command="{Binding ChoisirOutil}"
-                        CommandParameter="efface_trait">
-                    <StackPanel>
-                        <Image Source="/Resources/efface.png" />
-                    </StackPanel>
-                </Button>
                 <StackPanel Orientation="Horizontal">
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 </StackPanel>
-                <StackPanel Orientation="Vertical" Margin="5,5,5,5" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal">
-                        <Button x:Name="PointeRonde" Width="24" Height="24" Margin="0"
-                            BorderBrush="{Binding PointeSelectionnee, ConverterParameter=ronde, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                            Background="{Binding PointeSelectionnee, ConverterParameter=ronde, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}"                                 
-                            HorizontalContentAlignment="Center"                                
-                            Command="{Binding ChoisirPointe}"
-                            CommandParameter="ronde">
-                            <Ellipse Width="10" Height="10" Fill="Black" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center"/>
-                        </Button>
-                        <Button x:Name="PointeCarree" Width="24" Height="24" Margin="0"
-                            HorizontalContentAlignment="Center"                            
-                            BorderBrush="{Binding PointeSelectionnee, ConverterParameter=carree, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                            Background="{Binding PointeSelectionnee, ConverterParameter=carree, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}"                                
-                            Command="{Binding ChoisirPointe}"
-                            CommandParameter="carree">
-                            <Rectangle Width="10" Height="10" Fill="Black" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center"/>
-                        </Button>
-                    </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="Verticale" Width="24" Height="24" Margin="0"
-                            HorizontalContentAlignment="Center"
-                            BorderBrush="{Binding PointeSelectionnee, ConverterParameter=verticale, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                            Background="{Binding PointeSelectionnee, ConverterParameter=verticale, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}"   
-                            Command="{Binding ChoisirPointe}"
-                            CommandParameter="verticale">
-                            <Rectangle Width="2" Height="10" Fill="Black" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center"/>
-                        </Button>
-                        <Button x:Name="Horizontale" Width="24" Height="24" Margin="0"
-                            HorizontalContentAlignment="Center"
-                            BorderBrush="{Binding PointeSelectionnee, ConverterParameter=horizontale, Converter={StaticResource convertisseurBordure}, UpdateSourceTrigger=PropertyChanged}" 
-                            Background="{Binding PointeSelectionnee, ConverterParameter=horizontale, Converter={StaticResource convertisseurCouleurFond}, UpdateSourceTrigger=PropertyChanged}"   
-                            Command="{Binding ChoisirPointe}"
-                            CommandParameter="horizontale">
-                            <Rectangle Width="10" Height="2" Fill="Black" Stroke="Black" StrokeThickness="2" HorizontalAlignment="Center"/>
-                        </Button>
-                    </StackPanel>
-                </StackPanel>
-                <!--<xctk:ColorPicker x:Name="selecteurCouleur"                             
-                  VerticalContentAlignment="Stretch"
-                  Background="#00000000"
-                  ShowDropDownButton="False"
-                  ShowRecentColors="True"
-                  BorderBrush="#80000000"
-                  Margin="5,0,0,0" Width="39" Height="38"
-                  SelectedColor="{Binding Path=CouleurSelectionnee, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                  AvailableColorsHeader="Palette"
-                  StandardColorsHeader="Couleurs de base"
-                  StandardButtonHeader="Standard"
-                  RecentColorsHeader="Récemment utilisées"
-                  UsingAlphaChannel="True"
-                  AdvancedButtonHeader="Personnalisé" />-->
-                <Slider Width="100" Height="26" Minimum="1" Maximum="50"
-                        Value="{Binding TailleTrait, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                        Margin="12"
-                        Foreground="Gray"                        
-                        TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False"/>
             </StackPanel>
 
         </Border>
