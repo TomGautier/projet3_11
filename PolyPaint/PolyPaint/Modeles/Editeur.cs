@@ -6,7 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Ink;
 using System.Windows.Input;
 using PolyPaint.Utilitaires;
-
+using System.Windows.Media;
+//using System.Drawing;
 
 namespace PolyPaint.Modeles
 {
@@ -21,6 +22,7 @@ namespace PolyPaint.Modeles
         public StrokeCollection traits = new StrokeCollection();
         public StrokeCollection selectedStrokes = new StrokeCollection();
         private StrokeCollection traitsRetires = new StrokeCollection();
+        
 
         // Outil actif dans l'éditeur
         private string outilSelectionne = "lasso";
@@ -36,7 +38,7 @@ namespace PolyPaint.Modeles
             get { return pointeSelectionnee; }
             set
             {
-                OutilSelectionne = "crayon";
+               // OutilSelectionne = "crayon";
                 pointeSelectionnee = value;                                
                 ProprieteModifiee();
             }
@@ -52,8 +54,22 @@ namespace PolyPaint.Modeles
             set
             {
                 couleurSelectionnee = value;
-                OutilSelectionne = "crayon";
+                
+                if (selectedStrokes != null)
+                {
+
+
+                    foreach (Form form in selectedStrokes)
+                    {
+                       // form.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+                        form.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+
+                    }
+                }
                 ProprieteModifiee();
+                //OutilSelectionne = "crayon";
+               // ProprieteModifiee();
+                    
             }
         }
 
@@ -67,9 +83,27 @@ namespace PolyPaint.Modeles
             set
             {
                 tailleTrait = value;
-                OutilSelectionne = "crayon";
+               // OutilSelectionne = "crayon";
                 ProprieteModifiee();
             }
+        }
+        public void ChangeSelection(StrokeCollection strokes)
+        {
+            //selectedStrokes = null;
+            
+            if (strokes.Count > 0)
+            {
+                selectedStrokes = strokes;
+                //OutilSelectionne = "crayon";
+                // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
+                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
+            }
+            else
+            {
+                selectedStrokes = null;
+                CouleurSelectionnee = "Black";
+            }
+           
         }
 
         /// <summary>
@@ -121,10 +155,18 @@ namespace PolyPaint.Modeles
             }
             catch { }         
         }
-        public void RotateForm(string forme)
+        public void RotateForm(object sender)
         {
-            UMLClass form = (UMLClass)selectedStrokes[0]; //(UMLClass)traits.Last();
-            form.rotate();
+            if (selectedStrokes != null)
+            {
+                foreach (Form form in selectedStrokes)
+                {
+                    form.rotate();
+                }
+            }
+               
+               
+            //form.rotate();
         }
         public void AddForm(Point p)
         {
@@ -145,7 +187,8 @@ namespace PolyPaint.Modeles
                     //pts.Add(new StylusPoint(65, 115));
                     UMLClass ShapeUno = new UMLClass(pts);
                     ShapeUno.Name = "My Class";
-                    ShapeUno.AddAttribute("Attribut1");
+                    ShapeUno.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                   /* ShapeUno.AddAttribute("Attribut1");
                     ShapeUno.AddAttribute("Attribut2");
                     ShapeUno.AddAttribute("Attribut3");
                     ShapeUno.AddAttribute("Attribut4");

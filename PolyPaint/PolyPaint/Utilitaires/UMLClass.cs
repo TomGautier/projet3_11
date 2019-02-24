@@ -12,13 +12,13 @@ using System.Windows.Media;
 
 namespace PolyPaint.Utilitaires
 {
-    class UMLClass : Stroke
+    class UMLClass : Form
     {
         public string Name { get; set; }
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }
+        
        
-        private int CurrentRotation { get; set; }
         public UMLClass(StylusPointCollection pts)
             : base(pts)
         {
@@ -27,7 +27,18 @@ namespace PolyPaint.Utilitaires
             this.Methods = new List<String>();
             this.Attributes = new List<String>();
             this.CurrentRotation = 0;
+            this.BorderColor = Colors.Black;
+            updateCenter();
+            
+            
         }
+        private void updateCenter()
+        {
+            double x = this.StylusPoints[0].X + (this.StylusPoints[2].X - this.StylusPoints[0].X) / 2;
+            double y = this.StylusPoints[0].Y + (this.StylusPoints[2].Y - this.StylusPoints[0].Y) / 2;
+            this.Center = new Point((int)x, (int)y);
+        }
+        
        /* private void updatePivot()
         {
             this.Pivot = new StylusPoint(this.StylusPoints[0].X + ((this.StylusPoints[1].X - this.StylusPoints[0].X) / 2), this.StylusPoints[0].Y + ((this.StylusPoints[3].Y - this.StylusPoints[0].Y) / 2));
@@ -37,20 +48,6 @@ namespace PolyPaint.Utilitaires
             this.Methods.Add(method);
         }
        //private ApplyRotation(StylusPoint point,
-        public void rotate()
-        {
-            this.CurrentRotation += 10;
-
-            StylusPoint pivot = this.StylusPoints.Last();
-
-            for (int i = 0; i< this.StylusPoints.Count-1; i++)
-            {
- 
-                this.StylusPoints[i] = ApplyRotation(10, pivot, this.StylusPoints[i]);
-            }         
-            
-            
-        }
         protected override void OnStylusPointsChanged(EventArgs e)
         {
             base.OnStylusPointsChanged(e);
@@ -77,29 +74,31 @@ namespace PolyPaint.Utilitaires
             SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(255,0,0));
             //brush.Freeze();
             //FILL
-            // drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));         
-            DrawName(drawingContext);
-             DrawAttributes(drawingContext);
-            DrawMethods(drawingContext);
+             //drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));         
+            //DrawName(drawingContext);
+            // DrawAttributes(drawingContext);
+            //DrawMethods(drawingContext);
            //  updatePivot();
             base.DrawCore(drawingContext, drawingAttributes);
+            updateCenter();
         }
         private void DrawName(DrawingContext drawingContext)
         {
             if (this.Name != null && this.Name.Length != 0)
             {
 
-                Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2, this.StylusPoints[0].ToPoint().Y + 4);        
-                 //StylusPoint pivot = this.StylusPoints.Last();
+                Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2, this.StylusPoints[0].ToPoint().Y + 4);
+                //StylusPoint pivot = this.StylusPoints.Last();
                 //StylusPoint pivot = new StylusPoint(0, 0);
                 // origin = ApplyRotation(this.CurrentRotation, pivot, origin);
                 //  origin = ApplyRotation(this.CurrentRotation, new StylusPoint(0,0), origin);
                 //RotateTransform RT = new RotateTransform(this.CurrentRotation);
-               // drawingContext.PushTransform(RT);
+                // drawingContext.PushTransform(RT);
 
                 //Point location = new Point(origin.X, origin.Y);
+                SolidColorBrush brush = new SolidColorBrush(this.BorderColor);
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-                drawingContext.DrawText(new FormattedText(this.Name, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, Brushes.Black), origin);
+                drawingContext.DrawText(new FormattedText(this.Name, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
                // drawingContext.Pop();    
             }
         }

@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Ink;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -30,7 +32,10 @@ namespace PolyPaint.VueModeles
         public string CouleurSelectionnee
         {
             get { return editeur.CouleurSelectionnee; }
-            set { editeur.CouleurSelectionnee = value; }
+            set {
+                editeur.CouleurSelectionnee = value;
+               // ProprieteModifiee();
+            }
         }
 
         public string PointeSelectionnee
@@ -44,10 +49,20 @@ namespace PolyPaint.VueModeles
             get { return editeur.TailleTrait; }
             set { editeur.TailleTrait = value; }
         }
-       
-        public StrokeCollection Traits { get; set; }
-        public StrokeCollection SelectedStrokes { get; set; }
+        public StrokeCollection SelectedStrokes
+        {
+            get { return editeur.selectedStrokes; }
+            set { editeur.selectedStrokes = value; }
+        }
+        public int CurrentRotation
+        {
+            get { return (editeur.selectedStrokes[0] as Form).CurrentRotation; }
+            set { (editeur.selectedStrokes[0] as Form).CurrentRotation = value; }
+        }
 
+        public StrokeCollection Traits { get; set; }
+       
+        private InkCanvas Canvas { get; set; }
         // Commandes sur lesquels la vue pourra se connecter.
         public RelayCommand<object> Empiler { get; set; }
         public RelayCommand<object> Depiler { get; set; }
@@ -57,17 +72,18 @@ namespace PolyPaint.VueModeles
 
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
-        public RelayCommand<string> RotateForm { get; set; }
+        public RelayCommand<object> RotateForm { get; set; }
         public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
-
+        
 
         /// <summary>
         /// Constructeur de VueModele
         /// On récupère certaines données initiales du modèle et on construit les commandes
         /// sur lesquelles la vue se connectera.
         /// </summary>
-        public VueModele()
+        public VueModele(InkCanvas surfaceDessin)
         {
+            this.Canvas = surfaceDessin;
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -78,13 +94,13 @@ namespace PolyPaint.VueModeles
 
             Traits = editeur.traits;
             SelectedStrokes = editeur.selectedStrokes;
-
+            
 
             // Pour chaque commande, on effectue la liaison avec des méthodes du modèle.            
             Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);
             Depiler = new RelayCommand<object>(editeur.Depiler, editeur.PeutDepiler);
             //AddForm = new RelayCommand<string>(editeur.AddForm);
-            RotateForm = new RelayCommand<string>(editeur.RotateForm);
+            RotateForm = new RelayCommand<object>(editeur.RotateForm);
             // Pour les commandes suivantes, il est toujours possible des les activer.
             // Donc, aucune vérification de type Peut"Action" à faire.
             ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
@@ -116,7 +132,9 @@ namespace PolyPaint.VueModeles
         {     
             if (e.PropertyName == "CouleurSelectionnee")
             {
-                AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
+                ProprieteModifiee(e.PropertyName);
+                //AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
+                //CouleurSelectionnee = editeur.CouleurSelectionnee;
             }                
             else if (e.PropertyName == "OutilSelectionne")
             {
@@ -130,7 +148,19 @@ namespace PolyPaint.VueModeles
             else // e.PropertyName == "TailleTrait"
             {               
                 AjusterPointe();
-            }                
+            }
+            //this.Canvas.Select(SelectedStrokes);
+        }
+        public void HandleSelection(StrokeCollection strokes)
+        {
+            editeur.ChangeSelection(strokes);
+            //CouleurSelectionnee = "Yellow";
+            
+           // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
+        }
+        public void HandleRotation(Point rotatePoint)
+        {
+            editeur.RotateForm(rotatePoint);
         }
 
         /// <summary>
