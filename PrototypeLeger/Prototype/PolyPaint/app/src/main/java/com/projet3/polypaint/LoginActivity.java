@@ -63,7 +63,7 @@ public class LoginActivity extends Activity  {
 		//setServerLoginButton();
 
         //Utilities.SetButtonEffect(serverConnexionButton);
-		Utilities.SetButtonEffect(userConnexionButton);
+		Utilities.setButtonEffect(userConnexionButton);
 	}
 
 	private void setUserLoginButton() {
@@ -71,6 +71,7 @@ public class LoginActivity extends Activity  {
 			@Override
 			public void onClick(View view) {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
+					Utilities.changeButtonState(userConnexionButton,false);
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					if (UserManager.currentInstance.requestLogin(userInformation)) {
@@ -83,6 +84,7 @@ public class LoginActivity extends Activity  {
 					}
 					else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
+						Utilities.changeButtonState(userConnexionButton,true);
 					}
 				}
 				else

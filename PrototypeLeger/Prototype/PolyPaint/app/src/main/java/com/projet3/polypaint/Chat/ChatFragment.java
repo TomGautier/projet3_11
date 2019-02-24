@@ -113,8 +113,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         setupChatConversationSpinner();
 
 
-        Utilities.SetButtonEffect(chatEnterButton);
-        Utilities.SetButtonEffect(chatExpendButton);
+        Utilities.setButtonEffect(chatEnterButton);
+        Utilities.setButtonEffect(chatExpendButton);
 
         chatIsExpended = false;
     }
