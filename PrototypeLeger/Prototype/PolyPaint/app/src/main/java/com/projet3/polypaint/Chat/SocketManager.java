@@ -23,6 +23,8 @@ public class SocketManager  {
     private final String DATE_TAG = "date";
     private final String USERNAME_TAG = "username";
     private final String MESSAGE_TAG = "message";
+    private final String SESSION_ID_TAG = "sessionId";
+    private final String CONVERSATION_ID_TAG = "conversationId";
 
     public static SocketManager currentInstance;
     private Socket socket;
@@ -76,7 +78,14 @@ public class SocketManager  {
 
     }
     public void joinConversation(String sessionID, String conversationID){
-        socket.emit(JOIN_CONVERSATION_TAG, sessionID, UserManager.currentInstance.getUserUsername(), conversationID);
+        JSONObject json = null;
+        try{
+           json = new JSONObject().put(SESSION_ID_TAG,sessionID).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
+                    .put(CONVERSATION_ID_TAG, conversationID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit(JOIN_CONVERSATION_TAG, sessionID, UserManager.currentInstance.getUserUsername(), json);
     }
 
     public boolean isConnected() {
