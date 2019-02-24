@@ -74,8 +74,8 @@ public class LoginActivity extends Activity  {
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					if (UserManager.currentInstance.requestLogin(userInformation)) {
-						ArrayList<Conversation> fetchedConversations = UserManager.currentInstance.fetchUserConversations(userInformation);
 						SocketManager.currentInstance = new SocketManager(IP);
+						ArrayList<Conversation> fetchedConversations = UserManager.currentInstance.fetchUserConversations(userInformation);
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
 						//intent.putExtra("USER_INFORMATION", userInformation);

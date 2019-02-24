@@ -5,6 +5,7 @@ import android.util.JsonReader;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,15 +69,17 @@ public class UserManager {
         }
         return null;
     }
-    private ArrayList<Conversation> configureFetchConversationsResponse(ArrayList<JSONObject> jsons){
+    private ArrayList<Conversation> configureFetchConversationsResponse(JSONArray jsons){
         ArrayList<Conversation> conversations = new ArrayList<>();
-        if (jsons == null || jsons.size() == 0)
+        if (jsons == null || jsons.length() == 0)
             return conversations;
         else{
-             for (JSONObject json : jsons){
+             for (int i = 0; i < jsons.length(); i ++){
+                 JSONObject jsonObject;
                  String name = "";
                  try {
-                     name = json.getString("name");
+                     jsonObject = jsons.getJSONObject(i);
+                     name = jsonObject.getString("name");
                  } catch (JSONException e) {
                      e.printStackTrace();
                  }
