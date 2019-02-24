@@ -69,12 +69,12 @@ public class SocketManager  {
         }catch(Exception e) {}
 
     }
-    
-    public void sendMessage(String date, String conversationId, String message) {
+
+    public void sendMessage(String conversationId, String message) {
         JSONObject args = null;
-        JSONObject messageJSON = null;
+       // JSONObject messageJSON = null;
         try {
-            messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername()).put(MESSAGE_TAG, message);
+           // messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername()).put(MESSAGE_TAG, message);
             args = new JSONObject().put(SESSION_ID_TAG, sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
                     .put(CONVERSATION_ID_TAG, conversationId).put(MESSAGE_TAG, message);
         }catch(JSONException e) {}

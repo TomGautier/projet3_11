@@ -156,7 +156,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     }
 
     public void sendMessage(String message) {
-        SocketManager.currentInstance.sendMessage(getDate(), UserManager.currentInstance.getUserUsername(), message);
+        //SocketManager.currentInstance.sendMessage(getDate(), UserManager.currentInstance.getUserUsername(), message);
+        SocketManager.currentInstance.sendMessage(currentConversation.GetName(), message);
     }
 
     private void SetupChatEnterButton() {
