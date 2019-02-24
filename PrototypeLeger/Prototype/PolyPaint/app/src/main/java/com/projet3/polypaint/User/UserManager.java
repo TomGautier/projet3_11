@@ -42,8 +42,10 @@ public class UserManager {
         boolean response = false;
         try{
             response = configureLoginResponse(loginTask.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
-            if (response)
+            if (response){
                 user = userInformation_;
+                SocketManager.currentInstance = new SocketManager(ip, sessionID);
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -85,7 +87,7 @@ public class UserManager {
                  }
                  if (!name.isEmpty()){
                      conversations.add(new Conversation(name, new ArrayList()));
-                     SocketManager.currentInstance.joinConversation(sessionID, name);
+                     SocketManager.currentInstance.joinConversation(name);
                  }
              }
              return conversations;
@@ -126,6 +128,9 @@ public class UserManager {
     }*/
     public final String getUserUsername(){
         return user.getUsername();
+    }
+    public final String getSessionId(){
+        return sessionID;
     }
 
 }

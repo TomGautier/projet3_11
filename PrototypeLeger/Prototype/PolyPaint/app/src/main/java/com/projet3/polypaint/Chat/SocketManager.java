@@ -31,9 +31,11 @@ public class SocketManager  {
     private NewMessageListener newMessagelistener;
 
     private String uri;
+    private String sessionId;
 
-    public SocketManager(String ipAddress_) {
+    public SocketManager(String ipAddress_, String sessionId_) {
         uri = formatIpToUri(ipAddress_);
+        sessionId = sessionId_;
         setupSocket();
     }
 
@@ -67,26 +69,31 @@ public class SocketManager  {
         }catch(Exception e) {}
 
     }
-    public void sendMessage(String date,String username, String message) {
-        String messageJSON = "";
+    
+    public void sendMessage(String date, String conversationId, String message) {
+        JSONObject args = null;
+        JSONObject messageJSON = null;
         try {
-            messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, username).put(MESSAGE_TAG, message).toString();
+            messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername()).put(MESSAGE_TAG, message);
+            args = new JSONObject().put(SESSION_ID_TAG, sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
+                    .put(CONVERSATION_ID_TAG, conversationId).put(MESSAGE_TAG, message);
         }catch(JSONException e) {}
 
-        if (!messageJSON.isEmpty())
-            socket.emit(SENDMESSAGE_TAG, messageJSON);
+        if (args != null)
+            socket.emit(SENDMESSAGE_TAG, args);
 
     }
-    public void joinConversation(String sessionID, String conversationID){
+    public void joinConversation(String conversationID){
         JSONObject json = null;
         try{
-           json = new JSONObject().put(SESSION_ID_TAG,sessionID).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
+           json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
                     .put(CONVERSATION_ID_TAG, conversationID);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        socket.emit(JOIN_CONVERSATION_TAG, sessionID, UserManager.currentInstance.getUserUsername(), json);
+        socket.emit(JOIN_CONVERSATION_TAG, sessionId, UserManager.currentInstance.getUserUsername(), json);
     }
+
 
     public boolean isConnected() {
         return socket.connected();
