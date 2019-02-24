@@ -56,7 +56,8 @@ public class SocketManager  {
                     String message = "";
                     String username = "";
                     try {
-                        JSONObject json = new JSONObject((String)args[0]);
+                        //JSONObject json = new JSONObject((JSONObject)args[0]);
+                        JSONObject json = (JSONObject) args[0];
                         date = json.getString(DATE_TAG);
                         username = json.getString(USERNAME_TAG);
                         message = json.getString(MESSAGE_TAG);
@@ -91,7 +92,7 @@ public class SocketManager  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        socket.emit(JOIN_CONVERSATION_TAG, sessionId, UserManager.currentInstance.getUserUsername(), json);
+        socket.emit(JOIN_CONVERSATION_TAG, json);
     }
 
 

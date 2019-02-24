@@ -31,13 +31,15 @@ export class SocketService {
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
+            console.log('in the disconnect!', socket.id);
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
+            socket.disconnect();
             this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
         });
@@ -75,12 +77,7 @@ export class SocketService {
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
-    private handleEvent(event: string, socketId: string, ...args: string[]): void { 
-<<<<<<< Updated upstream
-        console.log('handleEvent:', event, socketId);
-=======
-        console.log("jai recu un message");
->>>>>>> Stashed changes
+    private handleEvent(event: string, socketId: string, ...args: string[]): void {
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
     }

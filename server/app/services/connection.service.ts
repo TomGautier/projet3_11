@@ -69,10 +69,7 @@ export class ConnectionService implements ConnectionServiceInterface {
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {
         this.connectionManager.removeUser(username);
         await this.userService.removeByUsername(username)
-            .then(() => this.conversationManager.leaveConversation(roomId, socketId, username))
+//            .then(() => this.conversationManager.leaveConversation(roomId, socketId, username))
             .catch(err => Logger.warn('LoginService', `This username doesn't exist : ${username}`));
     }
-
-        //this.conversationManager.joinConversation(GENERAL_ROOM.id, socketId);
-        
 }

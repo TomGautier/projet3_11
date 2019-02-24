@@ -10,28 +10,24 @@ export class ConversationManager {
     constructor(
         @inject(TYPES.SocketService) private socketService: SocketService
     ) {
-        this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1][0]));
-        // arg [0] socketId, arg[1][0] sessionId, arg[1][1] username, arg[1][2] conversationName
-        this.socketService.subscribe(SocketEvents.UserJoinedConversation, args => this.joinConversation(args[0], args[1][0], args[1][1], args[1][2]));
-        this.socketService.subscribe(SocketEvents.UserLeft, args => this.onMessageSent(args[0], args[1]));
+        // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId
+        this.socketService.subscribe(SocketEvents.MessageSent, args => this.onMessageSent(args[0], args[1]));
+        // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId, arg[1][0].message
+        this.socketService.subscribe(SocketEvents.UserJoinedConversation, args => this.joinConversation(args[0], args[1]));
+        // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId
+        this.socketService.subscribe(SocketEvents.UserLeft, args => this.leaveConversation(args[0], args[1]));
     }
 
-    public onMessageSent(conversationId: string, message: string) {
-<<<<<<< Updated upstream
-        console.log('conversationId:', conversationId, message);
-=======
-        console.log("passe dans onMessageSent");
->>>>>>> Stashed changes
-        this.socketService.emit(conversationId, SocketEvents.MessageSent, message);
+    public onMessageSent(socketId: string, args: any) {
+        const messageJson = {date: 'date actuelle', username: args[0].username, message: args[0].message};
+        this.socketService.emit(args[0].conversationId, SocketEvents.MessageSent, messageJson);
     }
 
-    public joinConversation(socketId: string, sessionId: string, username: string, conversationId: string) {
-        this.socketService.joinRoom(conversationId, socketId);
+    public joinConversation(socketId: string, args: any) {
+        this.socketService.joinRoom(args[0].conversationId, socketId);
     }
 
-    public leaveConversation(socketId: string, ...conversationIds: string[]) {
-        for(const conversationId of conversationIds) {
-            this.socketService.leaveRoom(conversationId, socketId);
-        }
+    public leaveConversation(socketId: string, args: any) {
+        this.socketService.leaveRoom(args[0].conversationId, socketId);
     }
 }
