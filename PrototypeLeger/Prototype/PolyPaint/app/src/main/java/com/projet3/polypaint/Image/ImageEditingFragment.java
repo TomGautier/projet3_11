@@ -8,8 +8,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.support.constraint.solver.widgets.ConstraintHorizontalLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
@@ -59,6 +62,7 @@ public class ImageEditingFragment extends Fragment {
     private PaintStyle defaultStyle;
     private Bitmap bitmap;
     private ImageView iView;
+    private LinearLayout canvasBGLayout;
     private ArrayList<GenericShape> shapes;
     private Stack<Pair<ArrayList<GenericShape>, String>> addStack;
     private Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
@@ -74,6 +78,8 @@ public class ImageEditingFragment extends Fragment {
 
     private View rootView;
 
+    private boolean isResizingCanvas = false;
+
 
     public ImageEditingFragment() {}
     @Override
@@ -82,6 +88,7 @@ public class ImageEditingFragment extends Fragment {
 
         rootView=inflater.inflate(R.layout.activity_image_editing, container, false);
         iView = (ImageView)rootView.findViewById(R.id.canvasView);
+        canvasBGLayout = (LinearLayout)rootView.findViewById(R.id.canvasBackground);
         shapes = new ArrayList<>();
         selections = new ArrayList<>();
 
@@ -236,6 +243,10 @@ public class ImageEditingFragment extends Fragment {
                 int posX = (int)event.getX(0);
                 int posY = (int)event.getY(0);
 
+                if (isResizingCanvas || checkCanvasResizeHandle(posX, posY)) {
+                    return resizeCanvas(event);
+                }
+
                 switch (currentMode) {
                     case selection :
                         checkSelection(posX, posY);
@@ -259,6 +270,20 @@ public class ImageEditingFragment extends Fragment {
                 view.invalidate();
 
                 return continueListening;
+            }
+        });
+
+        canvasBGLayout.setOnTouchListener(new LinearLayout.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                int posX = (int)event.getX(0);
+                int posY = (int)event.getY(0);
+
+                if (isResizingCanvas || checkCanvasResizeHandle(posX, posY)) {
+                    return resizeCanvas(event);
+                }
+
+                return false;
             }
         });
     }
@@ -341,7 +366,6 @@ public class ImageEditingFragment extends Fragment {
         Pair pair = new Pair(nShapes, action);
         addStack.push(pair);
     }
-
 
     private void drawAllShapes() {
         for(GenericShape shape : shapes)
@@ -483,5 +507,37 @@ public class ImageEditingFragment extends Fragment {
             iView.invalidate();
         }
 
+    }
+
+    public boolean checkCanvasResizeHandle(int x, int y) {
+        final int cornerTolerance = 20;
+        return x > canvas.getWidth() - cornerTolerance &&
+                x < canvas.getWidth() + cornerTolerance &&
+                y > canvas.getHeight() - cornerTolerance &&
+                y < canvas.getHeight() + cornerTolerance;
+    }
+    public boolean resizeCanvas(MotionEvent event) {
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                isResizingCanvas = true;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                ViewGroup.LayoutParams params = iView.getLayoutParams();
+                params.height = posY;
+                params.width = posX;
+                iView.setLayoutParams(params);
+                break;
+            case MotionEvent.ACTION_UP:
+                isResizingCanvas = false;
+                break;
+        }
+        
+        updateCanvas();
+        drawAllShapes();
+
+        return isResizingCanvas;
     }
 }
