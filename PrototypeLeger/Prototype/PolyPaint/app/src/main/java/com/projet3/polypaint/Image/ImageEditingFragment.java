@@ -510,7 +510,8 @@ public class ImageEditingFragment extends Fragment {
     }
 
     public boolean checkCanvasResizeHandle(int x, int y) {
-        final int cornerTolerance = 20;
+        final int cornerTolerance = 10;
+        
         return x > canvas.getWidth() - cornerTolerance &&
                 x < canvas.getWidth() + cornerTolerance &&
                 y > canvas.getHeight() - cornerTolerance &&
@@ -534,7 +535,7 @@ public class ImageEditingFragment extends Fragment {
                 isResizingCanvas = false;
                 break;
         }
-        
+
         updateCanvas();
         drawAllShapes();
 
