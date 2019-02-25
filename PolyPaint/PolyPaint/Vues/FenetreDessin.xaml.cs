@@ -43,7 +43,10 @@ namespace PolyPaint
             (DataContext as VueModele).HandleSelection(surfaceDessin.GetSelectedStrokes());
             
         }
-
+        private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            (DataContext as VueModele).HandleMouseDown(e.GetPosition(surfaceDessin));
+        }
 
         private void DupliquerSelection(object sender, RoutedEventArgs e)
         {          

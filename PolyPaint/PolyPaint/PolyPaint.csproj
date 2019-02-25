@@ -100,9 +100,12 @@
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
     <Compile Include="Modeles\Editeur.cs" />
+    <Compile Include="Utilitaires\Activity.cs" />
+    <Compile Include="Utilitaires\Artefact.cs" />
     <Compile Include="Utilitaires\CanvasBinding.cs" />
     <Compile Include="Utilitaires\Form.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
+    <Compile Include="Utilitaires\Role.cs" />
     <Compile Include="Utilitaires\UMLClass.cs" />
     <Compile Include="VueModeles\VueModele.cs" />
     <Page Include="Vues\FenetreDessin.xaml">

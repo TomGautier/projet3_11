@@ -14,25 +14,25 @@ namespace PolyPaint.Utilitaires
 {
     class UMLClass : Form
     {
-        public string Name { get; set; }
-        private Color remplissage;
-        public Color Remplissage {
-            get { return remplissage; }
-            set
-            {
-                remplissage = value;
-                this.update();
-            }
-        }
+        public string Name { get; set; }       
         public int Height { get; set; }
         public int Width { get; set; }
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }
         
        
-        public UMLClass(StylusPointCollection pts)
-            : base(pts)
+        public UMLClass(StylusPointCollection pts) : base(MakeShape(pts))
+            
         {
+            /*pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y));
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 210));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 210));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 30));
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 30));
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 90));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 90));*/
+            
             this.StylusPoints = pts;
             this.Name = "";
             this.Height = (int)(pts[2].Y - pts[0].Y);
@@ -45,6 +45,18 @@ namespace PolyPaint.Utilitaires
             updateCenter();
             
             
+        }
+        private static StylusPointCollection MakeShape(StylusPointCollection pts)
+        {
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y));
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 210));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 210));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 30));
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 30));
+            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 90));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 90));
+            return pts;
         }
         private void updateCenter()
         {

@@ -89,7 +89,7 @@ namespace PolyPaint.Modeles
                     foreach (Form form in selectedStrokes)
                     {
                         // form.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);                      
-                        (form as UMLClass).Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
+                        form.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
                         
                     }
                 }
@@ -125,7 +125,7 @@ namespace PolyPaint.Modeles
                 //OutilSelectionne = "crayon";
                 // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
                 CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();             
-                RemplissageSelectionne = (strokes[0] as UMLClass).Remplissage.ToString();
+                RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
             }
             else
             {
@@ -162,9 +162,9 @@ namespace PolyPaint.Modeles
             catch { }
 
         }
-        public void HandleMouseDown(MouseButtonEventArgs e)
+        public void HandleMouseDown(Point position)
         {
-            Point position  = e.GetPosition((UIElement)e.OriginalSource);
+          // Point position  = e.GetPosition((UIElement)e.OriginalSource);
             if (outilSelectionne.Contains("form"))
             {
                 AddForm(new Point((int)position.X, (int)position.Y));
@@ -200,48 +200,39 @@ namespace PolyPaint.Modeles
         }
         public void AddForm(Point p)
         {
+            StylusPointCollection pts = new StylusPointCollection();                   
+            pts.Add(new StylusPoint(p.X, p.Y));
+
             switch (outilSelectionne)
             {
                 case "form_class":
-                    StylusPointCollection pts = new StylusPointCollection();
-                    
-                    pts.Add(new StylusPoint(p.X, p.Y));
-                    pts.Add(new StylusPoint(p.X+110, p.Y));
-                    pts.Add(new StylusPoint(p.X+110, p.Y+210));
-                    pts.Add(new StylusPoint(p.X, p.Y+210));
-                    pts.Add(new StylusPoint(p.X, p.Y));
-                    pts.Add(new StylusPoint(p.X, p.Y+30));
-                    pts.Add(new StylusPoint(p.X+110, p.Y+30));
-                    pts.Add(new StylusPoint(p.X+110, p.Y+90));
-                    pts.Add(new StylusPoint(p.X, p.Y+90));
-                    //pts.Add(new StylusPoint(65, 115));
-                    UMLClass ShapeUno = new UMLClass(pts);
-                    ShapeUno.Name = "My Class";
-                    ShapeUno.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
-                    ShapeUno.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
-                   /* ShapeUno.AddAttribute("Attribut1");
-                    ShapeUno.AddAttribute("Attribut2");
-                    ShapeUno.AddAttribute("Attribut3");
-                    ShapeUno.AddAttribute("Attribut4");
-                    ShapeUno.AddAttribute("Attribut5");
-                    ShapeUno.AddAttribute("Attribut6");
-                    ShapeUno.AddAttribute("Attribut7");
-                    ShapeUno.AddMethod("takeMeHome()");
-                    ShapeUno.AddMethod("countryRoad()");
-                    ShapeUno.AddMethod("toThePlace()");
-                    ShapeUno.AddMethod("iBelong()");
-                   /* ShapeUno.AddMethod("westVirginia()");
-                    ShapeUno.AddMethod("takeMeHome()");
-                    ShapeUno.AddMethod("countryRoad()");
-                    ShapeUno.AddMethod("toThePlace()");
-                    ShapeUno.AddMethod("iBelong()");
-                    ShapeUno.AddMethod("westVirginia()");*/
+                                                  
+                    UMLClass umlClass = new UMLClass(pts);
+                    umlClass.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    umlClass.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(umlClass);
 
-
-                    traits.Add(ShapeUno);
                     break;
-
-            }       
+                case "form_artefact":
+                    Artefact artefact = new Artefact(pts);
+                    artefact.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    artefact.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(artefact);
+                    break;
+                case "form_activity":
+                    Activity activity = new Activity(pts);
+                    activity.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    activity.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(activity);
+                    break;
+                case "form_role":
+                    Role role = new Role(pts);
+                    role.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    role.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(role);
+                    break;
+            }
+            
         }
         
         // On assigne une nouvelle forme de pointe passée en paramètre.

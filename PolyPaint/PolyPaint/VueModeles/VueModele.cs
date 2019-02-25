@@ -82,7 +82,7 @@ namespace PolyPaint.VueModeles
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
         public RelayCommand<object> RotateForm { get; set; }
-        public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
+       // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
         
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace PolyPaint.VueModeles
             ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
-            HandleMouseDown = new RelayCommand<MouseButtonEventArgs>(editeur.HandleMouseDown);
+            //HandleMouseDown = new RelayCommand<MouseButtonEventArgs>(editeur.HandleMouseDown);
         }
 
         /// <summary>
@@ -171,6 +171,10 @@ namespace PolyPaint.VueModeles
             //CouleurSelectionnee = "Yellow";
             
            // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
+        }
+        public void HandleMouseDown(Point mousePos)
+        {
+            editeur.HandleMouseDown(mousePos);
         }
         public void HandleRotation(Point rotatePoint)
         {

@@ -15,6 +15,16 @@ namespace PolyPaint.Utilitaires
     class Form : Stroke
     {
         public Color BorderColor { get; set; }
+        private Color remplissage;
+        public Color Remplissage
+        {
+            get { return remplissage; }
+            set
+            {
+                remplissage = value;
+                this.update();
+            }
+        }
         public int CurrentRotation { get; set; }
         protected Point Center { get; set; }
         public  void rotate()
