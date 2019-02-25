@@ -88,6 +88,20 @@
                   RecentColorsHeader="Récemment utilisées"
                   UsingAlphaChannel="True"
                   AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" />
+                <xctk:ColorPicker x:Name="selecteurRemplissage"                             
+                  VerticalContentAlignment="Stretch"
+                  Background="#00000000"
+                  ShowDropDownButton="False"
+                  ShowRecentColors="True"
+                  BorderBrush="#80000000"
+                  Margin="5,11,0,0" Width="39" Height="38"
+                  SelectedColor="{Binding Path=RemplissageSelectionne, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                  AvailableColorsHeader="Palette"
+                  StandardColorsHeader="Couleurs de base"
+                  StandardButtonHeader="Standard"
+                  RecentColorsHeader="Récemment utilisées"
+                  UsingAlphaChannel="True"
+                  AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" />
                 <Button Name="form_class" Width="40" Height="40" Margin="5"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
@@ -139,6 +153,7 @@
                       />
             <Border BorderThickness="5,5,0,0" Grid.ColumnSpan="2">
                 <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin"
+                       IsManipulationEnabled="True"
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
                        SelectionChanged="surfaceDessin_SelectionChanged"

@@ -28,6 +28,11 @@ namespace PolyPaint.Utilitaires
             copy.Transform(rotatingMatrix, false);
             this.StylusPoints = copy.StylusPoints;
         }
+        public void update()
+        {
+            Stroke copy = this.Clone();
+            this.StylusPoints = copy.StylusPoints;
+        }
         public Form(StylusPointCollection pts)
             : base(pts) { }
 

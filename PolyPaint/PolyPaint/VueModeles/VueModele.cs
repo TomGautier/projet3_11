@@ -37,6 +37,15 @@ namespace PolyPaint.VueModeles
                // ProprieteModifiee();
             }
         }
+        public string RemplissageSelectionne
+        {
+            get { return editeur.RemplissageSelectionne; }
+            set
+            {
+                editeur.RemplissageSelectionne = value;
+                // ProprieteModifiee();
+            }
+        }
 
         public string PointeSelectionnee
         {
@@ -135,7 +144,11 @@ namespace PolyPaint.VueModeles
                 ProprieteModifiee(e.PropertyName);
                 //AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
                 //CouleurSelectionnee = editeur.CouleurSelectionnee;
-            }                
+            }
+            else if (e.PropertyName == "RemplissageSelectionne")
+            {
+                ProprieteModifiee(e.PropertyName);
+            }
             else if (e.PropertyName == "OutilSelectionne")
             {
                 OutilSelectionne = editeur.OutilSelectionne;
@@ -150,6 +163,7 @@ namespace PolyPaint.VueModeles
                 AjusterPointe();
             }
             //this.Canvas.Select(SelectedStrokes);
+            
         }
         public void HandleSelection(StrokeCollection strokes)
         {

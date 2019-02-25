@@ -15,6 +15,17 @@ namespace PolyPaint.Utilitaires
     class UMLClass : Form
     {
         public string Name { get; set; }
+        private Color remplissage;
+        public Color Remplissage {
+            get { return remplissage; }
+            set
+            {
+                remplissage = value;
+                this.update();
+            }
+        }
+        public int Height { get; set; }
+        public int Width { get; set; }
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }
         
@@ -24,10 +35,13 @@ namespace PolyPaint.Utilitaires
         {
             this.StylusPoints = pts;
             this.Name = "";
+            this.Height = (int)(pts[2].Y - pts[0].Y);
+            this.Width = (int)(pts[2].X - pts[0].X);
             this.Methods = new List<String>();
             this.Attributes = new List<String>();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
+            this.Remplissage = Colors.White;
             updateCenter();
             
             
@@ -37,6 +51,33 @@ namespace PolyPaint.Utilitaires
             double x = this.StylusPoints[0].X + (this.StylusPoints[2].X - this.StylusPoints[0].X) / 2;
             double y = this.StylusPoints[0].Y + (this.StylusPoints[2].Y - this.StylusPoints[0].Y) / 2;
             this.Center = new Point((int)x, (int)y);
+        }
+        private void Fill(DrawingContext drawingContext)
+        {
+            LineSegment[] segments = new LineSegment[4];          
+            for (int i = 0; i< 4; i++)
+            {
+                segments[i] = new LineSegment(this.StylusPoints[i+1].ToPoint(), true);
+            }
+            var figure = new PathFigure(this.StylusPoints[0].ToPoint(), segments, true);
+            var geo = new PathGeometry(new[] { figure });
+
+            SolidColorBrush brush = new SolidColorBrush(this.Remplissage);
+            drawingContext.DrawGeometry(brush, null, geo);
+            //this.update();
+            
+
+
+            //drawingContext.DrawGeometry(brush, null, rect);
+            //drawingContext.DrawGeometry(brush, null, new RectangleGeometry());
+            //rect = clone;
+
+
+
+
+            //Stroke copy = this.Clone();
+            //copy.Transform(rotatingMatrix, false);
+            //this.StylusPoints = copy.StylusPoints;
         }
         
        /* private void updatePivot()
@@ -56,17 +97,6 @@ namespace PolyPaint.Utilitaires
         {
             this.Attributes.Add(attribute);
         }
-        private StylusPoint ApplyRotation(double angle, StylusPoint pivot, StylusPoint point)
-        {
-            double rad = angle * Math.PI / 180;
-            double cos = Math.Cos(rad);
-            double sin = Math.Sin(rad);
-            double dx = (point.X - pivot.X);
-            double dy = (point.Y - pivot.Y);
-            double x = cos * dx - sin * dy + pivot.X;
-            double y = sin * dx + cos * dy + pivot.Y;
-            return new StylusPoint((int)Math.Round(x), (int)Math.Round(y));
-        }
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
          
         {
@@ -74,12 +104,14 @@ namespace PolyPaint.Utilitaires
             SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(255,0,0));
             //brush.Freeze();
             //FILL
-             //drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));         
+            //drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));         
             //DrawName(drawingContext);
             // DrawAttributes(drawingContext);
             //DrawMethods(drawingContext);
-           //  updatePivot();
+            //  updatePivot();
+            Fill(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
+            
             updateCenter();
         }
         private void DrawName(DrawingContext drawingContext)

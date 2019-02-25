@@ -72,6 +72,34 @@ namespace PolyPaint.Modeles
                     
             }
         }
+        private string remplissageSelectionne = "White";
+        public string RemplissageSelectionne
+        {
+            get { return remplissageSelectionne; }
+            // Lorsqu'on sélectionne une couleur c'est généralement pour ensuite dessiner un trait.
+            // C'est pourquoi lorsque la couleur est changée, l'outil est automatiquement changé pour le crayon.
+            set
+            {
+                remplissageSelectionne = value;
+
+                if (selectedStrokes != null)
+                {
+
+
+                    foreach (Form form in selectedStrokes)
+                    {
+                        // form.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);                      
+                        (form as UMLClass).Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
+                        
+                    }
+                }
+                ProprieteModifiee();
+                //OutilSelectionne = "crayon";
+                // ProprieteModifiee();
+
+            }
+        }
+
 
         // Grosseur des traits tracés par le crayon.
         private int tailleTrait = 11;
@@ -96,12 +124,14 @@ namespace PolyPaint.Modeles
                 selectedStrokes = strokes;
                 //OutilSelectionne = "crayon";
                 // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
-                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
+                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();             
+                RemplissageSelectionne = (strokes[0] as UMLClass).Remplissage.ToString();
             }
             else
             {
                 selectedStrokes = null;
                 CouleurSelectionnee = "Black";
+                RemplissageSelectionne = "White";
             }
            
         }
@@ -188,6 +218,7 @@ namespace PolyPaint.Modeles
                     UMLClass ShapeUno = new UMLClass(pts);
                     ShapeUno.Name = "My Class";
                     ShapeUno.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    ShapeUno.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
                    /* ShapeUno.AddAttribute("Attribut1");
                     ShapeUno.AddAttribute("Attribut2");
                     ShapeUno.AddAttribute("Attribut3");
