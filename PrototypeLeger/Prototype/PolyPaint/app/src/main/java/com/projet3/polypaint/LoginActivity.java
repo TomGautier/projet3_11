@@ -19,7 +19,9 @@ import com.projet3.polypaint.User.UserManager;
 
 public class LoginActivity extends Activity  {
 
-	private final int CONNECT_DELAY = 5000;
+	//private final int CONNECT_DELAY = 5000;
+	private final String AZURE_IP = "40.122.119.160";
+	private final String IP = "192.168.1.7";
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
