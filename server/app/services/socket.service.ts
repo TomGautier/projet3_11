@@ -33,7 +33,14 @@ export class SocketService {
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
             socket.on(SocketEvents.UserJoinedRoom, args => this.handleEvent(SocketEvents.UserJoinedRoom, socket.id, args));
-            socket.on(SocketEvents.UserJoinedSession, args => this.handleEvent(SocketEvents.UserJoinedSession, socket.id, args));
+            
+            socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+            socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
+            socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));
+            socket.on(SocketEvents.ModifyElement, args => this.handleEvent(SocketEvents.ModifyElement, socket.id, args));
+            socket.on(SocketEvents.SelectObjects, args => this.handleEvent(SocketEvents.SelectObjects, socket.id, args));
+            socket.on(SocketEvents.UnselectObjects, args => this.handleEvent(SocketEvents.UnselectObjects, socket.id, args));
+            socket.on(SocketEvents.ResizeCanvas, args => this.handleEvent(SocketEvents.ResizeCanvas, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
