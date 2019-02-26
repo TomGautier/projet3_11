@@ -394,8 +394,11 @@ public class ImageEditingFragment extends Fragment {
             case text_box :
                 nShape = new TextBox(posX, posY, defaultStyle);
         }
-        if (nShape != null)
+        if (nShape != null) {
             shapes.add(nShape);
+            selections.clear();
+            selections.add(nShape);
+        }
 
         return nShape;
 
