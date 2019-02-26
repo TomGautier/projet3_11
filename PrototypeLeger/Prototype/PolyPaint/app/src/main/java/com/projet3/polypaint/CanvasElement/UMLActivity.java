@@ -14,7 +14,7 @@ public class UMLActivity extends GenericShape {
         height = DEFAULT_HEIGHT;
     }
     public UMLActivity clone() {
-        return new UMLActivity(this.posX + 30, this.posY + 30, this.style);
+        return new UMLActivity(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

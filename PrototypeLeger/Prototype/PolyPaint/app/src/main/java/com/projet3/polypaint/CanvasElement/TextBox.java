@@ -16,7 +16,9 @@ public class TextBox extends GenericShape {
         canvas.drawText(text, posX, posY + height / 2, style.getTextPaint());
     }
 
-    public TextBox clone() { return new TextBox(this.posX + 30, this.posY + 30, this.style); }
+    public TextBox clone() {
+        return new TextBox(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
+    }
 
     private void adjustWidthToText() {
         // Font is monospace, all characters are same width

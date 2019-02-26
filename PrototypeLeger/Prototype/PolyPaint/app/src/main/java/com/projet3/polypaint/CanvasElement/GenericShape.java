@@ -8,6 +8,7 @@ import android.graphics.Rect;
 public abstract class GenericShape {
 
     private final int SELECTION_GAP = 4;
+    protected final int CLONE_OFFSET = 30;
 
     protected int posX;
     protected int posY;

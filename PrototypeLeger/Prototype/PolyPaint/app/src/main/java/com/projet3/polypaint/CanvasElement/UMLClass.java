@@ -14,7 +14,7 @@ public class UMLClass extends GenericShape {
         height = DEFAULT_HEIGHT;
     }
     public UMLClass clone() {
-        return new UMLClass(this.posX + 30, this.posY + 30, this.style);
+        return new UMLClass(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

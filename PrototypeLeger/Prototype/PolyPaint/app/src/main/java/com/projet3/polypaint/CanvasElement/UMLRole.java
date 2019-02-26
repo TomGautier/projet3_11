@@ -14,7 +14,7 @@ public class UMLRole extends GenericShape {
         height = DEFAULT_HEIGHT;
     }
     public UMLRole clone() {
-        return new UMLRole(this.posX + 30, this.posY + 30, this.style);
+        return new UMLRole(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

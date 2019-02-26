@@ -18,7 +18,7 @@ public class UMLArtefact extends GenericShape {
         height = DEFAULT_HEIGHT;
     }
     public UMLArtefact clone() {
-        return new UMLArtefact(this.posX + 30, this.posY + 30, this.style);
+        return new UMLArtefact(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override
