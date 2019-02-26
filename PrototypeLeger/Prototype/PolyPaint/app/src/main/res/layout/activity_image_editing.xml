@@ -9,7 +9,7 @@
     <TableRow
         android:id="@+id/drawingCanevas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -18,79 +18,82 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/chat"
+                android:background="@color/imageEditingBackgroundColor"
                 android:orientation="vertical">
+
 
                 <Button
                     android:id="@+id/buttonSelection"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonSelection" />
+                    android:text="@string/buttonSelection"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <Button
                     android:id="@+id/buttonLasso"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonLasso" />
-
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp" />
+                    android:text="@string/buttonLasso"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <Button
                     android:id="@+id/buttonMove"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="setModeToMove"
-                    android:text="@string/buttonMove" />
+                    android:text="@string/buttonMove"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp" />
+                <View style="@style/Divider"/>
 
                 <Button
                     android:id="@+id/buttonClass"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonClass" />
+                    android:text="@string/buttonClass"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <Button
                     android:id="@+id/buttonActivity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonActivity" />
+                    android:text="@string/buttonActivity"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <Button
                     android:id="@+id/buttonArtefact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonArtefact" />
+                    android:text="@string/buttonArtefact"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <Button
                     android:id="@+id/buttonRole"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonRole" />
+                    android:text="@string/buttonRole"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
-                <Space
-                    android:layout_width="match_parent"
-                    android:layout_height="15dp" />
+                <View style="@style/Divider"
+                    android:layout_width="120dp"/>
 
                 <Button
                     android:id="@+id/buttonDelete"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonDelete" />
+                    android:text="@string/buttonDelete"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>/>
                 <Button
                     android:id="@+id/buttonDuplicate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonDuplicate" />
+                    android:text="@string/buttonDuplicate"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>/>
                 <Button
                     android:id="@+id/buttonReset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonReset" />
+                    android:text="@string/buttonReset"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -116,9 +119,11 @@
             android:id="@+id/canvasView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:srcCompat="@android:color/background_light" />
+            android:background="@color/canvasBackground"/>
 
     </TableRow>
+    <View style="@style/Divider"
+        android:layout_below="@+id/drawingCanevas"/>
 
 
 </RelativeLayout>
