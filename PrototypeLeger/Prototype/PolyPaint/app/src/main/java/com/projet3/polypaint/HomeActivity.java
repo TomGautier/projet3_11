@@ -4,8 +4,13 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+//import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
@@ -16,16 +21,19 @@ import com.projet3.polypaint.User.UserManager;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends Activity  {
+public class HomeActivity extends AppCompatActivity {
 
 	private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
 	private UserInformation userInformation;
-
+	private  Toolbar mainToolbar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		mainToolbar = (Toolbar)findViewById(R.id.mainToolbar);
+		mainToolbar.setTitle("menu");
+		setSupportActionBar(mainToolbar);
 		if (savedInstanceState == null){
 			//userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
 			//ArrayList convos = new ArrayList();
@@ -64,6 +72,13 @@ public class HomeActivity extends Activity  {
 				return super.onOptionsItemSelected(item);
 		}
 	}
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
 	@Override
 	public void onBackPressed() {
 		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());

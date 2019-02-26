@@ -5,15 +5,19 @@
     android:background="@android:color/background_light"
     tools:context="${relativePackage}.${activityClass}" >
 
-
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/mainToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:background="@color/mainToolbarBackground" />
     <Button
         android:id="@+id/buttonCanvas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/IpLayout"
-        android:layout_alignParentStart="true"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="70dp"
         android:onClick="gotoImageEditing"
         android:text="(TEMP) Canvas" />
 
