@@ -39,23 +39,30 @@ export class DrawingSessionManager {
         this.socketService.leaveRoom(sessionId, socketId);
     }
 
+    // doc should be structured as a Shape. See: /schemas/shape.ts
     public addElement(doc: any) {
-        //this.drawingSessionService.addElement();
+        this.drawingSessionService.addElement(doc.drawingSessionId, doc.username, doc.properties);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement);
     }
 
+    // doc.elementIds should be an array containing the IDs of the shapes to delete.
     public deleteElements(doc: any) {
+        this.drawingSessionService.deleteElements(doc.elementIds);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.DeletedElements);
     }
 
+    // doc should be structured as a Shape. See: /schemas/shape.ts
     public modifyElement(doc: any) {
+        this.drawingSessionService.modifyElement(doc);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement);
     }
 
+    // doc.elementIds should be an array containing the IDs of the shapes to select.
     public selectElements(doc: any) {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements);
     }
 
+    // doc.elements should be an array containing the IDs of the shapes to unselect.
     public unselectElements(doc: any) {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.UnselectedElements);
     }

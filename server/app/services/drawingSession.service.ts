@@ -36,15 +36,16 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
         });
     }
     
-    public async deleteElements(elements: any): Promise<{}> {
+    public async deleteElements(elementIds: any): Promise<{}> {
         // TODO: Review criteria to remove every elements
-        const elementsWithCriteria = {$in: elements};
+        const elementsWithCriteria = {$in: elementIds};
         return await this.databaseService.remove(Shape, this.ID_CRITERIA, elementsWithCriteria)
             .catch(err => {throw err;});
     }
 
     public async modifyElement(element: any): Promise<{}> {
-        return await this.databaseService.update(Shape, this.ID_CRITERIA, element.shapeId, element)
+        // TODO: Might have to transform element into a Shape + reassigning same id?
+        return await this.databaseService.update(Shape, this.ID_CRITERIA, element.id, element)
             .catch(err => {throw err;});
     }
 }
