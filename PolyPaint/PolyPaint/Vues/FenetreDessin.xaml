@@ -183,20 +183,13 @@
                       />
             <Border BorderThickness="5,5,0,0" Grid.ColumnSpan="2">
                 <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin"
-                       IsManipulationEnabled="True"
+                       
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
                        SelectionChanged="surfaceDessin_SelectionChanged"
                        PreviewMouseDown="surfaceDessin_PreviewMouseDown"
                        Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
-                       
                        DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
-
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="PreviewMouseDown" >
-                            <cmd:EventToCommand Command="{Binding HandleMouseDown}" PassEventArgsToCommand="True" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
                 </InkCanvas>
 
 

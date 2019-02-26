@@ -37,6 +37,11 @@ namespace PolyPaint.VueModeles
                // ProprieteModifiee();
             }
         }
+        public StrokeCollection LastCut
+        {
+            get { return editeur.LastCut; }
+            set { editeur.LastCut = value; }
+        }
         public string RemplissageSelectionne
         {
             get { return editeur.RemplissageSelectionne; }
@@ -171,6 +176,10 @@ namespace PolyPaint.VueModeles
             //CouleurSelectionnee = "Yellow";
             
            // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
+        }
+        public void RestoreLastTrait()
+        {
+            editeur.Depiler(null);
         }
         public void HandleMouseDown(Point mousePos)
         {

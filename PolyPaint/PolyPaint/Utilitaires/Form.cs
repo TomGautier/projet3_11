@@ -25,6 +25,7 @@ namespace PolyPaint.Utilitaires
                 this.update();
             }
         }
+
         public int CurrentRotation { get; set; }
         protected Point Center { get; set; }
         public  void rotate()
@@ -42,6 +43,13 @@ namespace PolyPaint.Utilitaires
         {
             Stroke copy = this.Clone();
             this.StylusPoints = copy.StylusPoints;
+        }
+        public void translate(int x, int y) 
+        {
+           for (int i = 0; i < this.StylusPoints.Count; i++)
+            {
+                this.StylusPoints[i] = new StylusPoint(this.StylusPoints[i].X + x, this.StylusPoints[i].Y + y);
+            }
         }
         public Form(StylusPointCollection pts)
             : base(pts) { }

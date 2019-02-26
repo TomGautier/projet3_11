@@ -14,14 +14,17 @@ namespace PolyPaint.Utilitaires
 {
     class UMLClass : Form
     {
-        public string Name { get; set; }       
-        public int Height { get; set; }
-        public int Width { get; set; }
+        public string Name { get; set; }
+
+        public double Height { get; set; }
+
+        public double Width { get; set; }
+        
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }
         
        
-        public UMLClass(StylusPointCollection pts) : base(MakeShape(pts))
+        public UMLClass(StylusPointCollection pts) : base((pts))
             
         {
             /*pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y));
@@ -32,37 +35,48 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 30));
             pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 90));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 90));*/
-            
-            this.StylusPoints = pts;
+            //  this.Center = new Point(pts[0].X,pts[0].Y);
+            //  pts.RemoveAt(0);
+            this.Center = new Point(pts[0].X,pts[0].Y);
+            this.Height = 220;//(int)(pts[2].Y - pts[0].Y);
+            this.Width = 110;//(int)(pts[2].X - pts[0].X);
+            MakeShape();
             this.Name = "";
-            this.Height = (int)(pts[2].Y - pts[0].Y);
-            this.Width = (int)(pts[2].X - pts[0].X);
             this.Methods = new List<String>();
             this.Attributes = new List<String>();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
-            updateCenter();
+            //updatePoints();
             
             
         }
-        private static StylusPointCollection MakeShape(StylusPointCollection pts)
+        public void MakeShape()
         {
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y));
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 210));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 210));
+            StylusPointCollection pts = new StylusPointCollection();
+            pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));
+            pts.Add(new StylusPoint(pts[0].X + this.Width, pts[0].Y));
+            pts.Add(new StylusPoint(pts[0].X + this.Width, pts[0].Y + this.Height));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 30));
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 30));
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 90));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 90));
-            return pts;
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height/7));
+            pts.Add(new StylusPoint(pts[0].X + this.Width, pts[0].Y + this.Height/7));
+            pts.Add(new StylusPoint(pts[0].X + this.Width, pts[0].Y + this.Height/2.3));
+            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height/2.3));
+
+            this.StylusPoints = pts;
+            //return pts;
         }
-        private void updateCenter()
+        private void updatePoints()
         {
             double x = this.StylusPoints[0].X + (this.StylusPoints[2].X - this.StylusPoints[0].X) / 2;
             double y = this.StylusPoints[0].Y + (this.StylusPoints[2].Y - this.StylusPoints[0].Y) / 2;
-            this.Center = new Point((int)x, (int)y);
+            this.Center = new Point(x,y);
+
+            this.Width = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+            this.Height = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+            //this.Height = this.StylusPoints[2].Y - this.StylusPoints[0].Y;
+            //this.Width = this.StylusPoints[2].X - this.StylusPoints[0].X;
         }
         private void Fill(DrawingContext drawingContext)
         {
@@ -98,7 +112,8 @@ namespace PolyPaint.Utilitaires
         }*/
         public void AddMethod(string method)
         {
-            this.Methods.Add(method);
+            this.StylusPoints[0] = new StylusPoint(this.StylusPoints[0].X + 50, this.StylusPoints[0].Y);
+            //this.Methods.Add(method);
         }
        //private ApplyRotation(StylusPoint point,
         protected override void OnStylusPointsChanged(EventArgs e)
@@ -121,15 +136,16 @@ namespace PolyPaint.Utilitaires
             // DrawAttributes(drawingContext);
             //DrawMethods(drawingContext);
             //  updatePivot();
+            
             Fill(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
-            
-            updateCenter();
+            //DrawName(drawingContext);
+            updatePoints();
         }
         private void DrawName(DrawingContext drawingContext)
         {
-            if (this.Name != null && this.Name.Length != 0)
-            {
+            //if (this.Name != null && this.Name.Length != 0)
+            //{
 
                 Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2, this.StylusPoints[0].ToPoint().Y + 4);
                 //StylusPoint pivot = this.StylusPoints.Last();
@@ -142,9 +158,9 @@ namespace PolyPaint.Utilitaires
                 //Point location = new Point(origin.X, origin.Y);
                 SolidColorBrush brush = new SolidColorBrush(this.BorderColor);
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-                drawingContext.DrawText(new FormattedText(this.Name, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+                drawingContext.DrawText(new FormattedText(this.Height.ToString(), CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
                // drawingContext.Pop();    
-            }
+           // }
         }
         private void DrawAttributes(DrawingContext drawingContext)
         {

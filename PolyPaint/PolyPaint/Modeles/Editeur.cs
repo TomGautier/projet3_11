@@ -31,6 +31,7 @@ namespace PolyPaint.Modeles
             get { return outilSelectionne; }
             set { outilSelectionne = value; ProprieteModifiee(); }
         }
+        public StrokeCollection LastCut { get; set; }
         // Forme de la pointe du crayon
         private string pointeSelectionnee = "ronde";
         public string PointeSelectionnee
@@ -59,7 +60,7 @@ namespace PolyPaint.Modeles
                 {
 
 
-                    foreach (Form form in selectedStrokes)
+                    foreach (Stroke form in selectedStrokes)
                     {
                        // form.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
                         form.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
@@ -125,7 +126,7 @@ namespace PolyPaint.Modeles
                 //OutilSelectionne = "crayon";
                 // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
                 CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();             
-                RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
+                //RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
             }
             else
             {
@@ -217,6 +218,8 @@ namespace PolyPaint.Modeles
                     Artefact artefact = new Artefact(pts);
                     artefact.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
                     artefact.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    //artefact.CurrentRotation = 90;
+                    //artefact.rotate();
                     traits.Add(artefact);
                     break;
                 case "form_activity":
@@ -229,6 +232,8 @@ namespace PolyPaint.Modeles
                     Role role = new Role(pts);
                     role.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
                     role.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    /*role.Height = 10;
+                    role.Width = 100;*/
                     traits.Add(role);
                     break;
             }
