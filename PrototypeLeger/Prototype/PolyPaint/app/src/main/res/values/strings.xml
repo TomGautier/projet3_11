@@ -25,4 +25,12 @@
     <string name="buttonMove">Déplacer</string>
     <string name="buttonCut">Couper</string>
 
+    <!-- MAIN TOOLBAR -->
+    <string name="mainToolbarGalleryTag">Gallerie</string>
+    <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+
+
+
+
+
 </resources>

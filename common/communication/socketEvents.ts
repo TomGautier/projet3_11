@@ -1,9 +1,17 @@
 export default {
-    UserLeft:"UserLeft",
+    // Chat
     MessageSent:"MessageSent",
-    CannotJoin:"CannotJoin",
-    NewUserJoined:"NewUserJoined",
+    UserJoinedConversation:"UserJoinedConversation",
+    // Connexion
     LoginAttempt:"LoginAttempt",
-    UsernameAlreadyExists:"UsernameAlreadyExists",
+    SignUp:"SignUp",
     UserLogged:"UserLogged",
+    UserLeft:"UserLeft",
+    UsernameAlreadyExists:"UsernameAlreadyExists",
+    InvalidCredentials:"InvalidCredentials",
+    // Collaborative session
+    
+    // TODO: Te be cleared out
+    CannotJoin:"CannotJoin",
+    NewUserJoined:"NewUserJoined"
 }

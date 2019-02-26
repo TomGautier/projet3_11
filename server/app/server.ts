@@ -10,6 +10,7 @@ import { injectable, inject } from "inversify";
 import { AddressInfo } from "net";
 import { ServerInterface } from "./interfaces";
 import { SocketService } from "./services/socket.service";
+import { DatabaseService } from "./services/database.service";
 
 @injectable()
 export class Server implements ServerInterface {
@@ -20,9 +21,11 @@ export class Server implements ServerInterface {
 
     public constructor(
         @inject(TYPES.ApplicationInterface) private application: Application,
-        @inject(TYPES.SocketService) private socketService: SocketService) { }
+        @inject(TYPES.SocketService) private socketService: SocketService,
+        @inject(TYPES.DatabaseService) private db: DatabaseService
+        ) { }
 
-    public init(): void {
+    public async init(): Promise<void> {
         this.application.app.set("port", this.appPort);
 
         this.server = http.createServer(this.application.app);
@@ -34,6 +37,8 @@ export class Server implements ServerInterface {
         // Inits the socket server
         this.socketService.init(socketIO.listen(this.server));
 
+        await this.db.init();
+        
         console.log('Server initialized!');
     }
 

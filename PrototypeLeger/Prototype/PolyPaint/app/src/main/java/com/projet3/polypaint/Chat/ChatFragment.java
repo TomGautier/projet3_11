@@ -23,7 +23,8 @@ import android.widget.TextView;
 
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserInformation;
+import com.projet3.polypaint.User.UserInformation;
+import com.projet3.polypaint.User.UserManager;
 import com.projet3.polypaint.Utilities;
 
 import java.text.SimpleDateFormat;
@@ -48,15 +49,15 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     private ArrayList<Conversation> conversations;
     public Conversation currentConversation;
     private boolean chatIsExpended;
-    private UserInformation userInformation;
+   // private UserInformation userInformation;
     public View rootView;
 
     public ChatFragment() { }
 
-    public static ChatFragment newInstance(UserInformation userInformation_, ArrayList<Conversation> conversations) {
+    public static ChatFragment newInstance(ArrayList<Conversation> conversations) {
         ChatFragment f = new ChatFragment();
         Bundle args = new Bundle();
-        args.putParcelable("USER_INFORMATION" ,userInformation_);
+        //args.putParcelable("USER_INFORMATION" ,userInformation_);
         args.putParcelableArrayList("CONVERSATIONS", conversations);
         f.setArguments(args);
         return f;
@@ -71,13 +72,17 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         Bundle bundle = getArguments();
         if (savedInstanceState == null && bundle != null){
             conversations = bundle.getParcelableArrayList("CONVERSATIONS");
+            if (conversations.size() == 0)
+                conversations.add(new Conversation("General", new ArrayList()));
             currentConversation = conversations.get(0);
-            userInformation = bundle.getParcelable("USER_INFORMATION");
+
+
+            //userInformation = bundle.getParcelable("USER_INFORMATION");
         }
         else{
             conversations = savedInstanceState.getParcelableArrayList("CONVERSATIONS");
             currentConversation = conversations.get(savedInstanceState.getInt("CURRENT_INDEX"));
-            userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
+            //userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
         }
         initializeChat();
         SocketManager.currentInstance.setupNewMessageListener(this);
@@ -108,8 +113,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         setupChatConversationSpinner();
 
 
-        Utilities.SetButtonEffect(chatEnterButton);
-        Utilities.SetButtonEffect(chatExpendButton);
+        Utilities.setButtonEffect(chatEnterButton);
+        Utilities.setButtonEffect(chatExpendButton);
 
         chatIsExpended = false;
     }
@@ -151,7 +156,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     }
 
     public void sendMessage(String message) {
-        SocketManager.currentInstance.sendMessage(getDate(),userInformation.getUsername(), message);
+        //SocketManager.currentInstance.sendMessage(getDate(), UserManager.currentInstance.getUserUsername(), message);
+        SocketManager.currentInstance.sendMessage(currentConversation.GetName(), message);
     }
 
     private void SetupChatEnterButton() {
@@ -275,7 +281,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putParcelableArrayList("CONVERSATIONS",conversations);
-        savedInstanceState.putParcelable("USER_INFORMATION", userInformation);
+        //savedInstanceState.putParcelable("USER_INFORMATION", userInformation);
         savedInstanceState.putInt("CURRENT_INDEX", conversations.indexOf(currentConversation));
     }
 

@@ -1,12 +1,8 @@
 package com.projet3.polypaint.Chat;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.projet3.polypaint.Chat.NewMessageListener;
+import com.projet3.polypaint.SocketLoginListener;
+import com.projet3.polypaint.User.UserManager;
 
-import com.projet3.polypaint.LoginListener;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,33 +17,31 @@ public class SocketManager  {
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
     public final String USERLOGGED_TAG = "UserLogged";
     public final String USERLEFT_TAG = "UserLeft";
+    public final String JOIN_CONVERSATION_TAG = "UserJoinedConversation";
 
 
     private final String DATE_TAG = "date";
     private final String USERNAME_TAG = "username";
     private final String MESSAGE_TAG = "message";
+    private final String SESSION_ID_TAG = "sessionId";
+    private final String CONVERSATION_ID_TAG = "conversationId";
 
     public static SocketManager currentInstance;
     private Socket socket;
     private NewMessageListener newMessagelistener;
-    private LoginListener loginListener;
 
     private String uri;
+    private String sessionId;
 
-    public SocketManager(String ipAddress_) {
+    public SocketManager(String ipAddress_, String sessionId_) {
         uri = formatIpToUri(ipAddress_);
+        sessionId = sessionId_;
         setupSocket();
-        currentInstance = this;
     }
-
-
 
 
     public void setupNewMessageListener(NewMessageListener listener_) {
         newMessagelistener = listener_;
-    }
-    public void setupLoginListener(LoginListener listener_) {
-        loginListener = listener_;
     }
     private void setupSocket() {
         try {
@@ -62,7 +56,8 @@ public class SocketManager  {
                     String message = "";
                     String username = "";
                     try {
-                        JSONObject json = new JSONObject((String)args[0]);
+                        //JSONObject json = new JSONObject((JSONObject)args[0]);
+                        JSONObject json = (JSONObject) args[0];
                         date = json.getString(DATE_TAG);
                         username = json.getString(USERNAME_TAG);
                         message = json.getString(MESSAGE_TAG);
@@ -72,35 +67,34 @@ public class SocketManager  {
                 }
             });
 
-            socket.on(USEREXIST_TAG, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    loginListener.onUserAlreadyExists();
-                }
-            });
-
-            socket.on(USERLOGGED_TAG, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    loginListener.onUserLogged();
-                }
-            });
         }catch(Exception e) {}
 
     }
-    public void verifyUser(String username) {
-        socket.emit(LOGINATTEMPT_TAG, username);
-    }
-    public void sendMessage(String date,String username, String message) {
-        String messageJSON = "";
+
+    public void sendMessage(String conversationId, String message) {
+        JSONObject args = null;
+       // JSONObject messageJSON = null;
         try {
-            messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, username).put(MESSAGE_TAG, message).toString();
+           // messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername()).put(MESSAGE_TAG, message);
+            args = new JSONObject().put(SESSION_ID_TAG, sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
+                    .put(CONVERSATION_ID_TAG, conversationId).put(MESSAGE_TAG, message);
         }catch(JSONException e) {}
 
-        if (!messageJSON.isEmpty())
-            socket.emit(SENDMESSAGE_TAG, messageJSON);
+        if (args != null)
+            socket.emit(SENDMESSAGE_TAG, args);
 
     }
+    public void joinConversation(String conversationID){
+        JSONObject json = null;
+        try{
+           json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
+                    .put(CONVERSATION_ID_TAG, conversationID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit(JOIN_CONVERSATION_TAG, json);
+    }
+
 
     public boolean isConnected() {
         return socket.connected();

@@ -17,22 +17,43 @@ import { DateServiceInterface,
          DateControllerInterface, 
          IndexControllerInterface, 
          ServerInterface,
-         ApplicationInterface } from "./interfaces";
+         ApplicationInterface, 
+         ConversationControllerInterface,
+         ConversationServiceInterface,
+         ConnectionControllerInterface,
+         ConnectionServiceInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
+import { DatabaseService, DatabaseConnection } from "./services/database.service";
+import { ConversationManager } from "./services/conversation.manager";
+import { ConnectionService, ConnectionManager } from "./services/connection.service";
+import { UserService } from "./services/user.service";
+import { ConversationController } from "./controllers/conversation.controller";
+import { ConversationService } from "./services/conversation.service";
+import { ConnectionController } from "./controllers/connection.controller";
 
 const container: Container = new Container();
 
 container.bind<ServerInterface>(TYPES.ServerInterface).to(Server);
+
+container.bind<ConversationControllerInterface>(TYPES.ConversationControllerInterface).to(ConversationController);
+container.bind<ConversationServiceInterface>(TYPES.ConversationServiceInterface).to(ConversationService);
+container.bind<ConnectionControllerInterface>(TYPES.ConnectionControllerInterface).to(ConnectionController);
+container.bind<ConnectionServiceInterface>(TYPES.ConnectionServiceInterface).to(ConnectionService);
+
 container.bind<ApplicationInterface>(TYPES.ApplicationInterface).to(Application);
 container.bind<IndexControllerInterface>(TYPES.IndexControllerInterface).to(IndexController);
 container.bind<IndexServiceInterface>(TYPES.IndexServiceInterface).to(IndexService);
+container.bind<DatabaseConnection>(TYPES.DatabaseConnection).to(DatabaseConnection).inSingletonScope();
 
 container.bind<DateControllerInterface>(TYPES.DateControllerInterface).to(DateController);
 container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService);
 
-container.bind<SocketService>(TYPES.SocketService).to(SocketService);
+container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
+container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
+container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager).inSingletonScope();
+container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager).inSingletonScope();
+container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
-
 
 export { container };
