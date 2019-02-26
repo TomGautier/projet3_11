@@ -425,12 +425,15 @@ public class ImageEditingFragment extends Fragment {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                for (GenericShape shape : selections)
+                for (GenericShape shape : selections) {
                     if (shape.getBoundingBox().contains(posX, posY)) {
                         isMovingSelection = true;
                         lastTouchPosX = posX;
                         lastTouchPosY = posY;
                     }
+                }
+                if (!isMovingSelection)
+                    selections.clear();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isMovingSelection) {
@@ -451,30 +454,32 @@ public class ImageEditingFragment extends Fragment {
         deleteSelection();
     }
     public void duplicateSelection() {
-        if (!selections.isEmpty()){
-            ArrayList<GenericShape> stackElems = new ArrayList<>();
-            for (GenericShape shape : selections){
-                GenericShape nShape = shape.clone();
-                shapes.add(nShape);
-                stackElems.add(nShape);
-            }
-            selections.clear();
-            selections.addAll(stackElems);
+        ArrayList<GenericShape> duplicatedShapes;
+        // Check whether to duplicate selected shapes or clipboard (or nothing)
+        if (!selections.isEmpty())
+            duplicatedShapes = selections;
+        else if (!cutShapes.isEmpty())
+            duplicatedShapes = cutShapes;
+        else return;
 
-            addToStack(stackElems, ADD_ACTION);
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
-        }
-        else if (!cutShapes.isEmpty()) {
-            shapes.addAll(cutShapes);
-            cutShapes.clear();
-
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
+        // Same operation in either case
+        ArrayList<GenericShape> stackElems = new ArrayList<>();
+        for (GenericShape shape : duplicatedShapes){
+            GenericShape nShape = shape.clone();
+            shapes.add(nShape);
+            stackElems.add(nShape);
         }
 
+        if (selections.isEmpty()) {
+            cutShapes = stackElems;
+        }
+        selections.clear();
+        selections.addAll(stackElems);
+
+        addToStack(stackElems, ADD_ACTION);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
     }
     public void reset() {
 
