@@ -12,7 +12,10 @@
     <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
     <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
     <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
+    <string name="ok">Confirmer</string>
+    <string name="cancel">Annuler</string>
 
+    <!-- IMAGE EDITING -->
     <string name="buttonClass">Classe</string>
     <string name="buttonActivity">Activité</string>
     <string name="buttonRole">Rôle</string>

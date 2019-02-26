@@ -1,6 +1,7 @@
 package com.projet3.polypaint.Image;
 
 import android.annotation.SuppressLint;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,6 +11,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.support.constraint.solver.widgets.ConstraintHorizontalLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.text.Layout;
@@ -35,7 +37,7 @@ import com.projet3.polypaint.R;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingFragment extends Fragment {
+public class ImageEditingFragment extends Fragment implements TextEditingDialog.TextEditingDialogListener {
 
 
     private Button buttonClass;
@@ -393,6 +395,9 @@ public class ImageEditingFragment extends Fragment {
                 break;
             case text_box :
                 nShape = new TextBox(posX, posY, defaultStyle);
+                DialogFragment dialog = new TextEditingDialog(this);
+                dialog.show(getFragmentManager(), "text editing");
+                break;
         }
         if (nShape != null) {
             shapes.add(nShape);
@@ -598,5 +603,23 @@ public class ImageEditingFragment extends Fragment {
         drawAllShapes();
 
         return isResizingCanvas;
+    }
+
+    // TextEditingDialogListener
+    @Override
+    public void onTextEditingDialogPositiveClick(String contents) {
+        ((TextBox)selections.get(0)).setText(contents);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
+
+    @Override
+    public void onTextEditingDialogNegativeClick() {
+        shapes.removeAll(selections);
+        selections.clear();
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
     }
 }

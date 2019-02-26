@@ -26,4 +26,9 @@ public class TextBox extends GenericShape {
         style.getTextPaint().getTextWidths(text, 0, 1, charWidth);
         width = (int)charWidth[0] * text.length();
     }
+
+    public void setText(String text) {
+        this.text = text;
+        adjustWidthToText();
+    }
 }
