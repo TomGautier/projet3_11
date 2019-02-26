@@ -102,45 +102,48 @@
                   RecentColorsHeader="Récemment utilisées"
                   UsingAlphaChannel="True"
                   AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" />
-                <Button Name="form_class" Width="40" Height="40" Margin="5"
+                <Button Name="form_class" Width="70" Height="40" Margin="5"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="form_class">
 
-                    <StackPanel>
-                        <Image Source="/Resources/form_class.png" />
-                    </StackPanel>
+                  <TextBlock>
+                    <Bold>CLASS</Bold>
+                  </TextBlock>
                 </Button>
-                <Button Name="form_artefact" Width="40" Height="40" Margin="5"
+                <Button Name="form_artefact" Width="70" Height="40" Margin="5"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_artefact, UpdateSourceTrigger=PropertyChanged}"
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_artefact, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="form_artefact">
-
-                    <StackPanel>
-                        <Image Source="/Resources/form_class.png" />
-                    </StackPanel>
+                  <TextBlock>
+                    <Bold>ARTEFACT</Bold>
+                  </TextBlock>
+                    
                 </Button>
-                <Button Name="form_activity" Width="40" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
-                        Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_activity">
+              <Button Name="form_activity" Width="70" Height="40" Margin="5"
+                      BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
+                      Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
+                      Command="{Binding Path=ChoisirOutil}"
+                      CommandParameter="form_activity">
 
-                    <StackPanel>
-                        <Image Source="/Resources/form_class.png" />
-                    </StackPanel>
-                </Button>
-                <Button Name="form_role" Width="40" Height="40" Margin="5"
+                <TextBlock>
+                  <Bold>ACTIVITY</Bold>
+                </TextBlock>
+              </Button>
+              <StackPanel>
+
+              </StackPanel>
+                <Button Name="form_role" Width="70" Height="40" Margin="5"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_role, UpdateSourceTrigger=PropertyChanged}"
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_role, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="form_role">
 
-                    <StackPanel>
-                        <Image Source="/Resources/form_class.png" />
-                    </StackPanel>
+                  <TextBlock>
+                    <Bold>ACTOR</Bold>
+                  </TextBlock>
                 </Button>
                 <Button Name="rotation" Width="40" Height="40" Margin="5"               
                         Command="{Binding Path=RotateForm}">
