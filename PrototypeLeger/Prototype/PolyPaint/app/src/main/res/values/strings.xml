@@ -24,4 +24,12 @@
     <string name="buttonReset">Réinitialiser</string>
     <string name="buttonMove">Déplacer</string>
 
+    <!-- MAIN TOOLBAR -->
+    <string name="mainToolbarGalleryTag">Gallerie</string>
+    <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+
+
+
+
+
 </resources>

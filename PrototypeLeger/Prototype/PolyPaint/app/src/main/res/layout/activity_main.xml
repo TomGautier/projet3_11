@@ -5,13 +5,18 @@
     android:background="@android:color/background_light"
     tools:context="${relativePackage}.${activityClass}" >
 
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/mainToolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
     <android.support.v7.widget.Toolbar
         android:id="@+id/mainToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:background="@color/mainToolbarBackground" />
-    <Button
+    </FrameLayout>
+    <!--<Button
         android:id="@+id/buttonCanvas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,13 +24,13 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="70dp"
         android:onClick="gotoImageEditing"
-        android:text="(TEMP) Canvas" />
+        android:text="(TEMP) Canvas" />-->
 
     <FrameLayout
         android:id="@+id/imageEditingFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"></FrameLayout>
+        android:layout_marginTop="100dp"></FrameLayout>
     <FrameLayout
         android:id="@+id/chatFragment"
         android:layout_width="wrap_content"
