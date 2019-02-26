@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
 import com.projet3.polypaint.R;
 
@@ -18,7 +20,7 @@ public class TextEditingDialog extends DialogFragment {
     }
 
     private TextEditingDialogListener listener;
-    private String contents = "NEW text";
+    private View rootView;
 
     public TextEditingDialog(TextEditingDialogListener parent) {
         super();
@@ -29,11 +31,13 @@ public class TextEditingDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
+        rootView = inflater.inflate(R.layout.dialog_text_editing, null);
 
-        builder.setView(inflater.inflate(R.layout.dialog_text_editing, null))
+        builder.setView(rootView)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        String contents = ((EditText)rootView.findViewById(R.id.editText)).getText().toString();
                         listener.onTextEditingDialogPositiveClick(contents);
                     }
                 })
