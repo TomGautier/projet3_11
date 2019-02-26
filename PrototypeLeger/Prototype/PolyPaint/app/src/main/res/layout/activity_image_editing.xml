@@ -83,6 +83,12 @@
                     android:text="@string/buttonDelete" />
 
                 <Button
+                    android:id="@+id/buttonCut"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonCut" />
+
+                <Button
                     android:id="@+id/buttonDuplicate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

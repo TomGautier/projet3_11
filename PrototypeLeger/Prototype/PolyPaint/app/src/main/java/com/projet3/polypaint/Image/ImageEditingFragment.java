@@ -45,6 +45,7 @@ public class ImageEditingFragment extends Fragment {
     private Button buttonSelection;
     private Button buttonLasso;
     private Button buttonReset;
+    private Button buttonCut;
     private Button buttonDuplicate;
     private Button buttonDelete;
     private ImageButton buttonRestore;
@@ -64,6 +65,7 @@ public class ImageEditingFragment extends Fragment {
     private ImageView iView;
     private LinearLayout canvasBGLayout;
     private ArrayList<GenericShape> shapes;
+    private ArrayList<GenericShape> cutShapes;
     private Stack<Pair<ArrayList<GenericShape>, String>> addStack;
     private Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
 
@@ -91,6 +93,7 @@ public class ImageEditingFragment extends Fragment {
         canvasBGLayout = (LinearLayout)rootView.findViewById(R.id.canvasBackground);
         shapes = new ArrayList<>();
         selections = new ArrayList<>();
+        cutShapes = new ArrayList<>();
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
@@ -142,7 +145,15 @@ public class ImageEditingFragment extends Fragment {
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteSelection(v);
+                deleteSelection();
+            }
+        });
+
+        buttonCut = (Button)rootView.findViewById(R.id.buttonCut);
+        buttonCut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cutSelection();
             }
         });
 
@@ -150,7 +161,7 @@ public class ImageEditingFragment extends Fragment {
         buttonDuplicate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                duplicateSelection(v);
+                duplicateSelection();
             }
         });
 
@@ -158,7 +169,7 @@ public class ImageEditingFragment extends Fragment {
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reset(v);
+                reset();
             }
         });
 
@@ -166,7 +177,7 @@ public class ImageEditingFragment extends Fragment {
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                backCanevas(v);
+                backCanevas();
             }
         });
 
@@ -174,7 +185,7 @@ public class ImageEditingFragment extends Fragment {
         buttonRestore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                forthCanevas(v);
+                forthCanevas();
             }
         });
 
@@ -205,6 +216,7 @@ public class ImageEditingFragment extends Fragment {
         });
 
     }
+
     private void initializePaint() {
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();
@@ -391,7 +403,7 @@ public class ImageEditingFragment extends Fragment {
         currentMode = mode;
     }
 
-    public void deleteSelection(View button) {
+    public void deleteSelection() {
         if (selections.size() > 0) {
             ArrayList<GenericShape> stackElems = new ArrayList<>();
             for (GenericShape shape : selections) {
@@ -413,12 +425,15 @@ public class ImageEditingFragment extends Fragment {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                for (GenericShape shape : selections)
+                for (GenericShape shape : selections) {
                     if (shape.getBoundingBox().contains(posX, posY)) {
                         isMovingSelection = true;
                         lastTouchPosX = posX;
                         lastTouchPosY = posY;
                     }
+                }
+                if (!isMovingSelection)
+                    selections.clear();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isMovingSelection) {
@@ -434,25 +449,39 @@ public class ImageEditingFragment extends Fragment {
                 break;
         }
     }
-    public void duplicateSelection(View button) {
-        if (!selections.isEmpty()){
-            ArrayList<GenericShape> stackElems = new ArrayList<>();
-            for (GenericShape shape : selections){
-                GenericShape nShape = shape.clone();
-                shapes.add(nShape);
-                stackElems.add(nShape);
-            }
-            selections.clear();
-            selections.addAll(stackElems);
+    private void cutSelection() {
+        cutShapes.addAll(selections);
+        deleteSelection();
+    }
+    public void duplicateSelection() {
+        ArrayList<GenericShape> duplicatedShapes;
+        // Check whether to duplicate selected shapes or clipboard (or nothing)
+        if (!selections.isEmpty())
+            duplicatedShapes = selections;
+        else if (!cutShapes.isEmpty())
+            duplicatedShapes = cutShapes;
+        else return;
 
-            addToStack(stackElems, ADD_ACTION);
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
+        // Same operation in either case
+        ArrayList<GenericShape> stackElems = new ArrayList<>();
+        for (GenericShape shape : duplicatedShapes){
+            GenericShape nShape = shape.clone();
+            shapes.add(nShape);
+            stackElems.add(nShape);
         }
 
+        if (selections.isEmpty()) {
+            cutShapes = stackElems;
+        }
+        selections.clear();
+        selections.addAll(stackElems);
+
+        addToStack(stackElems, ADD_ACTION);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
     }
-    public void reset(View button) {
+    public void reset() {
 
         if (shapes != null && shapes.size() > 0){
             addToStack(new ArrayList(shapes),REMOVE_ACTION);
@@ -464,7 +493,7 @@ public class ImageEditingFragment extends Fragment {
         iView.invalidate();
     }
 
-    public void backCanevas(View button) {
+    public void backCanevas() {
         if (addStack != null && !addStack.empty()){
             Pair pair = addStack.pop();
             selections.clear();
@@ -486,7 +515,7 @@ public class ImageEditingFragment extends Fragment {
 
 
     }
-    public void forthCanevas(View button) {
+    public void forthCanevas() {
         if (removeStack != null && !removeStack.empty()){
             Pair pair = removeStack.pop();
             selections.clear();
