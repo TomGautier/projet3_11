@@ -28,9 +28,7 @@
     <!-- MAIN TOOLBAR -->
     <string name="mainToolbarGalleryTag">Gallerie</string>
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
-
-
-
+    <string name="buttonTextBox">Texte</string>
 
 
 </resources>

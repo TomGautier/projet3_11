@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.Typeface;
 import android.support.constraint.solver.widgets.ConstraintHorizontalLayout;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import android.widget.LinearLayout;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
+import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
@@ -40,6 +42,7 @@ public class ImageEditingFragment extends Fragment {
     private Button buttonRole;
     private Button buttonActivity;
     private Button buttonArtefact;
+    private Button buttonText;
     private Button buttonCanvas;
     private Button buttonMove;
     private Button buttonSelection;
@@ -52,7 +55,7 @@ public class ImageEditingFragment extends Fragment {
     private ImageButton buttonBack;
 
     private enum Mode{selection, lasso, creation, move}
-    private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role}
+    private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role, text_box}
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
     private final float SELECTION_STROKE_WIDTH = 4f;
@@ -139,6 +142,14 @@ public class ImageEditingFragment extends Fragment {
             }
         });
 
+        buttonText = (Button)rootView.findViewById(R.id.buttonTextBox);
+        buttonText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.text_box);
+            }
+        });
+
 
         //actions
         buttonDelete = (Button)rootView.findViewById(R.id.buttonDelete);
@@ -218,6 +229,7 @@ public class ImageEditingFragment extends Fragment {
     }
 
     private void initializePaint() {
+        // Border paint
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();
         borderPaint.setColor(borderColor);
@@ -226,13 +238,25 @@ public class ImageEditingFragment extends Fragment {
         borderPaint.setStrokeCap(Paint.Cap.ROUND);
         borderPaint.setAntiAlias(true);
 
+        // Background paint
         int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
         backgroundPaint.setStyle(Paint.Style.FILL);
 
-        defaultStyle = new PaintStyle(borderPaint, backgroundPaint);
+        // Text paint
+        Paint textPaint = new Paint();
+        textPaint.setColor(borderColor);
+        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        textPaint.setTextSize(TextBox.FONT_SIZE);
+        textPaint.setTypeface(Typeface.MONOSPACE);
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        textPaint.setFakeBoldText(true);
 
+        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint);
+
+        // Selection paint
         int selectionColor = ResourcesCompat.getColor(getResources(), R.color.shapeSelection, null);
         selectionPaint = new Paint();
         selectionPaint.setColor(selectionColor);
@@ -367,6 +391,8 @@ public class ImageEditingFragment extends Fragment {
             case uml_role :
                 nShape = new UMLRole(posX, posY, defaultStyle);
                 break;
+            case text_box :
+                nShape = new TextBox(posX, posY, defaultStyle);
         }
         if (nShape != null)
             shapes.add(nShape);
