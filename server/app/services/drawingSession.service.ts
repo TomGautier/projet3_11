@@ -1,53 +1,50 @@
-import { injectable, inject } from "inversify";
 import { DrawingSessionServiceInterface } from "../interfaces";
-import { SocketService } from "./socket.service";
+import Shape from "../schemas/shape";
+import { inject } from "inversify";
 import { TYPES } from "../types";
-import SocketEvents from "../../../common/communication/socketEvents";
+import { DatabaseService } from "./database.service";
+import { Logger } from "./logger.service";
+import * as uuid from 'node-uuid';
 
-@injectable()
 export class DrawingSessionService implements DrawingSessionServiceInterface {
+    private readonly ID_CRITERIA = "id";
 
-    constructor(@inject(TYPES.SocketService) private socketService: SocketService) { 
-        // args[0] contains the socket id, args[1][0] the drawing session id.
-        this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], args[1][0]));
-        // args[0] contains the socket id, args[1] is a json with the session id, username and parameters of the function.
-        this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(args[0], args[1]));
-        this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(args[0], args[1]));
-        this.socketService.subscribe(SocketEvents.ModifyElement, args => this.modifyElement(args[0], args[1]));
-        this.socketService.subscribe(SocketEvents.SelectObjects, args => this.selectObject(args[0], args[1]));
-        this.socketService.subscribe(SocketEvents.UnselectObjects, args => this.unselectObjects(args[0], args[1]));
-        this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.resizeCanvas(args[0], args[1]));
+    constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public joinSession(socketId: string, sessionId: string) {
-        this.socketService.joinRoom(sessionId, socketId);
+    public async addElement(drawingSessionId: string, username: string, properties: any): Promise<{}> {
+        const shapeId = uuid.v1();
+        const shape = new Shape({
+            id: shapeId,
+            drawingSessionId: drawingSessionId,
+            author: username,
+            properties: {
+                type: properties.type,
+                fillingColor: properties.fillingColor,
+                borderColor: properties.borderColor,
+                middlePointCoord: properties.middlePointCoord,
+                height: properties.height,
+                width: properties.width,
+                rotation: properties.rotation
+            }
+        });
+    
+        return await this.databaseService.create(Shape, shape)
+            .catch(err => {
+                Logger.warn('ConversationService', `Couldn't create shape : ${shapeId}`);
+                throw err;
+        });
+    }
+    
+    public async deleteElements(elements: any): Promise<{}> {
+        // TODO: Review criteria to remove every elements
+        const elementsWithCriteria = {$in: elements};
+        return await this.databaseService.remove(Shape, this.ID_CRITERIA, elementsWithCriteria)
+            .catch(err => {throw err;});
     }
 
-    public leaveSession(socketId: string, sessionId: string) {
-        this.socketService.leaveRoom(sessionId, socketId);
-    }
-
-    public addElement(socketId: string, doc: any) {
-        this.socketService.emit(doc[0].drawingSessionId, SocketEvents.AddedElement);
-    }
-
-    public deleteElements(socketId: string, doc: any) {
-        this.socketService.emit(doc[0].drawingSessionId, SocketEvents.DeletedElements);
-    }
-
-    public modifyElement(socketId: string, doc: any) {
-        this.socketService.emit(doc[0].drawingSessionId, SocketEvents.ModifiedElement);
-    }
-
-    public selectObject(socketId: string, doc: any) {
-        this.socketService.emit(doc[0].drawingSessionId, SocketEvents.SelectedObjects);
-    }
-
-    public unselectObjects(socketId: string, doc: any) {
-        this.socketService.emit(doc[0].drawingSessionId, SocketEvents.UnselectedObjects);
-    }
-
-    public resizeCanvas(socketId: string, doc: any) {
-        this.socketService.emit(doc[0].drawingSessionId, SocketEvents.ResizedCanvas);
+    public async modifyElement(element: any): Promise<{}> {
+        return await this.databaseService.update(Shape, this.ID_CRITERIA, element.shapeId, element)
+            .catch(err => {throw err;});
     }
 }
