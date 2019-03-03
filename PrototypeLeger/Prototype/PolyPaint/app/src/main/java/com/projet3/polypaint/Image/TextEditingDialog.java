@@ -22,6 +22,10 @@ public class TextEditingDialog extends DialogFragment {
     private TextEditingDialogListener listener;
     private View rootView;
 
+    public TextEditingDialog() {
+        super();
+    }
+
     public TextEditingDialog(TextEditingDialogListener parent) {
         super();
         listener = parent;

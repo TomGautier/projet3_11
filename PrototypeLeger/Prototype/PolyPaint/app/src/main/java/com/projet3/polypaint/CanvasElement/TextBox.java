@@ -4,10 +4,16 @@ import android.graphics.Canvas;
 
 public class TextBox extends GenericShape {
     public static final int FONT_SIZE = 25;
-    private String text = "TEST";
+    private String text = "";
 
     public TextBox(int x, int y, PaintStyle style) {
         super(x, y, 0, FONT_SIZE, style);
+        adjustWidthToText();
+    }
+
+    private TextBox(int x, int y, PaintStyle style, String contents) {
+        super(x, y, 0, FONT_SIZE, style);
+        text = contents;
         adjustWidthToText();
     }
 
@@ -17,14 +23,16 @@ public class TextBox extends GenericShape {
     }
 
     public TextBox clone() {
-        return new TextBox(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
+        return new TextBox(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
     }
 
     private void adjustWidthToText() {
-        // Font is monospace, all characters are same width
-        float[] charWidth = new float[1];
-        style.getTextPaint().getTextWidths(text, 0, 1, charWidth);
-        width = (int)charWidth[0] * text.length();
+        if (text.length() != 0) {
+            // Font is monospace, all characters are same width
+            float[] charWidth = new float[1];
+            style.getTextPaint().getTextWidths(text, 0, 1, charWidth);
+            width = (int) charWidth[0] * text.length();
+        }
     }
 
     public void setText(String text) {
