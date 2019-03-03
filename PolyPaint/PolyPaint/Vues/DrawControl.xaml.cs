@@ -1,23 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Controls.Primitives;
-using PolyPaint.VueModeles;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace PolyPaint
+namespace PolyPaint.Vues
 {
     /// <summary>
-    /// Logique d'interaction pour FenetreDessin.xaml
+    /// Interaction logic for DrawControl.xaml
     /// </summary>
-    public partial class FenetreDessin : Window
+    public partial class DrawControl : UserControl
     {
-        public FenetreDessin()
+        public DrawControl()
         {
             InitializeComponent();
-            DataContext = new VueModele();
         }
-        
         // Pour gérer les points de contrôles.
         private void GlisserCommence(object sender, DragStartedEventArgs e) => (sender as Thumb).Background = Brushes.Black;
         private void GlisserTermine(object sender, DragCompletedEventArgs e) => (sender as Thumb).Background = Brushes.White;
@@ -37,13 +44,11 @@ namespace PolyPaint
         }
 
         private void DupliquerSelection(object sender, RoutedEventArgs e)
-        {          
+        {
             surfaceDessin.CopySelection();
             surfaceDessin.Paste();
         }
 
         private void SupprimerSelection(object sender, RoutedEventArgs e) => surfaceDessin.CutSelection();
-
-        private void ChatControl_Loaded(object sender, RoutedEventArgs e) { }
     }
 }
