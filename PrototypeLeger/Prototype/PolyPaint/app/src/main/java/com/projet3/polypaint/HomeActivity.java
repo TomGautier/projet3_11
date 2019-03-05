@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.Image.ImageEditingFragment;
 import com.projet3.polypaint.User.UserInformation;
 import com.projet3.polypaint.User.UserManager;
@@ -31,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
 	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout galleryFragmentLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class HomeActivity extends AppCompatActivity {
 		if (savedInstanceState == null){
 			createChatFragment();
 			createImageEditingFragment();
+			createGalleryFragment();
 		}
 	}
 
@@ -59,6 +62,13 @@ public class HomeActivity extends AppCompatActivity {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+	private void createGalleryFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.galleryFragment,new GalleryFragment(),"EDITING_FRAGMENT");
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -90,6 +100,7 @@ public class HomeActivity extends AppCompatActivity {
 				Toast.makeText(this, "You clicked logout", Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.GalleryAction:
+				toggleGalleryVisibility();
 				break;
 			case R.id.ChatAction:
 				toggleChatVisibility();
@@ -105,6 +116,13 @@ public class HomeActivity extends AppCompatActivity {
 			imageEditingFragmentLayout.setVisibility(View.GONE);
 		else
 			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
+	}
+
+	private void toggleGalleryVisibility(){
+		if (galleryFragmentLayout.getVisibility() == View.VISIBLE)
+			galleryFragmentLayout.setVisibility(View.GONE);
+		else
+			galleryFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
 	private void toggleChatVisibility(){
