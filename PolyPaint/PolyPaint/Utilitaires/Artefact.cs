@@ -24,18 +24,12 @@ namespace PolyPaint.Utilitaires
 
         {
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 65;//(int)(pts[6].Y - pts[0].Y);
-            this.Width = 50;//(int)(pts[6].X - pts[0].X);
+            this.Height = 65;
+            this.Width = 50;
             MakeShape();
-           // this.StylusPoints = pts;
-            
-            //this.Name = "";
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
-            //updateCenter();
-
-
         }
         public void MakeShape()
         {
@@ -50,16 +44,7 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X + this.Width, pts[0].Y + this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
-
             this.StylusPoints = pts;
-            //eturn pts;
-            /*pts.Add(new StylusPoint(pts[0].X + this.Width, pts[0].Y + 20));
-            pts.Add(new StylusPoint(pts[0].X + 35, pts[0].Y + 20));
-            pts.Add(new StylusPoint(pts[0].X + 35, pts[0].Y));
-            pts.Add(new StylusPoint(pts[0].X + 35 + 15, pts[0].Y + 20));
-            pts.Add(new StylusPoint(pts[0].X + 35 + 15, pts[0].Y + 65));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 65));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y));*/
         }
         private void updatePoints()
         {
@@ -68,8 +53,6 @@ namespace PolyPaint.Utilitaires
             this.Center = new Point((int)x, (int)y);
             this.Width = Point.Subtract(this.StylusPoints[6].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
             this.Height = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
-            //this.Height = this.StylusPoints[6].Y - this.StylusPoints[0].Y;
-            //this.Width =  this.StylusPoints[6].X - this.StylusPoints[0].X;
         }
         private void Fill(DrawingContext drawingContext)
         {
@@ -93,7 +76,6 @@ namespace PolyPaint.Utilitaires
         {
             Fill(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
-
             updatePoints();
         }
     }

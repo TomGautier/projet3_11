@@ -22,18 +22,13 @@ namespace PolyPaint.Utilitaires
         public Activity(StylusPointCollection pts) : base(pts)
 
         {
-            //this.StylusPoints = pts;
-            //this.Name = "";
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 70;//(int)(pts[3].Y - pts[0].Y);
-            this.Width = 130;//(int)(pts[3].X - pts[0].X);
+            this.Height = 70;
+            this.Width = 130;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
-            //updateCenter();
-
-
         }
         private void MakeShape()
         {
@@ -45,15 +40,7 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height));
             pts.Add(new StylusPoint(pts[0].X + 0.23*this.Width, pts[0].Y + 0.5*this.Height));
             pts.Add(new StylusPoint(pts[0].X , pts[0].Y));
-            //  pts.Add(new StylusPoint(pts[0].X + 35 + 15, pts[0].Y + 20));
-            //   pts.Add(new StylusPoint(pts[0].X + 35, pts[0].Y + 20));
-            //  pts.Add(new StylusPoint(pts[0].X + 35, pts[0].Y));
-            //  pts.Add(new StylusPoint(pts[0].X + 35 + 15, pts[0].Y + 20));
-            // pts.Add(new StylusPoint(pts[0].X + 35 + 15, pts[0].Y + 65));
-            //  pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 65));
-            //  pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
             this.StylusPoints = pts;
-            //return pts;
         }
         private void updatePoints()
         {
@@ -64,8 +51,6 @@ namespace PolyPaint.Utilitaires
             Point startWidth = new Point(this.StylusPoints[0].X + heightDirection.X / 2, this.StylusPoints[0].Y + heightDirection.Y / 2);
             this.Width = Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth).Length;
             this.Height = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
-            //this.Height = (int)(this.StylusPoints[3].Y - this.StylusPoints[0].Y);
-            //this.Width = (int)(this.StylusPoints[2].X - this.StylusPoints[0].X);
         }
         private void Fill(DrawingContext drawingContext)
         {
@@ -76,7 +61,6 @@ namespace PolyPaint.Utilitaires
             }       
             var figure = new PathFigure(this.StylusPoints[0].ToPoint(), segments, true);
             var geo = new PathGeometry(new[] { figure });
-
             SolidColorBrush brush = new SolidColorBrush(this.Remplissage);
             drawingContext.DrawGeometry(brush, null, geo);
         }
@@ -85,7 +69,6 @@ namespace PolyPaint.Utilitaires
         {
             Fill(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
-
             updatePoints();
         }
     }

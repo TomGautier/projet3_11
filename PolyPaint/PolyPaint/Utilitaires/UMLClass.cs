@@ -27,29 +27,16 @@ namespace PolyPaint.Utilitaires
         public UMLClass(StylusPointCollection pts) : base((pts))
             
         {
-            /*pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y));
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 210));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 210));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 30));
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 30));
-            pts.Add(new StylusPoint(pts[0].X + 110, pts[0].Y + 90));
-            pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 90));*/
-            //  this.Center = new Point(pts[0].X,pts[0].Y);
-            //  pts.RemoveAt(0);
             this.Center = new Point(pts[0].X,pts[0].Y);
-            this.Height = 220;//(int)(pts[2].Y - pts[0].Y);
-            this.Width = 110;//(int)(pts[2].X - pts[0].X);
+            this.Height = 220;
+            this.Width = 110;
             MakeShape();
             this.Name = "";
             this.Methods = new List<String>();
             this.Attributes = new List<String>();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
-            this.Remplissage = Colors.White;
-            //updatePoints();
-            
-            
+            this.Remplissage = Colors.White;         
         }
         public void MakeShape()
         {
@@ -65,7 +52,6 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height/2.3));
 
             this.StylusPoints = pts;
-            //return pts;
         }
         private void updatePoints()
         {
@@ -75,8 +61,6 @@ namespace PolyPaint.Utilitaires
 
             this.Width = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
             this.Height = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
-            //this.Height = this.StylusPoints[2].Y - this.StylusPoints[0].Y;
-            //this.Width = this.StylusPoints[2].X - this.StylusPoints[0].X;
         }
         private void Fill(DrawingContext drawingContext)
         {
@@ -90,32 +74,11 @@ namespace PolyPaint.Utilitaires
 
             SolidColorBrush brush = new SolidColorBrush(this.Remplissage);
             drawingContext.DrawGeometry(brush, null, geo);
-            //this.update();
-            
-
-
-            //drawingContext.DrawGeometry(brush, null, rect);
-            //drawingContext.DrawGeometry(brush, null, new RectangleGeometry());
-            //rect = clone;
-
-
-
-
-            //Stroke copy = this.Clone();
-            //copy.Transform(rotatingMatrix, false);
-            //this.StylusPoints = copy.StylusPoints;
         }
-        
-       /* private void updatePivot()
-        {
-            this.Pivot = new StylusPoint(this.StylusPoints[0].X + ((this.StylusPoints[1].X - this.StylusPoints[0].X) / 2), this.StylusPoints[0].Y + ((this.StylusPoints[3].Y - this.StylusPoints[0].Y) / 2));
-        }*/
         public void AddMethod(string method)
         {
             this.StylusPoints[0] = new StylusPoint(this.StylusPoints[0].X + 50, this.StylusPoints[0].Y);
-            //this.Methods.Add(method);
         }
-       //private ApplyRotation(StylusPoint point,
         protected override void OnStylusPointsChanged(EventArgs e)
         {
             base.OnStylusPointsChanged(e);
@@ -126,41 +89,17 @@ namespace PolyPaint.Utilitaires
         }
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
          
-        {
-           
-            SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(255,0,0));
-            //brush.Freeze();
-            //FILL
-            //drawingContext.DrawRectangle(brush, null, new Rect(this.StylusPoints[0].ToPoint(),this.StylusPoints[2].ToPoint()));         
-            //DrawName(drawingContext);
-            // DrawAttributes(drawingContext);
-            //DrawMethods(drawingContext);
-            //  updatePivot();
-            
+        {       
             Fill(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
-            //DrawName(drawingContext);
             updatePoints();
         }
         private void DrawName(DrawingContext drawingContext)
         {
-            //if (this.Name != null && this.Name.Length != 0)
-            //{
-
                 Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2, this.StylusPoints[0].ToPoint().Y + 4);
-                //StylusPoint pivot = this.StylusPoints.Last();
-                //StylusPoint pivot = new StylusPoint(0, 0);
-                // origin = ApplyRotation(this.CurrentRotation, pivot, origin);
-                //  origin = ApplyRotation(this.CurrentRotation, new StylusPoint(0,0), origin);
-                //RotateTransform RT = new RotateTransform(this.CurrentRotation);
-                // drawingContext.PushTransform(RT);
-
-                //Point location = new Point(origin.X, origin.Y);
                 SolidColorBrush brush = new SolidColorBrush(this.BorderColor);
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 drawingContext.DrawText(new FormattedText(this.Height.ToString(), CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
-               // drawingContext.Pop();    
-           // }
         }
         private void DrawAttributes(DrawingContext drawingContext)
         {

@@ -4,9 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-        xmlns:cmd ="http://www.galasoft.ch/mvvmlight"
-    
-        xmlns:behavior="using:Mock.Behaviors"
         xmlns:convertisseurs="clr-namespace:PolyPaint.Convertisseurs"        
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="PolyPaint.FenetreDessin"
         mc:Ignorable="d"
@@ -200,18 +197,6 @@
                     <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
                 </Border.Effect>
             </Border>
-            <TextBox
-                Background="White" Foreground="Black" TextChanged="TextBox_TextChanged" 
-                Text="MethodUno                              MethodDos                              MethodTres"
-                TextWrapping="Wrap"
-                AcceptsReturn="True"
-                AllowDrop="False"
-                     
-                Margin="17,10,-102,259"
-                     
-                Grid.Column="2"
-                     
-                     />
         </Grid>
     </DockPanel>
 </Window>

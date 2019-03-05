@@ -25,25 +25,31 @@ namespace PolyPaint.Utilitaires
                 this.update();
             }
         }
-
         public int CurrentRotation { get; set; }
         protected Point Center { get; set; }
         public  void rotate()
         {
             int angleInc = 10;
-            CurrentRotation = (CurrentRotation + angleInc) % 360;
-            Matrix rotatingMatrix = new Matrix();         
-            rotatingMatrix.RotateAt(angleInc, Center.X, Center.Y);
-
+            SetRotation(this.CurrentRotation + angleInc);     
+            this.CurrentRotation += angleInc;
+            
+        }
+        public void SetRotation(int degrees)
+        {
+            Matrix rotatingMatrix = new Matrix();
+            rotatingMatrix.RotateAt(360 -this.CurrentRotation, Center.X, Center.Y); //reset angle
+            rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
             Stroke copy = this.Clone();
             copy.Transform(rotatingMatrix, false);
             this.StylusPoints = copy.StylusPoints;
+            this.CurrentRotation = degrees;
         }
         public void update()
         {
             Stroke copy = this.Clone();
             this.StylusPoints = copy.StylusPoints;
         }
+        
         public void translate(int x, int y) 
         {
            for (int i = 0; i < this.StylusPoints.Count; i++)
@@ -52,9 +58,6 @@ namespace PolyPaint.Utilitaires
             }
         }
         public Form(StylusPointCollection pts)
-            : base(pts) { }
-
-
-            
+            : base(pts) { }           
     }
 }

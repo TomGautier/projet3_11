@@ -51,7 +51,6 @@ namespace PolyPaint
         private void DupliquerSelection(object sender, RoutedEventArgs e)
         {
             
-            //surfaceDessin.CopySelection()
             StrokeCollection selection = surfaceDessin.GetSelectedStrokes();
             if (selection.Count == 0 && (DataContext as VueModele).LastCut != null)
             {
@@ -63,22 +62,13 @@ namespace PolyPaint
                 Form duplicate = (Form)(form.Clone());
                 duplicate.translate(30, 30);
                 surfaceDessin.Strokes.Add(duplicate);
-                /*switch (form.GetType().ToString())
-                {
-                    case Contains("UMLClass"):
-                        (form as UMLClass).AddMethod("");
-                        break;
-
-                }*/
             }
-            //surfaceDessin.Paste();
         }
 
         private void SupprimerSelection(object sender, RoutedEventArgs e)
         {
             (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
-            surfaceDessin.CutSelection();
-            
+            surfaceDessin.CutSelection();        
         }
         
         private void TextBox_TextChanged(object sender, EventArgs e)
@@ -95,15 +85,5 @@ namespace PolyPaint
         {
 
         }
-        /*private void rotate_Selection(object sender, RoutedEventArgs e)
-        {    
-            //Matrix rotatingMatrix = new Matrix();
-            
-            Point rotatePoint = new Point(surfaceDessin.ActualWidth / 2, surfaceDessin.ActualHeight / 2);
-            //(DataContext as VueModele);
-            StrokeCollection selection = surfaceDessin.GetSelectedStrokes();
-           // rotatingMatrix.RotateAt(currentRotation+10, rotatePoint.X, rotatePoint.Y);
-           
-        }*/
     }
 }

@@ -34,7 +34,6 @@ namespace PolyPaint.VueModeles
             get { return editeur.CouleurSelectionnee; }
             set {
                 editeur.CouleurSelectionnee = value;
-               // ProprieteModifiee();
             }
         }
         public StrokeCollection LastCut
@@ -48,7 +47,6 @@ namespace PolyPaint.VueModeles
             set
             {
                 editeur.RemplissageSelectionne = value;
-                // ProprieteModifiee();
             }
         }
 
@@ -120,7 +118,6 @@ namespace PolyPaint.VueModeles
             ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
-            //HandleMouseDown = new RelayCommand<MouseButtonEventArgs>(editeur.HandleMouseDown);
         }
 
         /// <summary>
@@ -147,8 +144,6 @@ namespace PolyPaint.VueModeles
             if (e.PropertyName == "CouleurSelectionnee")
             {
                 ProprieteModifiee(e.PropertyName);
-                //AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
-                //CouleurSelectionnee = editeur.CouleurSelectionnee;
             }
             else if (e.PropertyName == "RemplissageSelectionne")
             {
@@ -163,19 +158,14 @@ namespace PolyPaint.VueModeles
                 PointeSelectionnee = editeur.PointeSelectionnee;
                 AjusterPointe();
             }
-            else // e.PropertyName == "TailleTrait"
+            else 
             {               
                 AjusterPointe();
-            }
-            //this.Canvas.Select(SelectedStrokes);
-            
+            }          
         }
         public void HandleSelection(StrokeCollection strokes)
         {
             editeur.ChangeSelection(strokes);
-            //CouleurSelectionnee = "Yellow";
-            
-           // CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();
         }
         public void RestoreLastTrait()
         {
