@@ -226,5 +226,8 @@
   <ItemGroup>
     <Resource Include="Resources\form_class.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\efface.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -57,8 +57,6 @@ namespace PolyPaint.Modeles
                 
                 if (selectedStrokes != null)
                 {
-
-
                     foreach (Stroke form in selectedStrokes)
                     {
                         form.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
@@ -71,8 +69,7 @@ namespace PolyPaint.Modeles
         public string RemplissageSelectionne
         {
             get { return remplissageSelectionne; }
-            // Lorsqu'on sélectionne une couleur c'est généralement pour ensuite dessiner un trait.
-            // C'est pourquoi lorsque la couleur est changée, l'outil est automatiquement changé pour le crayon.
+
             set
             {
                 remplissageSelectionne = value;
@@ -110,7 +107,8 @@ namespace PolyPaint.Modeles
             if (strokes.Count > 0)
             {
                 selectedStrokes = strokes;
-                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();             
+                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
+                RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
             }
             else
             {

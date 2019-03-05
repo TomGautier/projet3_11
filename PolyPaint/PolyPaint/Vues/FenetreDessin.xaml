@@ -9,7 +9,7 @@
         xmlns:Vues="clr-namespace:PolyPaint.Vues"
         x:Class="PolyPaint.FenetreDessin"
         mc:Ignorable="d"
-        Title="Poly Paint" Height="700" Width="900" Background="#CBD4E4" MinWidth="627" MinHeight="200">
+        Title="Poly Paint" Height="700" Width="1500" Background="#CBD4E4" MinWidth="627" MinHeight="200">
     <Window.Resources>
         <convertisseurs:ConvertisseurBordure x:Key="convertisseurBordure" />
         <convertisseurs:ConvertisseurCouleurFond x:Key="convertisseurCouleurFond" />
@@ -164,11 +164,11 @@
 
         <Grid DockPanel.Dock="Left" Margin="0,1,0,0" Width="794">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Name="colonne" Width="454.824" />
+                <ColumnDefinition Name="colonne" Width="600" />
                 <ColumnDefinition Width="6" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition x:Name="ligne" Height="310" />
+                <RowDefinition x:Name="ligne" Height="500" />
                 <RowDefinition Height="6" />
             </Grid.RowDefinitions>
             <Thumb Name="horizontal" Grid.Row="0" Grid.Column="2" Background="White" DragDelta="GlisserMouvementRecu" 
@@ -182,7 +182,6 @@
                       />
             <Border BorderThickness="5,5,0,0" Grid.ColumnSpan="2">
                 <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin" AllowDrop="True"
-                       
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
                        SelectionChanged="surfaceDessin_SelectionChanged"
