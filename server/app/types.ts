@@ -11,6 +11,8 @@ const TYPES =  {
         ConversationServiceInterface: Symbol.for("ConversationServiceInterface"),
         ConnectionControllerInterface:Symbol.for("ConnectionControllerInterface"),
         ConnectionServiceInterface:Symbol.for("ConnectionServiceInterface"),
+        ImageControllerInterface:Symbol.for("ImageControllerInterface"),
+        ImageServiceInterface:Symbol.for("ImageServiceInterface"),
         DrawingSessionServiceInterface:Symbol.for("DrawingSessionServiceInterface"),
         
         DateControllerInterface: Symbol.for("DateControllerInterface"),

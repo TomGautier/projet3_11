@@ -19,11 +19,10 @@ export let imageSchema: Schema = new Schema({
         type: String,
         required: true
     },
-    shapes: {
+    shapes: [{
         type: Schema.Types.ObjectId,
-        ref: 'Shape',
-        required: true
-    }
+        ref: 'Shape'
+    }]
 }, {timestamps: true});
 
 export default mongoose.connection.model<IImageModel>('Image', imageSchema);
