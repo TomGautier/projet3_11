@@ -166,6 +166,15 @@ namespace PolyPaint.VueModeles
         public void HandleSelection(StrokeCollection strokes)
         {
             editeur.ChangeSelection(strokes);
+            //TODO : Send socket -> selection was changed
+        }
+        public void HandleDrag()
+        {
+            // TODO : Send socket -> selection has moved
+        }
+        public void HandleResize()
+        {
+            // TODO : Send socket -> selection was resized
         }
         public void RestoreLastTrait()
         {
@@ -178,6 +187,8 @@ namespace PolyPaint.VueModeles
         public void HandleRotation(Point rotatePoint)
         {
             editeur.RotateForm(rotatePoint);
+
+            //TODO : Send socket -> selection was rotated
         }
 
         /// <summary>

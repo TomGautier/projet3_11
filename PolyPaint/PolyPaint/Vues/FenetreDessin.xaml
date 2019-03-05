@@ -182,12 +182,14 @@
                       DragStarted="GlisserCommence" DragCompleted="GlisserTermine" Margin="278,1,169.824,0"
                       />
             <Border BorderThickness="5,5,0,0" Grid.ColumnSpan="2">
-                <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin"
+                <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin" AllowDrop="True"
                        
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
                        SelectionChanged="surfaceDessin_SelectionChanged"
+                       SelectionResized="surfaceDessin_SelectionResized"
                        PreviewMouseDown="surfaceDessin_PreviewMouseDown"
+                       SelectionMoved="surfaceDessin_SelectionMoved"
                        Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                        DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
                 </InkCanvas>

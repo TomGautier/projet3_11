@@ -18,7 +18,6 @@ namespace PolyPaint
         {
             InitializeComponent();
             DataContext = new VueModele(surfaceDessin);
-            
         }
         
         // Pour gérer les points de contrôles.
@@ -85,5 +84,15 @@ namespace PolyPaint
         {
 
         }
+
+        private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
+        {
+            (DataContext as VueModele).HandleDrag();
+        }
+        private void surfaceDessin_SelectionResized(object sender, EventArgs e)
+        {
+            (DataContext as VueModele).HandleResize();
+        }
+
     }
 }

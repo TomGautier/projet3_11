@@ -36,7 +36,8 @@ namespace PolyPaint.Utilitaires
             this.Attributes = new List<String>();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
-            this.Remplissage = Colors.White;         
+            this.Remplissage = Colors.White;   
+            
         }
         public void MakeShape()
         {
