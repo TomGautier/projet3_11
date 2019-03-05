@@ -1,12 +1,7 @@
 package com.projet3.polypaint.Chat;
 
-import android.os.Bundle;
-import android.util.Log;
-import com.projet3.polypaint.Chat.NewMessageListener;
+import com.projet3.polypaint.SocketLoginListener;
 
-import com.projet3.polypaint.LoginListener;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,24 +25,17 @@ public class SocketManager  {
     public static SocketManager currentInstance;
     private Socket socket;
     private NewMessageListener newMessagelistener;
-    private LoginListener loginListener;
 
     private String uri;
 
     public SocketManager(String ipAddress_) {
         uri = formatIpToUri(ipAddress_);
         setupSocket();
-        currentInstance = this;
     }
-
-
 
 
     public void setupNewMessageListener(NewMessageListener listener_) {
         newMessagelistener = listener_;
-    }
-    public void setupLoginListener(LoginListener listener_) {
-        loginListener = listener_;
     }
     private void setupSocket() {
         try {
@@ -72,24 +60,8 @@ public class SocketManager  {
                 }
             });
 
-            socket.on(USEREXIST_TAG, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    loginListener.onUserAlreadyExists();
-                }
-            });
-
-            socket.on(USERLOGGED_TAG, new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    loginListener.onUserLogged();
-                }
-            });
         }catch(Exception e) {}
 
-    }
-    public void verifyUser(String username) {
-        socket.emit(LOGINATTEMPT_TAG, username);
     }
     public void sendMessage(String date,String username, String message) {
         String messageJSON = "";

@@ -24,16 +24,24 @@ export class SocketService {
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
     ) { }
-
     
     public init(server: SocketIO.Server): void {
         this.server = server;
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
-            Logger.debug("SocketService", "New connection: " + socket.id);
             this.sockets.set(socket.id, socket);
-            console.log("Socket id" + socket.id + " connected.");
-            socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
+            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+            socket.on(SocketEvents.UserJoinedRoom, args => this.handleEvent(SocketEvents.UserJoinedRoom, socket.id, args));
+            
+            socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+            socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
+            socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));
+            socket.on(SocketEvents.ModifyElement, args => this.handleEvent(SocketEvents.ModifyElement, socket.id, args));
+            socket.on(SocketEvents.SelectElements, args => this.handleEvent(SocketEvents.SelectElements, socket.id, args));
+            socket.on(SocketEvents.UnselectedElements, args => this.handleEvent(SocketEvents.UnselectElements, socket.id, args));
+            socket.on(SocketEvents.ResizeCanvas, args => this.handleEvent(SocketEvents.ResizeCanvas, socket.id, args));
+            Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
@@ -42,7 +50,7 @@ export class SocketService {
             this.sockets.delete(socket.id);
         });
 
-        Logger.warn("SocketService", `Socket service initialized.`);
+        Logger.debug("SocketService", `Socket service initialized.`);
     }
 
     public subscribe(event: string, action: ((...args: any[]) => any)) {
@@ -59,18 +67,7 @@ export class SocketService {
         }
     }
 
-    public authSocket(socketId: string) {
-        const socket = this.sockets.get(socketId);
-        if (socket) {
-            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
-        }
-        else {
-            Logger.warn('SocketService', `This socket doesn't exist : ${socketId}`);
-        }
-    }
-
-    public leaveRoom(roomId: string, socketId: string, username: string) {
+    public leaveRoom(roomId: string, socketId: string) {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.leave(roomId);
