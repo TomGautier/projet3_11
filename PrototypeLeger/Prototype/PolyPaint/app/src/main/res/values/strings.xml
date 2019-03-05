@@ -31,6 +31,9 @@
     <!-- CHAT TOOLBAR -->
     <string name="chatToolbarNewConversation">Nouvelle conversation</string>
     <string name="chatToolbarHideShow">Montrer/Cacher</string>
+    <!-- NEW CONVERSATION POPUP -->
+    <string name="newConversationTextView">Entrez le nom de la nouvelle conversation :</string>
+    <string name="newConversationButton">Terminé</string>
 
 
 

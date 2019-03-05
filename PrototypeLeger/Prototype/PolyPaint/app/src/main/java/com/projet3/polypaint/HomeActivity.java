@@ -8,17 +8,23 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 //import android.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -127,6 +133,8 @@ public class HomeActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.main_menu, menu);
         final MenuItem item = menu.findItem(R.id.ChatAction);
 		final Button button = (Button)item.getActionView();
+		button.setTextAppearance(R.style.Widget_AppCompat_Button_Borderless);
+		//button.setBackgroundResource(R.drawable.);
 		/*button.setBackground(R.style.Widget_AppCompat_Button_Borderless);
 		style="@style/Widget.AppCompat.Button.Borderless"*/
 		//button.setTextAppearance(R.style.Widget_AppCompat_Button_Borderless);
@@ -141,7 +149,14 @@ public class HomeActivity extends AppCompatActivity {
 
 					@Override
 					public boolean onMenuItemClick(MenuItem menuItem) {
-						Toast.makeText(getApplicationContext(), "You have clicked " + menuItem.getTitle(), Toast.LENGTH_LONG).show();
+						switch(menuItem.getItemId()){
+							case R.id.newConversationChatAction:
+								createNewConversationPopup();
+								break;
+							case R.id.hideShowChatAction:
+								toggleChatVisibility();
+								break;
+						}
 						return true;
 					}
 				});
@@ -165,6 +180,40 @@ public class HomeActivity extends AppCompatActivity {
 		})*/
         return true;
     }
+
+    private void createNewConversationPopup(){
+		LayoutInflater inflater = (LayoutInflater)
+				getSystemService(LAYOUT_INFLATER_SERVICE);
+		final View popupView = inflater.inflate(R.layout.new_conversation_popup, null);
+		Button button = (Button)popupView.findViewById(R.id.newConversationButton);
+		button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getBaseContext(),"nouvelle conversation cree",Toast.LENGTH_LONG).show();
+            }
+        });
+
+		// create the popup window
+		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+		boolean focusable = true; // lets taps outside the popup also dismiss it
+		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+		// show the popup window
+		// which view you pass in doesn't matter, it is only used for the window tolken
+		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+		// dismiss the popup window when touched
+		popupView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (v != popupView){
+					popupWindow.dismiss();
+				}
+				return true;
+			}
+		});
+	}
 	@Override
 	public void onBackPressed() {
 		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
