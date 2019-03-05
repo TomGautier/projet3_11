@@ -28,6 +28,12 @@
     <string name="mainToolbarGalleryTag">Gallerie</string>
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
 
+    <!-- CHAT TOOLBAR -->
+    <string name="chatToolbarNewConversation">Nouvelle conversation</string>
+    <string name="chatToolbarHideShow">Montrer/Cacher</string>
+
+
+
 
 
 
