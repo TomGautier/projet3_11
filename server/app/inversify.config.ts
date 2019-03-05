@@ -35,6 +35,8 @@ import { ConversationController } from "./controllers/conversation.controller";
 import { ConversationService } from "./services/conversation.service";
 import { ConnectionController } from "./controllers/connection.controller";
 import { DrawingSessionService } from "./services/drawingSession.service";
+import { ImageController } from "./controllers/image.controller";
+import { ImageService } from "./services/image.service";
 
 const container: Container = new Container();
 
