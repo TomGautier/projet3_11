@@ -49,4 +49,12 @@ export class ImageService implements ImageServiceInterface {
                 throw err;
             });
     }
+
+    public async removeById(id: string): Promise<{}> {
+        return await this.databaseService.remove(Image, this.ID_CRITERIA, id)
+            .catch(err => {
+                Logger.warn('ImageService', `This image ${id} couldn't be removed.`);
+                throw err;
+            });
+    }
 }
