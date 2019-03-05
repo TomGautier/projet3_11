@@ -11,6 +11,9 @@ export default {
     UsernameAlreadyExists:"UsernameAlreadyExists",
     InvalidCredentials:"InvalidCredentials",
     // Collaborative session
+    CreateDrawingSession:"CreateDrawingSession",
+    CreatedDrawingSession:"CreatedDrawingSession",
+
     JoinDrawingSession:"JoinDrawingSession",
     JoinedDrawingSession:"JoinedDrawingSession",
     LeaveDrawingSession:"LeaveDrawingSession",
