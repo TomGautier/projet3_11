@@ -12,6 +12,7 @@ require('reflect-metadata');
 @injectable()
 export class ImageService implements ImageServiceInterface {
     private readonly ID_CRITERIA = "id";
+    private readonly AUTHOR_CRITERIA = "author";
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
@@ -28,15 +29,23 @@ export class ImageService implements ImageServiceInterface {
             
         return await this.databaseService.create(Image, image)
             .catch(err => {
-                Logger.warn('ConversationService', `Couldn't create conversation : ${imageId}`);
+                Logger.warn('ImageService', `Couldn't create image : ${imageId}`);
                 throw err;
            });
+    }
+
+    public async getAll(username: string): Promise<{}> {
+        return await this.databaseService.getAllByCriteria(Image, this.AUTHOR_CRITERIA, username)
+            .catch(err => {
+                Logger.warn('ImageService', `This author ${username} has no images.`);
+                throw err;
+            });
     }
 
     public async getById(id: string): Promise<{}> {
         return await this.databaseService.getByCriteria(Image, this.ID_CRITERIA, id)
             .catch(err => {
-                Logger.warn('ConversationService', `This conversation ${id} doesn't exist.`);
+                Logger.warn('ImageService', `This image ${id} doesn't exist.`);
                 throw err;
             });
     }
