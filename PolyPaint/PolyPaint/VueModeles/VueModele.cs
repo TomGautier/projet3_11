@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
+using PolyPaint.Managers;
 
 namespace PolyPaint.VueModeles
 {
@@ -21,13 +22,13 @@ namespace PolyPaint.VueModeles
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
 
-        // Ensemble d'attributs qui définissent l'apparence d'un trait.
-        public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
-
-        public string OutilSelectionne
+        private int switchView = 0;
+        public int SwitchView
         {
-            get { return editeur.OutilSelectionne; }            
-            set { ProprieteModifiee(); }
+            get { return switchView; }
+            set { switchView = value; ProprieteModifiee(); }    
+            //get { return editeur.OutilSelectionne; }            
+            //set { ProprieteModifiee(); }
         }
         public string CouleurSelectionnee
         {
@@ -49,10 +50,21 @@ namespace PolyPaint.VueModeles
                 editeur.RemplissageSelectionne = value;
             }
         }
-
-        public string PointeSelectionnee
+        
+        private ChatManager chatManager = new ChatManager();
+        public ChatManager ChatManager
         {
-            get { return editeur.PointeSelectionnee; }
+            get { return chatManager; }
+            set { ProprieteModifiee(); }
+
+        }
+
+        // Ensemble d'attributs qui définissent l'apparence d'un trait.
+        public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
+
+        public string OutilSelectionne
+        {
+            get { return editeur.OutilSelectionne; }            
             set { ProprieteModifiee(); }
         }
 
@@ -73,12 +85,9 @@ namespace PolyPaint.VueModeles
         }
 
         public StrokeCollection Traits { get; set; }
-       
-        private InkCanvas Canvas { get; set; }
         // Commandes sur lesquels la vue pourra se connecter.
         public RelayCommand<object> Empiler { get; set; }
         public RelayCommand<object> Depiler { get; set; }
-        public RelayCommand<string> ChoisirPointe { get; set; }
         public RelayCommand<string> ChoisirOutil { get; set; }
         public RelayCommand<object> Reinitialiser { get; set; }
 
@@ -93,9 +102,8 @@ namespace PolyPaint.VueModeles
         /// On récupère certaines données initiales du modèle et on construit les commandes
         /// sur lesquelles la vue se connectera.
         /// </summary>
-        public VueModele(InkCanvas surfaceDessin)
+        public VueModele()
         {
-            this.Canvas = surfaceDessin;
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -103,7 +111,7 @@ namespace PolyPaint.VueModeles
             AttributsDessin = new DrawingAttributes();
             AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
             AjusterPointe();
-
+            
             Traits = editeur.traits;
             SelectedStrokes = editeur.selectedStrokes;
             
@@ -115,7 +123,6 @@ namespace PolyPaint.VueModeles
             RotateForm = new RelayCommand<object>(editeur.RotateForm);
             // Pour les commandes suivantes, il est toujours possible des les activer.
             // Donc, aucune vérification de type Peut"Action" à faire.
-            ChoisirPointe = new RelayCommand<string>(editeur.ChoisirPointe);
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
         }
@@ -152,16 +159,7 @@ namespace PolyPaint.VueModeles
             else if (e.PropertyName == "OutilSelectionne")
             {
                 OutilSelectionne = editeur.OutilSelectionne;
-            }                
-            else if (e.PropertyName == "PointeSelectionnee")
-            {
-                PointeSelectionnee = editeur.PointeSelectionnee;
-                AjusterPointe();
-            }
-            else 
-            {               
-                AjusterPointe();
-            }          
+            }                    
         }
         public void HandleSelection(StrokeCollection strokes)
         {

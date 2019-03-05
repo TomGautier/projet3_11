@@ -9,8 +9,12 @@ const TYPES =  {
         IndexControllerInterface: Symbol.for("IndexControllerInterface"),
         IndexServiceInterface: Symbol.for("IndexServiceInterface"),
         DateServiceInterface: Symbol.for("DateServiceInterface"),
+
+        // Services 
         EventEmitter: Symbol.for("EventEmitter"),
-        SocketService: Symbol.for("SocketService")
+        SocketService: Symbol.for("SocketService"),
+        ChannelsManager:Symbol.for("ChannelsManager"),
+        LoginService:Symbol.for("LoginService")
 };
 
 export  { TYPES };

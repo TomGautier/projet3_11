@@ -1,33 +1,30 @@
-﻿using MvvmDialogs;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using Prototype.Utils;
+using PolyPaint.Utilitaires;
 using Quobject.SocketIoClientDotNet.Client;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-namespace Prototype.ViewModels
+namespace PolyPaint.Managers
 {
-    class MainViewModel : ViewModelBase
+    class ChatManager : INotifyPropertyChanged
     {
         #region Constant
-        private const string SERVER_ADDRESS = "127.0.0.1"; //"52.173.184.147";
+        private const string SERVER_ADDRESS = "40.122.119.160";
         private const string SERVER_PORT = "3000";
         #endregion
 
         #region Parameters
-        private readonly IDialogService DialogService;
-
         /// <summary>
         /// Title of the application, as displayed in the top bar of the window
         /// </summary>
-        public string Title
-        {
-            get { return "Prototype"; }
-        }
         private string _message = string.Empty;
         public string Message
         {
@@ -38,10 +35,10 @@ namespace Prototype.ViewModels
             set
             {
                 _message = value;
-                NotifyPropertyChanged("Message");
+                NotifyPropertyChanged();
             }
         }
-        private string _history = "Welcome!"; 
+        private string _history = "Welcome!";
         public string History
         {
             get
@@ -51,7 +48,7 @@ namespace Prototype.ViewModels
             set
             {
                 _history = value;
-                NotifyPropertyChanged("History");
+                NotifyPropertyChanged();
             }
         }
         private string _username;
@@ -64,7 +61,7 @@ namespace Prototype.ViewModels
             set
             {
                 _username = value;
-                NotifyPropertyChanged("Username");
+                NotifyPropertyChanged();
             }
         }
         private string _serverAddress = SERVER_ADDRESS;
@@ -77,7 +74,7 @@ namespace Prototype.ViewModels
             set
             {
                 _serverAddress = value;
-                NotifyPropertyChanged("ServerAddress");
+                NotifyPropertyChanged();
             }
         }
         private string _connectionStatus = "disconnected";
@@ -90,20 +87,21 @@ namespace Prototype.ViewModels
             set
             {
                 _connectionStatus = value;
-                NotifyPropertyChanged("ConnectionStatus");
+                NotifyPropertyChanged();
             }
         }
         private Socket socket;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         #endregion
 
         #region Constructors
-        public MainViewModel()
-        {
-            // DialogService is used to handle dialogs
-            this.DialogService = new MvvmDialogs.DialogService();
-
-            System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
-        }
+        public ChatManager() { System.Windows.Application.Current.MainWindow.Closing += OnExitApp; }
         #endregion
 
         #region Methods
@@ -124,7 +122,7 @@ namespace Prototype.ViewModels
             {
                 date = DateTime.Now.ToString("hh:mm:ss tt"),
                 username = Username,
-                message = Message
+                message = Message.Trim()
             };
             Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
             socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
@@ -139,7 +137,7 @@ namespace Prototype.ViewModels
             ConnectionStatus = "connectAttempt";
             Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
             if (!rgx.IsMatch(ServerAddress))
-            {    
+            {
                 System.Windows.MessageBox.Show("Wrong Address format", "Error");
                 ConnectionStatus = "disconnected";
                 return;
@@ -169,6 +167,7 @@ namespace Prototype.ViewModels
 
         private void OnLogin()
         {
+            Username = Username.Trim();
             socket.Emit("LoginAttempt", Username);
             socket.On("UsernameAlreadyExists", () =>
             {
@@ -215,6 +214,6 @@ namespace Prototype.ViewModels
         private bool AddressValid() { return !string.IsNullOrWhiteSpace(ServerAddress) && ConnectionStatus == "disconnected"; }
         private bool UsernameValid() { return !string.IsNullOrWhiteSpace(Username); }
         #endregion
-        
+
     }
 }

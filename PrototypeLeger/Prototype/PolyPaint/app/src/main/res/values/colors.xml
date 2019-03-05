@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-        <color name="chat">#e2e2e2 </color>
+        <color name="chat">#E2E2E2</color>
+        <color name="shape">#000000</color>
+        <color name="shapeFillTest">#6666CC</color>
+        <color name="shapeSelection">#FF0000</color>
 </resources>

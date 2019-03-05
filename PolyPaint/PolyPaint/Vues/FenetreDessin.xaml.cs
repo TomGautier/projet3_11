@@ -17,7 +17,7 @@ namespace PolyPaint
         public FenetreDessin()
         {
             InitializeComponent();
-            DataContext = new VueModele(surfaceDessin);
+            DataContext = new VueModele();
         }
         
         // Pour gérer les points de contrôles.
@@ -93,6 +93,6 @@ namespace PolyPaint
         {
             (DataContext as VueModele).HandleResize();
         }
-
+        private void ChatControl_Loaded(object sender, RoutedEventArgs e) { }
     }
 }

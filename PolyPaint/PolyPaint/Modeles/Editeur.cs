@@ -120,7 +120,6 @@ namespace PolyPaint.Modeles
             }
            
         }
-
         /// <summary>
         /// Appelee lorsqu'une propriété d'Editeur est modifiée.
         /// Un évènement indiquant qu'une propriété a été modifiée est alors émis à partir d'Editeur.
