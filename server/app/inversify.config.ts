@@ -22,7 +22,6 @@ import { DateServiceInterface,
          ConversationServiceInterface,
          ConnectionControllerInterface,
          ConnectionServiceInterface,
-         //DrawingSessionControllerInterface,
          DrawingSessionServiceInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
@@ -44,7 +43,6 @@ container.bind<ConversationServiceInterface>(TYPES.ConversationServiceInterface)
 container.bind<ConnectionControllerInterface>(TYPES.ConnectionControllerInterface).to(ConnectionController);
 container.bind<ConnectionServiceInterface>(TYPES.ConnectionServiceInterface).to(ConnectionService);
 container.bind<DrawingSessionServiceInterface>(TYPES.DrawingSessionServiceInterface).to(DrawingSessionService);
-
 
 container.bind<ApplicationInterface>(TYPES.ApplicationInterface).to(Application);
 container.bind<IndexControllerInterface>(TYPES.IndexControllerInterface).to(IndexController);
