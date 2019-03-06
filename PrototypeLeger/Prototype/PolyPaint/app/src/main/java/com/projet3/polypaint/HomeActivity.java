@@ -103,12 +103,28 @@ public class HomeActivity extends AppCompatActivity {
 			case R.id.menuLogout:
 				Toast.makeText(this, "You clicked logout", Toast.LENGTH_SHORT).show();
 				break;
-			case R.id.GalleryAction:
+			case R.id.galleryAction:
 				break;
-			case R.id.ChatAction:
-				//toggleChatVisibility();
+			case R.id.chatAction:
+				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
+				dropDownMenu.getMenuInflater().inflate(R.menu.chat_menu, dropDownMenu.getMenu());
+				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+					@Override
+					public boolean onMenuItemClick(MenuItem menuItem) {
+						switch(menuItem.getItemId()){
+							case R.id.newConversationChatAction:
+								createNewConversationPopup();
+								break;
+							case R.id.hideShowChatAction:
+								toggleChatVisibility();
+								break;
+						}
+						return true;
+					}
+				});
+				dropDownMenu.show();
 				break;
-			case R.id.ImageEditingAction:
+			case R.id.imageEditingAction:
 				toggleImageEditingVisibility();
 				break;
 		}
@@ -129,56 +145,10 @@ public class HomeActivity extends AppCompatActivity {
 	}
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        final MenuItem item = menu.findItem(R.id.ChatAction);
-		final Button button = (Button)item.getActionView();
-		button.setTextAppearance(R.style.Widget_AppCompat_Button_Borderless);
-		//button.setBackgroundResource(R.drawable.);
-		/*button.setBackground(R.style.Widget_AppCompat_Button_Borderless);
-		style="@style/Widget.AppCompat.Button.Borderless"*/
-		//button.setTextAppearance(R.style.Widget_AppCompat_Button_Borderless);
-		button.setText(item.getTitle());
-		button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), button);
-				dropDownMenu.getMenuInflater().inflate(R.menu.chat_menu, dropDownMenu.getMenu());
-				//button.setText(item.getTitle().toString());
-				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
 
-					@Override
-					public boolean onMenuItemClick(MenuItem menuItem) {
-						switch(menuItem.getItemId()){
-							case R.id.newConversationChatAction:
-								createNewConversationPopup();
-								break;
-							case R.id.hideShowChatAction:
-								toggleChatVisibility();
-								break;
-						}
-						return true;
-					}
-				});
-				dropDownMenu.show();
-			}
-		});
-
-
-		/*MenuItem item = menu.findItem(R.id.ChatAction);
-		Spinner spinner = (Spinner) item.getActionView();
-
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.testArray, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-		spinner.setAdapter(adapter);
-		spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-			}
-		})*/
-        return true;
     }
 
     private void createNewConversationPopup(){
