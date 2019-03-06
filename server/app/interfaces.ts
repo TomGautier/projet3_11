@@ -24,7 +24,6 @@ export interface ConnectionControllerInterface {
 }
 
 export interface DrawingSessionServiceInterface {
-
 }
 
 export interface IndexServiceInterface {
