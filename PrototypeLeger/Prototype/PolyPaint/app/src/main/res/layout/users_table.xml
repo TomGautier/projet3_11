@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="500dp"
+    android:background="@drawable/stroke_bg"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/usersTableTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/userListTitle"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:background="@drawable/underline"/>
+
+    <LinearLayout
+        android:id="@+id/searchLayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_below="@id/usersTableTitle"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Search:"
+            android:layout_weight="0.3"/>
+        <SearchView
+            android:id="@+id/searchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:background="@android:color/white"/>
+    </LinearLayout>
+
+<RelativeLayout
+    android:id="@+id/connectedUsersModule"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    android:layout_below="@id/searchLayout"
+    android:layout_marginTop="5dp"
+    android:background="@drawable/underline">
+    <TextView
+        android:id="@+id/connectedUserTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/userListConnectedTitle"/>
+    <ScrollView
+        android:id="@+id/connectedUsersTableScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/connectedUserTitle">
+    <LinearLayout
+        android:id="@+id/connectedUsersTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="3dp">
+    </LinearLayout>
+    </ScrollView>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/disconnectedUsersModule"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/connectedUsersModule"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/underline">
+        <TextView
+            android:id="@+id/disconnectedUserTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/userListDisconnectedTitle"/>
+        <ScrollView
+            android:id="@+id/disconnectedUsersTableScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_below="@id/disconnectedUserTitle">
+            <LinearLayout
+                android:id="@+id/disconnectedUsersTable"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="3dp">
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
+
+</RelativeLayout>

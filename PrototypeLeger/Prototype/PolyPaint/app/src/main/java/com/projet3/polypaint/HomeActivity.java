@@ -38,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
 	//private UserInformation userInformation;
     private final String CHAT_TAG = "CHAT_FRAGMENT";
     private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
+	private final String USER_TABLE_TAG = "USER_TABLE_FRAGMENT";
 
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
@@ -57,6 +58,9 @@ public class HomeActivity extends AppCompatActivity {
 		if (savedInstanceState == null){
 			createChatFragment();
 			createImageEditingFragment();
+			toggleImageEditingVisibility();
+			toggleChatVisibility();
+			createUsersTableFragment();
 		}
 	}
 
@@ -73,6 +77,18 @@ public class HomeActivity extends AppCompatActivity {
 		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
         transaction.addToBackStack(null);
         transaction.commit();
+	}
+	private void createUsersTableFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		ArrayList<String> users = new ArrayList<>();
+		users.add("Marcel");
+		users.add("Marcel2");
+		users.add("Marcel3");
+		users.add("Marcel4");
+		transaction.add(R.id.usersTableFragment,UserTableFragment.newInstance(users),USER_TABLE_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 

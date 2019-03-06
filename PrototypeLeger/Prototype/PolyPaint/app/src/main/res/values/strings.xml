@@ -38,6 +38,12 @@
     <string name="removeConversationTextView">Entrez le nom de la conversation à retirer:</string>
     <string name="conversationButton">Terminé</string>
 
+    <!-- USERS LIST -->
+    <string name="userListTitle">Liste d\'utilisateurs</string>
+    <string name="userListConnectedTitle">utlisateurs connectes :</string>
+    <string name="userListDisconnectedTitle">utlisateurs deconnectes :</string>
+
+
 
 
 
