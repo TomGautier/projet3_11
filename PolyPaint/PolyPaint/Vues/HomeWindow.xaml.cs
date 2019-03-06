@@ -35,9 +35,9 @@ namespace PolyPaint.Vues
         }
 
         private void Login_Click(object sender, RoutedEventArgs e) {
-          /*  MainWindow mainWindow = new MainWindow();
+            MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
-            this.Close();*/
+            this.Close();
         }
     }
 }
