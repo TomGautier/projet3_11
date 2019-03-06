@@ -1,11 +1,8 @@
 package com.projet3.polypaint;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -17,8 +14,6 @@ import android.view.MotionEvent;
 import android.view.View;
 //import android.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -32,15 +27,18 @@ import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.User.UserInformation;
+import com.projet3.polypaint.User.RequestManager;
 import com.projet3.polypaint.User.UserManager;
 
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
-	private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
-	private UserInformation userInformation;
+	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
+	//private UserInformation userInformation;
+    private final String CHAT_TAG = "CHAT_FRAGMENT";
+    private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
+
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
 	private FrameLayout imageEditingFragmentLayout;
@@ -55,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(mainToolbar);
 		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+
 		if (savedInstanceState == null){
 			createChatFragment();
 			createImageEditingFragment();
@@ -64,17 +63,16 @@ public class HomeActivity extends AppCompatActivity {
 	private void createChatFragment() {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.chatFragment, ChatFragment.newInstance(
-				getIntent().getExtras().<Conversation>getParcelableArrayList("CONVERSATIONS")),"CHAT_FRAGMENT");
+		transaction.add(R.id.chatFragment, new ChatFragment(),CHAT_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 	private void createImageEditingFragment(){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
-		transaction.addToBackStack(null);
-		transaction.commit();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
 	}
 
 
@@ -112,8 +110,11 @@ public class HomeActivity extends AppCompatActivity {
 					@Override
 					public boolean onMenuItemClick(MenuItem menuItem) {
 						switch(menuItem.getItemId()){
-							case R.id.newConversationChatAction:
-								createNewConversationPopup();
+							case R.id.addConversationChatAction:
+								createAddConversationPopup();
+								break;
+							case R.id.removeConversationChatAction:
+								createRemoveConversationPopup();
 								break;
 							case R.id.hideShowChatAction:
 								toggleChatVisibility();
@@ -150,30 +151,15 @@ public class HomeActivity extends AppCompatActivity {
 		return true;
 
     }
-
-    private void createNewConversationPopup(){
+	private void createRemoveConversationPopup(){
 		LayoutInflater inflater = (LayoutInflater)
 				getSystemService(LAYOUT_INFLATER_SERVICE);
-		final View popupView = inflater.inflate(R.layout.new_conversation_popup, null);
-		Button button = (Button)popupView.findViewById(R.id.newConversationButton);
-		button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getBaseContext(),"nouvelle conversation cree",Toast.LENGTH_LONG).show();
-            }
-        });
-
-		// create the popup window
 		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
 		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-		boolean focusable = true; // lets taps outside the popup also dismiss it
+		boolean focusable = true;
+		final View popupView = inflater.inflate(R.layout.remove_conversation_popup, null);
 		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-		// show the popup window
-		// which view you pass in doesn't matter, it is only used for the window tolken
 		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-
-		// dismiss the popup window when touched
 		popupView.setOnTouchListener(new View.OnTouchListener() {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
@@ -183,20 +169,71 @@ public class HomeActivity extends AppCompatActivity {
 				return true;
 			}
 		});
+		final Spinner spinner = (Spinner)popupView.findViewById(R.id.removeConversationSpinner);
+		android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter
+				(HomeActivity.this, android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
+		spinnerArrayAdapter.setDropDownViewResource(android.R.layout
+				.simple_spinner_dropdown_item);
+		spinner.setAdapter(spinnerArrayAdapter);
+		Button button = (Button)popupView.findViewById(R.id.removeConversationButton);
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String conversation = spinner.getSelectedItem().toString();
+				UserManager.currentInstance.removeUserConversation(conversation);
+				SocketManager.currentInstance.leaveConversation(conversation);
+				((ChatFragment)getFragmentManager().findFragmentByTag(CHAT_TAG)).setupChatConversationSpinner();
+				popupWindow.dismiss();
+			}
+		});
 	}
+
+    private void createAddConversationPopup(){
+		LayoutInflater inflater = (LayoutInflater)
+				getSystemService(LAYOUT_INFLATER_SERVICE);
+		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+		boolean focusable = true;
+		final View popupView = inflater.inflate(R.layout.add_conversation_popup, null);
+		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+		popupView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (v != popupView){
+					popupWindow.dismiss();
+				}
+				return true;
+			}
+		});
+		Button button = (Button)popupView.findViewById(R.id.addConversationButton);
+		button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+                String name = ((EditText)popupView.findViewById(R.id.addConversationEditText)).getText().toString();
+			    if (!name.isEmpty()){
+					//boolean ret = RequestManager.currentInstance.addUserConversation(name);
+			    	if (/*tryAddConversation(name)*/true){
+						UserManager.currentInstance.addUserConversation(name);
+						((ChatFragment)getFragmentManager().findFragmentByTag(CHAT_TAG)).setupChatConversationSpinner();
+						Toast.makeText(getBaseContext(),"Conversation " + name + " cree",Toast.LENGTH_SHORT).show();
+						popupWindow.dismiss();
+					}
+					else
+						Toast.makeText(getBaseContext(),"Cette conversation existe deja",Toast.LENGTH_SHORT).show();
+				}
+                else{
+                    Toast.makeText(getBaseContext(),"Veuillez entrer un nom de conversation valide",Toast.LENGTH_SHORT).show();
+                }
+			}
+		});
+	}
+
 	@Override
 	public void onBackPressed() {
 		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 	}
-	// INTEGRATION
-	/*public void gotoImageEditing(View button) {
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
-		transaction.addToBackStack(null);
-		transaction.commit();
-	}*/
 }
 
 

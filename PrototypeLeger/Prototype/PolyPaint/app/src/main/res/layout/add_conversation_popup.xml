@@ -5,24 +5,24 @@
     android:background="@drawable/stroke_bg"
     android:padding="10dp">
     <TextView
-        android:id="@+id/newConversationTextView"
+        android:id="@+id/addConversationTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/newConversationTextView"/>
+        android:text="@string/addConversationTextView"/>
     <EditText
-        android:id="@+id/newConversationEditText"
+        android:id="@+id/addConversationEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/chat_entry"
-        android:layout_below="@id/newConversationTextView"
+        android:layout_below="@id/addConversationTextView"
         android:inputType="text"
         android:gravity="center_horizontal"/>
     <Button
-        android:id="@+id/newConversationButton"
+        android:id="@+id/addConversationButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/newConversationButton"
-        android:layout_below="@id/newConversationEditText"
+        android:text="@string/conversationButton"
+        android:layout_below="@id/addConversationEditText"
         android:layout_alignParentRight="true" />
 
 

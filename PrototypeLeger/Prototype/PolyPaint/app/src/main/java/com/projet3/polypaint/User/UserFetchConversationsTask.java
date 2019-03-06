@@ -62,6 +62,6 @@ class UserFetchConversationsTask extends AsyncTask<String, String, JSONArray> {
     /*@Override
     protected void onPostExecute(ArrayList<JSONObject> s) {
         super.onPostExecute(s);
-        UserManager.currentInstance.setUserConversations(s);
+        RequestManager.currentInstance.setUserConversations(s);
     }*/
 }

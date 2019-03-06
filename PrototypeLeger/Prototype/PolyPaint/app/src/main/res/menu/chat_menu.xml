@@ -3,8 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/newConversationChatAction"
-        android:title="@string/chatToolbarNewConversation" />
+        android:id="@+id/addConversationChatAction"
+        android:title="@string/chatToolbarAddConversation" />
+    <item
+        android:id="@+id/removeConversationChatAction"
+        android:title="@string/chatToolbarRemoveConversation" />
     <item
         android:id="@+id/hideShowChatAction"
         android:title="@string/chatToolbarHideShow" />

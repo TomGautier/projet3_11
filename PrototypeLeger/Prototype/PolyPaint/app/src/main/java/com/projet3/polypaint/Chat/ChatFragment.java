@@ -23,7 +23,6 @@ import android.widget.TextView;
 
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.User.UserInformation;
 import com.projet3.polypaint.User.UserManager;
 import com.projet3.polypaint.Utilities;
 
@@ -46,7 +45,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
 
-    private ArrayList<Conversation> conversations;
+    //private ArrayList<Conversation> conversations;
     public Conversation currentConversation;
     private boolean chatIsExpended;
    // private UserInformation userInformation;
@@ -54,40 +53,47 @@ public class ChatFragment extends Fragment implements NewMessageListener {
 
     public ChatFragment() { }
 
-    public static ChatFragment newInstance(ArrayList<Conversation> conversations) {
-        ChatFragment f = new ChatFragment();
-        Bundle args = new Bundle();
-        //args.putParcelable("USER_INFORMATION" ,userInformation_);
-        args.putParcelableArrayList("CONVERSATIONS", conversations);
-        f.setArguments(args);
-        return f;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
         rootView=inflater.inflate(R.layout.activity_chat, container, false);
-        Bundle bundle = getArguments();
-        if (savedInstanceState == null && bundle != null){
-            conversations = bundle.getParcelableArrayList("CONVERSATIONS");
-            if (conversations.size() == 0)
-                conversations.add(new Conversation("General", new ArrayList()));
-            currentConversation = conversations.get(0);
-
-
-            //userInformation = bundle.getParcelable("USER_INFORMATION");
+        if (UserManager.currentInstance.getUserConversationsNames().size() != 0) {
+            currentConversation = UserManager.currentInstance.getUserConversationAt(0);
         }
-        else{
-            conversations = savedInstanceState.getParcelableArrayList("CONVERSATIONS");
-            currentConversation = conversations.get(savedInstanceState.getInt("CURRENT_INDEX"));
-            //userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
+        else {
+            currentConversation = new Conversation("GENERAL");
         }
         initializeChat();
         SocketManager.currentInstance.setupNewMessageListener(this);
         return rootView;
+        //Bundle bundle = getArguments();
+        //if (savedInstanceState == null && bundle != null){
+        //conversations = bundle.getParcelableArrayList("CONVERSATIONS");
+        //if (conversations.size() == 0)
+        //conversations.add(new Conversation("General", new ArrayList()));
+        // currentConversation
+        //  UserManager.currentInstance.
+
+        //userInformation = bundle.getParcelable("USER_INFORMATION");
+        //}
+        //else{
+        // conversations = savedInstanceState.getParcelableArrayList("CONVERSATIONS");
+        //currentConversation = conversations.get(savedInstanceState.getInt("CURRENT_INDEX"));
+        //userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
+        //}
+
     }
+
+   /* public static ChatFragment newInstance(ArrayList<Conversation> conversations) {
+        ChatFragment f = new ChatFragment();
+        Bundle args = new Bundle();
+        //args.putParcelable("USER_INFORMATION" ,userInformation_);
+        args.putParcelableArrayList("CONVERSATIONS", conversations);
+        f.setArguments(args);
+        return f;
+    }*/
 
     private void initializeChat(){
 
@@ -106,7 +112,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         setupChatExtendButton();
 
 
-        if (currentConversation.GetHistorySize() > 0)
+        if (currentConversation.getHistorySize() > 0)
             loadConversation();
 
 
@@ -150,14 +156,14 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         chatMessageZoneTable.addView(newView);
         newView.setText(message);
         if (withHistory)
-            currentConversation.AddToHistory(newView.getText().toString());
+            currentConversation.addToHistory(newView.getText().toString());
 
         scrollDownMessages();
     }
 
     public void sendMessage(String message) {
-        //SocketManager.currentInstance.sendMessage(getDate(), UserManager.currentInstance.getUserUsername(), message);
-        SocketManager.currentInstance.sendMessage(currentConversation.GetName(), message);
+        //SocketManager.currentInstance.sendMessage(getDate(), RequestManager.currentInstance.getUserUsername(), message);
+        SocketManager.currentInstance.sendMessage(currentConversation.getName(), message);
     }
 
     private void SetupChatEnterButton() {
@@ -174,16 +180,18 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         return timeStamp;
     }
 
-    private ArrayList<String> getConversationsNames() {
+
+
+    /*private ArrayList<String> getConversationsNames() {
         ArrayList<String> stringConversations = new ArrayList<>();
-        for (Conversation elem : conversations) {
-            stringConversations.add(elem.GetName());
+        for (int i = 0; i < UserManager.currentInstance.getUserConversationsNames().size(); i++) {
+            stringConversations.add();
         }
         return stringConversations;
-    }
-    private void setupChatConversationSpinner() {
+    }*/
+    public void setupChatConversationSpinner() {
         android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
-                (getContext(), android.R.layout.simple_spinner_item, getConversationsNames());
+                (getContext(), android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                 .simple_spinner_dropdown_item);
         conversationSpinner.setAdapter(spinnerArrayAdapter);
@@ -191,10 +199,10 @@ public class ChatFragment extends Fragment implements NewMessageListener {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selected = adapterView.getItemAtPosition(i).toString();
-                if (currentConversation.GetName() != selected) {
-                    for (int j = 0; j < conversations.size(); j++) {
-                        Conversation current = conversations.get(j);
-                        if (current.GetName() == selected && current.GetName() != currentConversation.GetName()){
+                if (currentConversation.getName() != selected) {
+                    for (int j = 0; j < UserManager.currentInstance.getUserConversationsNames().size(); j++) {
+                        Conversation current = UserManager.currentInstance.getUserConversationAt(j);
+                        if (current.getName() == selected && current.getName() != currentConversation.getName()){
                             currentConversation = current;
                             loadConversation();
                             break;
@@ -263,8 +271,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     }
     private void loadConversation() {
         chatMessageZoneTable.removeAllViews();
-        for (int j = 0; j < currentConversation.GetHistorySize(); j++)
-            WriteMessage(currentConversation.GetHistoryAt(j), false);
+        for (int j = 0; j < currentConversation.getHistorySize(); j++)
+            WriteMessage(currentConversation.getHistoryAt(j), false);
     }
 
     @Override
@@ -280,9 +288,9 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putParcelableArrayList("CONVERSATIONS",conversations);
+       // savedInstanceState.putParcelableArrayList("CONVERSATIONS",conversations);
         //savedInstanceState.putParcelable("USER_INFORMATION", userInformation);
-        savedInstanceState.putInt("CURRENT_INDEX", conversations.indexOf(currentConversation));
+        //savedInstanceState.putInt("CURRENT_INDEX", conversations.indexOf(currentConversation));
     }
 
 
