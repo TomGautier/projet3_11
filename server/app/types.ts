@@ -5,6 +5,14 @@
 const TYPES =  {
         ServerInterface: Symbol.for("ServerInterface"),
         ApplicationInterface: Symbol.for("ApplicationInterface"),
+        
+        // Interfaces
+        ConversationControllerInterface: Symbol.for("ConversationControllerInterface"),
+        ConversationServiceInterface: Symbol.for("ConversationServiceInterface"),
+        ConnectionControllerInterface:Symbol.for("ConnectionControllerInterface"),
+        ConnectionServiceInterface:Symbol.for("ConnectionServiceInterface"),
+        DrawingSessionServiceInterface:Symbol.for("DrawingSessionServiceInterface"),
+        
         DateControllerInterface: Symbol.for("DateControllerInterface"),
         IndexControllerInterface: Symbol.for("IndexControllerInterface"),
         IndexServiceInterface: Symbol.for("IndexServiceInterface"),
@@ -13,8 +21,13 @@ const TYPES =  {
         // Services 
         EventEmitter: Symbol.for("EventEmitter"),
         SocketService: Symbol.for("SocketService"),
-        ChannelsManager:Symbol.for("ChannelsManager"),
-        LoginService:Symbol.for("LoginService")
+        DatabaseConnection: Symbol.for("DatabaseConnection"),
+        DatabaseService: Symbol.for("DatabaseService"),
+        UserService:Symbol.for("UserService"),
+
+        // Managers
+        ConversationManager:Symbol.for("ConversationManager"),
+        ConnectionManager:Symbol.for("ConnectionManager")
 };
 
 export  { TYPES };

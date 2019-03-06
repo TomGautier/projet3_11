@@ -12,8 +12,10 @@ import { injectable, inject } from "inversify";
 import { IndexController } from "./controllers/index.controller";
 import { DateController } from "./controllers/date.controller";
 import { ApplicationInterface } from "./interfaces";
-import { ChannelsManager } from "./services/channels.manager";
-import { LoginService } from "./services/login.service";
+import { ConversationManager } from "./services/conversation.manager";
+import { ConnectionService } from "./services/connection.service";
+import { ConversationController } from "./controllers/conversation.controller";
+import { ConnectionController } from "./controllers/connection.controller";
 
 
 @injectable()
@@ -25,8 +27,9 @@ export class Application implements ApplicationInterface {
     public constructor(
             @inject(TYPES.IndexControllerInterface) private indexController: IndexController,
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
-            @inject(TYPES.ChannelsManager) private channelsManager: ChannelsManager,
-            @inject(TYPES.LoginService) private loginService: LoginService) {
+            @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
+            @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
+            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager) {
         this.app = express();
         this.config();
         this.bindRoutes();
@@ -42,6 +45,8 @@ export class Application implements ApplicationInterface {
     }
 
     public bindRoutes(): void {
+        this.app.use("/connection/", this.connectionController.router);
+        this.app.use("/api/chat/", this.conversationController.router);
         this.app.use("/api/index", this.indexController.router);
         this.app.use("/api/date/", this.dateController.router);
         this.errorHandeling();

@@ -1,6 +1,6 @@
 package com.projet3.polypaint;
 
-public interface LoginListener {
+public interface SocketLoginListener {
 
     void onUserAlreadyExists();
     void onUserLogged();

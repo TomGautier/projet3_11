@@ -14,10 +14,14 @@ import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
+import com.projet3.polypaint.User.UserInformation;
+import com.projet3.polypaint.User.UserManager;
 
 public class LoginActivity extends Activity  {
 
-	private final int CONNECT_DELAY = 5000;
+	//private final int CONNECT_DELAY = 5000;
+	private final String AZURE_IP = "40.122.119.160";
+	private final String IP = "192.168.1.7";
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
@@ -25,10 +29,8 @@ public class LoginActivity extends Activity  {
 	EditText passwordEntry;
 	EditText ipEntry;
 	RelativeLayout userModuleLayout;
-	RelativeLayout ipModuleLayout;
 	UserInformation userInformation;
-	LoginManager loginManager;
-	SocketManager socketManager;
+
 
 
 	@Override
@@ -45,10 +47,11 @@ public class LoginActivity extends Activity  {
 		ipEntry = (EditText)findViewById(R.id.ipEditText);
 		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
 
-		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected()){
+
+		if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected())
 			changeToUserUI();
-			assignLoginManager();
-		}
+
+
 
 
 
@@ -65,19 +68,16 @@ public class LoginActivity extends Activity  {
 			public void onClick(View view) {
 				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
-					socketManager.currentInstance.verifyUser(userInformation.getUsername());
-					while(loginManager.waitingForResponse()) {}
 
-					if (loginManager.isLogged()){
+					if (UserManager.currentInstance.requestLogin(userInformation)) {
+						UserManager.currentInstance.fetchUserConversations(userInformation);
+
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putExtra("USER_INFORMATION", userInformation);
-						//android.content.Intent intent = new android.content.Intent(getBaseContext(), ImageEditingFragment.class);
-						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
 					else{
 						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
-						loginManager.reset();
 					}
 				}
 				else
@@ -93,7 +93,7 @@ public class LoginActivity extends Activity  {
 
 				String ipAddress = ipEntry.getText().toString();
 				if (isIPAddress(ipAddress)) {
-					socketManager = new SocketManager(ipAddress);
+					SocketManager.currentInstance = new SocketManager(ipAddress);
 					handleSocketConnect();
                     changeIpModuleState(false);
 				}
@@ -116,7 +116,7 @@ public class LoginActivity extends Activity  {
             public void run() {
                 if(SocketManager.currentInstance.isConnected()){
                     Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
-                   	assignLoginManager();
+                    UserManager.currentInstance = new UserManager(ipEntry.getText().toString());
                     changeToUserUI();
                 }
                 else{
@@ -127,10 +127,6 @@ public class LoginActivity extends Activity  {
         }, CONNECT_DELAY);
     }
 
-    private void assignLoginManager() {
-		loginManager = new LoginManager();
-		SocketManager.currentInstance.setupLoginListener(loginManager);
-	}
 	private void changeIpModuleState(boolean state) {
 		serverConnexionButton.setEnabled(state);
 		ipEntry.setEnabled(state);

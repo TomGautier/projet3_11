@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.User;
 
 import android.os.Parcel;
 import android.os.Parcelable;
