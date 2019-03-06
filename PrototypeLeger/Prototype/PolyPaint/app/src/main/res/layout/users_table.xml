@@ -16,20 +16,26 @@
     <LinearLayout
         android:id="@+id/searchLayout"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_below="@id/usersTableTitle"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/underline"
+        android:paddingBottom="10dp">
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search:"
-            android:layout_weight="0.3"/>
+            android:text="Search:" />
         <SearchView
             android:id="@+id/searchView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.7"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
             android:background="@android:color/white"/>
+        <LinearLayout
+            android:id="@+id/searchResultLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
 <RelativeLayout
