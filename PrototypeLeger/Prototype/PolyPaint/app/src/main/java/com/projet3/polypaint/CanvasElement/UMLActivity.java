@@ -1,7 +1,6 @@
 package com.projet3.polypaint.CanvasElement;
 
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
 
 public class UMLActivity extends GenericShape {
@@ -33,5 +32,10 @@ public class UMLActivity extends GenericShape {
 
         canvas.drawPath(p, style.getBackgroundPaint());
         canvas.drawPath(p, style.getBorderPaint());
+    }
+
+    public void showEditingDialog(DialogListener listener) {
+        /* Do nothing, for now. */
+        /* This will eventually do something like listener.showXYZDialog() */
     }
 }

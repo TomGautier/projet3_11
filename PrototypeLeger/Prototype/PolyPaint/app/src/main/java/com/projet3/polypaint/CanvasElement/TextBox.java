@@ -2,6 +2,8 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.graphics.Canvas;
 
+import com.projet3.polypaint.Image.TextEditingDialog;
+
 public class TextBox extends GenericShape {
     public static final int FONT_SIZE = 25;
     private String text = "";
@@ -38,5 +40,12 @@ public class TextBox extends GenericShape {
     public void setText(String text) {
         this.text = text;
         adjustWidthToText();
+    }
+    public String getText() {
+        return text;
+    }
+
+    public void showEditingDialog(TextEditingDialog.TextEditingDialogListener listener) {
+        listener.showTextEditingDialog();
     }
 }

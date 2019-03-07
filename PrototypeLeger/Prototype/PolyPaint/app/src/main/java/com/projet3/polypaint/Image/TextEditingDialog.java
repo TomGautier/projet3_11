@@ -3,7 +3,6 @@ package com.projet3.polypaint.Image;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,8 +14,9 @@ import com.projet3.polypaint.R;
 public class TextEditingDialog extends DialogFragment {
 
     public interface TextEditingDialogListener {
-        public void onTextEditingDialogPositiveClick(String contents);
-        public void onTextEditingDialogNegativeClick();
+        void showTextEditingDialog();
+        void onTextEditingDialogPositiveClick(String contents);
+        void onTextEditingDialogNegativeClick();
     }
 
     private TextEditingDialogListener listener;
