@@ -8,6 +8,9 @@ using Newtonsoft.Json.Linq;
 using PolyPaint.Utilitaires;
 using Quobject.SocketIoClientDotNet.Client;
 using System.Web.Script.Serialization;
+using PolyPaint.Modeles;
+using Newtonsoft.Json;
+using System.Windows.Threading;
 
 namespace PolyPaint.Managers
 {
@@ -15,7 +18,8 @@ namespace PolyPaint.Managers
     {
         private const string SERVER_ADDRESS = "127.0.0.1";
         private const string SERVER_PORT = "3000";
-        private Socket socket;
+        public Socket Socket;
+
         private string SessionID { get; set; }
         public string UserName { get; set; }
         public SocketManager()
@@ -24,16 +28,16 @@ namespace PolyPaint.Managers
             {
                 Reconnection = false
             };
-            socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
-            InitializeOns();
+            Socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
+            //InitializeOns();
         }
         public void JoinDrawingSession(string sessionID)
         {
             this.SessionID = sessionID;
-            socket.Emit("JoinDrawingSession", SessionID);
-            
+            Socket.Emit("JoinDrawingSession", SessionID);
+
         }
-        public void AddElement(string type_, string filling_, string borderColor_, Point center, int height_, int width_ ,int rotation_)
+        public void AddElement(string type_, string filling_, string borderColor_, Point center, int height_, int width_, int rotation_)
         {
             //Object[] properties = new Object[] { type, filling, borderColor, center, height, width, rotation };
             //string id = "mockID";
@@ -42,28 +46,29 @@ namespace PolyPaint.Managers
             //Object[] parameters = new object[] { SessionID, UserName, shape };
 
             //outilSelectionne, RemplissageSelectionne, CouleurSelectionnee, center,height,width,0,type
-           /* string properties_ = new JavaScriptSerializer().Serialize(new
-            {
-                type =  type_ ,
-                fillingColor = filling_ ,
-                borderColor =borderColor_ ,
-                middlePointCoord = new [] { (int)center.X, (int)center.Y },
-                height = height_ ,
-                width = width_ ,
-                rotation = rotation_
-            });
-            string shape_ = new JavaScriptSerializer().Serialize(new
-            {
-                id =  "mockID" ,
-                author = this.UserName ,
-                properties = new [] { properties_ }
-            });*/
+            /* string properties_ = new JavaScriptSerializer().Serialize(new
+             {
+                 type =  type_ ,
+                 fillingColor = filling_ ,
+                 borderColor =borderColor_ ,
+                 middlePointCoord = new [] { (int)center.X, (int)center.Y },
+                 height = height_ ,
+                 width = width_ ,
+                 rotation = rotation_
+             });
+             string shape_ = new JavaScriptSerializer().Serialize(new
+             {
+                 id =  "mockID" ,
+                 author = this.UserName ,
+                 properties = new [] { properties_ }
+             });*/
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                sessionId = this.SessionID ,
-                username = this.UserName ,
-                shape = new {
-                    drawingSessionId = "mockID",
+                sessionId = "MockID",
+                username = this.UserName,
+                shape = new
+                {
+                    drawingSessionId = this.SessionID,
                     author = this.UserName,
                     properties = new
                     {
@@ -78,14 +83,7 @@ namespace PolyPaint.Managers
                 }
             });
             //Object[] parameters = new Object[] { this.SessionID, this.UserName, shape_ };
-            this.socket.Emit("AddElement", parameters);
-        }
-
-        private void InitializeOns()
-        {
-            this.socket.On("AddedElement", (data) => {
-                //string a = (data as Shape).id;
-            });
+            this.Socket.Emit("AddElement", parameters);
 
         }
     }

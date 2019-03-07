@@ -8,6 +8,9 @@ using System.Windows.Input;
 using PolyPaint.Utilitaires;
 using System.Windows.Media;
 using PolyPaint.Managers;
+using Newtonsoft.Json.Linq;
+using System;
+
 //using System.Drawing;
 
 namespace PolyPaint.Modeles
@@ -184,7 +187,7 @@ namespace PolyPaint.Modeles
                         break;
                 }
                 SocketManager.AddElement(type, RemplissageSelectionne, CouleurSelectionnee, center,height,width,0);
-                AddForm(new Point((int)position.X, (int)position.Y),outilSelectionne);
+                //AddForm(new Point((int)position.X, (int)position.Y),outilSelectionne);
             }
         }
 
@@ -246,6 +249,40 @@ namespace PolyPaint.Modeles
             }
             
         }
+        public void AddForm(string author, Shape shape)
+        {
+            //TODO : Handle author****
+            StylusPointCollection pts = new StylusPointCollection();
+            pts.Add(new StylusPoint(shape.middlePointCoord[0], shape.middlePointCoord[1]));
+            switch (shape.type)
+            {
+                case "UmlClass":
+                    UMLClass umlClass = new UMLClass(pts);
+                    umlClass.SetToShape(shape);
+                    traits.Add(umlClass);
+
+
+                    break;
+                case "Artefact":
+                    Artefact artefact = new Artefact(pts);
+                    artefact.SetToShape(shape);
+                    traits.Add(artefact);
+                    break;
+
+                case "Activity":
+                    Activity activity = new Activity(pts);
+                    activity.SetToShape(shape);
+                    traits.Add(activity);
+                    break;
+
+                case "Role":
+                    Role role = new Role(pts);
+                    role.SetToShape(shape);
+                    traits.Add(role);
+                    break;
+            }
+        }
+      
         
         // On assigne une nouvelle forme de pointe passée en paramètre.
         public void ChoisirPointe(string pointe) => PointeSelectionnee = pointe;
@@ -255,5 +292,23 @@ namespace PolyPaint.Modeles
 
         // On vide la surface de dessin de tous ses traits.
         public void Reinitialiser(object o) => traits.Clear();
+
+        public void initializeSocketEvents()
+        {
+
+            this.SocketManager.Socket.On("AddedElement", (data) =>
+                {
+
+                    string author = (data as JObject)["author"].ToObject<String>();
+                    Shape shape = (data as JObject)["properties"].ToObject<Shape>();
+                    Application.Current.Dispatcher.Invoke(() =>
+                     {
+                         this.AddForm(author, shape);
+                         // Code causing the exception or requires UI thread access
+                     });
+                
+                });
+
+        }
     }
 }

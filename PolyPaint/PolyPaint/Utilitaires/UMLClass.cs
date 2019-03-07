@@ -20,9 +20,6 @@ namespace PolyPaint.Utilitaires
 
         public string Name { get; set; }
 
-        public double Height { get; set; }
-
-        public double Width { get; set; }
         
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }

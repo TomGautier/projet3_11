@@ -19,8 +19,7 @@ namespace PolyPaint.Utilitaires
         public const string TYPE = "Activity";
 
         public string Name { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+       
 
 
         public Activity(StylusPointCollection pts) : base(pts)

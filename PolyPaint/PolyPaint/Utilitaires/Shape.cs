@@ -9,17 +9,23 @@ namespace PolyPaint.Utilitaires
 {
     class Shape
     {
-        public string id { get; set; }
-        public string drawingSessionId { get; set; }
-        public string author { get; set; }
-        public Object[] properties { get; set; }
+        public string type { get; set; }
+        public string fillingColor { get; set; }
+        public string borderColor { get; set; }
+        public int[] middlePointCoord { get; set; }
+        public int height { get; set; }
+        public int width { get; set; }
+        public int rotation { get; set; }
 
-        public Shape(string id, string drawingSessionId, string author, Object[] properties)
+        public Shape(string type, string fillingColor, string borderColor, int[] middlePointCoord, int height, int width, int rotation)
         {
-            this.id = id;
-            this.drawingSessionId = drawingSessionId;
-            this.author = author;
-            this.properties = properties;
+            this.type = type;
+            this.fillingColor = fillingColor;
+            this.borderColor = borderColor;
+            this.middlePointCoord = middlePointCoord;
+            this.height = height;
+            this.width = width;
+            this.rotation = rotation;
         }
     }
 }

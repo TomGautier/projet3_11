@@ -112,6 +112,7 @@ namespace PolyPaint.VueModeles
             SocketManager = new SocketManager();
             SocketManager.JoinDrawingSession("MockSessionID");
             SocketManager.UserName = "Olivier";
+            editeur.initializeSocketEvents();
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 

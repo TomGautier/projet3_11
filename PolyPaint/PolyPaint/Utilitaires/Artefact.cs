@@ -20,8 +20,7 @@ namespace PolyPaint.Utilitaires
         public const string TYPE = "Artefact";
 
         public string Name { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+
 
 
         public Artefact(StylusPointCollection pts) : base(pts)

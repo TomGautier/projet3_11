@@ -48,13 +48,9 @@ export class DrawingSessionManager {
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public addElement(doc: any) {
         console.log(doc);
-        //console.log("0 : "+doc[0]);
-        //console.log("1 : " +doc[1]);
-        //console.log(doc.shape);
-        //console.log(doc.sessionId);
-        //console.log(doc.author);
-        this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement);
+
+        //this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to delete.
@@ -84,7 +80,7 @@ export class DrawingSessionManager {
     }
     
     public verifyAndAct(socketId: string, doc: any, callback: (doc: any) => void) {
-        /*if(!this.isUserLoggedIn(doc.sessionId, doc.username)) {
+        if(!this.isUserLoggedIn(doc.sessionId, doc.username)) {
             this.socketService.emit(socketId, SocketEvents.UserIsNotLogged);
             return;
         }
@@ -94,7 +90,7 @@ export class DrawingSessionManager {
         }
         else if (!this.isObjectSelectedBy(doc.sessionId, doc.objectId)) {
             this.socketService.emit(socketId, SocketEvents.ObjectSelectedByOtherUser)
-        }*/
+        }
         callback(doc);
     }
 

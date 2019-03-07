@@ -15,6 +15,9 @@ namespace PolyPaint.Utilitaires
     class Form : Stroke
     {
         public Color BorderColor { get; set; }
+        public double Height { get; set; }
+        public double Width { get; set; }
+
         private Color remplissage;
         public Color Remplissage
         {
@@ -43,6 +46,14 @@ namespace PolyPaint.Utilitaires
             copy.Transform(rotatingMatrix, false);
             this.StylusPoints = copy.StylusPoints;
             this.CurrentRotation = degrees;
+        }
+        public void SetToShape(Shape shape)
+        {
+            this.Width = shape.width;
+            this.Height = shape.height;
+            this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.borderColor);
+            this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.fillingColor);
+            this.SetRotation(shape.rotation);
         }
         public void update()
         {
