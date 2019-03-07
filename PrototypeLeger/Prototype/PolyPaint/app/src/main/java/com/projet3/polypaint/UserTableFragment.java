@@ -44,6 +44,7 @@ public class UserTableFragment extends Fragment {
     private TextView title;
     private ArrayList<String> users;
     private boolean isOpen;
+    private int height;
 
     public static UserTableFragment newInstance(ArrayList<String> users_){
         Bundle bundle = new Bundle();
@@ -63,7 +64,7 @@ public class UserTableFragment extends Fragment {
         usersTable = (LinearLayout)rootView.findViewById(R.id.connectedUsersTable);
         title = (TextView)rootView.findViewById(R.id.usersTableTitle);
         users = getArguments().getStringArrayList("USERS");
-        isOpen = false;
+        isOpen = true;
         initialize();
         return rootView;
     }
@@ -76,14 +77,14 @@ public class UserTableFragment extends Fragment {
         title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                rootView.requestLayout();
                 if (isOpen){
-                    rootView.requestLayout();
+                    height = rootView.getHeight();
                     rootView.getLayoutParams().height = 100;
                     isOpen = false;
                 }
                 else{
-                    rootView.requestLayout();
-                    rootView.getLayoutParams().height = 1000;
+                    rootView.getLayoutParams().height = height;
                     isOpen = true;
                 }
             }

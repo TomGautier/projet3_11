@@ -57,12 +57,13 @@ public class HomeActivity extends AppCompatActivity {
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 
+
+
 		if (savedInstanceState == null){
+			createUsersTableFragment();
 			createChatFragment();
 			createImageEditingFragment();
-			createUsersTableFragment();
 			toggleImageEditingVisibility();
-			toggleChatVisibility();
 		}
 	}
 
@@ -88,6 +89,11 @@ public class HomeActivity extends AppCompatActivity {
 		users.add("Marcel2");
 		users.add("Marcel3");
 		users.add("Marcel4");
+		users.add("Marcel5");
+		users.add("Marcel6");
+		users.add("Marcel7");
+		users.add("Marcel8");
+		users.add("Marcel9");
 		transaction.add(R.id.usersTableFragment,UserTableFragment.newInstance(users),USER_TABLE_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();

@@ -27,11 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"></FrameLayout>
-    <FrameLayout
-        android:id="@+id/chatFragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"></FrameLayout>
+
     <FrameLayout
         android:id="@+id/usersTableFragment"
         android:clickable="true"
@@ -40,6 +36,11 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="74dp"
         android:layout_marginRight="10dp"></FrameLayout>
+    <FrameLayout
+        android:id="@+id/chatFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></FrameLayout>
 
 
 

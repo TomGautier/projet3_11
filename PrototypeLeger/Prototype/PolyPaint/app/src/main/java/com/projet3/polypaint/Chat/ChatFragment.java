@@ -101,11 +101,10 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         chatEnterButton = (ImageButton)rootView.findViewById(R.id.chatEnterButton);
         chatExpendButton = (ImageButton) rootView.findViewById(R.id.chatExtendButton);
         chatMessageZone = (RelativeLayout)rootView.findViewById(R.id.chatMessageZone);
-        chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COEF;
+        //chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COEF;
         chatMessageZoneTable = (LinearLayout)rootView.findViewById(R.id.chatMessageZoneTable);
         chatMessageZoneScrollView = (ScrollView)rootView.findViewById(R.id.chatVerticalScrollView);
         conversationSpinner = (Spinner)rootView.findViewById(R.id.conversationSpinner);
-
 
         setupChatEntry();
         SetupChatEnterButton();
@@ -140,11 +139,11 @@ public class ChatFragment extends Fragment implements NewMessageListener {
             public void onClick(View view) {
                 chatMessageZone.requestLayout();
                 if(!chatIsExpended){
-                    chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_OPEN_COEF;
+                    chatMessageZone.getLayoutParams().height*=2;
                     chatIsExpended = true;
                 }
                 else {
-                    chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COEF;
+                    chatMessageZone.getLayoutParams().height/=2;
                     chatIsExpended = false;
                     scrollDownMessages();
                 }
