@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,9 @@ public class UserTableFragment extends Fragment {
 
     private LinearLayout usersTable;
     private View rootView;
+    private TextView title;
     private ArrayList<String> users;
+    private boolean isOpen;
 
     public static UserTableFragment newInstance(ArrayList<String> users_){
         Bundle bundle = new Bundle();
@@ -58,7 +61,9 @@ public class UserTableFragment extends Fragment {
         // Inflate the layout for this fragment
         rootView=inflater.inflate(R.layout.users_table, container, false);
         usersTable = (LinearLayout)rootView.findViewById(R.id.connectedUsersTable);
+        title = (TextView)rootView.findViewById(R.id.usersTableTitle);
         users = getArguments().getStringArrayList("USERS");
+        isOpen = false;
         initialize();
         return rootView;
     }
@@ -68,6 +73,21 @@ public class UserTableFragment extends Fragment {
             ((TextView)userView.findViewById(R.id.usernameTextView)).setText(user);
             usersTable.addView(userView);
         }
+        title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isOpen){
+                    rootView.requestLayout();
+                    rootView.getLayoutParams().height = 100;
+                    isOpen = false;
+                }
+                else{
+                    rootView.requestLayout();
+                    rootView.getLayoutParams().height = 1000;
+                    isOpen = true;
+                }
+            }
+        });
 
     }
 

@@ -23,6 +23,7 @@
 
     <FrameLayout
         android:id="@+id/imageEditingFragment"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"></FrameLayout>
@@ -33,6 +34,7 @@
         android:layout_alignParentBottom="true"></FrameLayout>
     <FrameLayout
         android:id="@+id/usersTableFragment"
+        android:clickable="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

@@ -43,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
 	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout usersListFragmentLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +55,14 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(mainToolbar);
 		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 
 		if (savedInstanceState == null){
 			createChatFragment();
 			createImageEditingFragment();
+			createUsersTableFragment();
 			toggleImageEditingVisibility();
 			toggleChatVisibility();
-			createUsersTableFragment();
 		}
 	}
 
@@ -228,8 +230,8 @@ public class HomeActivity extends AppCompatActivity {
 			public void onClick(View v) {
                 String name = ((EditText)popupView.findViewById(R.id.addConversationEditText)).getText().toString();
 			    if (!name.isEmpty()){
-					//boolean ret = RequestManager.currentInstance.addUserConversation(name);
-			    	if (/*tryAddConversation(name)*/true){
+					boolean ret = RequestManager.currentInstance.addUserConversation(name);
+			    	if (ret){
 						UserManager.currentInstance.addUserConversation(name);
 						((ChatFragment)getFragmentManager().findFragmentByTag(CHAT_TAG)).setupChatConversationSpinner();
 						Toast.makeText(getBaseContext(),"Conversation " + name + " cree",Toast.LENGTH_SHORT).show();

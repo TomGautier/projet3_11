@@ -10,7 +10,8 @@
     android:id="@+id/usernameTextView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/chat_entry">
+    android:background="@drawable/chat_entry"
+    android:gravity="center" >
 </TextView>
 
 </LinearLayout>

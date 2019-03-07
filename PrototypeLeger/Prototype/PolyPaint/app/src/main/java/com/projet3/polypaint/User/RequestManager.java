@@ -33,17 +33,19 @@ public class RequestManager {
     }
 
     public boolean requestLogin(UserInformation userInformation_) {
-        url = formatUrl(userInformation_, Request.Connection);
-        UserLoginTask loginTask = new UserLoginTask();
+        user = userInformation_;
+        url = formatUrl(Request.Connection, null);
+        UserPostTask loginTask = new UserPostTask();
         loginTask.execute(url);
         boolean response = false;
         try{
             response = configureLoginResponse(loginTask.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
             if (response){
-                user = userInformation_;
                 UserManager.currentInstance = new UserManager(user);
                 SocketManager.currentInstance = new SocketManager(ip, sessionID);
             }
+            else
+                user = null;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -59,8 +61,8 @@ public class RequestManager {
     }
 
     public ArrayList<Conversation> fetchUserConversations(UserInformation userInformation_) {
-        url = formatUrl(userInformation_, Request.Fetch_Conversations);
-        UserFetchConversationsTask task = new UserFetchConversationsTask();
+        url = formatUrl(Request.Conversations,null);
+        UserGetTask task = new UserGetTask();
         task.execute(url);
         try{
             ArrayList<Conversation> userConversations = configureFetchConversationsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
@@ -99,8 +101,8 @@ public class RequestManager {
         }
     }
     public boolean addUserConversation(String name){
-        url = formatUrl(user, Request.Add_Conversation);
-        UserAddConversationTask task = new UserAddConversationTask();
+        url = formatUrl(Request.Conversations, name);
+        UserPostTask task = new UserPostTask();
         task.execute(url);
         try{
             boolean response = configureAddConversationResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
@@ -119,27 +121,29 @@ public class RequestManager {
 
 
     public boolean configureAddConversationResponse(String response){
-        boolean ret = response.contains("true") ? true: false;
+        boolean ret = response != null && response.contains("403") ? false: true;
         return ret;
     }
 
-    private String formatUrl(UserInformation userInformation_, String request){
+    private String formatUrl(String request, String information){
         String formatUrl = null;
         switch (request){
             case Request.Connection:
-                formatUrl = "http://" + ip + PORT + request + userInformation_.getUsername()+ "/"
-                    + userInformation_.getPassword();
+                formatUrl = "http://" + ip + PORT + request + user.getUsername()+ "/"
+                    + user.getPassword();
                 break;
-
-            case Request.Fetch_Conversations:
-                formatUrl = "http://" + ip + PORT + request + sessionID + "/" + userInformation_.getUsername();
-                break;
+            case Request.Conversations:
+                if (information == null)
+                    formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
+                else
+                    formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
+                    break;
         }
         return formatUrl;
     }
-    public final String getSessionId(){
-        return sessionID;
-    }
+   // public final String getSessionId(){
+  //      return sessionID;
+    //}
 
 }
 
@@ -147,7 +151,7 @@ final class Request {
 
     public static final String Connection = "/connection/login/";
     public static final String Sign_Up = "/connection/signup/";
-    public static final String Fetch_Conversations = "/api/chat/";
-    public static final String Add_Conversation = "";
+    public static final String Conversations = "/api/chat/";
+
 
 }
