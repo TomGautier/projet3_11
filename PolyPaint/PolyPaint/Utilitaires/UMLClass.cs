@@ -14,6 +14,10 @@ namespace PolyPaint.Utilitaires
 {
     class UMLClass : Form
     {
+        public const int DEFAULT_HEIGHT = 220;
+        public const int DEFAULT_WIDTH = 110;
+        public const string TYPE = "UmlClass";
+
         public string Name { get; set; }
 
         public double Height { get; set; }

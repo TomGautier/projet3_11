@@ -15,6 +15,10 @@ namespace PolyPaint.Utilitaires
 {
     class Artefact : Form
     {
+        public const int DEFAULT_HEIGHT = 65;
+        public const int DEFAULT_WIDTH = 50;
+        public const string TYPE = "Artefact";
+
         public string Name { get; set; }
         public double Height { get; set; }
         public double Width { get; set; }

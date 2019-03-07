@@ -102,31 +102,31 @@
                   RecentColorsHeader="Récemment utilisées"
                   UsingAlphaChannel="True"
                   AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" />
-                <Button Name="form_class" Width="70" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
+                <Button Name="form_UmlClass" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_UmlClass, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_UmlClass, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_class">
+                        CommandParameter="form_UmlClass">
 
                   <TextBlock>
                     <Bold>CLASS</Bold>
                   </TextBlock>
                 </Button>
-                <Button Name="form_artefact" Width="70" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_artefact, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_artefact, UpdateSourceTrigger=PropertyChanged}"
+                <Button Name="form_Artefact" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Artefact, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Artefact, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_artefact">
+                        CommandParameter="form_Artefact">
                   <TextBlock>
                     <Bold>ARTEFACT</Bold>
                   </TextBlock>
                     
                 </Button>
-              <Button Name="form_activity" Width="70" Height="40" Margin="5"
-                      BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
-                      Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
+              <Button Name="form_Activity" Width="70" Height="40" Margin="5"
+                      BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Activity, UpdateSourceTrigger=PropertyChanged}"
+                      Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Activity, UpdateSourceTrigger=PropertyChanged}"
                       Command="{Binding Path=ChoisirOutil}"
-                      CommandParameter="form_activity">
+                      CommandParameter="form_Activity">
 
                 <TextBlock>
                   <Bold>ACTIVITY</Bold>
@@ -135,11 +135,11 @@
               <StackPanel>
 
               </StackPanel>
-                <Button Name="form_role" Width="70" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_role, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_role, UpdateSourceTrigger=PropertyChanged}"
+                <Button Name="form_Role" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Role, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Role, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_role">
+                        CommandParameter="form_Role">
 
                   <TextBlock>
                     <Bold>ACTOR</Bold>
