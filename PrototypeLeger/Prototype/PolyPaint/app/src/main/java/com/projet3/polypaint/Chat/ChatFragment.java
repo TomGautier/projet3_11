@@ -1,54 +1,56 @@
 package com.projet3.polypaint.Chat;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.view.Display;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.projet3.polypaint.R;
+import com.projet3.polypaint.User.RequestManager;
 import com.projet3.polypaint.User.UserManager;
 import com.projet3.polypaint.Utilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.ArrayList;
 
 
 public class ChatFragment extends Fragment implements NewMessageListener {
 
-    private final int CHAT_OPEN_COEF= 2;
-    private final int CHAT_CLOSE_COEF = 4;
 
 
     private EditText chatEntry;
     public ImageButton chatEnterButton;
     private ImageButton chatExpendButton;
+    private ImageButton addConversationButton;
+    private ImageButton removeConversationButton;
     public LinearLayout chatMessageZoneTable;
     private RelativeLayout chatMessageZone;
+    private RelativeLayout chatToolbar;
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
 
-    //private ArrayList<Conversation> conversations;
     public Conversation currentConversation;
     private boolean chatIsExpended;
-   // private UserInformation userInformation;
+    private boolean isOpen;
+
     public View rootView;
 
     public ChatFragment() { }
@@ -58,55 +60,35 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        rootView=inflater.inflate(R.layout.activity_chat, container, false);
+        rootView = inflater.inflate(R.layout.activity_chat, container, false);
         if (UserManager.currentInstance.getUserConversationsNames().size() != 0) {
             currentConversation = UserManager.currentInstance.getUserConversationAt(0);
-        }
-        else {
+        } else {
             currentConversation = new Conversation("GENERAL");
         }
         initializeChat();
         SocketManager.currentInstance.setupNewMessageListener(this);
         return rootView;
-        //Bundle bundle = getArguments();
-        //if (savedInstanceState == null && bundle != null){
-        //conversations = bundle.getParcelableArrayList("CONVERSATIONS");
-        //if (conversations.size() == 0)
-        //conversations.add(new Conversation("General", new ArrayList()));
-        // currentConversation
-        //  UserManager.currentInstance.
-
-        //userInformation = bundle.getParcelable("USER_INFORMATION");
-        //}
-        //else{
-        // conversations = savedInstanceState.getParcelableArrayList("CONVERSATIONS");
-        //currentConversation = conversations.get(savedInstanceState.getInt("CURRENT_INDEX"));
-        //userInformation = savedInstanceState.getParcelable("USER_INFORMATION");
-        //}
-
     }
 
-   /* public static ChatFragment newInstance(ArrayList<Conversation> conversations) {
-        ChatFragment f = new ChatFragment();
-        Bundle args = new Bundle();
-        //args.putParcelable("USER_INFORMATION" ,userInformation_);
-        args.putParcelableArrayList("CONVERSATIONS", conversations);
-        f.setArguments(args);
-        return f;
-    }*/
-
     private void initializeChat(){
+
+        chatIsExpended = false;
+        isOpen = true;
 
         chatEntry = (EditText)rootView.findViewById(R.id.chatEditText);
         chatEnterButton = (ImageButton)rootView.findViewById(R.id.chatEnterButton);
         chatExpendButton = (ImageButton) rootView.findViewById(R.id.chatExtendButton);
+        addConversationButton = (ImageButton)rootView.findViewById(R.id.addConversationImageButton);
+        removeConversationButton = (ImageButton)rootView.findViewById(R.id.removeConversationImageButton);
         chatMessageZone = (RelativeLayout)rootView.findViewById(R.id.chatMessageZone);
-        //chatMessageZone.getLayoutParams().height = getScreenSize().y/CHAT_CLOSE_COEF;
+        chatToolbar = (RelativeLayout)rootView.findViewById(R.id.chatToolbar);
         chatMessageZoneTable = (LinearLayout)rootView.findViewById(R.id.chatMessageZoneTable);
         chatMessageZoneScrollView = (ScrollView)rootView.findViewById(R.id.chatVerticalScrollView);
         conversationSpinner = (Spinner)rootView.findViewById(R.id.conversationSpinner);
 
         setupChatEntry();
+        setupChatToolbar();
         SetupChatEnterButton();
         setupChatExtendButton();
 
@@ -117,19 +99,128 @@ public class ChatFragment extends Fragment implements NewMessageListener {
 
         setupChatConversationSpinner();
 
-
+        Utilities.setButtonEffect(addConversationButton);
+        Utilities.setButtonEffect(removeConversationButton);
         Utilities.setButtonEffect(chatEnterButton);
         Utilities.setButtonEffect(chatExpendButton);
 
-        chatIsExpended = false;
+
     }
 
-    private Point getScreenSize() {
+    /*private Point getScreenSize() {
         WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return  size;
+    }*/
+    public void createRemoveConversationPopup(){
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final View popupView = inflater.inflate(R.layout.remove_conversation_popup, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v != popupView){
+                    popupWindow.dismiss();
+                }
+                return true;
+            }
+        });
+        final Spinner spinner = (Spinner)popupView.findViewById(R.id.removeConversationSpinner);
+        android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter
+                (getActivity(), android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout
+                .simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerArrayAdapter);
+        Button button = (Button)popupView.findViewById(R.id.removeConversationButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String conversation = spinner.getSelectedItem().toString();
+                UserManager.currentInstance.removeUserConversation(conversation);
+                SocketManager.currentInstance.leaveConversation(conversation);
+                setupChatConversationSpinner();
+                popupWindow.dismiss();
+            }
+        });
+    }
+
+    public void createAddConversationPopup(){
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final View popupView = inflater.inflate(R.layout.add_conversation_popup, null);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v != popupView){
+                    popupWindow.dismiss();
+                }
+                return true;
+            }
+        });
+        Button button = (Button)popupView.findViewById(R.id.addConversationButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = ((EditText)popupView.findViewById(R.id.addConversationEditText)).getText().toString();
+                if (!name.isEmpty()){
+                    boolean ret = RequestManager.currentInstance.addUserConversation(name);
+                    if (ret){
+                        UserManager.currentInstance.addUserConversation(name);
+                        setupChatConversationSpinner();
+                        Toast.makeText(getActivity(),"Conversation " + name + " cree",Toast.LENGTH_SHORT).show();
+                        popupWindow.dismiss();
+                    }
+                    else
+                        Toast.makeText(getActivity(),"Cette conversation existe deja",Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(getActivity(),"Veuillez entrer un nom de conversation valide",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void setupChatToolbar(){
+        addConversationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createAddConversationPopup();
+            }
+        });
+        removeConversationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createRemoveConversationPopup();
+            }
+        });
+        chatToolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chatMessageZone.requestLayout();
+                if (isOpen){
+                    chatMessageZone.setVisibility(View.GONE);
+                    isOpen = false;
+                }
+                else{
+                    chatMessageZone.setVisibility(View.VISIBLE);
+                    isOpen = true;
+                }
+            }
+        });
+
+
     }
 
     private void setupChatExtendButton() {
@@ -188,7 +279,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         }
         return stringConversations;
     }*/
-    public void setupChatConversationSpinner() {
+    private void setupChatConversationSpinner() {
         android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
                 (getContext(), android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout

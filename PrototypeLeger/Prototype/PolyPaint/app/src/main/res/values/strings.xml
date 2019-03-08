@@ -40,8 +40,10 @@
 
     <!-- USERS LIST -->
     <string name="userListTitle">Liste d\'utilisateurs</string>
-    <string name="userListConnectedTitle">utlisateurs connectes :</string>
-    <string name="userListDisconnectedTitle">utlisateurs deconnectes :</string>
+    <string name="userListSearchTitle">Recherche :</string>
+    <string name="userListConnectedTitle">En ligne :</string>
+    <string name="userListDisconnectedTitle">Hors ligne :</string>
+
 
 
 

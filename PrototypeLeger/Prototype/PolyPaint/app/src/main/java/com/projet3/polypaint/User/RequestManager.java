@@ -62,7 +62,7 @@ public class RequestManager {
 
     public ArrayList<Conversation> fetchUserConversations(UserInformation userInformation_) {
         url = formatUrl(Request.Conversations,null);
-        UserGetTask task = new UserGetTask();
+        UserFetchConversationsTask task = new UserFetchConversationsTask();
         task.execute(url);
         try{
             ArrayList<Conversation> userConversations = configureFetchConversationsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));

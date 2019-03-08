@@ -13,7 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-class UserGetTask extends AsyncTask<String, String, JSONArray> {
+class UserFetchConversationsTask extends AsyncTask<String, String, JSONArray> {
     protected JSONArray doInBackground(String... urls) {
         HttpURLConnection connection = null;
 

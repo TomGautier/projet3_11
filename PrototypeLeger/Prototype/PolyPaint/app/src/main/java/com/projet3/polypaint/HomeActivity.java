@@ -5,29 +5,18 @@ import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 //import android.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.User.RequestManager;
 import com.projet3.polypaint.User.UserManager;
 
 import java.util.ArrayList;
@@ -94,7 +83,7 @@ public class HomeActivity extends AppCompatActivity {
 		users.add("Marcel7");
 		users.add("Marcel8");
 		users.add("Marcel9");
-		transaction.add(R.id.usersTableFragment,UserTableFragment.newInstance(users),USER_TABLE_TAG);
+		transaction.add(R.id.usersTableFragment, UsersListFragment.newInstance(users),USER_TABLE_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -127,7 +116,7 @@ public class HomeActivity extends AppCompatActivity {
 				break;
 			case R.id.galleryAction:
 				break;
-			case R.id.chatAction:
+			/*case R.id.chatAction:
 				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
 				dropDownMenu.getMenuInflater().inflate(R.menu.chat_menu, dropDownMenu.getMenu());
 				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -148,7 +137,8 @@ public class HomeActivity extends AppCompatActivity {
 					}
 				});
 				dropDownMenu.show();
-				break;
+				toggleChatVisibility();
+				break;*/
 			case R.id.imageEditingAction:
 				toggleImageEditingVisibility();
 				break;
@@ -175,83 +165,6 @@ public class HomeActivity extends AppCompatActivity {
 		return true;
 
     }
-	private void createRemoveConversationPopup(){
-		LayoutInflater inflater = (LayoutInflater)
-				getSystemService(LAYOUT_INFLATER_SERVICE);
-		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-		boolean focusable = true;
-		final View popupView = inflater.inflate(R.layout.remove_conversation_popup, null);
-		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-		popupView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (v != popupView){
-					popupWindow.dismiss();
-				}
-				return true;
-			}
-		});
-		final Spinner spinner = (Spinner)popupView.findViewById(R.id.removeConversationSpinner);
-		android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter
-				(HomeActivity.this, android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
-		spinnerArrayAdapter.setDropDownViewResource(android.R.layout
-				.simple_spinner_dropdown_item);
-		spinner.setAdapter(spinnerArrayAdapter);
-		Button button = (Button)popupView.findViewById(R.id.removeConversationButton);
-		button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String conversation = spinner.getSelectedItem().toString();
-				UserManager.currentInstance.removeUserConversation(conversation);
-				SocketManager.currentInstance.leaveConversation(conversation);
-				((ChatFragment)getFragmentManager().findFragmentByTag(CHAT_TAG)).setupChatConversationSpinner();
-				popupWindow.dismiss();
-			}
-		});
-	}
-
-    private void createAddConversationPopup(){
-		LayoutInflater inflater = (LayoutInflater)
-				getSystemService(LAYOUT_INFLATER_SERVICE);
-		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-		boolean focusable = true;
-		final View popupView = inflater.inflate(R.layout.add_conversation_popup, null);
-		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-		popupView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (v != popupView){
-					popupWindow.dismiss();
-				}
-				return true;
-			}
-		});
-		Button button = (Button)popupView.findViewById(R.id.addConversationButton);
-		button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                String name = ((EditText)popupView.findViewById(R.id.addConversationEditText)).getText().toString();
-			    if (!name.isEmpty()){
-					boolean ret = RequestManager.currentInstance.addUserConversation(name);
-			    	if (ret){
-						UserManager.currentInstance.addUserConversation(name);
-						((ChatFragment)getFragmentManager().findFragmentByTag(CHAT_TAG)).setupChatConversationSpinner();
-						Toast.makeText(getBaseContext(),"Conversation " + name + " cree",Toast.LENGTH_SHORT).show();
-						popupWindow.dismiss();
-					}
-					else
-						Toast.makeText(getBaseContext(),"Cette conversation existe deja",Toast.LENGTH_SHORT).show();
-				}
-                else{
-                    Toast.makeText(getBaseContext(),"Veuillez entrer un nom de conversation valide",Toast.LENGTH_SHORT).show();
-                }
-			}
-		});
-	}
 
 	@Override
 	public void onBackPressed() {
