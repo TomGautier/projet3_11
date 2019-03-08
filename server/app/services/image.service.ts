@@ -34,10 +34,18 @@ export class ImageService implements ImageServiceInterface {
            });
     }
 
-    public async getAll(username: string): Promise<{}> {
+    public async getAllByAuthor(username: string): Promise<{}> {
         return await this.databaseService.getAllByCriteria(Image, this.AUTHOR_CRITERIA, username)
             .catch(err => {
                 Logger.warn('ImageService', `This author ${username} has no images.`);
+                throw err;
+            });
+    }
+
+    public async getAll(): Promise<{}> {
+        return await this.databaseService.getAll(Image)
+            .catch(err => {
+                Logger.warn('ImageService', `Couldn't fetch all images.`);
                 throw err;
             });
     }
