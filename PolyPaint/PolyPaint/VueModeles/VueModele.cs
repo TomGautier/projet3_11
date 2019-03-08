@@ -26,7 +26,7 @@ namespace PolyPaint.VueModeles
         public int SwitchView
         {
             get { return switchView; }
-            set { switchView = value; ProprieteModifiee(); }    
+            set { switchView = value; ProprieteModifiee(); }
             //get { return editeur.OutilSelectionne; }            
             //set { ProprieteModifiee(); }
         }
@@ -50,13 +50,17 @@ namespace PolyPaint.VueModeles
                 editeur.RemplissageSelectionne = value;
             }
         }
-        
+
         private ChatManager chatManager = new ChatManager();
         public ChatManager ChatManager
         {
             get { return chatManager; }
             set { ProprieteModifiee(); }
 
+        }
+        public SocketManager SocketManager {
+            get { return editeur.SocketManager; }
+            set { editeur.SocketManager = value; }
         }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
@@ -67,6 +71,7 @@ namespace PolyPaint.VueModeles
             get { return editeur.OutilSelectionne; }            
             set { ProprieteModifiee(); }
         }
+        
 
         public int TailleTrait
         {
@@ -104,6 +109,10 @@ namespace PolyPaint.VueModeles
         /// </summary>
         public VueModele()
         {
+            SocketManager = new SocketManager();
+            SocketManager.JoinDrawingSession("MockSessionID");
+            SocketManager.UserName = "Olivier";
+            editeur.initializeSocketEvents();
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 

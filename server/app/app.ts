@@ -16,7 +16,7 @@ import { ConversationManager } from "./services/conversation.manager";
 import { ConnectionService } from "./services/connection.service";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConnectionController } from "./controllers/connection.controller";
-
+import { DrawingSessionManager} from "./services/drawingSession.manager";
 
 @injectable()
 export class Application implements ApplicationInterface {
@@ -29,7 +29,8 @@ export class Application implements ApplicationInterface {
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
             @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
             @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
-            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager) {
+            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
+            @inject(TYPES.DrawingSessionManager) private drawingSessionManager: DrawingSessionManager) {
         this.app = express();
         this.config();
         this.bindRoutes();

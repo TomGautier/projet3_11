@@ -63,6 +63,7 @@ export class SocketService {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.join(roomId);
+            console.log(socketId + " JOINED ROOM " + roomId);
         }
         else {
             Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);

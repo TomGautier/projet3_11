@@ -4,6 +4,9 @@ import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { ConnectionManager } from "./connection.service";
+import { DatabaseService, DatabaseConnection } from "./database.service";
+import { EventEmitter } from "events";
+import { UnsaucedEventEmitter } from "../interfaces/events";
 
 @injectable()
 export class DrawingSessionManager {
@@ -13,12 +16,15 @@ export class DrawingSessionManager {
 
     constructor(@inject(TYPES.SocketService) private socketService: SocketService,
                 @inject(TYPES.DrawingSessionServiceInterface) private drawingSessionService: DrawingSessionService,
-                @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager) { 
+                @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager)
+               { 
+        //this.drawingSessionService = new DrawingSessionService(new DatabaseService(new DatabaseConnection()));
+        //this.socketService = new SocketService(new UnsaucedEventEmitter());
         // args[0] contains the socket id, args[1][0] the drawing session id.
         this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], args[1][0]));
         this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], args[1][0]));
         // args[0] contains the socket id, args[1] is a json with the session id, username and properties of the object.
-        this.socketService.subscribe(SocketEvents.AddElement, args => this.verifyAndAct(args[0], args[1][0], this.addElement));
+        this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0]).shape));//this.verifyAndAct(args[0], args[1][0], this.addElement));
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         this.socketService.subscribe(SocketEvents.ModifyElement, args => this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.verifyAndAct(args[0], args[1][0], this.selectElements));
@@ -41,8 +47,10 @@ export class DrawingSessionManager {
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public addElement(doc: any) {
-        this.drawingSessionService.addElement(doc.drawingSessionId, doc.username, doc.properties);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement);
+        console.log(doc);
+
+        //this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to delete.
@@ -83,7 +91,6 @@ export class DrawingSessionManager {
         else if (!this.isObjectSelectedBy(doc.sessionId, doc.objectId)) {
             this.socketService.emit(socketId, SocketEvents.ObjectSelectedByOtherUser)
         }
-
         callback(doc);
     }
 

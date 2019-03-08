@@ -14,9 +14,12 @@ namespace PolyPaint.Utilitaires
 {
     class Activity : Form
     {
+        public const int DEFAULT_HEIGHT = 70;
+        public const int DEFAULT_WIDTH = 130;
+        public const string TYPE = "Activity";
+
         public string Name { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+       
 
 
         public Activity(StylusPointCollection pts) : base(pts)
