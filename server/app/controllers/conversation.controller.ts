@@ -34,7 +34,13 @@ export class ConversationController implements ConversationControllerInterface {
                     { res.json(403); return; }
                 
                 this.conversationService.create(req.params.conversationName, req.params.username).then(conversation => {
-                    res.json(conversation);
+                    res.json(conversation)
+                }).catch(err => {
+                    if (err.name === 'MongoError' && err.code === 11000) {
+                        // Duplicate conv name
+                        res.json(409);
+                    }    
+                    throw err;
                 });
             });
             
