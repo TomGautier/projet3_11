@@ -4,11 +4,11 @@ import mongoose = require('mongoose');
 
 export let shapeSchema: Schema = new Schema({
     id: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true
     }, 
     drawingSessionId: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true
     },
     author: {
