@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.Image.ImageEditingFragment;
 import com.projet3.polypaint.User.UserInformation;
 import com.projet3.polypaint.User.UserManager;
@@ -161,7 +162,7 @@ public class LoginActivity extends Activity  {
 	public void gotoImageEditing(View button) {
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
+		transaction.add(R.id.imageEditingFragment,new GalleryFragment(),"EDITING_FRAGMENT");
 		transaction.addToBackStack(null);
 		transaction.commit();
 
