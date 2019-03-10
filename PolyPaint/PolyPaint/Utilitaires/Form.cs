@@ -17,6 +17,11 @@ namespace PolyPaint.Utilitaires
         public Color BorderColor { get; set; }
         public double Height { get; set; }
         public double Width { get; set; }
+        public string Id { get; set; }
+        public string Author { get; set; }
+        public string Type { get; set; }
+        public int CurrentRotation { get; set; }
+        public Point Center { get; set; }
 
         private Color remplissage;
         public Color Remplissage
@@ -28,8 +33,17 @@ namespace PolyPaint.Utilitaires
                 this.update();
             }
         }
-        public int CurrentRotation { get; set; }
-        protected Point Center { get; set; }
+        private Boolean isSelectedByOther;
+        public Boolean IsSelectedByOther
+        {
+            get { return isSelectedByOther; }
+            set
+            {
+                isSelectedByOther = value;
+                this.update();
+            }
+        }
+       
         public  void rotate()
         {
             int angleInc = 10;
@@ -49,26 +63,53 @@ namespace PolyPaint.Utilitaires
         }
         public void SetToShape(Shape shape)
         {
-            this.Width = shape.width;
-            this.Height = shape.height;
-            this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.borderColor);
-            this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.fillingColor);
-            this.SetRotation(shape.rotation);
+            this.Id = shape.id;
+            this.Author = shape.author;
+            this.Width = shape.properties.width;
+            this.Height = shape.properties.height;
+            this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
+            this.SetRotation(shape.properties.rotation);
+        }
+        public Shape ConvertToShape(string drawingSessionID)
+        {
+            int[] middlePoint = new int[2] { (int)this.Center.X, (int)this.Center.Y };
+            ShapeProperties properties = new ShapeProperties(this.Type,this.Remplissage.ToString(),this.DrawingAttributes.Color.ToString(), middlePoint,
+                (int)this.Height, (int)this.Width, this.CurrentRotation);
+            return new Shape(this.Id, drawingSessionID, this.Author, properties);
+        }
+        protected void SetSelection(DrawingContext drawingContext)
+        {
+            if (this.IsSelectedByOther)
+            {
+                LineSegment[] segments = new LineSegment[4];
+                
+                segments[0] = new LineSegment(new Point(this.Center.X+5, this.Center.Y-5), true);
+                segments[1] = new LineSegment(new Point(this.Center.X+5, this.Center.Y+5), true);
+                segments[2] = new LineSegment(new Point(this.Center.X-5, this.Center.Y +5), true);
+                segments[3] = new LineSegment(new Point(this.Center.X -5, this.Center.Y-5), true);
+                var figure = new PathFigure(new Point(this.Center.X -5, this.Center.Y -5), segments, true);
+                var geo = new PathGeometry(new[] { figure });
+
+                SolidColorBrush brush = new SolidColorBrush(Colors.Green);
+                drawingContext.DrawGeometry(brush, null, geo);
+            }
         }
         public void update()
         {
             Stroke copy = this.Clone();
             this.StylusPoints = copy.StylusPoints;
         }
-        
-        public void translate(int x, int y) 
+
+        public void translate(int x, int y)
         {
-           for (int i = 0; i < this.StylusPoints.Count; i++)
+            for (int i = 0; i < this.StylusPoints.Count; i++)
             {
                 this.StylusPoints[i] = new StylusPoint(this.StylusPoints[i].X + x, this.StylusPoints[i].Y + y);
             }
         }
         public Form(StylusPointCollection pts)
-            : base(pts) { }           
+            : base(pts) { this.IsSelectedByOther = false; }   
+        
     }
 }

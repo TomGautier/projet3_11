@@ -151,6 +151,7 @@
                         <Image Source="/Resources/position.png" />
                     </StackPanel>
                 </Button>
+                <TextBox Width="80" Text="{Binding Username}"></TextBox>
             </StackPanel>
         </Border>
         <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000"/>
@@ -181,16 +182,20 @@
                       DragStarted="GlisserCommence" DragCompleted="GlisserTermine" Margin="278,1,169.824,0"
                       />
             <Border BorderThickness="5,5,0,0" Grid.ColumnSpan="2">
-                <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin" AllowDrop="True"
+                <Vues:CustomInkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" x:Name="surfaceDessin" AllowDrop="True"
+                                      
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
-                       SelectionChanged="surfaceDessin_SelectionChanged"
+                       SelectionChanging="surfaceDessin_SelectionChanged"
                        SelectionResized="surfaceDessin_SelectionResized"
                        PreviewMouseDown="surfaceDessin_PreviewMouseDown"
                        SelectionMoved="surfaceDessin_SelectionMoved"
+                       StrokeErasing="surfaceDessin_StrokeErasing"
+                       PreviewKeyDown="surfaceDessin_HandleKey"
                        Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                        DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
-                </InkCanvas>
+                </Vues:CustomInkCanvas>
+                
                 <Border.Effect>
                     <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
                 </Border.Effect>

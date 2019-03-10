@@ -35,6 +35,7 @@ namespace PolyPaint.Utilitaires
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
+            this.Type = TYPE;
         }
         private void MakeShape()
         {
@@ -86,9 +87,11 @@ namespace PolyPaint.Utilitaires
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
 
         {
-            Fill(drawingContext);
+            
             base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
+            Fill(drawingContext);
+            SetSelection(drawingContext);
         }
     }
 }

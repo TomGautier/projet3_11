@@ -12,7 +12,7 @@ export let shapeSchema: Schema = new Schema({
         required: true
     },
     author: {
-        type: Schema.Types.ObjectId,
+        type: String,//Schema.Types.ObjectId,
         ref: 'User'
     },
     properties: {
