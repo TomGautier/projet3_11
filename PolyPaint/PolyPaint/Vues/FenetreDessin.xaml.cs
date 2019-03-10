@@ -40,7 +40,7 @@ namespace PolyPaint
             Point p = e.GetPosition(surfaceDessin);
             textBlockPosition.Text = Math.Round(p.X) + ", " + Math.Round(p.Y) + "px";
         }
-        private void surfaceDessin_SelectionChanged(object sender, InkCanvasSelectionChangingEventArgs e)
+        private void surfaceDessin_SelectionChanging(object sender, InkCanvasSelectionChangingEventArgs e)
         {
             if (!this.surfaceDessin.AllowSelection) //if the change is from the view
             {
@@ -95,11 +95,11 @@ namespace PolyPaint
 
         }
 
-        private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
+      /*  private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
         {
-            (DataContext as VueModele).HandleDrag();
-        }
-        private void surfaceDessin_SelectionResized(object sender, EventArgs e)
+            
+        }*/
+        private void surfaceDessin_SelectionResizing(object sender, EventArgs e)//object sender, InkCanvasSelectionEditingEventArgs e)
         {
             (DataContext as VueModele).HandleResize();
         }
@@ -117,5 +117,9 @@ namespace PolyPaint
         }
         private void ChatControl_Loaded(object sender, RoutedEventArgs e) { }
 
+        private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
+        {
+            (DataContext as VueModele).HandleDrag();
+        }
     }
 }

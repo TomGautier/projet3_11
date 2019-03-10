@@ -48,9 +48,10 @@ namespace PolyPaint.Utilitaires
         {
             int angleInc = 10;
             SetRotation(this.CurrentRotation + angleInc);     
-            this.CurrentRotation += angleInc;
+           // this.CurrentRotation += angleInc;
             
         }
+        protected virtual void MakeShape() { }
         public void SetRotation(int degrees)
         {
             Matrix rotatingMatrix = new Matrix();
@@ -67,9 +68,16 @@ namespace PolyPaint.Utilitaires
             this.Author = shape.author;
             this.Width = shape.properties.width;
             this.Height = shape.properties.height;
+            this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
+            
+            this.MakeShape();
             this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
             this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
+            //this.CurrentRotation = shape.properties.rotation;
+            //this.SetRotation(this.CurrentRotation);
+            this.CurrentRotation = 0;
             this.SetRotation(shape.properties.rotation);
+           
         }
         public Shape ConvertToShape(string drawingSessionID)
         {

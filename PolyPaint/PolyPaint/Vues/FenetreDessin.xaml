@@ -186,8 +186,8 @@
                                       
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
-                       SelectionChanging="surfaceDessin_SelectionChanged"
-                       SelectionResized="surfaceDessin_SelectionResized"
+                       SelectionChanging="surfaceDessin_SelectionChanging"
+                       SelectionResized="surfaceDessin_SelectionResizing"
                        PreviewMouseDown="surfaceDessin_PreviewMouseDown"
                        SelectionMoved="surfaceDessin_SelectionMoved"
                        StrokeErasing="surfaceDessin_StrokeErasing"

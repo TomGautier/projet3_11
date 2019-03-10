@@ -81,68 +81,28 @@ namespace PolyPaint.Managers
         public void DeleteElement(String[] idList)
         {
             //string[] elementIds
-            
-            
-           
-               string parameters = new JavaScriptSerializer().Serialize(new
-                {
-                    drawingSessionId = this.SessionID,
-                    elementIds = idList,
-                    username = this.UserName
-                });
 
-            
-                /* parameters[i] = new JavaScriptSerializer().Serialize(new
-                {
-                    sessionId = this.SessionID,
-                    username = this.UserName,
-                    shape = new
-                    {
-                        id = shapes[i].id,
-                        drawingSessionId = shapes[i].drawingSessionId,
-                        author = shapes[i].author,
-                        properties = new
-                        {
-                            type = shapes[i].properties.type,
-                            fillingColor = shapes[i].properties.fillingColor,
-                            borderColor = shapes[i].properties.borderColor,
-                            middlePointCoord = shapes[i].properties.middlePointCoord,
-                            height = shapes[i].properties.height,
-                            width = shapes[i].properties.width,
-                            rotation = shapes[i].properties.rotation
-                        }
-                    }
 
-                }); */
-            
+
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                elementIds = idList,
+                username = this.UserName
+            });
             this.Socket.Emit("DeleteElements", parameters);
-            
-            
-            
-            /*     string parameters = new JavaScriptSerializer().Serialize(new
-                 {
-                     sessionId = "MockID",
-                     username = this.UserName,
-                     shape = new
-                     {
-                         id = this.UserName + "_" + this.Compteur.ToString(),
-                         drawingSessionId = this.SessionID,
-                         author = this.UserName,
-                         properties = new
-                         {
-                             type = type_,
-                             fillingColor = filling_,
-                             borderColor = borderColor_,
-                             middlePointCoord = new[] { (int)center.X, (int)center.Y },
-                             height = height_,
-                             width = width_,
-                             rotation = rotation_
-                         }
-                     }
 
-                 });*/
-            //this.Socket.Emit("DeleteElements", parameters);
+
         }
-
+        public void HandleModification(Shape[] shapes_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                username = this.UserName,
+                shapes = shapes_
+            });
+            this.Socket.Emit("ModifyElement", parameters);
+        }
     }
 }

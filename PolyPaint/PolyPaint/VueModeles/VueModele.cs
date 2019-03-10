@@ -209,9 +209,11 @@ namespace PolyPaint.VueModeles
         public void HandleDrag()
         {
             // TODO : Send socket -> selection has moved
+            editeur.HandleSelectionModification();
         }
         public void HandleResize()
         {
+            editeur.HandleSelectionModification();
             // TODO : Send socket -> selection was resized
         }
         public void RestoreLastTrait()

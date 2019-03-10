@@ -41,7 +41,7 @@ namespace PolyPaint.Utilitaires
             this.Type = TYPE;
 
         }
-        public void MakeShape()
+        protected override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));

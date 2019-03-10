@@ -63,10 +63,14 @@ namespace PolyPaint.Modeles
                 
                 if (selectedStrokes != null)
                 {
-                    foreach (Stroke form in selectedStrokes)
+                    Shape[] shapes = new Shape[selectedStrokes.Count];
+
+                    for (int i = 0; i < selectedStrokes.Count; i++)
                     {
-                        form.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+                        (selectedStrokes[i] as Form).DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+                        shapes[i] = (selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
                     }
+                    this.SocketManager.HandleModification(shapes);
                 }
                 ProprieteModifiee();                   
             }
@@ -82,13 +86,14 @@ namespace PolyPaint.Modeles
 
                 if (selectedStrokes != null)
                 {
+                    Shape[] shapes = new Shape[selectedStrokes.Count];
 
-
-                    foreach (Form form in selectedStrokes)
-                    {                   
-                        form.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
-                        
+                    for (int i = 0; i< selectedStrokes.Count; i++)
+                    {                      
+                        (selectedStrokes[i] as Form).Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
+                        shapes[i] = (selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
                     }
+                    this.SocketManager.HandleModification(shapes);
                 }
                 ProprieteModifiee();
             }
@@ -169,6 +174,17 @@ namespace PolyPaint.Modeles
             }
            
         }
+        public void HandleSelectionModification()
+        {
+            Shape[] modifiedShapes = new Shape[this.selectedStrokes.Count];
+
+            for (int i = 0; i< modifiedShapes.Length; i++)
+            {
+                modifiedShapes[i] = (this.selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
+            }
+            this.SocketManager.HandleModification(modifiedShapes);
+        }
+
         /// <summary>
         /// Appelee lorsqu'une propriété d'Editeur est modifiée.
         /// Un évènement indiquant qu'une propriété a été modifiée est alors émis à partir d'Editeur.
@@ -258,10 +274,13 @@ namespace PolyPaint.Modeles
         {
             if (selectedStrokes != null)
             {
-                foreach (Form form in selectedStrokes)
+                Shape[] shapes = new Shape[selectedStrokes.Count];
+                for (int i = 0; i< selectedStrokes.Count; i++)
                 {
-                    form.rotate();
+                    (selectedStrokes[i] as Form).rotate();
+                    shapes[i] = (selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
                 }
+                this.SocketManager.HandleModification(shapes);
             }
         }
         public void AddForm(Point p, string forme)
@@ -309,7 +328,6 @@ namespace PolyPaint.Modeles
                 case "UmlClass":
                     UMLClass umlClass = new UMLClass(pts);
                     umlClass.SetToShape(shape);
-
                     traits.Add(umlClass);
 
 
@@ -389,15 +407,15 @@ namespace PolyPaint.Modeles
             this.SocketManager.Socket.On("AddedElement", (data) =>
                 {
 
-                  //  string author = (data as JObject)["author"].ToObject<String>();
-                 //   string id = (data as JObject)["id"].ToObject<String>();
+                    //  string author = (data as JObject)["author"].ToObject<String>();
+                    //   string id = (data as JObject)["id"].ToObject<String>();
                     Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
                     Application.Current.Dispatcher.Invoke(() =>
                      {
                          this.AddForm(shape);
                          // Code causing the exception or requires UI thread access
                      });
-                
+
                 });
             this.SocketManager.Socket.On("DeletedElements", (data) =>
             {
@@ -406,7 +424,7 @@ namespace PolyPaint.Modeles
                 //   string id = (data as JObject)["id"].ToObject<String>();
                 // Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
                 String[] idList = new string[(data as JArray).Count];
-                for (int i = 0; i< idList.Length; i++)
+                for (int i = 0; i < idList.Length; i++)
                 {
                     idList[i] = (data as JArray)[i].ToObject<String>();
                 }
@@ -414,7 +432,7 @@ namespace PolyPaint.Modeles
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.deleteElements(idList);
-                   // this.AddForm(shape);
+                    // this.AddForm(shape);
                     // Code causing the exception or requires UI thread access
                 });
 
@@ -436,6 +454,33 @@ namespace PolyPaint.Modeles
                     // Code causing the exception or requires UI thread access
                 });
 
+            });
+            this.SocketManager.Socket.On("ModifiedElement", (data) =>
+            {
+                JObject result = (data as JObject);
+                String username = result["username"].ToObject<String>();
+                Shape[] shapes = result["shapes"].ToObject<Shape[]>();
+                //int rotation = shapes[0].properties.rotation;
+                Application.Current.Dispatcher.Invoke(() =>
+                {                 
+                    if (username != this.SocketManager.UserName)
+                    {
+                        foreach (Shape s in shapes)
+                        {
+                            for (int i = 0; i < traits.Count; i++)
+                            {
+                                if ((traits[i] as Form).Id == s.id)
+                                {
+                                    (traits[i] as Form).SetToShape(s);
+                                }
+                            }
+                            //StrokeCollection toBeModified = new StrokeCollection(traits.Where(t => (t as Form).Id == s.id));
+                            //(toBeModified[0] as Form).SetToShape(s);
+                        }
+                    }
+                });
+                
+                     
             });
 
             //drawingSessionId = this.SessionID,
