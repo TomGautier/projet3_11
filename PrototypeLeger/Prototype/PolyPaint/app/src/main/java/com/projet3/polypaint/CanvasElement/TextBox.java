@@ -47,6 +47,6 @@ public class TextBox extends GenericShape {
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
-        ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager);
+        ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, text);
     }
 }

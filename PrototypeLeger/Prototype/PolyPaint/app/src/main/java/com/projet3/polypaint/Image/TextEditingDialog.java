@@ -13,6 +13,7 @@ import com.projet3.polypaint.R;
 
 public class TextEditingDialog extends DialogFragment {
     private View rootView;
+    private String contents = "";
 
     public TextEditingDialog() {
         super();
@@ -23,6 +24,7 @@ public class TextEditingDialog extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         rootView = inflater.inflate(R.layout.dialog_text_editing, null);
+        ((EditText)rootView.findViewById(R.id.editText)).setText(contents);
 
         builder.setView(rootView)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -40,4 +42,7 @@ public class TextEditingDialog extends DialogFragment {
         return builder.create();
     }
 
+    public void setContents(String contents) {
+        this.contents = contents;
+    }
 }

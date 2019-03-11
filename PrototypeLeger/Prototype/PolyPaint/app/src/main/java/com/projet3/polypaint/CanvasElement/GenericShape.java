@@ -2,15 +2,19 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.app.FragmentManager;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.v4.content.res.ResourcesCompat;
+
+import com.projet3.polypaint.R;
 
 public abstract class GenericShape {
 
     private final int SELECTION_GAP = 4;
-    private final int EDIT_BUTTON_SIZE = 25;
+    private final int EDIT_BUTTON_SIZE = 30;
     protected final int CLONE_OFFSET = 30;
 
     protected int posX;
@@ -47,7 +51,28 @@ public abstract class GenericShape {
         Paint paint = new Paint();
         Path p = new Path();
 
+        // Background
+        paint.setColor(Color.LTGRAY);
         p.addRect(new RectF(getEditButton()), Path.Direction.CW);
+        canvas.drawPath(p, paint);
+        p.reset();
+
+        // Pencil
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.5f);
+        paint.setAntiAlias(true);
+        int left = getEditButton().left;
+        int bottom = getEditButton().bottom;
+
+        p.moveTo(left, bottom);
+        p.lineTo(left, bottom - EDIT_BUTTON_SIZE/3);
+        p.lineTo(left + 2*EDIT_BUTTON_SIZE/3, bottom - EDIT_BUTTON_SIZE);
+        p.lineTo(left + EDIT_BUTTON_SIZE, bottom - 2*EDIT_BUTTON_SIZE/3);
+        p.lineTo(left + EDIT_BUTTON_SIZE/3, bottom);
+        p.lineTo(left, bottom);
+        p.moveTo(left + EDIT_BUTTON_SIZE/3, bottom);
+        p.lineTo(left, bottom - EDIT_BUTTON_SIZE/3);
 
         canvas.drawPath(p, paint);
     }

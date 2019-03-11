@@ -109,6 +109,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         return rootView;
     }
 
+    @Override
+    public void onStop() {
+        ImageEditingDialogManager.getInstance().unsubscribe(this);
+        super.onStop();
+    }
+
     private void initializeButtons(){
         //forms
         buttonActivity = (Button)rootView.findViewById(R.id.buttonActivity);
@@ -337,11 +343,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         }
     }
     private boolean checkEditButton(int x, int y) {
-        for (int i = shapes.size() - 1; i >= 0; i--) {
-            if (shapes.get(i).getEditButton().contains(x, y)){
+        for (int i = selections.size() - 1; i >= 0; i--) {
+            if (selections.get(i).getEditButton().contains(x, y)){
+                GenericShape clicked = selections.get(i);
                 selections.clear();
-                selections.add(shapes.get(i));
-                shapes.get(i).showEditingDialog(getFragmentManager());
+                selections.add(clicked);
+                clicked.showEditingDialog(getFragmentManager());
                 return true;
             }
         }
@@ -404,7 +411,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case text_box :
                 nShape = new TextBox(posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager());
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
         }
         if (nShape != null) {
@@ -615,8 +622,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
     // ------------------------- Dialogs -------------------------
-
-    // TextEditingDialogListener
+    // TextEditingDialog
     @Override
     public void onTextEditingDialogPositiveClick(String contents) {
         ((TextBox)selections.get(0)).setText(contents);
@@ -624,7 +630,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
-
     @Override
     public void onTextEditingDialogNegativeClick() {
         if (((TextBox)selections.get(0)).getText().equals("")) {

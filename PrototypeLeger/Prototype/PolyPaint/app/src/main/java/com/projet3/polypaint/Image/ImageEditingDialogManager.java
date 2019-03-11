@@ -36,8 +36,9 @@ public class ImageEditingDialogManager {
         subscribers.remove(subscriber);
     }
 
-    public void showTextEditingDialog(FragmentManager fragmentManager) {
-        DialogFragment dialog = new TextEditingDialog();
+    public void showTextEditingDialog(FragmentManager fragmentManager, String contents) {
+        TextEditingDialog dialog = new TextEditingDialog();
+        dialog.setContents(contents);
         dialog.show(fragmentManager, "text editing");
     }
 
