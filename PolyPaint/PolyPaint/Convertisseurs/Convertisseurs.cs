@@ -43,12 +43,11 @@ namespace PolyPaint.Convertisseurs
             {
                 case "lasso":
                     return InkCanvasEditingMode.Select;
-                case "efface_segment":
-                    return InkCanvasEditingMode.EraseByPoint;
                 case "efface_trait":
                     return InkCanvasEditingMode.EraseByStroke;
                 default:
-                    return InkCanvasEditingMode.Ink;
+
+                    return InkCanvasEditingMode.None;
             }
         }
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) => System.Windows.DependencyProperty.UnsetValue;

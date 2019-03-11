@@ -1,7 +1,13 @@
 ﻿using System.ComponentModel;
+//using System.Drawing;
+using System.Windows;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Ink;
+using System.Windows.Input;
+using PolyPaint.Utilitaires;
+using System.Windows.Media;
+//using System.Drawing;
 
 namespace PolyPaint.Modeles
 {
@@ -14,16 +20,18 @@ namespace PolyPaint.Modeles
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public StrokeCollection traits = new StrokeCollection();
+        public StrokeCollection selectedStrokes = new StrokeCollection();
         private StrokeCollection traitsRetires = new StrokeCollection();
+        
 
         // Outil actif dans l'éditeur
-        private string outilSelectionne = "crayon";
+        private string outilSelectionne = "lasso";
         public string OutilSelectionne
         {
             get { return outilSelectionne; }
             set { outilSelectionne = value; ProprieteModifiee(); }
         }
-
+        public StrokeCollection LastCut { get; set; }
         // Forme de la pointe du crayon
         private string pointeSelectionnee = "ronde";
         public string PointeSelectionnee
@@ -31,7 +39,6 @@ namespace PolyPaint.Modeles
             get { return pointeSelectionnee; }
             set
             {
-                OutilSelectionne = "crayon";
                 pointeSelectionnee = value;                                
                 ProprieteModifiee();
             }
@@ -47,10 +54,40 @@ namespace PolyPaint.Modeles
             set
             {
                 couleurSelectionnee = value;
-                OutilSelectionne = "crayon";
+                
+                if (selectedStrokes != null)
+                {
+                    foreach (Stroke form in selectedStrokes)
+                    {
+                        form.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+                    }
+                }
+                ProprieteModifiee();                   
+            }
+        }
+        private string remplissageSelectionne = "White";
+        public string RemplissageSelectionne
+        {
+            get { return remplissageSelectionne; }
+
+            set
+            {
+                remplissageSelectionne = value;
+
+                if (selectedStrokes != null)
+                {
+
+
+                    foreach (Form form in selectedStrokes)
+                    {                   
+                        form.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
+                        
+                    }
+                }
                 ProprieteModifiee();
             }
         }
+
 
         // Grosseur des traits tracés par le crayon.
         private int tailleTrait = 11;
@@ -62,11 +99,25 @@ namespace PolyPaint.Modeles
             set
             {
                 tailleTrait = value;
-                OutilSelectionne = "crayon";
                 ProprieteModifiee();
             }
         }
-
+        public void ChangeSelection(StrokeCollection strokes)
+        {         
+            if (strokes.Count > 0)
+            {
+                selectedStrokes = strokes;
+                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
+                RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
+            }
+            else
+            {
+                selectedStrokes = null;
+                CouleurSelectionnee = "Black";
+                RemplissageSelectionne = "White";
+            }
+           
+        }
         /// <summary>
         /// Appelee lorsqu'une propriété d'Editeur est modifiée.
         /// Un évènement indiquant qu'une propriété a été modifiée est alors émis à partir d'Editeur.
@@ -93,10 +144,16 @@ namespace PolyPaint.Modeles
             catch { }
 
         }
+        public void HandleMouseDown(Point position)
+        {
+            if (outilSelectionne.Contains("form"))
+            {
+                AddForm(new Point((int)position.X, (int)position.Y));
+            }
+        }
 
         // S'il y a au moins 1 trait sur la pile de traits retirés, il est possible d'exécuter Depiler.
         public bool PeutDepiler(object o) => (traitsRetires.Count > 0);
-        // On retire le trait du dessus de la pile de traits retirés et on le place sur la surface de dessin.
         public void Depiler(object o)
         {
             try
@@ -106,6 +163,52 @@ namespace PolyPaint.Modeles
                 traitsRetires.Remove(trait);
             }
             catch { }         
+        }
+        public void RotateForm(object sender)
+        {
+            if (selectedStrokes != null)
+            {
+                foreach (Form form in selectedStrokes)
+                {
+                    form.rotate();
+                }
+            }
+        }
+        public void AddForm(Point p)
+        {
+            StylusPointCollection pts = new StylusPointCollection();                   
+            pts.Add(new StylusPoint(p.X, p.Y));
+
+            switch (outilSelectionne)
+            {
+                case "form_class":
+                                                  
+                    UMLClass umlClass = new UMLClass(pts);
+                    umlClass.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    umlClass.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(umlClass);
+
+                    break;
+                case "form_artefact":
+                    Artefact artefact = new Artefact(pts);
+                    artefact.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    artefact.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(artefact);
+                    break;
+                case "form_activity":
+                    Activity activity = new Activity(pts);
+                    activity.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    activity.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(activity);
+                    break;
+                case "form_role":
+                    Role role = new Role(pts);
+                    role.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
+                    role.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
+                    traits.Add(role);
+                    break;
+            }
+            
         }
         
         // On assigne une nouvelle forme de pointe passée en paramètre.

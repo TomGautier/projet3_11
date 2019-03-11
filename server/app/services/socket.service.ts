@@ -30,11 +30,16 @@ export class SocketService {
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
+<<<<<<< HEAD
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
             socket.on(SocketEvents.UserLeftConversation, args => this.handleEvent(SocketEvents.UserLeftConversation, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
+=======
+            console.log("Socket id" + socket.id + " connected.");
+            socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
+>>>>>>> dev
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
