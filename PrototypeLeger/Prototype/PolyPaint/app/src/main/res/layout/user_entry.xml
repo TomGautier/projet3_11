@@ -8,11 +8,19 @@
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/usernameTextView"
-    android:layout_width="match_parent"
+    android:layout_width="0dp"
+    android:layout_weight="0.9"
     android:layout_height="wrap_content"
     android:background="@drawable/chat_entry"
-    android:gravity="center" >
+    android:padding="2dp"
+    android:gravity="center">
 </TextView>
+    <ImageView
+        android:id="@+id/usernameIsConnectedImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:layout_marginLeft="5dp"/>
 
 </LinearLayout>
 

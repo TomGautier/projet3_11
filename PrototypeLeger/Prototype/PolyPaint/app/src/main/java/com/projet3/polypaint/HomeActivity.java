@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.UserManager;
 
 import java.util.ArrayList;
 
@@ -118,7 +118,7 @@ public class HomeActivity extends AppCompatActivity {
 				break;
 			/*case R.id.chatAction:
 				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
-				dropDownMenu.getMenuInflater().inflate(R.menu.chat_menu, dropDownMenu.getMenu());
+				dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
 				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
 					@Override
 					public boolean onMenuItemClick(MenuItem menuItem) {
@@ -152,12 +152,12 @@ public class HomeActivity extends AppCompatActivity {
 			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
-	private void toggleChatVisibility(){
+	/*private void toggleChatVisibility(){
 		if (chatFragmentLayout.getVisibility() == View.VISIBLE)
 			chatFragmentLayout.setVisibility(View.GONE);
 		else
 			chatFragmentLayout.setVisibility(View.VISIBLE);
-	}
+	}*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();

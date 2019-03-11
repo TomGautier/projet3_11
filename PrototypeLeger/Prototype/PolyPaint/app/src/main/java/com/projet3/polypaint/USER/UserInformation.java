@@ -1,7 +1,4 @@
-package com.projet3.polypaint.User;
-
-import android.os.Parcel;
-import android.os.Parcelable;
+package com.projet3.polypaint.USER;
 
 public class UserInformation  {
     private String username;

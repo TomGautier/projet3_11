@@ -1,7 +1,6 @@
 package com.projet3.polypaint.Chat;
 
-import com.projet3.polypaint.User.RequestManager;
-import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.UserManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

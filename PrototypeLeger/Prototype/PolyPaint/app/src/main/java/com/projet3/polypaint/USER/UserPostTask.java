@@ -1,4 +1,4 @@
-package com.projet3.polypaint.User;
+package com.projet3.polypaint.USER;
 
 import android.os.AsyncTask;
 

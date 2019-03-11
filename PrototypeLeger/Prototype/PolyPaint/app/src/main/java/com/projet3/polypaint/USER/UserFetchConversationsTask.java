@@ -1,17 +1,14 @@
-package com.projet3.polypaint.User;
+package com.projet3.polypaint.USER;
 
 import android.os.AsyncTask;
-import android.util.JsonReader;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 
 class UserFetchConversationsTask extends AsyncTask<String, String, JSONArray> {
     protected JSONArray doInBackground(String... urls) {

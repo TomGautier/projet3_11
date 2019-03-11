@@ -1,4 +1,4 @@
-package com.projet3.polypaint.User;
+package com.projet3.polypaint.USER;
 
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
@@ -121,7 +121,7 @@ public class RequestManager {
 
 
     public boolean configureAddConversationResponse(String response){
-        boolean ret = response != null && response.contains("403") ? false: true;
+        boolean ret = response != null && response.contains("409") ? false: true;
         return ret;
     }
 

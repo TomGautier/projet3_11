@@ -52,29 +52,33 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="vertical"
-        android:background="@drawable/underline"
         android:paddingBottom="10dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/userListSearchTitle" />
-        <SearchView
+        <android.support.v7.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="25dp"
             android:background="@android:color/white"
-            android:layout_marginTop="5dp"/>
-        <LinearLayout
-            android:id="@+id/searchResultLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
+            android:layout_marginTop="5dp"
+            android:imeOptions="flagNoExtractUi"/>
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:padding="3dp"
+            android:background="@drawable/underline"/>
+
     </LinearLayout>
 
-<RelativeLayout
-    android:id="@+id/connectedUsersModule"
+<!--<RelativeLayout
+    android:id="@+id/usersModule"
     android:layout_width="match_parent"
-    android:layout_height="150dp"
+    android:layout_height="300dp"
     android:layout_below="@id/searchLayout"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
@@ -87,17 +91,17 @@
     <ScrollView
         android:id="@+id/connectedUsersTableScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="5dp"
         android:layout_below="@id/connectedUserTitle"
         android:paddingBottom="3dp">
-    <LinearLayout
-        android:id="@+id/connectedUsersTable"
+    <ListView
+        android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:orientation="vertical"
         android:padding="3dp">
-    </LinearLayout>
+    </ListView>
     </ScrollView>
     </RelativeLayout>
 
@@ -127,7 +131,7 @@
                 android:padding="3dp">
             </LinearLayout>
         </ScrollView>
-    </RelativeLayout>
+    </RelativeLayout>-->
     </RelativeLayout>
     </RelativeLayout>
 

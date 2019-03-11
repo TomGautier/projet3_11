@@ -1,7 +1,4 @@
-package com.projet3.polypaint.User;
-
-import android.os.Parcelable;
-import android.provider.Telephony;
+package com.projet3.polypaint.USER;
 
 import com.projet3.polypaint.Chat.Conversation;
 

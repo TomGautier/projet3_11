@@ -3,10 +3,14 @@ package com.projet3.polypaint;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,46 +18,68 @@ import java.util.ArrayList;
 
 public class UsersListFragment extends Fragment {
 
-    private LinearLayout connectedUsersTable;
+    private ListView listView;
     private RelativeLayout usersTableRelativeLayout;
     private RelativeLayout hiddenTitleRelativeLayout;
     private View rootView;
     private TextView title;
-    private ArrayList<String> users;
+    private ArrayList<User> users;
+    private SearchView searchView;
+    private UsersListAdapter adapter;
+
     private boolean isOpen;
 
-    public static UsersListFragment newInstance(ArrayList<String> users_){
+    public static UsersListFragment newInstance(ArrayList<String> users_) {
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList("USERS",users_);
+        bundle.putStringArrayList("USERS", users_);
         UsersListFragment fragobj = new UsersListFragment();
         fragobj.setArguments(bundle);
         return fragobj;
     }
-    public UsersListFragment() { }
+
+    public UsersListFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        rootView=inflater.inflate(R.layout.users_list, container, false);
-        connectedUsersTable = (LinearLayout)rootView.findViewById(R.id.connectedUsersTable);
-        usersTableRelativeLayout = (RelativeLayout)rootView.findViewById(R.id.usersTable);
-        hiddenTitleRelativeLayout = (RelativeLayout)rootView.findViewById(R.id.hiddenTitleRelativeLayout);
+        rootView = inflater.inflate(R.layout.users_list, container, false);
+        usersTableRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.usersTable);
+        hiddenTitleRelativeLayout = (RelativeLayout) rootView.findViewById(R.id.hiddenTitleRelativeLayout);
         hiddenTitleRelativeLayout.setVisibility(View.GONE);
-        title = (TextView)rootView.findViewById(R.id.usersTableTitle);
-        users = getArguments().getStringArrayList("USERS");
+        title = (TextView) rootView.findViewById(R.id.usersTableTitle);
+        searchView = (SearchView) rootView.findViewById(R.id.searchView);
+        listView = (ListView) rootView.findViewById(R.id.listView);
+        users = new ArrayList<>();
+        users.add(new User("Bob", true));
+        users.add(new User("Bob2", true));
+        users.add(new User("Bob3", true));
+        users.add(new User("Bob4", true));
+        users.add(new User("Bob5", true));
+        users.add(new User("Bob6", true));
+        users.add(new User("Bob7", true));
+        users.add(new User("Bob8", true));
+        users.add(new User("Bob9", true));
+        users.add(new User("Bob10", true));
+        users.add(new User("Bob11", true));
+        users.add(new User("Bob12", true));
+
+        users.add(new User("Alice", false));
+        users.add(new User("Alice2", false));
         isOpen = true;
-        drawUsers();
         setupListeners();
+        setupSearchView();
         return rootView;
     }
-    private void setupListeners(){
+
+    private void setupListeners() {
         title.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 rootView.requestLayout();
-                if (isOpen){
+                if (isOpen) {
                     usersTableRelativeLayout.setVisibility(View.GONE);
                     hiddenTitleRelativeLayout.setVisibility(View.VISIBLE);
                     isOpen = false;
@@ -63,26 +89,78 @@ public class UsersListFragment extends Fragment {
         hiddenTitleRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isOpen){
+                if (!isOpen) {
                     usersTableRelativeLayout.setVisibility(View.VISIBLE);
                     hiddenTitleRelativeLayout.setVisibility(View.GONE);
                     isOpen = true;
                 }
             }
         });
-
     }
-    private void drawUsers(){
-        for (String user : users) {
-            LinearLayout userView = (LinearLayout)View.inflate(getContext(),R.layout.user_entry,null);
-            ((TextView)userView.findViewById(R.id.usernameTextView)).setText(user);
-            connectedUsersTable.addView(userView);
+
+    private void setupSearchView() {
+        ArrayList<String> names = new ArrayList<>();
+        for (User user : users) {
+            names.add(user.getUsername());
         }
+        adapter = new UsersListAdapter(getActivity(), names, users);
+        listView.setAdapter(adapter);
+        searchView.setIconified(false);
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)).isConnected());
+            }
+        });
     }
 
+    private void createUserDropdownMenu(View view, boolean isConnected) {
+        PopupMenu dropDownMenu = new PopupMenu(getActivity(), view);
+        if (isConnected)
+            dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
+        else
+            dropDownMenu.getMenuInflater().inflate(R.menu.users_list_disconnected_entry_menu, dropDownMenu.getMenu());
+        dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.addConversationChatAction:
+                        break;
+                    case R.id.removeConversationChatAction:
 
+                        break;
+                    case R.id.hideShowChatAction:
 
-
-
+                        break;
+                }
+                return true;
+            }
+        });
+        dropDownMenu.show();
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+

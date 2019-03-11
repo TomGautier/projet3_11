@@ -13,10 +13,9 @@ import android.widget.Toast;
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
-import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.User.RequestManager;
-import com.projet3.polypaint.User.UserInformation;
-import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.RequestManager;
+import com.projet3.polypaint.USER.UserInformation;
+import com.projet3.polypaint.USER.UserManager;
 
 import java.util.ArrayList;
 
@@ -24,7 +23,7 @@ public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
 	private final String AZURE_IP = "40.122.119.160";
-	private final String IP = "192.168.1.105";
+	private final String IP = "192.168.0.181";
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
