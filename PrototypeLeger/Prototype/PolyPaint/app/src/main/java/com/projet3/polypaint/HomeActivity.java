@@ -43,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(mainToolbar);
 		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
 		if (savedInstanceState == null){
 			createChatFragment();
 			createImageEditingFragment();
@@ -68,7 +69,7 @@ public class HomeActivity extends AppCompatActivity {
 	private void createGalleryFragment(){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.galleryFragment,new GalleryFragment(),"EDITING_FRAGMENT");
+		transaction.add(R.id.galleryFragment,new GalleryFragment(),"GALLERY_FRAGMENT");
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}

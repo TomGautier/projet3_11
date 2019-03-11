@@ -25,7 +25,7 @@ public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
 	private final String AZURE_IP = "40.122.119.160";
-	private final String IP = AZURE_IP;//"10.200.4.205";
+	private final String IP = "192.168.0.103";//"10.200.4.205";
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
