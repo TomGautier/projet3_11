@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { IImageModel } from '../models/Image';
+import { IImageModel } from '../models/image';
 import mongoose = require('mongoose');
 
 export let imageSchema: Schema = new Schema({

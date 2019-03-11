@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainToolbarBackground">
+    android:background="@color/chat">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             <TableLayout
                 android:id="@+id/table"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
         </LinearLayout>
     </ScrollView>
