@@ -287,7 +287,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 int posY = (int)event.getY(0);
 
                 // Check if an showEditingDialog button was clicked
-                if (!selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
+                if (event.getAction() != MotionEvent.ACTION_MOVE &&
+                    !selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
                 // Check if canvas is being resized
                 else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
                     return resizeCanvas(event);
