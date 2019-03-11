@@ -171,12 +171,12 @@ public class UsersListFragment extends Fragment {
             @Override
             public boolean onMenuItemClick(MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.addConversationChatAction:
+                    case R.id.inviteToFriend:
                         break;
-                    case R.id.removeConversationChatAction:
+                    case R.id.inviteToConversation:
 
                         break;
-                    case R.id.hideShowChatAction:
+                    case R.id.inviteToDrawSession:
 
                         break;
                 }

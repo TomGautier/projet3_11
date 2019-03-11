@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/addConversationChatAction"
-        android:title="@string/chatToolbarAddConversation" />
+        android:id="@+id/inviteToFriend"
+        android:title="@string/userListInviteToFriends" />
     <item
-        android:id="@+id/removeConversationChatAction"
-        android:title="@string/chatToolbarRemoveConversation" />
+        android:id="@+id/inviteToDrawSession"
+        android:title="@string/userListInviteToDrawSession" />
     <item
-        android:id="@+id/hideShowChatAction"
-        android:title="@string/chatToolbarHideShow" />
+        android:id="@+id/inviteToConversation"
+        android:title="@string/userListInviteToConversation" />
 </menu>

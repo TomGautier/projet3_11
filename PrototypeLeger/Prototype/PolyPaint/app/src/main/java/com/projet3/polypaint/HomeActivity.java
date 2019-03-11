@@ -112,7 +112,8 @@ public class HomeActivity extends AppCompatActivity {
 				break;
 
 			case R.id.menuLogout:
-				Toast.makeText(this, "You clicked logout", Toast.LENGTH_SHORT).show();
+				SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
+				startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 				break;
 			case R.id.galleryAction:
 				break;

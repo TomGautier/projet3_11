@@ -35,13 +35,15 @@
 
     <!-- CONVERSATION POPUP -->
     <string name="addConversationTextView">Entrez le nom de la nouvelle conversation :</string>
-    <string name="removeConversationTextView">Entrez le nom de la conversation à retirer:</string>
+    <string name="removeConversationTextView">Choisir la conversation à retirer:</string>
     <string name="conversationButton">Terminé</string>
 
     <!-- USERS LIST -->
     <string name="userListTitle">Liste d\'utilisateurs</string>
-    <string name="userListSearchTitle">Recherche :</string>
-    <string name="userListShowFilterTitle">Filtre :</string>
+    <string name="userListInviteToConversation">Inviter à une conversation</string>
+    <string name="userListInviteToFriends">Inviter à être amis</string>
+    <string name="userListInviteToDrawSession">Inviter à une session</string>
+
 
 
 
