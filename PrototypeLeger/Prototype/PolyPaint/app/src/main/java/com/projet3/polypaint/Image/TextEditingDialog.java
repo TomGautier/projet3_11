@@ -12,23 +12,10 @@ import android.widget.EditText;
 import com.projet3.polypaint.R;
 
 public class TextEditingDialog extends DialogFragment {
-
-    public interface TextEditingDialogListener {
-        void showTextEditingDialog();
-        void onTextEditingDialogPositiveClick(String contents);
-        void onTextEditingDialogNegativeClick();
-    }
-
-    private TextEditingDialogListener listener;
     private View rootView;
 
     public TextEditingDialog() {
         super();
-    }
-
-    public TextEditingDialog(TextEditingDialogListener parent) {
-        super();
-        listener = parent;
     }
 
     @Override
@@ -42,12 +29,12 @@ public class TextEditingDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         String contents = ((EditText)rootView.findViewById(R.id.editText)).getText().toString();
-                        listener.onTextEditingDialogPositiveClick(contents);
+                        ImageEditingDialogManager.getInstance().onTextEditingDialogPositiveClick(contents);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        listener.onTextEditingDialogNegativeClick();
+                        ImageEditingDialogManager.getInstance().onTextEditingDialogNegativeClick();
                     }
                 });
         return builder.create();

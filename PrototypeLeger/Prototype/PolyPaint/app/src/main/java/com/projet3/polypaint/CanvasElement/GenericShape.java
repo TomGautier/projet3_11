@@ -1,5 +1,6 @@
 package com.projet3.polypaint.CanvasElement;
 
+import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -69,5 +70,5 @@ public abstract class GenericShape {
         posY += y;
     }
 
-    public abstract void showEditingDialog(DialogListener listener);
+    public abstract void showEditingDialog(FragmentManager fragmentManager);
 }

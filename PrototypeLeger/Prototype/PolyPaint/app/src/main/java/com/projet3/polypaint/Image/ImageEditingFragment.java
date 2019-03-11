@@ -34,7 +34,7 @@ import com.projet3.polypaint.R;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingFragment extends Fragment implements TextEditingDialog.TextEditingDialogListener {
+public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber {
 
 
     private Button buttonClass;
@@ -103,6 +103,7 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
 
         initializeButtons();
         initializePaint();
+        ImageEditingDialogManager.getInstance().subscribe(this);
 
         setTouchListener();
         return rootView;
@@ -340,7 +341,7 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
             if (shapes.get(i).getEditButton().contains(x, y)){
                 selections.clear();
                 selections.add(shapes.get(i));
-                shapes.get(i).showEditingDialog(this);
+                shapes.get(i).showEditingDialog(getFragmentManager());
                 return true;
             }
         }
@@ -403,7 +404,7 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
                 break;
             case text_box :
                 nShape = new TextBox(posX, posY, defaultStyle);
-                showTextEditingDialog();
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager());
                 break;
         }
         if (nShape != null) {
@@ -614,11 +615,6 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
     }
 
     // ------------------------- Dialogs -------------------------
-
-    public void showTextEditingDialog() {
-        DialogFragment dialog = new TextEditingDialog(this);
-        dialog.show(getFragmentManager(), "text editing");
-    }
 
     // TextEditingDialogListener
     @Override

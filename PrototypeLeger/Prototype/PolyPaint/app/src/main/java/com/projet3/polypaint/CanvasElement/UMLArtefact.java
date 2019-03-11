@@ -1,5 +1,6 @@
 package com.projet3.polypaint.CanvasElement;
 
+import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
@@ -41,8 +42,8 @@ public class UMLArtefact extends GenericShape {
         canvas.drawPath(p, style.getBorderPaint());
     }
 
-    public void showEditingDialog(DialogListener listener) {
-        /* Do nothing, for now. */
-        /* This will eventually do something like listener.showXYZDialog() */
+    public void showEditingDialog(FragmentManager fragmentManager) {
+        /* Do nothing for now*/
+        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
     }
 }
