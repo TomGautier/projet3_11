@@ -16,6 +16,7 @@ import { ConversationManager } from "./services/conversation.manager";
 import { ConnectionService } from "./services/connection.service";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConnectionController } from "./controllers/connection.controller";
+import { ImageController } from "./controllers/image.controller";
 
 
 @injectable()
@@ -29,6 +30,7 @@ export class Application implements ApplicationInterface {
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
             @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
             @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
+            @inject(TYPES.ImageControllerInterface) private imageController: ImageController,
             @inject(TYPES.ConversationManager) private conversationManager: ConversationManager) {
         this.app = express();
         this.config();
@@ -46,6 +48,7 @@ export class Application implements ApplicationInterface {
 
     public bindRoutes(): void {
         this.app.use("/connection/", this.connectionController.router);
+        this.app.use("/api/images/", this.imageController.router);
         this.app.use("/api/chat/", this.conversationController.router);
         this.app.use("/api/index", this.indexController.router);
         this.app.use("/api/date/", this.dateController.router);

@@ -90,6 +90,17 @@ export class DatabaseService {
         });
     }
 
+    public async update(model: any, criteria: string, criteriaValue: string, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.findOne({ [criteria]: criteriaValue }, (err: any, document: any) => {
+                if (err) { return reject(err) };
+                document.set(doc);
+                document.save();
+                resolve(document);
+            });
+        });
+    }
+
     public async remove(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.remove({ [criteria]: doc }, (err: any, document: any) => {

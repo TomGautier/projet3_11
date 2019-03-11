@@ -21,7 +21,10 @@ import { DateServiceInterface,
          ConversationControllerInterface,
          ConversationServiceInterface,
          ConnectionControllerInterface,
-         ConnectionServiceInterface} from "./interfaces";
+         ConnectionServiceInterface,
+         DrawingSessionServiceInterface,
+         ImageControllerInterface,
+         ImageServiceInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";
@@ -31,6 +34,9 @@ import { UserService } from "./services/user.service";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConversationService } from "./services/conversation.service";
 import { ConnectionController } from "./controllers/connection.controller";
+import { DrawingSessionService } from "./services/drawingSession.service";
+import { ImageController } from "./controllers/image.controller";
+import { ImageService } from "./services/image.service";
 
 const container: Container = new Container();
 
@@ -40,6 +46,10 @@ container.bind<ConversationControllerInterface>(TYPES.ConversationControllerInte
 container.bind<ConversationServiceInterface>(TYPES.ConversationServiceInterface).to(ConversationService);
 container.bind<ConnectionControllerInterface>(TYPES.ConnectionControllerInterface).to(ConnectionController);
 container.bind<ConnectionServiceInterface>(TYPES.ConnectionServiceInterface).to(ConnectionService);
+container.bind<ImageControllerInterface>(TYPES.ImageControllerInterface).to(ImageController);
+container.bind<ImageServiceInterface>(TYPES.ImageServiceInterface).to(ImageService);
+container.bind<DrawingSessionServiceInterface>(TYPES.DrawingSessionServiceInterface).to(DrawingSessionService);
+
 
 container.bind<ApplicationInterface>(TYPES.ApplicationInterface).to(Application);
 container.bind<IndexControllerInterface>(TYPES.IndexControllerInterface).to(IndexController);
