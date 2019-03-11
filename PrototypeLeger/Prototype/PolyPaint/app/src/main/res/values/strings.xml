@@ -41,8 +41,8 @@
     <!-- USERS LIST -->
     <string name="userListTitle">Liste d\'utilisateurs</string>
     <string name="userListSearchTitle">Recherche :</string>
-    <string name="userListConnectedTitle">En ligne :</string>
-    <string name="userListDisconnectedTitle">Hors ligne :</string>
+    <string name="userListShowFilterTitle">Filtre :</string>
+
 
 
 

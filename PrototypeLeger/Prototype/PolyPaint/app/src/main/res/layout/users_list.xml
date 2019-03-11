@@ -53,10 +53,10 @@
         android:layout_marginTop="10dp"
         android:orientation="vertical"
         android:paddingBottom="10dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/userListSearchTitle" />
+        <Spinner
+            android:id="@+id/filterSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <android.support.v7.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
@@ -64,6 +64,7 @@
             android:background="@android:color/white"
             android:layout_marginTop="5dp"
             android:imeOptions="flagNoExtractUi"/>
+
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
@@ -72,7 +73,6 @@
             android:orientation="vertical"
             android:padding="3dp"
             android:background="@drawable/underline"/>
-
     </LinearLayout>
 
 <!--<RelativeLayout

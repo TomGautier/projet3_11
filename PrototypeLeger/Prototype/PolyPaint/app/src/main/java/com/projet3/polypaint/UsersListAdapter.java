@@ -17,6 +17,8 @@ public class UsersListAdapter extends BaseAdapter implements Filterable {
     private final Context context;
     private final ArrayList<User> values;
     private ArrayList<User> filteredValues;
+    private int filterState;
+    private boolean filterChanged;
 
     //Two data sources, the original data and filtered data
 
@@ -27,6 +29,8 @@ public class UsersListAdapter extends BaseAdapter implements Filterable {
         this.context = context;
         this.values = values;
         this.filteredValues = values;
+        this.filterState = 0;
+        this.filterChanged = false;
     }
     public int getCount()
     {
@@ -42,6 +46,13 @@ public class UsersListAdapter extends BaseAdapter implements Filterable {
     public long getItemId(int position)
     {
         return position;
+    }
+
+    public void applyFilterState(int filterState_){
+        filterState = filterState_;
+        filterChanged = true;
+        //this.getFilter();
+        //filterChanged = false;
     }
 
     @Override
@@ -68,17 +79,25 @@ public class UsersListAdapter extends BaseAdapter implements Filterable {
                 FilterResults results = new FilterResults();
 
                 //If there's nothing to filter on, return the original data for your list
-                if (charSequence == null || charSequence.length() == 0) {
+                if ((charSequence == null || charSequence.length() == 0) && !filterChanged) {
                     results.values = values;
                     results.count = values.size();
                 } else {
                     ArrayList<User> filterResultsData = new ArrayList();
 
                     for (User data : values) {
-                        //In this loop, you'll filter through originalData and compare each item to charSequence.
-                        //If you find a match, add it to your new ArrayList
-                        //I'm not sure how you're going to do comparison, so you'll need to fill out this conditional
-                        if (data.getUsername().toLowerCase().contains(charSequence.toString().toLowerCase())) {
+                        boolean cond = data.getUsername().toLowerCase().contains(charSequence.toString().toLowerCase());
+                        switch(filterState){
+                            case 0:
+                                break;
+                            case 1:
+                                cond = cond && data.isConnected();
+                                break;
+                            case 2:
+                                cond = cond && !data.isConnected();
+                                break;
+                        }
+                        if (cond) {
                             filterResultsData.add(data);
                         }
                     }
@@ -86,7 +105,6 @@ public class UsersListAdapter extends BaseAdapter implements Filterable {
                     results.values = filterResultsData;
                     results.count = filterResultsData.size();
                 }
-
                 return results;
             }
 
@@ -94,6 +112,7 @@ public class UsersListAdapter extends BaseAdapter implements Filterable {
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 filteredValues = (ArrayList<User>) filterResults.values;
                 notifyDataSetChanged();
+                filterChanged = false;
             }
         };
     }

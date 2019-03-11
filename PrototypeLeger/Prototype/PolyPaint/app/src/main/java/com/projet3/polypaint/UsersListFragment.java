@@ -1,6 +1,7 @@
 package com.projet3.polypaint;
 
 import android.app.Fragment;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -11,8 +12,13 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.projet3.polypaint.USER.UserManager;
+
+import java.text.BreakIterator;
 import java.util.ArrayList;
 
 
@@ -23,6 +29,7 @@ public class UsersListFragment extends Fragment {
     private RelativeLayout hiddenTitleRelativeLayout;
     private View rootView;
     private TextView title;
+    private Spinner filterSpinner;
     private ArrayList<User> users;
     private SearchView searchView;
     private UsersListAdapter adapter;
@@ -52,6 +59,7 @@ public class UsersListFragment extends Fragment {
         title = (TextView) rootView.findViewById(R.id.usersTableTitle);
         searchView = (SearchView) rootView.findViewById(R.id.searchView);
         listView = (ListView) rootView.findViewById(R.id.listView);
+        filterSpinner = (Spinner)rootView.findViewById(R.id.filterSpinner);
         users = new ArrayList<>();
         users.add(new User("Bob", true));
         users.add(new User("Bob2", true));
@@ -69,10 +77,36 @@ public class UsersListFragment extends Fragment {
         users.add(new User("Alice", false));
         users.add(new User("Alice2", false));
         isOpen = true;
+
         setupListeners();
+        setupSpinner();
         setupSearchView();
         return rootView;
     }
+    private void setupSpinner() {
+        ArrayList<String> strings = new ArrayList<>();
+        strings.add("Tous");
+        strings.add("En ligne");
+        strings.add("Hors ligne");
+        android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
+                (getContext(), android.R.layout.simple_spinner_item, strings);
+        filterSpinner.setAdapter(spinnerArrayAdapter);
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ((UsersListAdapter)listView.getAdapter()).applyFilterState(position);
+                ((UsersListAdapter) listView.getAdapter()).getFilter().filter(searchView.getQuery());
+            }
+
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+
 
     private void setupListeners() {
         title.setOnClickListener(new View.OnClickListener() {

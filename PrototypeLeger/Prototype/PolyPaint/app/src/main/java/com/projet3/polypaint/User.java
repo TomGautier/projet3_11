@@ -14,4 +14,7 @@ public class User {
     public final boolean isConnected(){
         return isConnected;
     }
+    public void changeConnectionState(boolean state){
+        isConnected = state;
+    }
 }

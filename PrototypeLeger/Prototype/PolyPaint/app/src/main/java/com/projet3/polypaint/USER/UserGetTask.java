@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class UserFetchConversationsTask extends AsyncTask<String, String, JSONArray> {
+class UserGetTask extends AsyncTask<String, String, JSONArray> {
     protected JSONArray doInBackground(String... urls) {
         HttpURLConnection connection = null;
 
