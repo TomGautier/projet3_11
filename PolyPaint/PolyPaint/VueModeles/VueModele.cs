@@ -8,6 +8,7 @@ using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
+using System.Windows.Input;
 
 namespace PolyPaint.VueModeles
 {
@@ -96,6 +97,12 @@ namespace PolyPaint.VueModeles
         public RelayCommand<object> RotateForm { get; set; }
        // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
         
+        public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
+
+        private void OnNavigateLogin()
+        {
+            SwitchView = 1;
+        }
 
         /// <summary>
         /// Constructeur de VueModele
