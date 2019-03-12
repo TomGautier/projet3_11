@@ -6,6 +6,23 @@ import { Message } from "../../common/communication/message";
 import { Router } from "express";
 import { Application } from "express";
 
+export interface ConversationServiceInterface {
+    getAllByUsername(sessionId: string, username: string): Promise<{}>;
+    create(conversationName: string, creatorUsername: string): Promise<{}>;
+}
+
+export interface ConversationControllerInterface {
+    router: Router;
+}
+
+export interface ConnectionServiceInterface {
+
+}
+
+export interface ConnectionControllerInterface {
+    router: Router;
+}
+
 export interface IndexServiceInterface {
     about(): Message;
     helloWorld(): Promise<Message>;
@@ -22,6 +39,7 @@ export interface DateControllerInterface {
 export interface IndexControllerInterface {
     router: Router;
 }
+
 
 export interface ApplicationInterface {
     app: Application;

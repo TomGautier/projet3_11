@@ -24,4 +24,34 @@
     <string name="buttonReset">Réinitialiser</string>
     <string name="buttonMove">Déplacer</string>
 
+    <!-- MAIN TOOLBAR -->
+    <string name="mainToolbarGalleryTag">Gallerie</string>
+    <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+
+    <!-- CHAT TOOLBAR -->
+    <string name="chatToolbarAddConversation">Ajouter une conversation</string>
+    <string name="chatToolbarRemoveConversation">Retirer une conversation</string>
+    <string name="chatToolbarHideShow">Montrer/Cacher</string>
+
+    <!-- CONVERSATION POPUP -->
+    <string name="addConversationTextView">Entrez le nom de la nouvelle conversation :</string>
+    <string name="removeConversationTextView">Choisir la conversation à retirer:</string>
+    <string name="conversationButton">Terminé</string>
+
+    <!-- USERS LIST -->
+    <string name="userListTitle">Liste d\'utilisateurs</string>
+    <string name="userListInviteToConversation">Inviter à une conversation</string>
+    <string name="userListInviteToFriends">Inviter à être amis</string>
+    <string name="userListInviteToDrawSession">Inviter à une session</string>
+
+
+
+
+
+
+
+
+
+
+
 </resources>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
+    <!--<RelativeLayout
         android:id="@+id/IpLayout"
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -46,7 +46,7 @@
             android:layout_alignParentRight="true"
             android:scaleY="0.7"/>
     </RelativeLayout>
-    </RelativeLayout>
+    </RelativeLayout>-->
 
     <RelativeLayout
         android:id="@+id/connexionLayout"
@@ -55,8 +55,7 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
-        android:background="@drawable/stroke_bg"
-        android:visibility="gone">
+        android:background="@drawable/stroke_bg">
 
         <RelativeLayout
             android:id="@+id/usernameModule"
@@ -127,8 +126,9 @@
         android:layout_marginTop="5dp"
         android:onClick="gotoImageEditing"
         android:text="(TEMP) Canvas" />
+
     <FrameLayout
-        android:id="@+id/imageEditingFragment"
+        android:id="@+id/chatFragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"></FrameLayout>
