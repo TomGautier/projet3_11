@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PolyPaint.Vues"
+        xmlns:VueModels="clr-namespace:PolyPaint.VueModeles"
         mc:Ignorable="d"
         Title="Page d'accueil" Height="700" Width="900" Background="AliceBlue" MinWidth="627" MinHeight="200">
     <Grid>
