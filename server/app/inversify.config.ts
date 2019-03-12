@@ -57,7 +57,7 @@ container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
 container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager);
 
-container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager);
+container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager).inSingletonScope();
 container.bind<DrawingSessionManager>(TYPES.DrawingSessionManager).to(DrawingSessionManager);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);

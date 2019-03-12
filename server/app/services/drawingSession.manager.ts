@@ -24,7 +24,7 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], args[1][0]));
         this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], args[1][0]));
         // args[0] contains the socket id, args[1] is a json with the session id, username and properties of the object.
-        this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0]).shape));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
+        this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         this.socketService.subscribe(SocketEvents.ModifyElement, args =>this.modifyElement(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
@@ -48,14 +48,13 @@ export class DrawingSessionManager {
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public addElement(doc: any) {
         console.log(doc);
-
-        this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
+        //this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to delete.
     public deleteElements(doc: any) {
-        
+        console.log(doc.shapes[2]);
         //this.drawingSessionService.deleteElements(doc.elementIds);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.DeletedElements,doc.elementIds);
     }

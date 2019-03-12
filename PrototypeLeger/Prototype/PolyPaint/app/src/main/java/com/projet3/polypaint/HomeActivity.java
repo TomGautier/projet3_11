@@ -54,6 +54,9 @@ public class HomeActivity extends AppCompatActivity {
 			createImageEditingFragment();
 			toggleImageEditingVisibility();
 		}
+		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",1,2,200,300,0);
+		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
+		SocketManager.currentInstance.deleteForm(new CollabShape[] {shape,shape,shape});
 	}
 
 	private void createChatFragment() {
