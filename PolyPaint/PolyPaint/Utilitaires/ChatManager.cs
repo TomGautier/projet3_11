@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.ObjectModel;
 
 namespace PolyPaint.Managers
 {
@@ -22,9 +23,32 @@ namespace PolyPaint.Managers
         #endregion
 
         #region Parameters
-        /// <summary>
-        /// Title of the application, as displayed in the top bar of the window
-        /// </summary>
+        private string conversationID = "General";
+        public string ConversationID
+        {
+            get
+            {
+                return conversationID;
+            }
+            set
+            {
+                conversationID = value;
+                NotifyPropertyChanged();
+            }
+        }
+        private ObservableCollection<string> conversationsID;
+        public ObservableCollection<string> ConversationsID
+        {
+            get
+            {
+                return conversationsID;
+            }
+            set
+            {
+                conversationsID = value;
+                NotifyPropertyChanged();
+            }
+        }
         private string _message = string.Empty;
         public string Message
         {
@@ -101,7 +125,12 @@ namespace PolyPaint.Managers
         #endregion
 
         #region Constructors
-        public ChatManager() { System.Windows.Application.Current.MainWindow.Closing += OnExitApp; }
+        public ChatManager()
+        {
+            System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
+            ConversationsID = new ObservableCollection<string>();
+            ConversationsID.Add("General"); // TODO : Load from server
+        }
         #endregion
 
         #region Methods
@@ -199,6 +228,12 @@ namespace PolyPaint.Managers
             History = "Welcome!";
             Username = string.Empty;
         }
+        private void OnCreateConversation()
+        {
+            //TODO : POP UP TO CREATE
+            //!ConversationsID.Contains(newElelemet); // TODO : Refresh list before checking
+            ConversationsID.Add("Test");
+        }
         #endregion
 
         #region Commands 
@@ -207,6 +242,7 @@ namespace PolyPaint.Managers
         public ICommand Connect { get { return new RelayCommand(OnConnect, AddressValid); } }
         public ICommand Disconnect { get { return new RelayCommand(OnDisconnect, AlwaysTrue); } }
         public ICommand Login { get { return new RelayCommand(OnLogin, UsernameValid); } }
+        public ICommand CreateConversation { get { return new RelayCommand(OnCreateConversation, AlwaysTrue); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
