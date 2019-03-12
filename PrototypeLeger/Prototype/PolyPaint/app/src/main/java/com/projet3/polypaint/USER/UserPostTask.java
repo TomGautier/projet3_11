@@ -1,4 +1,4 @@
-package com.projet3.polypaint.User;
+package com.projet3.polypaint.USER;
 
 import android.os.AsyncTask;
 
@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class UserLoginTask extends AsyncTask<String, String, String> {
+class UserPostTask extends AsyncTask<String, String, String> {
     protected String doInBackground(String... urls) {
         HttpURLConnection connection = null;
 

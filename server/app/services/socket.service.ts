@@ -30,6 +30,8 @@ export class SocketService {
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
+            console.log("Socket id" + socket.id + " connected.");
+            socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
@@ -63,6 +65,7 @@ export class SocketService {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.join(roomId);
+            console.log(socketId + " JOINED ROOM " + roomId);
         }
         else {
             Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);

@@ -3,21 +3,23 @@ package com.projet3.polypaint;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.Image.ImageEditingFragment;
 import com.projet3.polypaint.User.UserInformation;
 import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.RequestManager;
+import com.projet3.polypaint.USER.UserInformation;
+import com.projet3.polypaint.USER.UserManager;
 
 import java.util.ArrayList;
 
@@ -51,7 +53,7 @@ public class LoginActivity extends Activity  {
 		//ipEntry = (EditText)findViewById(R.id.ipEditText);
 		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
 
-		UserManager.currentInstance = new UserManager(IP);
+		RequestManager.currentInstance = new RequestManager(IP);
 
 		//if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected())
 		//	changeToUserUI();
@@ -75,8 +77,8 @@ public class LoginActivity extends Activity  {
 					Utilities.changeButtonState(userConnexionButton,false);
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
-					if (UserManager.currentInstance.requestLogin(userInformation)) {
-						ArrayList<Conversation> fetchedConversations = UserManager.currentInstance.fetchUserConversations(userInformation);
+					if (RequestManager.currentInstance.requestLogin(userInformation)) {
+						ArrayList<Conversation> fetchedConversations = RequestManager.currentInstance.fetchUserConversations(userInformation);
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 						intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
 						//intent.putExtra("USER_INFORMATION", userInformation);
@@ -124,7 +126,7 @@ public class LoginActivity extends Activity  {
             public void run() {
                 if(SocketManager.currentInstance.isConnected()){
                     Toast.makeText(getBaseContext(), getString(R.string.loginSuccessSocketConnect), Toast.LENGTH_LONG).show();
-                    UserManager.currentInstance = new UserManager(ipEntry.getText().toString());
+                    RequestManager.currentInstance = new RequestManager(ipEntry.getText().toString());
                     changeToUserUI();
                 }
                 else{
@@ -160,9 +162,12 @@ public class LoginActivity extends Activity  {
 
 	/*Fonction temporaire pour passer directement à l'édition d'images*/
 	public void gotoImageEditing(View button) {
+		SocketManager.currentInstance = new SocketManager("122123","");
+		UserManager.currentInstance = new UserManager(new UserInformation("allo", "allo"));
+		UserManager.currentInstance.setUserConversations(new ArrayList<Conversation>());
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
+		transaction.add(R.id.chatFragment,new ChatFragment(),"CHAT_FRAGMENT");
 		transaction.addToBackStack(null);
 		transaction.commit();
 

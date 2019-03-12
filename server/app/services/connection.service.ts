@@ -25,6 +25,7 @@ export class ConnectionManager {
     }
 
     public verifySession(sessionId: string, username: string) : boolean {
+        console.log("le sesion id de lusername :",sessionId, "celui du connectedUsers :",this.connectedUsers.get(username));
         return this.connectedUsers.get(username) === sessionId;
     }
 }

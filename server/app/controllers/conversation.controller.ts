@@ -21,8 +21,7 @@ export class ConversationController implements ConversationControllerInterface {
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
                 if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
-                
+                    { res.json(403); return; };
                 this.conversationService.getAllByUsername(req.params.username).then(conversations => {
                     res.json(conversations);
                 });
@@ -34,7 +33,13 @@ export class ConversationController implements ConversationControllerInterface {
                     { res.json(403); return; }
                 
                 this.conversationService.create(req.params.conversationName, req.params.username).then(conversation => {
-                    res.json(conversation);
+                    res.json(conversation)
+                }).catch(err => {
+                    if (err.name === 'MongoError' && err.code === 11000) {
+                        // Duplicate conv name
+                        res.json(409);
+                    }    
+                    throw err;
                 });
             });
             

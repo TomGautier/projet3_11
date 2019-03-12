@@ -3,15 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/GalleryAction"
+        android:id="@+id/galleryAction"
         android:title="@string/mainToolbarGalleryTag"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/ChatAction"
+    <!--<item
+        android:id="@+id/chatAction"
         android:title="Chat"
-        app:showAsAction="always" />
+        app:showAsAction="always"/>-->
+    <!--app:actionViewClass="android.widget.Button"-->
+
     <item
-        android:id="@+id/ImageEditingAction"
+        android:id="@+id/imageEditingAction"
         android:title="@string/mainToolbarImageEditionTag"
         app:showAsAction="always" />
     <item
