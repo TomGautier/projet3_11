@@ -138,9 +138,6 @@
     <Compile Include="Vues\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Vues\HomeWindow.xaml.cs">
-      <DependentUpon>HomeWindow.xaml</DependentUpon>
-    </Compile>
     <Page Include="Vues\ChatControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -179,10 +176,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Vues\HomeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
