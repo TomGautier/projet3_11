@@ -9,7 +9,8 @@
     <TableRow
         android:id="@+id/drawingCanevas"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/chat">
 
         <ScrollView
             android:layout_width="wrap_content"
@@ -73,6 +74,13 @@
                     android:text="@string/buttonRole"
                     style="@style/Widget.AppCompat.Button.Borderless"/>
 
+                <Button
+                    android:id="@+id/buttonTextBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonTextBox"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
                 <View style="@style/Divider"
                     android:layout_width="120dp"/>
 
@@ -81,45 +89,65 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/buttonDelete"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>/>
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
+                <Button
+                    android:id="@+id/buttonCut"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonCut"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
                 <Button
                     android:id="@+id/buttonDuplicate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/buttonDuplicate"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>/>
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
                 <Button
                     android:id="@+id/buttonReset"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/buttonReset"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>/>
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_horizontal">
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
                     <ImageButton
                         android:id="@+id/backButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_back_arrow"
-                        />
+                        android:src="@drawable/ic_back_arrow" />
+
                     <ImageButton
                         android:id="@+id/restoreButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_forward_arrow"
-                        />
+                        android:src="@drawable/ic_forward_arrow" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>
 
-        <ImageView
-            android:id="@+id/canvasView"
+        <LinearLayout
+            android:id="@+id/canvasBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/canvasBackground"/>
+            android:orientation="horizontal"
+            android:background="@color/canvasBackground">
+
+            <ImageView
+                android:id="@+id/canvasView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_light"
+                android:scrollbars="none"
+                app:srcCompat="@android:color/background_light" />
+        </LinearLayout>
 
     </TableRow>
     <View style="@style/Divider"

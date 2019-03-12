@@ -12,7 +12,10 @@
     <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
     <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
     <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
+    <string name="ok">Confirmer</string>
+    <string name="cancel">Annuler</string>
 
+    <!-- IMAGE EDITING -->
     <string name="buttonClass">Classe</string>
     <string name="buttonActivity">Activité</string>
     <string name="buttonRole">Rôle</string>
@@ -20,13 +23,16 @@
     <string name="buttonSelection">Sélection</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>
-    <string name="buttonDuplicate">Duppliquer</string>
+    <string name="buttonDuplicate">Dupliquer</string>
     <string name="buttonReset">Réinitialiser</string>
     <string name="buttonMove">Déplacer</string>
+    <string name="buttonCut">Couper</string>
 
     <!-- MAIN TOOLBAR -->
     <string name="mainToolbarGalleryTag">Gallerie</string>
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+    <string name="buttonTextBox">Texte</string>
+    <string name="textEditing">Insertion de texte flottant</string>
 
     <!-- CHAT TOOLBAR -->
     <string name="chatToolbarAddConversation">Ajouter une conversation</string>
@@ -43,14 +49,6 @@
     <string name="userListInviteToConversation">Inviter à une conversation</string>
     <string name="userListInviteToFriends">Inviter à être amis</string>
     <string name="userListInviteToDrawSession">Inviter à une session</string>
-
-
-
-
-
-
-
-
 
 
 
