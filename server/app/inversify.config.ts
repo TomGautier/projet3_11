@@ -21,16 +21,19 @@ import { DateServiceInterface,
          ConversationControllerInterface,
          ConversationServiceInterface,
          ConnectionControllerInterface,
-         ConnectionServiceInterface} from "./interfaces";
+         ConnectionServiceInterface,
+         DrawingSessionServiceInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";
-import { ConversationManager } from "./services/conversation.manager";
+import { ConversationManager} from "./services/conversation.manager";
 import { ConnectionService, ConnectionManager } from "./services/connection.service";
 import { UserService } from "./services/user.service";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConversationService } from "./services/conversation.service";
 import { ConnectionController } from "./controllers/connection.controller";
+import { DrawingSessionService } from "./services/drawingSession.service";
+import { DrawingSessionManager} from "./services/drawingSession.manager";
 
 const container: Container = new Container();
 
@@ -40,6 +43,7 @@ container.bind<ConversationControllerInterface>(TYPES.ConversationControllerInte
 container.bind<ConversationServiceInterface>(TYPES.ConversationServiceInterface).to(ConversationService);
 container.bind<ConnectionControllerInterface>(TYPES.ConnectionControllerInterface).to(ConnectionController);
 container.bind<ConnectionServiceInterface>(TYPES.ConnectionServiceInterface).to(ConnectionService);
+container.bind<DrawingSessionServiceInterface>(TYPES.DrawingSessionServiceInterface).to(DrawingSessionService);
 
 container.bind<ApplicationInterface>(TYPES.ApplicationInterface).to(Application);
 container.bind<IndexControllerInterface>(TYPES.IndexControllerInterface).to(IndexController);
@@ -51,8 +55,10 @@ container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService)
 
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
-container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager).inSingletonScope();
-container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager).inSingletonScope();
+container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager);
+
+container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager);
+container.bind<DrawingSessionManager>(TYPES.DrawingSessionManager).to(DrawingSessionManager);
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
 

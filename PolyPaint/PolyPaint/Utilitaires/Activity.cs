@@ -14,9 +14,12 @@ namespace PolyPaint.Utilitaires
 {
     class Activity : Form
     {
+        public const int DEFAULT_HEIGHT = 70;
+        public const int DEFAULT_WIDTH = 130;
+        public const string TYPE = "Activity";
+
         public string Name { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+       
 
 
         public Activity(StylusPointCollection pts) : base(pts)
@@ -29,8 +32,9 @@ namespace PolyPaint.Utilitaires
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
+            this.Type = TYPE;
         }
-        private void MakeShape()
+        protected override void  MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));
@@ -44,11 +48,13 @@ namespace PolyPaint.Utilitaires
         }
         private void updatePoints()
         {
-            double x = this.StylusPoints[0].X + (this.StylusPoints[3].X - this.StylusPoints[0].X) / 2;
-            double y = this.StylusPoints[0].Y + (this.StylusPoints[3].Y - this.StylusPoints[0].Y) / 2;
-            this.Center = new Point((int)x, (int)y);
             Vector heightDirection = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint());
             Point startWidth = new Point(this.StylusPoints[0].X + heightDirection.X / 2, this.StylusPoints[0].Y + heightDirection.Y / 2);
+            //  double x = startWidth.X + (this.StylusPoints[2].X - startWidth.X) / 2;
+            //  double y = this.StylusPoints[0].Y + (this.StylusPoints[4].Y - this.StylusPoints[0].Y) / 2;
+            //  this.Center = new Point((int)x, (int)y);
+            this.Center = startWidth + Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth) / 2;
+           
             this.Width = Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth).Length;
             this.Height = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
         }
@@ -68,6 +74,7 @@ namespace PolyPaint.Utilitaires
 
         {
             Fill(drawingContext);
+            SetSelection(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
         }

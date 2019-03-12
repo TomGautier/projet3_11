@@ -5,6 +5,7 @@
 import { Message } from "../../common/communication/message";
 import { Router } from "express";
 import { Application } from "express";
+import { injectable } from "inversify";
 
 export interface ConversationServiceInterface {
     getAllByUsername(sessionId: string, username: string): Promise<{}>;
@@ -21,6 +22,10 @@ export interface ConnectionServiceInterface {
 
 export interface ConnectionControllerInterface {
     router: Router;
+}
+export interface DrawingSessionServiceInterface {
+   
+    
 }
 
 export interface IndexServiceInterface {
