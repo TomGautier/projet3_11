@@ -28,7 +28,6 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         this.socketService.subscribe(SocketEvents.ModifyElement, args =>this.modifyElement(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
-        this.socketService.subscribe(SocketEvents.UnselectElements, args => this.verifyAndAct(args[0], args[1][0], this.unselectElements));
         this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
     }
 
@@ -68,11 +67,6 @@ export class DrawingSessionManager {
     // doc.elementIds should be an array containing the IDs of the shapes to select.
     public selectElements(doc: any) {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements,doc);
-    }
-
-    // doc.elements should be an array containing the IDs of the shapes to unselect.
-    public unselectElements(doc: any) {
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.UnselectedElements);
     }
 
     public resizeCanvas(doc: any) {

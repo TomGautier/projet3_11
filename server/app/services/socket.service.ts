@@ -41,7 +41,6 @@ export class SocketService {
             socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));
             socket.on(SocketEvents.ModifyElement, args => this.handleEvent(SocketEvents.ModifyElement, socket.id, args));
             socket.on(SocketEvents.SelectElements, args => this.handleEvent(SocketEvents.SelectElements, socket.id, args));
-            socket.on(SocketEvents.UnselectedElements, args => this.handleEvent(SocketEvents.UnselectElements, socket.id, args));
             socket.on(SocketEvents.ResizeCanvas, args => this.handleEvent(SocketEvents.ResizeCanvas, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
