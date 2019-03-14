@@ -95,13 +95,20 @@ namespace PolyPaint.VueModeles
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
         public RelayCommand<object> RotateForm { get; set; }
-       // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
-        
+        // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
+
         public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
+        public ICommand Login { get { return new RelayCommand(OnLogin, () => { return true; /*TODO : Check fields*/}); } }
 
         private void OnNavigateLogin()
         {
             SwitchView = 1;
+        }
+
+        private void OnLogin()
+        {
+            // TODO : actual login...
+            SwitchView = 2;
         }
 
         /// <summary>

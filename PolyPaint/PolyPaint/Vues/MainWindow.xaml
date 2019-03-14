@@ -11,14 +11,20 @@
         mc:Ignorable="d"
         Title="Poly Paint" Height="700" Width="900" Background="#CBD4E4" MinWidth="627" MinHeight="200">
     <Window.Resources>
-        <DataTemplate x:Key="View1Template" DataType="{x:Type VueModels:VueModele}">
+        <DataTemplate x:Key="HomeView" DataType="{x:Type VueModels:VueModele}">
             <Vues:HomeControl VerticalAlignment="Center"/>
         </DataTemplate>
 
-        <DataTemplate x:Key="View2Template" DataType="{x:Type VueModels:VueModele}">
+        <DataTemplate x:Key="DrawView" DataType="{x:Type VueModels:VueModele}">
             <DockPanel>
                 <Vues:ChatControl/>
                 <Vues:DrawControl/>
+            </DockPanel>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="LoginView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:LoginControl/>
             </DockPanel>
         </DataTemplate>
     </Window.Resources>
@@ -31,12 +37,16 @@
         <ContentControl Content="{Binding }">
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
-                    <Setter Property="ContentTemplate" Value="{StaticResource View1Template}" />
+                    <Setter Property="ContentTemplate" Value="{StaticResource HomeView}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding SwitchView}" Value="1">
-                            <Setter Property="ContentTemplate" Value="{StaticResource View2Template}" />
+                            <Setter Property="ContentTemplate" Value="{StaticResource LoginView}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="2">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DrawView}" />
                         </DataTrigger>
                     </Style.Triggers>
+                    
                 </Style>
             </ContentControl.Style>
         </ContentControl>

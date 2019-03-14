@@ -13,11 +13,7 @@
                 <ColumnDefinition  Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Username : "/>
-            <TextBox Grid.Column="1" Text="{Binding ChatManager.Username, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center">
-                <TextBox.InputBindings>
-                    <KeyBinding Command="{Binding ChatManager.Login}" Key="Return"/>
-                </TextBox.InputBindings>
-            </TextBox>
+            <TextBox Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -25,12 +21,8 @@
                 <ColumnDefinition  Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Password : "/>
-            <TextBox Grid.Column="1" Text="{Binding ChatManager.Username, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center">
-                <TextBox.InputBindings>
-                    <KeyBinding Command="{Binding ChatManager.Login}" Key="Return"/>
-                </TextBox.InputBindings>
-            </TextBox>
+            <TextBox Grid.Column="1" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
         </Grid>
-        <Button Content="Login" Name="loginButton" Command="{Binding ChatManager.Login, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Content="Login" Name="loginButton" Command="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
     </StackPanel>
 </UserControl>
