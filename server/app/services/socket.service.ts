@@ -37,12 +37,21 @@ export class SocketService {
             socket.on(SocketEvents.UserJoinedRoom, args => this.handleEvent(SocketEvents.UserJoinedRoom, socket.id, args));
             
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+
             socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
             socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));
             socket.on(SocketEvents.ModifyElement, args => this.handleEvent(SocketEvents.ModifyElement, socket.id, args));
+
+            socket.on(SocketEvents.DuplicateElements, args => this.handleEvent(SocketEvents.DuplicateElements, socket.id, args));
+            socket.on(SocketEvents.CutElements, args => this.handleEvent(SocketEvents.CutElements, socket.id, args));
+           
+            socket.on(SocketEvents.StackElements, args => this.handleEvent(SocketEvents.StackElements, socket.id, args));
+            socket.on(SocketEvents.UnstackElements, args => this.handleEvent(SocketEvents.UnstackElements, socket.id, args));
+
             socket.on(SocketEvents.SelectElements, args => this.handleEvent(SocketEvents.SelectElements, socket.id, args));
-            socket.on(SocketEvents.UnselectedElements, args => this.handleEvent(SocketEvents.UnselectElements, socket.id, args));
+
             socket.on(SocketEvents.ResizeCanvas, args => this.handleEvent(SocketEvents.ResizeCanvas, socket.id, args));
+            socket.on(SocketEvents.ResetCanvas, args => this.handleEvent(SocketEvents.ResetCanvas, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
