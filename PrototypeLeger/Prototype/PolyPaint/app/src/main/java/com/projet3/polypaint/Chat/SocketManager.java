@@ -1,7 +1,6 @@
 package com.projet3.polypaint.Chat;
 
-import com.projet3.polypaint.SocketLoginListener;
-import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.UserManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +17,7 @@ public class SocketManager  {
     public final String USERLOGGED_TAG = "UserLogged";
     public final String USERLEFT_TAG = "UserLeft";
     public final String JOIN_CONVERSATION_TAG = "UserJoinedConversation";
+    public final String LEAVE_CONVERSATION_TAG = "UserLeftConversation";
 
 
     private final String DATE_TAG = "date";
@@ -75,7 +75,7 @@ public class SocketManager  {
         JSONObject args = null;
        // JSONObject messageJSON = null;
         try {
-           // messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername()).put(MESSAGE_TAG, message);
+           // messageJSON = new JSONObject().put(DATE_TAG,date).put(USERNAME_TAG, RequestManager.currentInstance.getUserUsername()).put(MESSAGE_TAG, message);
             args = new JSONObject().put(SESSION_ID_TAG, sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
                     .put(CONVERSATION_ID_TAG, conversationId).put(MESSAGE_TAG, message);
         }catch(JSONException e) {}
@@ -93,6 +93,16 @@ public class SocketManager  {
             e.printStackTrace();
         }
         socket.emit(JOIN_CONVERSATION_TAG, json);
+    }
+    public void leaveConversation(String conversationID){
+        JSONObject json = null;
+        try{
+            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
+                    .put(CONVERSATION_ID_TAG, conversationID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        socket.emit(LEAVE_CONVERSATION_TAG, json);
     }
 
 

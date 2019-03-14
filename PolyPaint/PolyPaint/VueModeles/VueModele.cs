@@ -1,10 +1,14 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Ink;
+using System.Windows.Input;
 using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
+using System.Windows.Input;
 
 namespace PolyPaint.VueModeles
 {
@@ -23,7 +27,29 @@ namespace PolyPaint.VueModeles
         public int SwitchView
         {
             get { return switchView; }
-            set { switchView = value; ProprieteModifiee(); }
+            set { switchView = value; ProprieteModifiee(); }    
+            //get { return editeur.OutilSelectionne; }            
+            //set { ProprieteModifiee(); }
+        }
+        public string CouleurSelectionnee
+        {
+            get { return editeur.CouleurSelectionnee; }
+            set {
+                editeur.CouleurSelectionnee = value;
+            }
+        }
+        public StrokeCollection LastCut
+        {
+            get { return editeur.LastCut; }
+            set { editeur.LastCut = value; }
+        }
+        public string RemplissageSelectionne
+        {
+            get { return editeur.RemplissageSelectionne; }
+            set
+            {
+                editeur.RemplissageSelectionne = value;
+            }
         }
         
         private ChatManager chatManager = new ChatManager();
@@ -31,6 +57,7 @@ namespace PolyPaint.VueModeles
         {
             get { return chatManager; }
             set { ProprieteModifiee(); }
+
         }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
@@ -42,13 +69,40 @@ namespace PolyPaint.VueModeles
             set { ProprieteModifiee(); }
         }
 
-        public StrokeCollection Traits { get; set; }
+        public int TailleTrait
+        {
+            get { return editeur.TailleTrait; }
+            set { editeur.TailleTrait = value; }
+        }
+        public StrokeCollection SelectedStrokes
+        {
+            get { return editeur.selectedStrokes; }
+            set { editeur.selectedStrokes = value; }
+        }
+        public int CurrentRotation
+        {
+            get { return (editeur.selectedStrokes[0] as Form).CurrentRotation; }
+            set { (editeur.selectedStrokes[0] as Form).CurrentRotation = value; }
+        }
 
+        public StrokeCollection Traits { get; set; }
         // Commandes sur lesquels la vue pourra se connecter.
         public RelayCommand<object> Empiler { get; set; }
         public RelayCommand<object> Depiler { get; set; }
         public RelayCommand<string> ChoisirOutil { get; set; }
-        public RelayCommand<object> Reinitialiser { get; set; }        
+        public RelayCommand<object> Reinitialiser { get; set; }
+
+        public RelayCommand<string> ChoisirForme { get; set; }
+        public RelayCommand<string> AddForm { get; set; }
+        public RelayCommand<object> RotateForm { get; set; }
+       // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
+        
+        public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
+
+        private void OnNavigateLogin()
+        {
+            SwitchView = 1;
+        }
 
         /// <summary>
         /// Constructeur de VueModele
@@ -61,17 +115,23 @@ namespace PolyPaint.VueModeles
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
             // On initialise les attributs de dessin avec les valeurs de départ du modèle.
-            AttributsDessin = new DrawingAttributes();            
-
-            Traits = editeur.traits;
+            AttributsDessin = new DrawingAttributes();
+            AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
+            AjusterPointe();
             
+            Traits = editeur.traits;
+            SelectedStrokes = editeur.selectedStrokes;
+            
+
             // Pour chaque commande, on effectue la liaison avec des méthodes du modèle.            
-            Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);            
+            Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);
             Depiler = new RelayCommand<object>(editeur.Depiler, editeur.PeutDepiler);
+            //AddForm = new RelayCommand<string>(editeur.AddForm);
+            RotateForm = new RelayCommand<object>(editeur.RotateForm);
             // Pour les commandes suivantes, il est toujours possible des les activer.
             // Donc, aucune vérification de type Peut"Action" à faire.
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
-            Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);            
+            Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
         }
 
         /// <summary>
@@ -94,11 +154,58 @@ namespace PolyPaint.VueModeles
         /// <param name="e">Les paramètres de l'évènement. PropertyName est celui qui nous intéresse. 
         /// Il indique quelle propriété a été modifiée dans le modèle.</param>
         private void EditeurProprieteModifiee(object sender, PropertyChangedEventArgs e)
-        {           
-              if (e.PropertyName == "OutilSelectionne")
-             {
-                 OutilSelectionne = editeur.OutilSelectionne;
-             }
+        {     
+            if (e.PropertyName == "CouleurSelectionnee")
+            {
+                ProprieteModifiee(e.PropertyName);
+            }
+            else if (e.PropertyName == "RemplissageSelectionne")
+            {
+                ProprieteModifiee(e.PropertyName);
+            }
+            else if (e.PropertyName == "OutilSelectionne")
+            {
+                OutilSelectionne = editeur.OutilSelectionne;
+            }                    
+        }
+        public void HandleSelection(StrokeCollection strokes)
+        {
+            editeur.ChangeSelection(strokes);
+            //TODO : Send socket -> selection was changed
+        }
+        public void HandleDrag()
+        {
+            // TODO : Send socket -> selection has moved
+        }
+        public void HandleResize()
+        {
+            // TODO : Send socket -> selection was resized
+        }
+        public void RestoreLastTrait()
+        {
+            editeur.Depiler(null);
+        }
+        public void HandleMouseDown(Point mousePos)
+        {
+            editeur.HandleMouseDown(mousePos);
+        }
+        public void HandleRotation(Point rotatePoint)
+        {
+            editeur.RotateForm(rotatePoint);
+
+            //TODO : Send socket -> selection was rotated
+        }
+
+        /// <summary>
+        /// C'est ici qu'est défini la forme de la pointe, mais aussi sa taille (TailleTrait).
+        /// Pourquoi deux caractéristiques se retrouvent définies dans une même méthode? Parce que pour créer une pointe 
+        /// horizontale ou verticale, on utilise une pointe carrée et on joue avec les tailles pour avoir l'effet désiré.
+        /// </summary>
+        private void AjusterPointe()
+        {
+            AttributsDessin.StylusTip = (editeur.PointeSelectionnee == "ronde") ? StylusTip.Ellipse : StylusTip.Rectangle;
+            AttributsDessin.Width = (editeur.PointeSelectionnee == "verticale") ? 1 : editeur.TailleTrait;
+            AttributsDessin.Height = (editeur.PointeSelectionnee == "horizontale") ? 1 : editeur.TailleTrait;
         }
     }
 }

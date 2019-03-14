@@ -1,44 +1,91 @@
 package com.projet3.polypaint;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+//import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.User.UserInformation;
-import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.UserManager;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends Activity  {
+public class HomeActivity extends AppCompatActivity {
 
-	private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
-	private UserInformation userInformation;
+	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
+	//private UserInformation userInformation;
+    private final String CHAT_TAG = "CHAT_FRAGMENT";
+    private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
+	private final String USER_TABLE_TAG = "USER_TABLE_FRAGMENT";
 
+	private  Toolbar mainToolbar;
+	private FrameLayout chatFragmentLayout;
+	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout usersListFragmentLayout;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if (savedInstanceState == null){
-			//userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-			//ArrayList convos = new ArrayList();
-			//convos.add(new Conversation("convo1"));
-			//convos.add(new Conversation("convo2"));
+		setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		mainToolbar = (Toolbar)findViewById(R.id.mainToolbar);
+		mainToolbar.setTitle("PolyPaint");
+		setSupportActionBar(mainToolbar);
+		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
+		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 
-			FragmentManager manager = getFragmentManager();
-			FragmentTransaction transaction = manager.beginTransaction();
-			transaction.add(R.id.chatFragment, ChatFragment.newInstance(
-					getIntent().getExtras().<Conversation>getParcelableArrayList("CONVERSATIONS")),"CHAT_FRAGMENT");
-			transaction.addToBackStack(null);
-			transaction.commit();
+
+
+		if (savedInstanceState == null){
+			createUsersTableFragment();
+			createChatFragment();
+			createImageEditingFragment();
+			toggleImageEditingVisibility();
 		}
+	}
+
+	private void createChatFragment() {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.chatFragment, new ChatFragment(),CHAT_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+	private void createImageEditingFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
+	}
+	private void createUsersTableFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		ArrayList<String> users = new ArrayList<>();
+		users.add("Marcel");
+		users.add("Marcel2");
+		users.add("Marcel3");
+		users.add("Marcel4");
+		users.add("Marcel5");
+		users.add("Marcel6");
+		users.add("Marcel7");
+		users.add("Marcel8");
+		users.add("Marcel9");
+		transaction.add(R.id.usersTableFragment, UsersListFragment.newInstance(users),USER_TABLE_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
 	}
 
 
@@ -55,27 +102,75 @@ public class HomeActivity extends Activity  {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				SocketManager.currentInstance.leave(userInformation.getUsername());
+		switch(item.getItemId()) {
+			case R.id.menuAbout:
+				Toast.makeText(this, "You clicked about", Toast.LENGTH_SHORT).show();
+				break;
+
+			case R.id.menuSettings:
+				Toast.makeText(this, "You clicked settings", Toast.LENGTH_SHORT).show();
+				break;
+
+			case R.id.menuLogout:
+				SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
 				startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+				break;
+			case R.id.galleryAction:
+				break;
+			/*case R.id.chatAction:
+				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
+				dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
+				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+					@Override
+					public boolean onMenuItemClick(MenuItem menuItem) {
+						switch(menuItem.getItemId()){
+							case R.id.addConversationChatAction:
+								createAddConversationPopup();
+								break;
+							case R.id.removeConversationChatAction:
+								createRemoveConversationPopup();
+								break;
+							case R.id.hideShowChatAction:
+								toggleChatVisibility();
+								break;
+						}
+						return true;
+					}
+				});
+				dropDownMenu.show();
+				toggleChatVisibility();
+				break;*/
+			case R.id.imageEditingAction:
+				toggleImageEditingVisibility();
+				break;
 		}
+		return true;
 	}
+	private void toggleImageEditingVisibility(){
+		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
+			imageEditingFragmentLayout.setVisibility(View.GONE);
+		else
+			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
+	}
+
+	/*private void toggleChatVisibility(){
+		if (chatFragmentLayout.getVisibility() == View.VISIBLE)
+			chatFragmentLayout.setVisibility(View.GONE);
+		else
+			chatFragmentLayout.setVisibility(View.VISIBLE);
+	}*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
+
+    }
+
 	@Override
 	public void onBackPressed() {
 		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
-	}
-	// INTEGRATION
-	public void gotoImageEditing(View button) {
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),"EDITING_FRAGMENT");
-		transaction.addToBackStack(null);
-		transaction.commit();
 	}
 }
 

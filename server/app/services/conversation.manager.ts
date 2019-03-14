@@ -15,7 +15,7 @@ export class ConversationManager {
         // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId, arg[1][0].message
         this.socketService.subscribe(SocketEvents.UserJoinedConversation, args => this.joinConversation(args[0], args[1]));
         // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId
-        this.socketService.subscribe(SocketEvents.UserLeft, args => this.leaveConversation(args[0], args[1]));
+        this.socketService.subscribe(SocketEvents.UserLeftConversation, args => this.leaveConversation(args[0], args[1]));
     }
 
     public onMessageSent(socketId: string, args: any) {

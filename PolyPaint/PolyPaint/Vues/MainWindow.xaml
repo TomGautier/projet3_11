@@ -12,7 +12,7 @@
         Title="Poly Paint" Height="700" Width="900" Background="#CBD4E4" MinWidth="627" MinHeight="200">
     <Window.Resources>
         <DataTemplate x:Key="View1Template" DataType="{x:Type VueModels:VueModele}">
-            <Vues:LoginControl VerticalAlignment="Center"/>
+            <Vues:HomeControl VerticalAlignment="Center"/>
         </DataTemplate>
 
         <DataTemplate x:Key="View2Template" DataType="{x:Type VueModels:VueModele}">
@@ -33,7 +33,7 @@
                 <Style TargetType="{x:Type ContentControl}">
                     <Setter Property="ContentTemplate" Value="{StaticResource View1Template}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ChatManager.ConnectionStatus}" Value="connected">
+                        <DataTrigger Binding="{Binding SwitchView}" Value="1">
                             <Setter Property="ContentTemplate" Value="{StaticResource View2Template}" />
                         </DataTrigger>
                     </Style.Triggers>
