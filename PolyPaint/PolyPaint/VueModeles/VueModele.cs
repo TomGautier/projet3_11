@@ -22,6 +22,8 @@ namespace PolyPaint.VueModeles
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
+        private NetworkManager networkManager = new NetworkManager();
+        private string sessionId;
 
         private int switchView = 0;
         public int SwitchView
@@ -58,6 +60,18 @@ namespace PolyPaint.VueModeles
             get { return chatManager; }
             set { ProprieteModifiee(); }
 
+        }
+
+        private string username;
+        public string Username
+        {
+            get { return username; }
+            set
+            {
+                username = value;
+                ChatManager.Username = value;
+                ProprieteModifiee();
+            }
         }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
@@ -98,16 +112,21 @@ namespace PolyPaint.VueModeles
         // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
 
         public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
-        public ICommand Login { get { return new RelayCommand(OnLogin, () => { return true; /*TODO : Check fields*/}); } }
 
         private void OnNavigateLogin()
         {
             SwitchView = 1;
         }
 
-        private void OnLogin()
+        public async void Login(string password)
         {
-            // TODO : actual login...
+            // TODO : PasswordBox and workaround binding...
+            sessionId = await networkManager.LoginAsync(Username, password);
+            if (sessionId == "")
+            {
+                MessageBox.Show("Wrong login informations", "Error");
+                return;
+            }
             SwitchView = 2;
         }
 

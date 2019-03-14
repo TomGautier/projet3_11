@@ -21,8 +21,8 @@
                 <ColumnDefinition  Width="2*"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Password : "/>
-            <TextBox Grid.Column="1" Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
+            <PasswordBox Grid.Column="1" Name="passwordBox" VerticalContentAlignment="Center"/>
         </Grid>
-        <Button Content="Login" Name="loginButton" Command="{Binding Login, UpdateSourceTrigger=PropertyChanged}"/>
+        <Button Content="Login" Name="loginButton" Command="{Binding Login, UpdateSourceTrigger=PropertyChanged}" Click="LoginButton_Click"/>
     </StackPanel>
 </UserControl>
