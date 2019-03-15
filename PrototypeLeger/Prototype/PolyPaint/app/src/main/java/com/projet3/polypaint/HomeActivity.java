@@ -15,9 +15,12 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.DrawingCollabSession.CollabShape;
+import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
 import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.USER.UserManager;
+import com.projet3.polypaint.UserLogin.LoginActivity;
+import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.UserList.UsersListFragment;
 
 import java.util.ArrayList;
 
@@ -54,9 +57,9 @@ public class HomeActivity extends AppCompatActivity {
 			createImageEditingFragment();
 			toggleImageEditingVisibility();
 		}
-		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",1,2,200,300,0);
+		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",new int[] {1,2},200,300,0);
 		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
-		SocketManager.currentInstance.deleteForm(new CollabShape[] {shape,shape,shape});
+		SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
 	}
 
 	private void createChatFragment() {
