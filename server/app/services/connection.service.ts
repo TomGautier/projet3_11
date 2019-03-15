@@ -24,6 +24,10 @@ export class ConnectionManager {
         this.connectedUsers.delete(username);
     }
 
+    public isConnected(username: string): boolean {
+        return this.connectedUsers.has(username);
+    } 
+
     public verifySession(sessionId: string, username: string) : boolean {
         console.log("le sesion id de lusername :",sessionId, "celui du connectedUsers :",this.connectedUsers.get(username));
         return this.connectedUsers.get(username) === sessionId;
@@ -34,7 +38,6 @@ export class ConnectionManager {
 export class ConnectionService implements ConnectionServiceInterface {
     
     constructor(
-        @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
         @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager,
         @inject(TYPES.UserService) private userService: UserService,
         @inject(TYPES.SocketService) private socketService: SocketService
@@ -43,7 +46,7 @@ export class ConnectionService implements ConnectionServiceInterface {
     }
 
     public async onUserLogin(username: string, password: string): Promise<string> {     
-        const user = new User(await this.userService.find(username));
+        const user = new User(await this.userService.getByUsername(username));
         if (user.password === password) {
             const sessionId = uuid.v1();
             this.connectionManager.addUser(sessionId, username);
