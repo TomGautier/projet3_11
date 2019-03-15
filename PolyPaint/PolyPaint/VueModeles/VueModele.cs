@@ -120,7 +120,6 @@ namespace PolyPaint.VueModeles
 
         public async void Login(string password)
         {
-            // TODO : PasswordBox and workaround binding...
             sessionId = await networkManager.LoginAsync(Username, password);
             if (sessionId == "")
             {
