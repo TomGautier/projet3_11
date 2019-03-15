@@ -14,7 +14,7 @@ export class UserManager {
 
     public addUser(sessionId: string, username: string) {
         this.connectedUsers.set(username, sessionId);
-        this.socketService.broadcast(SocketEvents.UserJoinedChat);
+        this.socketService.broadcast(SocketEvents.UserJoinedChat, username);
     }
 
     public removeUser(username: string) {
