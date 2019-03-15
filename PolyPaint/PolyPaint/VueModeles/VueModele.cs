@@ -77,6 +77,11 @@ namespace PolyPaint.VueModeles
             get { return editeur.SocketManager; }
             set { editeur.SocketManager = value; }
         }
+        public FormConnectorManager FormConnectorManager
+        {
+            get { return editeur.FormConnectorManager; }
+            set { editeur.FormConnectorManager = value; }
+        }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
@@ -125,6 +130,7 @@ namespace PolyPaint.VueModeles
         public VueModele()
         {
             this.Canvas = new CustomInkCanvas();
+            FormConnectorManager = new FormConnectorManager();
             SocketManager = new SocketManager();
             SocketManager.JoinDrawingSession("MockSessionID");
             //SocketManager.UserName = "Olivier";

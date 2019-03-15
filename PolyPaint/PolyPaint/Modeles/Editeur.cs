@@ -29,6 +29,7 @@ namespace PolyPaint.Modeles
         private StrokeCollection traitsRetires = new StrokeCollection();
         
         public SocketManager SocketManager { get; set; }
+        public FormConnectorManager FormConnectorManager { get; set; }
         // Outil actif dans l'éditeur
         private string outilSelectionne = "lasso";
         public string OutilSelectionne
@@ -48,7 +49,6 @@ namespace PolyPaint.Modeles
                 ProprieteModifiee();
             }
         }
-        
 
         // Couleur des traits tracés par le crayon.
         private string couleurSelectionnee = "Black";
@@ -211,9 +211,39 @@ namespace PolyPaint.Modeles
             catch { }
 
         }
+        private void HandleConnector(Point p) {
+
+            bool isOnEncrage = false;
+            bool newArrowCreated = false;
+            foreach (Form form in this.traits)
+            {
+                if (Math.Abs(Point.Subtract(form.Center,p).Length) < 20)
+                {
+                    newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.Center.X,form.Center.Y), true, form);
+                    isOnEncrage = true;
+                }
+                
+            }
+            if (!isOnEncrage)
+            {
+                newArrowCreated = this.FormConnectorManager.update(new StylusPoint(p.X,p.Y), false, null);
+            }
+            if (newArrowCreated)
+            {
+                this.traits.Add(this.FormConnectorManager.Arrows.Last());
+            }
+            
+
+
+
+        }
         public void HandleMouseDown(Point p)
         {
-            if (outilSelectionne.Contains("form"))
+            if (OutilSelectionne == "connexion")
+            {
+                HandleConnector(p);
+            }
+            if (OutilSelectionne.Contains("form"))
             {
                 //Point center = new Point((int)position.X, (int)position.Y);
                 StylusPointCollection pts = new StylusPointCollection();
@@ -357,6 +387,10 @@ namespace PolyPaint.Modeles
             StrokeCollection toBeDeleted = new StrokeCollection(traits.Where(s => list.Contains((s as Form).Id)));
             foreach (Stroke s in toBeDeleted)
             {
+                if ((s as Form).Arrow != null)
+                {
+                    traits.Remove((s as Form).Arrow);
+                }
                 traits.Remove(s);
             }
         }

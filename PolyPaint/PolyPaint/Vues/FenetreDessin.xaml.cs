@@ -7,6 +7,9 @@ using PolyPaint.VueModeles;
 using System.Windows.Ink;
 using PolyPaint.Utilitaires;
 using System.Windows.Controls;
+using PolyPaint.Vues;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace PolyPaint
 {
@@ -52,6 +55,7 @@ namespace PolyPaint
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             (DataContext as VueModele).HandleMouseDown(e.GetPosition(surfaceDessin));
+            
         }
 
         private void DupliquerSelection(object sender, RoutedEventArgs e)
@@ -79,7 +83,18 @@ namespace PolyPaint
            // (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
            // surfaceDessin.CutSelection();        
         }
-        
+        private void surfaceDessin_SetSelectionText(object sender, RoutedEventArgs e)
+        {
+            UmlClassSetter text = new UmlClassSetter("type");
+            text.Show();
+            text.Closing += new CancelEventHandler(SetterClosingHandler);
+        }
+
+        private void SetterClosingHandler(object sender, CancelEventArgs e)
+        {
+            List<string> methods = (sender as UmlClassSetter).Methods;
+        }
+
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
 

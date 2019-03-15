@@ -85,6 +85,11 @@ namespace PolyPaint.Utilitaires
             Point startHeight = Point.Subtract(this.StylusPoints[0].ToPoint(), this.Radius * heightDirection);
             Point endHeight = startHeight + this.Height*heightDirection;
             this.Center = startHeight + Point.Subtract(endHeight, startHeight) / 2;
+
+            if (this.Arrow != null)
+            {
+                this.Arrow.ShapeMoved(this.Id,new StylusPoint(this.Center.X,this.Center.Y));
+            }
             
          }
         private void Fill(DrawingContext drawingContext)

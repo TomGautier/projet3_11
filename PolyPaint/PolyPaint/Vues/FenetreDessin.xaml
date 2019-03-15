@@ -71,6 +71,15 @@
                         <Image Source="/Resources/efface.png" />
                     </StackPanel>
                 </Button>
+                <Button Name="connexion" Width="40" Height="40" Margin="5" 
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=connexion, UpdateSourceTrigger=PropertyChanged}" 
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=connexion, UpdateSourceTrigger=PropertyChanged}" 
+                        Command="{Binding Path=ChoisirOutil}"
+                        CommandParameter="connexion">
+                    <StackPanel>
+                        <Image Source="/Resources/efface.png" />
+                    </StackPanel>
+                </Button>
                 <StackPanel Orientation="Horizontal">
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 </StackPanel>
@@ -151,8 +160,19 @@
                         <Image Source="/Resources/position.png" />
                     </StackPanel>
                 </Button>
+                <Button Name="TextSetter" Width="60" Height="40" Margin="5"               
+                        Click="surfaceDessin_SetSelectionText">
+                    <StackPanel>
+                        <TextBlock>
+                    <Bold>Set Text</Bold>
+                        </TextBlock>
+                    </StackPanel>
+                </Button>
                 <TextBox Width="80" Text="{Binding Username}"></TextBox>
+
+
             </StackPanel>
+            
         </Border>
         <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000"/>
 

@@ -22,6 +22,7 @@ namespace PolyPaint.Utilitaires
         public string Type { get; set; }
         public int CurrentRotation { get; set; }
         public Point Center { get; set; }
+        public Arrow Arrow { get; set; }
 
         private Color remplissage;
         public Color Remplissage
@@ -61,6 +62,7 @@ namespace PolyPaint.Utilitaires
             copy.Transform(rotatingMatrix, false);
             this.StylusPoints = copy.StylusPoints;
             this.CurrentRotation = degrees;
+            
         }
         public void SetToShape(Shape shape)
         {
