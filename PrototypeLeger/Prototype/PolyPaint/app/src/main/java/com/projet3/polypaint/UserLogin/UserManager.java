@@ -1,4 +1,4 @@
-package com.projet3.polypaint.USER;
+package com.projet3.polypaint.UserLogin;
 
 import com.projet3.polypaint.Chat.Conversation;
 

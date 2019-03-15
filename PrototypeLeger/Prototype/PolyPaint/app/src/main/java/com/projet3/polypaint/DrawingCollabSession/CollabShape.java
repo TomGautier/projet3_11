@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.DrawingCollabSession;
 
 public class CollabShape {
     public static String ID_TAG = "id";
