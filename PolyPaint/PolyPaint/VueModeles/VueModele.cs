@@ -22,6 +22,8 @@ namespace PolyPaint.VueModeles
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
+        private NetworkManager networkManager = new NetworkManager();
+        private string sessionId;
 
         private int switchView = 0;
         public int SwitchView
@@ -60,6 +62,18 @@ namespace PolyPaint.VueModeles
 
         }
 
+        private string username;
+        public string Username
+        {
+            get { return username; }
+            set
+            {
+                username = value;
+                ChatManager.Username = value;
+                ProprieteModifiee();
+            }
+        }
+
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
 
@@ -95,13 +109,41 @@ namespace PolyPaint.VueModeles
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
         public RelayCommand<object> RotateForm { get; set; }
-       // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
-        
+        // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
+
         public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
+        public ICommand NavigateSignup { get { return new RelayCommand(OnNavigateSignup, () => { return true; }); } }
 
         private void OnNavigateLogin()
         {
             SwitchView = 1;
+        }
+
+        private void OnNavigateSignup()
+        {
+            SwitchView = 2;
+        }
+
+        public async void Login(string password)
+        {
+            sessionId = await networkManager.LoginAsync(Username, password);
+            if (sessionId == "")
+            {
+                MessageBox.Show("Wrong login informations", "Error");
+                return;
+            }
+            SwitchView = 3;
+        }
+
+        public async void Signup(string password)
+        {
+            sessionId = await networkManager.SignupAsync(Username, password);
+            if (sessionId == "")
+            {
+                MessageBox.Show("Wrong signup informations", "Error");
+                return;
+            }
+            SwitchView = 3;
         }
 
         /// <summary>

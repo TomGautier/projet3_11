@@ -128,8 +128,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
-    <Compile Include="Managers\ChatManager.cs" />
+    <Compile Include="Utilitaires\ChatManager.cs" />
     <Compile Include="Modeles\Editeur.cs" />
+    <Compile Include="Utilitaires\NetworkManager.cs" />
     <Compile Include="Utilitaires\Activity.cs" />
     <Compile Include="Utilitaires\Artefact.cs" />
     <Compile Include="Utilitaires\Form.cs" />
