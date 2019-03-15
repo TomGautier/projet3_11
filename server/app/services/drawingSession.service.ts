@@ -12,8 +12,8 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async addElement(drawingSessionId: string, username: string, properties: any): Promise<{}> {
-        const shapeId = uuid.v1();
+    public async addElement(id:string, drawingSessionId: string, username: string, properties: any): Promise<{}> {
+        const shapeId = id//uuid.v1();
         const shape = new Shape({
             id: shapeId,
             drawingSessionId: drawingSessionId,
@@ -39,6 +39,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     public async deleteElements(elementIds: any): Promise<{}> {
         // TODO: Review criteria to remove every elements
         const elementsWithCriteria = {$in: elementIds};
+        console.log(elementIds);
         return await this.databaseService.remove(Shape, this.ID_CRITERIA, elementsWithCriteria)
             .catch(err => {throw err;});
     }

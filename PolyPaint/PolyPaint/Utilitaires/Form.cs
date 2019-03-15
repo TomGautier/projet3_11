@@ -23,7 +23,7 @@ namespace PolyPaint.Utilitaires
         public int CurrentRotation { get; set; }
         public Point Center { get; set; }
         public Arrow Arrow { get; set; }
-
+        
         private Color remplissage;
         public Color Remplissage
         {
@@ -34,6 +34,17 @@ namespace PolyPaint.Utilitaires
                 this.update();
             }
         }
+        private string label;
+        public string Label
+        {
+            get { return label; }
+            set
+            {
+                label = value;
+                this.update();
+            }
+        }
+
         private Boolean isSelectedByOther;
         public Boolean IsSelectedByOther
         {
@@ -48,7 +59,7 @@ namespace PolyPaint.Utilitaires
         public  void rotate()
         {
             int angleInc = 10;
-            SetRotation(this.CurrentRotation + angleInc);     
+            SetRotation(this.CurrentRotation + angleInc);
            // this.CurrentRotation += angleInc;
             
         }
@@ -58,10 +69,11 @@ namespace PolyPaint.Utilitaires
             Matrix rotatingMatrix = new Matrix();
             rotatingMatrix.RotateAt(360 -this.CurrentRotation, Center.X, Center.Y); //reset angle
             rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
+            this.CurrentRotation = degrees;
             Stroke copy = this.Clone();
             copy.Transform(rotatingMatrix, false);
             this.StylusPoints = copy.StylusPoints;
-            this.CurrentRotation = degrees;
+            
             
         }
         public void SetToShape(Shape shape)
@@ -119,7 +131,10 @@ namespace PolyPaint.Utilitaires
             }
         }
         public Form(StylusPointCollection pts)
-            : base(pts) { this.IsSelectedByOther = false; }   
+            : base(pts) {
+            this.IsSelectedByOther = false;
+            this.Label = "";
+        }   
         
     }
 }

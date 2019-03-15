@@ -82,6 +82,14 @@ namespace PolyPaint.Utilitaires
             SetSelection(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
+            DrawName(drawingContext);
+        }
+        private void DrawName(DrawingContext drawingContext)
+        {
+            Point origin = new Point(this.Center.X, this.Center.Y + this.Height /2 + 20);
+            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
+            Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
         }
     }
 }

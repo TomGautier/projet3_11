@@ -30,7 +30,7 @@
             <TextBlock Text="UML Class" Grid.ColumnSpan="3" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Margin="5" FontSize="20"/>
 
             <TextBlock Text="Name" x:Name="nameBlock" Grid.Row="1" Margin="3"/>
-            <TextBox x:Name="txtName" TextChanged="textSetter_NameChanged" Text="{Binding Path=_Name}" Grid.Row="1" Margin="97,3,0,5" MinWidth="100" HorizontalAlignment="Left" Grid.ColumnSpan="4" Width="250"/>
+            <TextBox x:Name="txtName" TextChanged="textSetter_NameChanged" Grid.Row="1" Margin="97,3,0,5" MinWidth="100" HorizontalAlignment="Left" Grid.ColumnSpan="4" Width="250"/>
 
             <TextBlock Text="Methods" Grid.Row="2" Margin="3"/>
             <ComboBox x:Name="methodList" Width="100" Grid.Column="1" Grid.Row="2"/>

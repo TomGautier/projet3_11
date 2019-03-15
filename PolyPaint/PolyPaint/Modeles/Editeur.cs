@@ -10,6 +10,7 @@ using System.Windows.Media;
 using PolyPaint.Managers;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 
 //using System.Drawing;
 
@@ -183,6 +184,16 @@ namespace PolyPaint.Modeles
                 modifiedShapes[i] = (this.selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
             }
             this.SocketManager.HandleModification(modifiedShapes);
+        }
+        public void HandleLabelChange(string label)
+        {
+            (this.selectedStrokes[0] as Form).Label = label;
+        }
+        public void HandleUmlTextChange(string name, List<string> methods, List<string> attributes)
+        {
+            (this.selectedStrokes[0] as UMLClass).Label = name;
+            (this.selectedStrokes[0] as UMLClass).Methods = methods;
+            (this.selectedStrokes[0] as UMLClass).Attributes = attributes;
         }
 
         /// <summary>
@@ -379,6 +390,18 @@ namespace PolyPaint.Modeles
                     role.SetToShape(shape);
                     traits.Add(role);
                     break;
+            }
+            if (shape.author == this.SocketManager.UserName)
+            {
+                this.OutilSelectionne = "lasso";
+                ProprieteModifiee("OutilSelectionne");
+                this.selectedStrokes = new StrokeCollection { traits.Last() }; //select the new shape created               
+                ProprieteModifiee("Selection");
+                
+            }
+            else
+            {
+                (traits.Last() as Form).IsSelectedByOther = true;
             }
         }
         private void deleteElements(string[] list)

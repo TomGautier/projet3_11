@@ -9,6 +9,7 @@ using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
 using PolyPaint.Vues;
+using System.Collections.Generic;
 
 namespace PolyPaint.VueModeles
 {
@@ -207,6 +208,14 @@ namespace PolyPaint.VueModeles
         {
             editeur.HandleChangeSelection(strokes);
             //TODO : Send socket -> selection was changed
+        }
+        public void HandleLabelChange(string label)
+        {
+            editeur.HandleLabelChange(label);
+        }
+        public void HandleUmlTextChange(string name, List<string> methods, List<string> attributes)
+        {
+            editeur.HandleUmlTextChange(name,methods,attributes);
         }
         public void HandleSelectionSuppression()
         {
