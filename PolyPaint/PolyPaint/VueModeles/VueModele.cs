@@ -112,10 +112,16 @@ namespace PolyPaint.VueModeles
         // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
 
         public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
+        public ICommand NavigateSignup { get { return new RelayCommand(OnNavigateSignup, () => { return true; }); } }
 
         private void OnNavigateLogin()
         {
             SwitchView = 1;
+        }
+
+        private void OnNavigateSignup()
+        {
+            SwitchView = 2;
         }
 
         public async void Login(string password)
@@ -126,7 +132,18 @@ namespace PolyPaint.VueModeles
                 MessageBox.Show("Wrong login informations", "Error");
                 return;
             }
-            SwitchView = 2;
+            SwitchView = 3;
+        }
+
+        public async void Signup(string password)
+        {
+            sessionId = await networkManager.SignupAsync(Username, password);
+            if (sessionId == "")
+            {
+                MessageBox.Show("Wrong signup informations", "Error");
+                return;
+            }
+            SwitchView = 3;
         }
 
         /// <summary>

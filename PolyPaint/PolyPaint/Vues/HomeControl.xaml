@@ -17,6 +17,6 @@
             <TextBox Background="Bisque"></TextBox>
         </DockPanel>
         <Button Name="Login" Height="25" Padding="3" Margin="414,197,400.6,448.4" RenderTransformOrigin="0.33,-11.667" Content="Login" Command="{Binding NavigateLogin}"/>
-        <Button Name="SignUp" Height="25" Width="Auto" Margin="414,252,400.6,393.4" RenderTransformOrigin="2.075,2.992" Content="Sign up"/>
+        <Button Name="SignUp" Height="25" Width="Auto" Margin="414,252,400.6,393.4" RenderTransformOrigin="2.075,2.992" Content="Sign up" Command="{Binding NavigateSignup}"/>
     </Grid>
 </UserControl>
