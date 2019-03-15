@@ -3,10 +3,7 @@ import { SocketService } from "./socket.service";
 import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
-import { ConnectionManager } from "./connection.service";
-import { DatabaseService, DatabaseConnection } from "./database.service";
-import { EventEmitter } from "events";
-import { UnsaucedEventEmitter } from "../interfaces/events";
+import { UserManager } from "./user.manager";
 
 @injectable()
 export class DrawingSessionManager {
@@ -16,10 +13,8 @@ export class DrawingSessionManager {
 
     constructor(@inject(TYPES.SocketService) private socketService: SocketService,
                 @inject(TYPES.DrawingSessionServiceInterface) private drawingSessionService: DrawingSessionService,
-                @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager)
+                @inject(TYPES.UserManager) private userManager: UserManager)
                { 
-        //this.drawingSessionService = new DrawingSessionService(new DatabaseService(new DatabaseConnection()));
-        //this.socketService = new SocketService(new UnsaucedEventEmitter());
         // args[0] contains the socket id, args[1][0] the drawing session id.
         this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], args[1][0]));
         this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], args[1][0]));
@@ -28,7 +23,6 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         this.socketService.subscribe(SocketEvents.ModifyElement, args =>this.modifyElement(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
-        this.socketService.subscribe(SocketEvents.UnselectElements, args => this.verifyAndAct(args[0], args[1][0], this.unselectElements));
         this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
     }
 
@@ -70,11 +64,6 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements,doc);
     }
 
-    // doc.elements should be an array containing the IDs of the shapes to unselect.
-    public unselectElements(doc: any) {
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.UnselectedElements);
-    }
-
     public resizeCanvas(doc: any) {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ResizedCanvas);
     }
@@ -95,7 +84,7 @@ export class DrawingSessionManager {
     }
 
     private isUserLoggedIn(sessionId: string, username: string): Boolean {
-        return this.connectionManager.verifySession(sessionId, username);
+        return this.userManager.verifySession(sessionId, username);
     }
 
     private isObjectSelected(objectId: string): Boolean {
