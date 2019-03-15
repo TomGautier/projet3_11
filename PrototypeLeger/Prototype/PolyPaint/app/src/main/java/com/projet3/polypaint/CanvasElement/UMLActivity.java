@@ -8,13 +8,13 @@ public class UMLActivity extends GenericShape {
     private final int DEFAULT_WIDTH = 90;
     private final int DEFAULT_HEIGHT = 60;
 
-    public UMLActivity(int x, int y, PaintStyle style) {
-        super(x, y, 0, 0, style);
+    public UMLActivity(String id, int x, int y, PaintStyle style) {
+        super(id, x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
     public UMLActivity clone() {
-        return new UMLActivity(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
+        return new UMLActivity(id,this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

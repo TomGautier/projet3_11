@@ -8,13 +8,13 @@ public class UMLRole extends GenericShape {
     private final int DEFAULT_WIDTH = 60;
     private final int DEFAULT_HEIGHT = 90;
 
-    public UMLRole(int x, int y, PaintStyle style) {
-        super(x, y, 0, 0, style);
+    public UMLRole(String id,int x, int y, PaintStyle style) {
+        super(id, x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
     public UMLRole clone() {
-        return new UMLRole(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
+        return new UMLRole(id,this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

@@ -31,6 +31,7 @@
     <!-- MAIN TOOLBAR -->
     <string name="mainToolbarGalleryTag">Gallerie</string>
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+    <string name="mainToolbarCollabImageEditionTag">Édition d\'image collaborative</string>
     <string name="buttonTextBox">Texte</string>
     <string name="textEditing">Insertion de texte flottant</string>
 

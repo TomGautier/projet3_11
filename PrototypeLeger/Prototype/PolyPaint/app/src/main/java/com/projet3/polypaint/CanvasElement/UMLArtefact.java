@@ -8,13 +8,13 @@ public class UMLArtefact extends GenericShape {
     private final int DEFAULT_WIDTH = 60;
     private final int DEFAULT_HEIGHT = 80;
 
-    public UMLArtefact(int x, int y, PaintStyle style) {
-        super(x, y, 0, 0, style);
+    public UMLArtefact(String id, int x, int y, PaintStyle style) {
+        super(id,x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
     public UMLArtefact clone() {
-        return new UMLArtefact(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
+        return new UMLArtefact(id,this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

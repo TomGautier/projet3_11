@@ -22,8 +22,10 @@ public abstract class GenericShape {
     protected int width;
     protected int height;
     protected PaintStyle style;
+    protected String id;
 
-    public GenericShape(int x, int y, int width, int height, PaintStyle style) {
+    public GenericShape(String id, int x, int y, int width, int height, PaintStyle style) {
+        this.id = id;
         this.posX = x;
         this.posY = y;
         this.width = width;
@@ -94,6 +96,20 @@ public abstract class GenericShape {
         posX += x;
         posY += y;
     }
+    public int getHeight(){
+        return height;
+    }
+    public  int getWidth() {
+        return width;
+    }
+    public String getId() {
+        return id;
+    }
+    public int[] getCenterCoord(){
+        return new int[] {posY,posY};
+    }
+
+
 
     public abstract void showEditingDialog(FragmentManager fragmentManager);
 }

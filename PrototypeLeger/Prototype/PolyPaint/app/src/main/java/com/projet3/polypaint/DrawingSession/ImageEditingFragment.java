@@ -1,7 +1,6 @@
-package com.projet3.polypaint.Image;
+package com.projet3.polypaint.DrawingSession;
 
 import android.annotation.SuppressLint;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -37,53 +36,55 @@ import java.util.Stack;
 public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber {
 
 
-    private Button buttonClass;
-    private Button buttonRole;
-    private Button buttonActivity;
-    private Button buttonArtefact;
-    private Button buttonText;
-    private Button buttonCanvas;
-    private Button buttonMove;
-    private Button buttonSelection;
-    private Button buttonLasso;
-    private Button buttonReset;
-    private Button buttonCut;
-    private Button buttonDuplicate;
-    private Button buttonDelete;
-    private ImageButton buttonRestore;
-    private ImageButton buttonBack;
+    protected Button buttonClass;
+    protected Button buttonRole;
+    protected Button buttonActivity;
+    protected Button buttonArtefact;
+    protected Button buttonText;
+    protected Button buttonCanvas;
+    protected Button buttonMove;
+    protected Button buttonSelection;
+    protected Button buttonLasso;
+    protected Button buttonReset;
+    protected Button buttonCut;
+    protected Button buttonDuplicate;
+    protected Button buttonDelete;
+    protected ImageButton buttonRestore;
+    protected ImageButton buttonBack;
 
-    private enum Mode{selection, lasso, creation, move}
-    private enum ShapeType{none, uml_class, uml_activity, uml_artefact, uml_role, text_box}
+    protected enum Mode{selection, lasso, creation, move}
+    protected enum ShapeType{none, umlClass, umlActivity, umlArtefact, umlRole, text_box}
 
-    private final float DEFAULT_STROKE_WIDTH = 2f;
-    private final float SELECTION_STROKE_WIDTH = 4f;
-    private final String ADD_ACTION = "ADD";
-    private final String REMOVE_ACTION = "REMOVE";
+    protected final float DEFAULT_STROKE_WIDTH = 2f;
+    protected final float SELECTION_STROKE_WIDTH = 4f;
+    protected final String ADD_ACTION = "ADD";
+    protected final String REMOVE_ACTION = "REMOVE";
 
-    private Canvas canvas;
-    private PaintStyle defaultStyle;
-    private Bitmap bitmap;
-    private ImageView iView;
-    private LinearLayout canvasBGLayout;
-    private ArrayList<GenericShape> shapes;
-    private ArrayList<GenericShape> cutShapes;
-    private Stack<Pair<ArrayList<GenericShape>, String>> addStack;
-    private Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
+    protected Canvas canvas;
+    protected PaintStyle defaultStyle;
+    protected Bitmap bitmap;
+    protected ImageView iView;
+    protected LinearLayout canvasBGLayout;
+    protected ArrayList<GenericShape> shapes;
+    protected ArrayList<GenericShape> cutShapes;
+    protected Stack<Pair<ArrayList<GenericShape>, String>> addStack;
+    protected Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
 
-    private Mode currentMode = Mode.creation;
-    private ShapeType currentShapeType = ShapeType.uml_class;
+    protected Mode currentMode = Mode.creation;
+    protected ShapeType currentShapeType = ShapeType.umlClass;
 
-    private Paint selectionPaint;
-    private ArrayList<GenericShape> selections = null;
-    private Path selectionPath = new Path();private boolean isMovingSelection = false;
-    private int lastTouchPosX;
-    private int lastTouchPosY;
+    protected Paint selectionPaint;
+    protected ArrayList<GenericShape> selections = null;
+    protected Path selectionPath = new Path();
+    protected boolean isMovingSelection = false;
+    protected int lastTouchPosX;
+    protected int lastTouchPosY;
 
-    private View rootView;
+    protected View rootView;
 
-    private boolean isResizingCanvas = false;
-    private boolean isLongPressed = false;
+    protected boolean isResizingCanvas = false;
+    protected boolean isLongPressed = false;
+    protected int idCpt;
 
 
     public ImageEditingFragment() {}
@@ -100,6 +101,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
+        idCpt = 0;
 
         initializeButtons();
         initializePaint();
@@ -121,7 +123,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.uml_activity);
+                setShapeType(ShapeType.umlActivity);
             }
         });
 
@@ -129,7 +131,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonArtefact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.uml_artefact);
+                setShapeType(ShapeType.umlArtefact);
             }
         });
 
@@ -137,7 +139,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.uml_class);
+                setShapeType(ShapeType.umlClass);
             }
         });
 
@@ -145,7 +147,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonRole.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.uml_role);
+                setShapeType(ShapeType.umlRole);
             }
         });
 
@@ -333,7 +335,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         });
     }
 
-    private void checkSelection(int x, int y) {
+    protected void checkSelection(int x, int y) {
         selections.clear();
 
         for (int i = shapes.size() - 1; i >= 0; i--) {
@@ -343,7 +345,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             }
         }
     }
-    private boolean checkEditButton(int x, int y) {
+    protected boolean checkEditButton(int x, int y) {
         for (int i = selections.size() - 1; i >= 0; i--) {
             if (selections.get(i).getEditButton().contains(x, y)){
                 GenericShape clicked = selections.get(i);
@@ -356,7 +358,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         return false;
     }
 
-    private void doLassoSelection(MotionEvent event) {
+    protected void doLassoSelection(MotionEvent event) {
         int posX = (int)event.getX(0);
         int posY = (int)event.getY(0);
 
@@ -379,7 +381,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         }
     }
 
-    private void checkLassoSelection() {
+    protected void checkLassoSelection() {
         selections.clear();
 
         for (GenericShape shape : shapes) {
@@ -394,24 +396,24 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
     }
 
-    private GenericShape addShape(int posX, int posY) {
+    protected GenericShape addShape(int posX, int posY) {
         selections.clear();
         GenericShape nShape = null;
         switch (currentShapeType) {
-            case uml_class :
-                nShape = new UMLClass(posX, posY, defaultStyle);
+            case umlClass :
+                nShape = new UMLClass(Integer.toString(idCpt),posX, posY, defaultStyle);
                 break;
-            case uml_activity :
-                nShape = new UMLActivity(posX, posY, defaultStyle);
+            case umlActivity :
+                nShape = new UMLActivity(Integer.toString(idCpt), posX, posY, defaultStyle);
                 break;
-            case uml_artefact :
-                nShape = new UMLArtefact(posX, posY, defaultStyle);
+            case umlArtefact :
+                nShape = new UMLArtefact(Integer.toString(idCpt), posX, posY, defaultStyle);
                 break;
-            case uml_role :
-                nShape = new UMLRole(posX, posY, defaultStyle);
+            case umlRole :
+                nShape = new UMLRole(Integer.toString(idCpt), posX, posY, defaultStyle);
                 break;
             case text_box :
-                nShape = new TextBox(posX, posY, defaultStyle);
+                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
                 ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
         }
@@ -419,18 +421,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             shapes.add(nShape);
             selections.clear();
             selections.add(nShape);
+            idCpt++;
         }
 
         return nShape;
 
     }
 
-    private void addToStack(ArrayList<GenericShape> nShapes, String action){
+    protected void addToStack(ArrayList<GenericShape> nShapes, String action){
         Pair pair = new Pair(nShapes, action);
         addStack.push(pair);
     }
 
-    private void drawAllShapes() {
+    protected void drawAllShapes() {
         for(GenericShape shape : shapes)
             shape.drawOnCanvas(canvas);
 
@@ -439,18 +442,18 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 shape.drawSelectionBox(canvas, selectionPaint);
     }
 
-    private void updateCanvas() {
+    protected void updateCanvas() {
         bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
         iView.setImageBitmap(bitmap);
         canvas = new Canvas(bitmap);
     }
 
-    private void setShapeType(ShapeType type) {
+    protected void setShapeType(ShapeType type) {
         currentShapeType = type;
         currentMode = Mode.creation;
     }
 
-    private void setMode(Mode mode) {
+    protected void setMode(Mode mode) {
         currentMode = mode;
     }
 
@@ -470,7 +473,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
-    private void moveSelectedShape(MotionEvent event) {
+    protected void moveSelectedShape(MotionEvent event) {
         int posX = (int)event.getX(0);
         int posY = (int)event.getY(0);
 
@@ -500,7 +503,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
         }
     }
-    private void cutSelection() {
+    protected void cutSelection() {
         cutShapes.addAll(selections);
         deleteSelection();
     }

@@ -8,13 +8,13 @@ public class UMLClass extends GenericShape {
     private final int DEFAULT_WIDTH = 200;
     private final int DEFAULT_HEIGHT = 150;
 
-    public UMLClass(int x, int y, PaintStyle style) {
-        super(x, y, 0, 0, style);
+    public UMLClass(String id, int x, int y, PaintStyle style) {
+        super(id, x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
         height = DEFAULT_HEIGHT;
     }
     public UMLClass clone() {
-        return new UMLClass(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
+        return new UMLClass(id, this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style);
     }
 
     @Override

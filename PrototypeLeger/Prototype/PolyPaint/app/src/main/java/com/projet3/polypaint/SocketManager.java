@@ -1,6 +1,7 @@
 package com.projet3.polypaint;
 
 
+import com.google.gson.Gson;
 import com.projet3.polypaint.Chat.NewMessageListener;
 import com.projet3.polypaint.DrawingCollabSession.CollabShape;
 import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
@@ -32,7 +33,9 @@ public class SocketManager  {
     public final String JOIN_COLLAB_SESSION_TAG = "JoinDrawingSession";
     public final String JOINED_COLLAB_SESSION_TAG = "JoinDrawingSession";
     public final String ADD_FORM_TAG = "AddElement";
+    public final String ADDED_FORM_TAG = "AddedElement";
     public final String DELETE_FORM_TAG = "DeleteElements";
+    public final String DELETED_FORM_TAG = "DeletedElements";
     public final String MODIFY_FORM_TAG = "ModifyElement";
     public final String SELECT_FORM_TAG = "SelectElements";
     public final String SELECTED_FORM_TAG = "SelectedElements";
@@ -104,12 +107,31 @@ public class SocketManager  {
                 @Override
                 public void call(Object... args) {
                     drawingSessionId = (String)args[0];
+                    drawingCollabSessionListener.onJoinedSession(drawingSessionId);
                 }
             });
             socket.on(SELECTED_FORM_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-
+                    drawingCollabSessionListener.onSelectedElements((String[])args[0], (String[])args[1]);
+                }
+            });
+            socket.on(ADDED_FORM_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    drawingCollabSessionListener.onAddElement((CollabShape)args[0]);
+                }
+            });
+            socket.on(DELETE_FORM_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    drawingCollabSessionListener.onDeleteElement((String[])args[0]);
+                }
+            });
+            socket.on(MODIFY_FORM_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    drawingCollabSessionListener.onModifyElements((CollabShape[])args[0]);
                 }
             });
 
@@ -176,8 +198,8 @@ public class SocketManager  {
 
     public void addElement(CollabShape shape){
         JSONObject json = null;
-        JSONObject shapeJson = null;
-        JSONObject shapePropertiesJson = null;
+        JSONObject shapeJson;
+        JSONObject shapePropertiesJson;
         try {
             shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
                     .put(CollabShapeProperties.FILLING_COLOR_TAG, shape.getProperties().getFillingColor())
@@ -211,7 +233,7 @@ public class SocketManager  {
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
                         .put(CollabShapeProperties.FILLING_COLOR_TAG, shapes[i].getProperties().getFillingColor())
                         .put(CollabShapeProperties.BORDER_COLOR_TAG, shapes[i].getProperties().getBorderColor())
-                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord()))
+                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord().toString()))
                         .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                         .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
                         .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation());
