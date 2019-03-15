@@ -87,6 +87,12 @@ export class SocketService {
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
+    public broadcast(event: string, args?: any): void {
+        Logger.debug("SocketService", `Broadcasting ${event}`);
+        const success = this.server.emit(event, args);
+        Logger.debug("SocketService", `Result of emit : ${success}`);
+    }
+
     private handleEvent(event: string, socketId: string, ...args: string[]): void {
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);

@@ -3,9 +3,8 @@ import { TYPES } from "../types";
 import { DatabaseService } from "./database.service";
 import User from "../schemas/user";
 import { Logger } from "./logger.service";
-import { ConnectionManager } from "./connection.service";
 import { IUser } from "../interfaces/user";
-import { IUserModel } from "../models/user";
+import { UserManager } from "./user.manager";
 
 require('reflect-metadata');
 
@@ -21,7 +20,7 @@ export class UserService {
     private readonly USERNAME_CRITERIA = "username";
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService,
-                @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager) { }
+                @inject(TYPES.UserManager) private userManager: UserManager) { }
 
     public async getByUsername(username: string): Promise<{}> {
         return await this.databaseService.getByCriteria(User, this.USERNAME_CRITERIA, username)
@@ -35,7 +34,7 @@ export class UserService {
 
         users.forEach((user) => {
             if (user.username != undefined) {
-                userStatuses.push(new UserStatus(user.username, this.connectionManager.isConnected(user.username)));
+                userStatuses.push(new UserStatus(user.username, this.userManager.isConnected(user.username)));
             }
         });
 

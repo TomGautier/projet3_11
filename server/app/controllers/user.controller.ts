@@ -3,13 +3,13 @@ import { Router, Request, Response, NextFunction } from 'express';
 
 import { TYPES } from '.././types';
 import { UserService } from '../services/user.service';
-import { ConnectionManager } from '../services/connection.service';
+import { UserManager } from '../services/user.manager';
 
 @injectable()
 export class UserController {
 
     public constructor( @inject(TYPES.UserServiceInterface) private userService: UserService,
-                        @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager
+                        @inject(TYPES.UserManager) private userManager: UserManager
     ) {}
 
     public get router(): Router {
@@ -17,7 +17,7 @@ export class UserController {
 
         router.get("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username))
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                     { res.json(403); return; }
                 // Send the request to the service and send the response
                 this.userService.getAll().then(users => {
