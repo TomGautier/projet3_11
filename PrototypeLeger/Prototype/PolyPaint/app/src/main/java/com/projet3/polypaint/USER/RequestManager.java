@@ -232,10 +232,18 @@ public class RequestManager {
         }
     }
 
-    // TODO: optimize switch to a simple if statement if applicable.
     private String formatUrl(String request, String information){
         String formatUrl = null;
-        switch (request){
+
+        if (request.equals(Request.Connection))
+            formatUrl = "http://" + ip + PORT + request + user.getUsername()+ "/"
+                    + user.getPassword();
+        else if (information == null)
+            formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
+        else
+            formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
+
+        /*switch (request){
             case Request.Connection:
                 formatUrl = "http://" + ip + PORT + request + user.getUsername()+ "/"
                     + user.getPassword();
@@ -252,12 +260,9 @@ public class RequestManager {
                 else
                     formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
                 break;
-        }
+        }*/
         return formatUrl;
     }
-   // public final String getSessionId(){
-  //      return sessionID;
-    //}
 
 }
 
