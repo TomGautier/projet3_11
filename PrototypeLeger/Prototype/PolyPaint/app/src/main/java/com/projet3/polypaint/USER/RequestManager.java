@@ -130,10 +130,6 @@ public class RequestManager {
         task.execute(url);
         try{
             ArrayList<JSONObject> images = configureFetchGalleryResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
-
-            if (!images.isEmpty()) System.out.println("Images retrieved successfully");
-            else System.out.println("Images could not be retrieved");
-
             return images;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -163,52 +159,6 @@ public class RequestManager {
             return images;
         }
     }
-
-    // Temp for testing purposes ------------------------------------------------------------------------------------------
-    public ArrayList<String> fetchAuthors() {
-        url = formatUrl(Request.ImagesCommon,null);
-        UserGetTask task = new UserGetTask();
-        task.execute(url);
-        try{
-            ArrayList<String> authors = configureFetchAuthorsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
-            if (!authors.isEmpty()) {
-                System.out.println("Authors retrieved successfully");
-                for (String a : authors) System.out.println(a);
-            }
-            else System.out.println("Authors could not be retrieved");
-            return authors;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    private ArrayList<String> configureFetchAuthorsResponse(JSONArray jsons){
-        ArrayList<String> authors = new ArrayList<>();
-        if (jsons == null || jsons.length() == 0) {
-            return authors;
-        }
-        else{
-            for (int i = 0; i < jsons.length(); i ++){
-                JSONObject jsonObject;
-                String author = "";
-                try {
-                    jsonObject = jsons.getJSONObject(i);
-                    author = jsonObject.getString("author");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (!author.isEmpty()){
-                    authors.add(author);
-                }
-            }
-            return authors;
-        }
-    }
-    // ------------------------------------------------------------------------------------------------------------------
 
     public void postImage(JSONObject image) {
         url = formatUrl(Request.Images,null);

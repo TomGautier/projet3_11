@@ -14,7 +14,7 @@ export class ImageService implements ImageServiceInterface {
     private readonly ID_CRITERIA = "id";
     private readonly AUTHOR_CRITERIA = "author";
     private readonly VISIBILITY_CRITERIA = "visibility";
-    private readonly PUBLIC_VISIBILITY = "visibility";
+    private readonly PUBLIC_VISIBILITY = "public";
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }

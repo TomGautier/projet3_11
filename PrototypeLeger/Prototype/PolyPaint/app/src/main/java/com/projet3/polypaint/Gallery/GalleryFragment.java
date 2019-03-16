@@ -32,19 +32,53 @@ public class GalleryFragment extends Fragment {
 
         rootView=inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        //RequestManager.currentInstance.postImage(createNewImage());
+        ArrayList<JSONObject> images = RequestManager.currentInstance.fetchGalleryContent();
 
-        ArrayList<String> names = RequestManager.currentInstance.fetchAuthors();/*new ArrayList<>();
-        for (int i = 0; i < 70; i ++) {
-            names.add("img" + i);
-        }*/
-        if (names != null && !names.isEmpty())
-            addImagesToTable(names);
+        if (images != null && !images.isEmpty())
+            addImagesToTable(images);
 
         return rootView;
     }
 
-    private void addImagesToTable(ArrayList<String> names) {
+    private void addImagesToTable(ArrayList<JSONObject> images) {
+        final int MAX_ROW_LENGTH = 9;
+
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        TableLayout table = (TableLayout) rootView.findViewById(R.id.table);
+        View gRow;
+        TableRow row;
+
+        // All but last row
+        for (int i = 0; i < images.size() / MAX_ROW_LENGTH; i++) {
+            gRow = inflater.inflate(R.layout.gallery_row, null);
+            table.addView(gRow);
+            row = (TableRow)gRow.findViewById(R.id.row);
+
+            for (int j = 0; j < MAX_ROW_LENGTH; j++) {
+                final View v = inflater.inflate(R.layout.gallery_thumbnail, null);
+                final TextView tv = (TextView) v.findViewById(R.id.title);
+                try {
+                    tv.setText(images.get(i * MAX_ROW_LENGTH + j).getString("author"));
+                } catch (JSONException e) { e.printStackTrace(); }
+                row.addView(v);
+            }
+        }
+
+        // Last row
+        gRow = inflater.inflate(R.layout.gallery_row, null);
+        table.addView(gRow);
+        row = (TableRow)gRow.findViewById(R.id.row);
+        for (int i = images.size() - (images.size() % MAX_ROW_LENGTH); i < images.size(); i++) {
+            View v = inflater.inflate(R.layout.gallery_thumbnail, null);
+            TextView tv = (TextView) v.findViewById(R.id.title);
+            try {
+                tv.setText(images.get(i).getString("author"));
+            } catch (JSONException e) { e.printStackTrace(); }
+            row.addView(v);
+        }
+    }
+
+    /*private void addImagesToTable(ArrayList<String> names) {
         final int MAX_ROW_LENGTH = 9;
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -76,7 +110,7 @@ public class GalleryFragment extends Fragment {
             tv.setText(names.get(i));
             row.addView(v);
         }
-    }
+    }*/
 
     private JSONObject createNewImage() {
         JSONObject image = new JSONObject();
