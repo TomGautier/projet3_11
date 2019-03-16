@@ -1,6 +1,8 @@
 package com.projet3.polypaint.Gallery;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.USER.RequestManager;
 
@@ -41,41 +44,53 @@ public class GalleryFragment extends Fragment {
     }
 
     private void addImagesToTable(ArrayList<JSONObject> images) {
-        final int MAX_ROW_LENGTH = 9;
+        final int MAX_ROW_LENGTH = 3;
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
+        FragmentManager manager = getFragmentManager();
         TableLayout table = (TableLayout) rootView.findViewById(R.id.table);
-        View gRow;
+        //View gRow;
         TableRow row;
 
         // All but last row
         for (int i = 0; i < images.size() / MAX_ROW_LENGTH; i++) {
-            gRow = inflater.inflate(R.layout.gallery_row, null);
-            table.addView(gRow);
-            row = (TableRow)gRow.findViewById(R.id.row);
+            //gRow = inflater.inflate(R.layout.gallery_row, null);
+            row = new TableRow(getContext());
+            row.setId(i);
+            table.addView(row);
+            //row = (TableRow)gRow.findViewById(R.id.row);
+            //row = new TableRow(getContext());
+            System.out.println("Row id #" + i + " : " + row.getId());
+            FragmentTransaction transaction = manager.beginTransaction();
 
             for (int j = 0; j < MAX_ROW_LENGTH; j++) {
-                final View v = inflater.inflate(R.layout.gallery_thumbnail, null);
-                final TextView tv = (TextView) v.findViewById(R.id.title);
-                try {
-                    tv.setText(images.get(i * MAX_ROW_LENGTH + j).getString("author"));
-                } catch (JSONException e) { e.printStackTrace(); }
-                row.addView(v);
+                GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
+                thumbnail.setImageInfo(images.get(i * MAX_ROW_LENGTH + j));
+                transaction.add(row.getId(), thumbnail);
             }
+
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
 
         // Last row
-        gRow = inflater.inflate(R.layout.gallery_row, null);
+        /*gRow = inflater.inflate(R.layout.gallery_row, null);
         table.addView(gRow);
         row = (TableRow)gRow.findViewById(R.id.row);
+        FragmentTransaction transaction = manager.beginTransaction();
         for (int i = images.size() - (images.size() % MAX_ROW_LENGTH); i < images.size(); i++) {
-            View v = inflater.inflate(R.layout.gallery_thumbnail, null);
+            GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
+            thumbnail.setImageInfo(images.get(i));
+            transaction.add(row.getId(), thumbnail);
+            /*View v = inflater.inflate(R.layout.gallery_thumbnail, null);
             TextView tv = (TextView) v.findViewById(R.id.title);
             try {
                 tv.setText(images.get(i).getString("author"));
             } catch (JSONException e) { e.printStackTrace(); }
             row.addView(v);
         }
+        transaction.addToBackStack(null);
+        transaction.commit();*/
     }
 
     /*private void addImagesToTable(ArrayList<String> names) {
