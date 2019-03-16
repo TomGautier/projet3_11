@@ -17,7 +17,7 @@ export class ImageController implements ImageControllerInterface {
     public get router(): Router {
         const router: Router = Router();
             
-        router.get("/:sessionId/:username/:imageId",
+        router.get("/single/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
                 if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 

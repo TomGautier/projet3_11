@@ -13,6 +13,8 @@ require('reflect-metadata');
 export class ImageService implements ImageServiceInterface {
     private readonly ID_CRITERIA = "id";
     private readonly AUTHOR_CRITERIA = "author";
+    private readonly VISIBILITY_CRITERIA = "visibility";
+    private readonly PUBLIC_VISIBILITY = "visibility";
 
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
@@ -43,7 +45,7 @@ export class ImageService implements ImageServiceInterface {
     }
 
     public async getAll(): Promise<{}> {
-        return await this.databaseService.getAll(Image)
+        return await this.databaseService.getAllByCriteria(Image, this.VISIBILITY_CRITERIA, this.PUBLIC_VISIBILITY)
             .catch(err => {
                 Logger.warn('ImageService', `Couldn't fetch all images.`);
                 throw err;
