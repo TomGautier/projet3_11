@@ -27,7 +27,11 @@ public class UMLClass extends GenericShape {
         p.addRect(posX - w2, posY - h2, posX + w2, posY + h2, Path.Direction.CW);
 
         canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
+        //canvas.drawPath(p, style.getBorderPaint());
+        traceStyledLine(posX - w2, posY - h2, posX + w2, posY - h2, canvas);
+        traceStyledLine(posX + w2, posY - h2, posX + w2, posY + h2, canvas);
+        traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

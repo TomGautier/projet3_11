@@ -16,6 +16,7 @@ public abstract class GenericShape {
     private final int SELECTION_GAP = 4;
     private final int EDIT_BUTTON_SIZE = 30;
     protected final int CLONE_OFFSET = 30;
+    private final double DOT_SPACING = 0.5;
 
     protected int posX;
     protected int posY;
@@ -96,4 +97,38 @@ public abstract class GenericShape {
     }
 
     public abstract void showEditingDialog(FragmentManager fragmentManager);
+
+    protected void traceStyledLine(int x1, int y1, int x2, int y2, Canvas canvas) {
+        double lineLength = Math.sqrt(Math.abs(x1 - x2) ^ 2 + Math.abs(y1 - y2) ^ 2);
+        double attainedLength = 0;
+
+        switch (style.getStrokeType()) {
+            case full :
+                canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
+                break;
+            case dotted :
+
+                while (attainedLength < lineLength) {
+                    int currentX = x1 + (int)((x2 - x1) * attainedLength / lineLength);
+                    int currentY = y1 + (int)((y2 - y1) * attainedLength / lineLength);
+                    canvas.drawLine(currentX, currentY, currentX, currentY, style.getBorderPaint());
+                    attainedLength += DOT_SPACING;
+                }
+
+                break;
+            case dashed :
+                while (attainedLength + DOT_SPACING < lineLength) {
+                    int deltaX = (int)((x2 - x1) * attainedLength / lineLength);
+                    int deltaY = (int)((y2 - y1) * attainedLength / lineLength);
+                    int currentX1 = x1 + deltaX;
+                    int currentY1 = y1 + deltaY;
+                    int currentX2 = currentX1 + deltaX;
+                    int currentY2 = currentY1 + deltaY;
+                    canvas.drawLine(currentX1, currentY1, currentX2, currentY2, style.getBorderPaint());
+                    attainedLength += 2 * DOT_SPACING;
+                }
+
+                break;
+        }
+    }
 }
