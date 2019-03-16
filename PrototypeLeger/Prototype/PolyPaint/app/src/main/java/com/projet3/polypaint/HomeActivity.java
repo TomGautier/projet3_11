@@ -60,7 +60,6 @@ public class HomeActivity extends AppCompatActivity {
 		}
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",1,2,200,300,0);
 		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
-		SocketManager.currentInstance.deleteForm(new CollabShape[] {shape,shape,shape});
 	}
 
 	private void createChatFragment() {
@@ -129,7 +128,7 @@ public class HomeActivity extends AppCompatActivity {
 				SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
 				startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 				break;
-			case R.id.GalleryAction:
+			case R.id.galleryAction:
 				toggleGalleryVisibility();
 				break;
 			/*case R.id.chatAction:

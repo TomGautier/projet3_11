@@ -4,12 +4,13 @@ import mongoose = require('mongoose');
 
 export let imageSchema: Schema = new Schema({
     id: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true
     }, 
     author: {
         type: String,
         ref: 'User',
+        required: true
     },
     visibility: {
         type: String,

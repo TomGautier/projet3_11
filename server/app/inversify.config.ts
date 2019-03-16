@@ -25,7 +25,6 @@ import { DateServiceInterface,
          DrawingSessionServiceInterface,
          ImageControllerInterface,
          ImageServiceInterface} from "./interfaces";
-         DrawingSessionServiceInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";

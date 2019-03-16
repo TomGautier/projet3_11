@@ -44,21 +44,21 @@ export class ImageController implements ImageControllerInterface {
                 // Send the request to the service and send the response
                 if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; }
-                
+
                 this.imageService.getAll().then(image => {
                     res.json(image);
                 });
             }); 
 
-        router.post("/:sessionId/:username/:conversationName",
+        router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username))
                     { res.json(403); return; }
                 
-                this.imageService.create(req.params.author,
-                                        req.params.visibility,
-                                        req.params.protection,
-                                        req.params.shapes)
+                this.imageService.create(req.body.author,
+                                        req.body.visibility,
+                                        req.body.protection,
+                                        req.body.shapes)
                     .then(image => {
                         res.json(image);
                     });

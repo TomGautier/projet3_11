@@ -15,8 +15,6 @@ import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Chat.SocketManager;
 import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.User.UserInformation;
-import com.projet3.polypaint.User.UserManager;
 import com.projet3.polypaint.USER.RequestManager;
 import com.projet3.polypaint.USER.UserInformation;
 import com.projet3.polypaint.USER.UserManager;
@@ -27,7 +25,7 @@ public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
 	private final String AZURE_IP = "40.122.119.160";
-	private final String IP = "192.168.0.103";//"10.200.4.205";
+	private final String IP = "192.168.0.102";
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;

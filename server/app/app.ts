@@ -31,7 +31,6 @@ export class Application implements ApplicationInterface {
             @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
             @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
             @inject(TYPES.ImageControllerInterface) private imageController: ImageController,
-            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager),
             @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
             @inject(TYPES.DrawingSessionManager) private drawingSessionManager: DrawingSessionManager) {
         this.app = express();

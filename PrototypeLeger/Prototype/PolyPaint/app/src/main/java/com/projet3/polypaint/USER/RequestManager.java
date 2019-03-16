@@ -100,6 +100,7 @@ public class RequestManager {
              return conversations;
         }
     }
+
     public boolean addUserConversation(String name){
         url = formatUrl(Request.Conversations, name);
         UserPostTask task = new UserPostTask();
@@ -118,13 +119,78 @@ public class RequestManager {
         }
         return false;
     }
-
-
-    public boolean configureAddConversationResponse(String response){
+    private boolean configureAddConversationResponse(String response){
         boolean ret = response != null && response.contains("409") ? false: true;
         return ret;
     }
 
+    public ArrayList<String> fetchGalleryContent() {
+        url = formatUrl(Request.Images,null);
+        UserGetTask task = new UserGetTask();
+        task.execute(url);
+        try{
+            ArrayList<String> authors = configureFetchGalleryResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+            if (!authors.isEmpty()) {
+                System.out.println("Authors retrieved successfully");
+                for (String a : authors) System.out.println(a);
+            }
+            else System.out.println("Authors could not be retrieved");
+            return authors;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private ArrayList<String> configureFetchGalleryResponse(JSONArray jsons){
+        ArrayList<String> authors = new ArrayList<>();
+        if (jsons == null || jsons.length() == 0) {
+            return authors;
+        }
+        else{
+            for (int i = 0; i < jsons.length(); i ++){
+                JSONObject jsonObject;
+                String author = "";
+                try {
+                    jsonObject = jsons.getJSONObject(i);
+                    author = jsonObject.getString("author");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (!author.isEmpty()){
+                    authors.add(author);
+                }
+            }
+            return authors;
+        }
+    }
+
+    public void postImage(JSONObject image) {
+        url = formatUrl(Request.Images,null);
+        UserJsonPostTask task = new UserJsonPostTask();
+        task.setData(image);
+        task.execute(url);
+        try {
+            boolean response = task.get(TIMEOUT_DELAY, TimeUnit.SECONDS) != null;
+
+            if (response)
+                System.out.println("Successfully added image");
+            else
+                System.out.println("Couldn't successfully add image");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // TODO: optimize switch to a simple if statement if applicable.
     private String formatUrl(String request, String information){
         String formatUrl = null;
         switch (request){
@@ -137,7 +203,13 @@ public class RequestManager {
                     formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
                 else
                     formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
-                    break;
+                break;
+            case Request.Images:
+                if (information == null)
+                    formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
+                else
+                    formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
+                break;
         }
         return formatUrl;
     }
@@ -152,6 +224,7 @@ final class Request {
     public static final String Connection = "/connection/login/";
     public static final String Sign_Up = "/connection/signup/";
     public static final String Conversations = "/api/chat/";
+    public static final String Images = "/api/images/common/";
 
 
 }
