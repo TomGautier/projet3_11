@@ -34,7 +34,7 @@ public class GalleryFragment extends Fragment {
 
         //RequestManager.currentInstance.postImage(createNewImage());
 
-        ArrayList<String> names = RequestManager.currentInstance.fetchGalleryContent();/*new ArrayList<>();
+        ArrayList<String> names = RequestManager.currentInstance.fetchAuthors();/*new ArrayList<>();
         for (int i = 0; i < 70; i ++) {
             names.add("img" + i);
         }*/

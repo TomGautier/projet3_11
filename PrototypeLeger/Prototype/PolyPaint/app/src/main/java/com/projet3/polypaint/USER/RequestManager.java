@@ -124,12 +124,53 @@ public class RequestManager {
         return ret;
     }
 
-    public ArrayList<String> fetchGalleryContent() {
-        url = formatUrl(Request.Images,null);
+    public ArrayList<JSONObject> fetchGalleryContent() {
+        url = formatUrl(Request.ImagesCommon,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
         try{
-            ArrayList<String> authors = configureFetchGalleryResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+            ArrayList<JSONObject> images = configureFetchGalleryResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+
+            if (!images.isEmpty()) System.out.println("Images retrieved successfully");
+            else System.out.println("Images could not be retrieved");
+
+            return images;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private ArrayList<JSONObject> configureFetchGalleryResponse(JSONArray jsons){
+        ArrayList<JSONObject> images = new ArrayList<>();
+        if (jsons == null || jsons.length() == 0) {
+            return images;
+        }
+        else{
+            JSONObject image;
+            for (int i = 0; i < jsons.length(); i ++){
+                try {
+                    image = jsons.getJSONObject(i);
+                    if (image != null)
+                        images.add(image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return images;
+        }
+    }
+
+    // Temp for testing purposes ------------------------------------------------------------------------------------------
+    public ArrayList<String> fetchAuthors() {
+        url = formatUrl(Request.ImagesCommon,null);
+        UserGetTask task = new UserGetTask();
+        task.execute(url);
+        try{
+            ArrayList<String> authors = configureFetchAuthorsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
             if (!authors.isEmpty()) {
                 System.out.println("Authors retrieved successfully");
                 for (String a : authors) System.out.println(a);
@@ -145,7 +186,7 @@ public class RequestManager {
         }
         return null;
     }
-    private ArrayList<String> configureFetchGalleryResponse(JSONArray jsons){
+    private ArrayList<String> configureFetchAuthorsResponse(JSONArray jsons){
         ArrayList<String> authors = new ArrayList<>();
         if (jsons == null || jsons.length() == 0) {
             return authors;
@@ -167,6 +208,7 @@ public class RequestManager {
             return authors;
         }
     }
+    // ------------------------------------------------------------------------------------------------------------------
 
     public void postImage(JSONObject image) {
         url = formatUrl(Request.Images,null);
@@ -224,7 +266,8 @@ final class Request {
     public static final String Connection = "/connection/login/";
     public static final String Sign_Up = "/connection/signup/";
     public static final String Conversations = "/api/chat/";
-    public static final String Images = "/api/images/common/";
+    public static final String Images = "/api/images/";
+    public static final String ImagesCommon = "/api/images/common/";
 
 
 }
