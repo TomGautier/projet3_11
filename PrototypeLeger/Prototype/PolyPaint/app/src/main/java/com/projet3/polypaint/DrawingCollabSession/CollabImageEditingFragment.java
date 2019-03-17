@@ -12,6 +12,8 @@ import android.graphics.Region;
 import android.graphics.Typeface;
 import android.opengl.GLException;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.res.ResourcesCompat;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -35,6 +37,8 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.UserList.User;
+import com.projet3.polypaint.UserLogin.UserInformation;
 import com.projet3.polypaint.UserLogin.UserManager;
 
 import java.util.ArrayList;
@@ -43,204 +47,448 @@ import java.util.Stack;
 public class CollabImageEditingFragment extends ImageEditingFragment
         implements ImageEditingDialogManager.ImageEditingDialogSubscriber, DrawingCollabSessionListener {
 
+    private View rootView;
+    private String drawingSessionId;
+    private ArrayList<Player> players;
+    private Player client;
+    private int selectedColorCpt;
+
+    public CollabImageEditingFragment()  {}
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        rootView = super.onCreateView(inflater,container,savedInstanceState);
+        players = new ArrayList<>();
+        selectedColorCpt = 0;
+        client = new Player(UserManager.currentInstance.getUserUsername(), selectedColorCpt);
+        //selectedColorCpt++;
+        SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
+        SocketManager.currentInstance.joinCollabSession("MockSessionID");
+        return rootView;
+    }
+    @Override
+    @SuppressLint("ClickableViewAccessibility")
+    protected void setTouchListener() {
+        iView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                updateCanvas();
+
+                boolean continueListening = false;
+
+                int posX = (int)event.getX(0);
+                int posY = (int)event.getY(0);
+
+                // Check if an showEditingDialog button was clicked
+               // if (event.getAction() != MotionEvent.ACTION_MOVE &&
+                        //!selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
+                // Check if canvas is being resized
+               // else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
+                    //return resizeCanvas(event);
+                /*else*/ switch (currentMode) {
+                        case selection:
+                            checkSelection(posX, posY);
+                            break;
+                        case lasso:
+                            doLassoSelection(event);
+                            continueListening = true;
+                            break;
+                        case creation:
+                            //ArrayList stackElems = new ArrayList();
+                            //stackElems.add(addShape(posX, posY));
+                            //addToStack(stackElems, ADD_ACTION);
+                            SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
+                            break;
+                        case move:
+                            moveSelectedShape(event);
+                            continueListening = true;
+                            break;
+                    }
+
+                drawAllShapes();
+                view.invalidate();
+                return continueListening;
+            }
+        });
+
+        canvasBGLayout.setOnTouchListener(new LinearLayout.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                int posX = (int)event.getX(0);
+                int posY = (int)event.getY(0);
+
+                if (isResizingCanvas || checkCanvasResizeHandle(posX, posY)) {
+                    return resizeCanvas(event);
+                }
+
+                return false;
+            }
+        });
+    }
+    @Override
+    public void onStop() {
+        ImageEditingDialogManager.getInstance().unsubscribe(this);
+        super.onStop();
+    }
+    private Player findPlayer(String name){
+        for (Player player : players){
+            if (player.getName().equals(name))
+                return player;
+        }
+        return null;
+    }
+    private Player findPlayer(GenericShape selectedShape){
+        for (Player player : players){
+            for (GenericShape shape : player.getSelectedShapes()){
+                if (shape.getId().equals(selectedShape.getId()))
+                    return player;
+            }
+        }
+        return null;
+    }
 
 
+    private boolean isFreeToSelect(GenericShape shape){
+        for (Player player : players){
+            if (player.getSelectedShapes().contains(shape))
+                return false;
+        }
+        return true;
+    }
+    private boolean playerAlreadyRegistered(String name){
+        if (client.getName().equals(name))
+            return true;
+        else
+        {
+            for (Player player : players) {
+                if (player.getName().equals(name)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
 
+    @Override
+    protected void drawAllShapes() {
+        for(GenericShape shape : shapes)
+            shape.drawOnCanvas(canvas);
+
+        //if (selections.size() > 0) {
+            /*for (GenericShape shape : selections) {
+                shape.drawSelectionBox(canvas, findPlayer(shape).getSelectionPaint());
+            }*/
+            for (GenericShape shape : client.getSelectedShapes())
+                shape.drawSelectionBox(canvas, client.getSelectionPaint());
+
+            for (Player player : players){
+                for (GenericShape shape : player.getSelectedShapes())
+                    shape.drawSelectionBox(canvas, player.getSelectionPaint());
+            }
+       // }
+    }
+
+
+    @Override
+    protected void checkSelection(int x, int y) {
+        //String[] oldIds = new String[client.getSelectedShapes().size()];
+        ArrayList<String> olds = new ArrayList();
+        ArrayList<String> newIds = new ArrayList();
+        for (GenericShape shape : client.getSelectedShapes()){
+            olds.add(shape.getId());
+        }
+        for (GenericShape shape : shapes){
+            if (shape.getBoundingBox().contains(x, y) && isFreeToSelect(shape)){
+                newIds.add(shape.getId());
+                break;
+            }
+        }
+        SocketManager.currentInstance.selectElements(olds.toArray(new String[olds.size()]), newIds.toArray(new String[newIds.size()]));
+    }
+
+
+    @Override
+    protected void checkLassoSelection() {
+
+        ArrayList<String> olds = new ArrayList();
+        ArrayList<String> news = new ArrayList();
+        for (GenericShape shape : client.getSelectedShapes()){
+            olds.add(shape.getId());
+        }
+        for (GenericShape shape : shapes){
+            canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
+            if (!canvas.clipPath(selectionPath, Region.Op.DIFFERENCE) && isFreeToSelect(shape))
+                news.add(shape.getId());
+        }
+        SocketManager.currentInstance.selectElements(olds.toArray(new String[olds.size()]), news.toArray(new String[olds.size()]));
+        canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
+
+    }
+
+
+    private CollabShape createCollabShape(GenericShape shape){
+        String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
+        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
+                "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
+        CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
+        return collabShape;
+    }
+    private CollabShape createCollabShape(int posX, int posY){
+        id = client.getName() + Integer.toString(idCpt++);
+        String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
+        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
+                "#000000", new int[] {posX,posY}, 100,100,0);
+        return new CollabShape(id,drawingSessionId, client.getName(),properties);
+    }
+
+    @Override
+    public void deleteSelection() {
+        /*String[] ids = new String[selections.size()];
+        for (int i = 0; i < ids.length; i++){
+            ids[i] = selections.get(i).getId();
+        }*/
+        ArrayList<String> ids = new ArrayList<>();
+        for (GenericShape shape : client.getSelectedShapes()){
+            ids.add(shape.getId());
+        }
+        SocketManager.currentInstance.deleteElements(ids.toArray(new String[ids.size()]));
+    }
+    @Override
+    public void duplicateSelection() {
+        ArrayList<GenericShape> duplicatedShapes;
+        // Check whether to duplicate selected shapes or clipboard (or nothing)
+        if (!client.getSelectedShapes().isEmpty())
+            duplicatedShapes = client.getSelectedShapes();
+        //else if (!cutShapes.isEmpty())
+            //duplicatedShapes = cutShapes;
+        else return;
+
+        // Same operation in either case
+        //ArrayList<GenericShape> stackElems = new ArrayList<>();
+        for (GenericShape shape : duplicatedShapes){
+            GenericShape nShape = shape.clone();
+            SocketManager.currentInstance.addElement(createCollabShape(nShape.getCenterCoord()[0],nShape.getCenterCoord()[1]));
+            //stackElems.add(nShape);
+        }
+
+       // if (selections.isEmpty()) {
+           // cutShapes = stackElems;
+        //}
+        //selections.clear();
+       // selections.addAll(stackElems);
+
+        //addToStack(stackElems, ADD_ACTION);
+       // updateCanvas();
+        //drawAllShapes();
+        //iView.invalidate();
+    }
+    @Override
+    protected void moveSelectedShape(MotionEvent event) {
+        /*CollabShape[] selectedCollabShapes = new CollabShape[selections.size()];
+        for(int i = 0; i < selections.size(); i++){
+            GenericShape shape = selections.get(i);
+            selectedCollabShapes[i] = createCollabShape(shape);
+        }
+        super.moveSelectedShape(event);
+        SocketManager.currentInstance.modifyElements(selectedCollabShapes);*/
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                for (GenericShape shape : client.getSelectedShapes()){
+
+                }
+        }
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                for (GenericShape shape : selections) {
+                    if (shape.getBoundingBox().contains(posX, posY)) {
+                        isMovingSelection = true;
+                        lastTouchPosX = posX;
+                        lastTouchPosY = posY;
+                    }
+                }
+                if (!isMovingSelection)
+                    selections.clear();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (isMovingSelection) {
+                    for (GenericShape shape : selections)
+                        shape.relativeMove(posX - lastTouchPosX, posY - lastTouchPosY);
+
+                    lastTouchPosX = posX;
+                    lastTouchPosY = posY;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                isMovingSelection = false;
+                break;
+        }
+    }
+
+    //EVENT SERVER
     @Override
     public void onJoinedSession(String drawingSessionId_) {
         drawingSessionId = drawingSessionId_;
-        Toast.makeText(getContext(),"CONNECTE A UNE SESSION", Toast.LENGTH_LONG).show();
+        //  Toast.makeText(getContext(),"CONNECTE A UNE SESSION", Toast.LENGTH_LONG).show();
     }
-
     @Override
-    public void onAddElement(CollabShape shape) {
-        boolean isNewForm = (findGenShapeById(shape.getId(), true) == null);
-        if (isNewForm){
-            shapes.add(createGenShape(shape));
-            updateCanvas();
-            drawAllShapes();
+    public void onNewUserJoined(String[] players) {
+        for (int i =  0; i < players.length; i++){
+            if (!playerAlreadyRegistered(players[i]))
+                this.players.add(new Player(players[i],++selectedColorCpt));
         }
-        Toast.makeText(getContext(),"AJOUTE UN ELEMENT", Toast.LENGTH_LONG).show();
+    }
+    @Override
+    public void onAddElement(CollabShape shape, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        GenericShape genShape = createGenShape(shape);
+        shapes.add(genShape);
+        player.clearSelectedShape();
+        player.addSelectedShape(genShape);
+        /*if (!client.getName().equals(shape.getAuthor()) && !playerAlreadyRegistered(shape.getAuthor())){
+            selectedColorCpt++;
+            players.add(new Player(shape.getAuthor(),selectedColorCpt));
+        }*/
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                //iView.invalidate();
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+
+            }
+        });
     }
 
+
     @Override
-    public void onDeleteElement(String[] ids) {
-        for (int i = 0; i < ids.length; i++) {
+    public void onDeleteElement(String[] ids, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        for (int i = 0; i < ids.length; i++){
             GenericShape shape = findGenShapeById(ids[i], true);
-            if (shape != null){
-                shapes.remove(shape);
-                if (selections.contains(shape))
-                    selections.remove(shape);
-            }
+            player.removeSelectedShape(shape);
+            shapes.remove(shape);
         }
-        updateCanvas();
-        drawAllShapes();
-        Toast.makeText(getContext(),"DELETE UN ELEMENT", Toast.LENGTH_LONG).show();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+        //  Toast.makeText(getContext(),"DELETE UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
 
     @Override
-    public void onModifyElements(CollabShape[] collabShapes) {
-        for (int i = 0; i < collabShapes.length; i++) {
-            GenericShape shape = findGenShapeById(collabShapes[i].getId(), false);
-            if (shape != null){
-                GenericShape newGenShape = createGenShape(collabShapes[i]);
-                shapes.set(shapes.indexOf(shape),newGenShape);
-                selections.set(selections.indexOf(shape),newGenShape);
-
-            }
+    public void onModifyElements(CollabShape[] collabShapes, String author) {
+        /*Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        for (int i = 0; i < collabShapes.length; i++){
+            GenericShape shape = createGenShape(collabShapes[i]);
+            player.removeSelectedShape(shape);
         }
-        updateCanvas();
-        drawAllShapes();
-        Toast.makeText(getContext(),"MODIFIER UN ELEMENT", Toast.LENGTH_LONG).show();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+        //  Toast.makeText(getContext(),"MODIFIER UN ELEMENT", Toast.LENGTH_LONG).show();*/
 
     }
 
     @Override
-    public void onSelectedElements(String[] oldSelections, String[] newSelections) {
+    public void onSelectedElements(String[] oldSelections, String[] newSelections, String author) {
+        /*GenericShape shape;
+        String owner = "";
+        Player player = null;
         for (int i = 0; i < oldSelections.length; i ++) {
-            GenericShape shape = findGenShapeById(oldSelections[i], false);
-            if (shape != null)
+            shape = findGenShapeById(oldSelections[i], false);
+            if (shape != null){
+                player = findPlayer(shape);
+                player.removeSelectedShape(shape);
                 selections.remove(shape);
+            }
         }
         for (int j = 0; j < newSelections.length; j++){
-            GenericShape shape = findGenShapeById(oldSelections[j], false);
-            if (shape != null)
+            shape = findGenShapeById(newSelections[j], true);
+            if (shape != null && player != null){
+                player.addSelectedShape(shape);
                 selections.add(shape);
+            }
+        }*/
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        for (int i = 0; i < oldSelections.length; i ++){
+            player.removeSelectedShape(findGenShapeById(oldSelections[i], true));
         }
-        updateCanvas();
-        drawAllShapes();
-        Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
+        for (int j = 0; j < newSelections.length; j ++){
+            player.addSelectedShape(findGenShapeById(newSelections[j], true));
+        }
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+        // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
     private GenericShape findGenShapeById(String id, boolean lookInAll){
         if (lookInAll){
             for (int i = 0; i < shapes.size(); i++){
-                if (shapes.get(i).getId() == id)
+                if (shapes.get(i).getId().equals(id))
                     return shapes.get(i);
             }
         }
         else{
             for (int i = 0; i < selections.size(); i++){
-                if (selections.get(i).getId() == id)
+                if (selections.get(i).getId().equals(id))
                     return selections.get(i);
             }
         }
         return null;
     }
 
+
     private GenericShape createGenShape(CollabShape collabShape){
         GenericShape genShape = null;
         switch(collabShape.getProperties().getType()){
             case "umlClass":
                 genShape = new UMLClass(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
-                        collabShape.getProperties().getMiddlePointCoord()[1], defaultStyle);
+                        collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
+                        collabShape.getProperties().getHeight(), defaultStyle);
                 break;
             case "umlArtefact":
                 genShape = new UMLArtefact(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
-                        collabShape.getProperties().getMiddlePointCoord()[1], defaultStyle);
+                        collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
+                        collabShape.getProperties().getHeight(), defaultStyle);
                 break;
             case "umlActivity":
                 genShape = new UMLActivity(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
-                        collabShape.getProperties().getMiddlePointCoord()[1], defaultStyle);
+                        collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
+                        collabShape.getProperties().getHeight(), defaultStyle);
                 break;
             case "umlRole":
                 genShape = new UMLRole(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
-                        collabShape.getProperties().getMiddlePointCoord()[1], defaultStyle);
+                        collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
+                        collabShape.getProperties().getHeight(), defaultStyle);
                 break;
         }
         return genShape;
-    }
-
-
-
-
-    private View rootView;
-    private String drawingSessionId;
-
-
-    public CollabImageEditingFragment()  {}
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        rootView = super.onCreateView(inflater,container,savedInstanceState);
-        SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
-        SocketManager.currentInstance.joinCollabSession("MockSessionID");
-        return rootView;
-    }
-
-    @Override
-    public void onStop() {
-        ImageEditingDialogManager.getInstance().unsubscribe(this);
-        super.onStop();
-    }
-
-
-    @Override
-    protected void checkSelection(int x, int y) {
-        String[] oldIds = new String[selections.size()];
-        for (int i = 0; i < oldIds.length; i ++ )
-            oldIds[i] = selections.get(i).getId();
-
-        super.checkSelection(x,y);
-        if (selections.size() > 0){
-            String[] newId = new String[1];
-            newId[0] = selections.get(0).getId();
-            SocketManager.currentInstance.selectElements(oldIds, newId); //dans le onSelectedElement, ajoute les selections au selectedcollabShapes
-        }
-
-    }
-
-
-    @Override
-    protected void checkLassoSelection() {
-        String[] oldIds = new String[selections.size()];
-        for (int i = 0; i < oldIds.length; i ++ )
-            oldIds[i] = selections.get(i).getId();
-
-        super.checkLassoSelection();
-        if (selections.size() > 0){
-            String[] newIds = new String[selections.size()];
-            for (int j = 0; j <  newIds.length; j++){
-                newIds[j] = selections.get(j).getId();
-            }
-            SocketManager.currentInstance.selectElements(oldIds, newIds);
-        }
-    }
-
-    @Override
-    protected GenericShape addShape(int posX, int posY) {
-        GenericShape genShape = super.addShape(posX,posY);
-        SocketManager.currentInstance.addElement(createCollabShape(genShape));
-        return genShape;
-    }
-    private CollabShape createCollabShape(GenericShape shape){
-        String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
-                "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
-        CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, UserManager.currentInstance.getUserUsername(),properties);
-        return collabShape;
-    }
-
-    @Override
-    public void deleteSelection() {
-        String[] ids = new String[selections.size()];
-        for (int i = 0; i < ids.length; i++){
-            ids[i] = selections.get(i).getId();
-        }
-        SocketManager.currentInstance.deleteElements(ids);
-        super.deleteSelection();
-    }
-    @Override
-    protected void moveSelectedShape(MotionEvent event) {
-        CollabShape[] selectedCollabShapes = new CollabShape[selections.size()];
-        for(int i = 0; i < selections.size(); i++){
-            GenericShape shape = selections.get(i);
-            selectedCollabShapes[i] = createCollabShape(shape);
-        }
-        super.moveSelectedShape(event);
-        SocketManager.currentInstance.modifyElements(selectedCollabShapes);
     }
     /*
     protected void cutSelection() {

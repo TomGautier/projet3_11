@@ -10,13 +10,14 @@ export class DrawingSessionManager {
     /*If it is selected: the key is the object id and the value is the user's sessionId who selected it.
     Otherwise, it doesn't exist.*/
     private selectedObjects: Map<String, String> = new Map();
+    private connectedUsers : Map<String, String[]> = new Map();
 
     constructor(@inject(TYPES.SocketService) private socketService: SocketService,
                 @inject(TYPES.DrawingSessionServiceInterface) private drawingSessionService: DrawingSessionService,
                 @inject(TYPES.UserManager) private userManager: UserManager)
                { 
         // args[0] contains the socket id, args[1][0] the drawing session id.
-        this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], args[1][0]));
+        this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], JSON.parse(args[1][0])));
         this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], args[1][0]));
         // args[0] contains the socket id, args[1] is a json with the session id, username and properties of the object.
         this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
@@ -24,10 +25,24 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.ModifyElement, args =>this.modifyElement(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
         this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
+        this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
+        
     }
 
-    public joinSession(socketId: string, sessionId: string) {
-        this.socketService.joinRoom(sessionId, socketId);
+    public joinSession(socketId: string, doc : any) {
+        this.socketService.joinRoom(doc.drawingSessionId, socketId);
+        this.newUserJoined(doc);     
+    }
+    public newUserJoined(doc : any) {
+        if (this.connectedUsers.get(doc.drawingSessionId) == undefined){
+            this.connectedUsers.set(doc.drawingSessionId, new Array<String>());
+        }
+        var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
+        if (users !== undefined && users.indexOf(doc.username) == -1){
+            users.push(doc.username);
+            console.log("USERS :", users);
+            this.socketService.emit(doc.drawingSessionId,SocketEvents.NewUserJoined, users);
+        } 
     }
 
     public leaveSession(socketId: string, sessionId: string) {
@@ -43,14 +58,14 @@ export class DrawingSessionManager {
     public addElement(doc: any) {
         console.log(doc);
         //this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.AddedElement,doc);
+        this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.AddedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to delete.
     public deleteElements(doc: any) {
-        console.log(doc.shapes[2]);
         //this.drawingSessionService.deleteElements(doc.elementIds);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.DeletedElements,doc.elementIds);
+        console.log(doc);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.DeletedElements,doc);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
@@ -61,6 +76,7 @@ export class DrawingSessionManager {
 
     // doc.elementIds should be an array containing the IDs of the shapes to select.
     public selectElements(doc: any) {
+        console.log(doc);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements,doc);
     }
 

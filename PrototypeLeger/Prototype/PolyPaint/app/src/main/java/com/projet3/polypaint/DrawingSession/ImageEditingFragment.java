@@ -29,6 +29,7 @@ import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
+import com.projet3.polypaint.UserLogin.UserManager;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -85,6 +86,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected boolean isResizingCanvas = false;
     protected boolean isLongPressed = false;
     protected int idCpt;
+    protected String id;
 
 
     public ImageEditingFragment() {}
@@ -102,6 +104,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         addStack = new Stack<>();
         removeStack = new Stack<>();
         idCpt = 0;
+        id = UserManager.currentInstance.getUserUsername() + idCpt;
 
         initializeButtons();
         initializePaint();
@@ -237,7 +240,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
     }
 
-    private void initializePaint() {
+    protected void initializePaint() {
         // Border paint
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();
@@ -277,7 +280,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void setTouchListener() {
+    protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
@@ -334,6 +337,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             }
         });
     }
+
+
 
     protected void checkSelection(int x, int y) {
         selections.clear();
@@ -399,18 +404,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected GenericShape addShape(int posX, int posY) {
         selections.clear();
         GenericShape nShape = null;
+        id = UserManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
             case umlClass :
-                nShape = new UMLClass(Integer.toString(idCpt),posX, posY, defaultStyle);
+                nShape = new UMLClass(id,posX, posY, UMLClass.DEFAULT_WIDTH, UMLClass.DEFAULT_HEIGHT, defaultStyle);
                 break;
             case umlActivity :
-                nShape = new UMLActivity(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new UMLActivity(id, posX, posY, UMLActivity.DEFAULT_WIDTH, UMLActivity.DEFAULT_HEIGHT, defaultStyle);
                 break;
             case umlArtefact :
-                nShape = new UMLArtefact(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new UMLArtefact(id, posX, posY,UMLArtefact.DEFAULT_WIDTH, UMLArtefact.DEFAULT_HEIGHT, defaultStyle);
                 break;
             case umlRole :
-                nShape = new UMLRole(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new UMLRole(id, posX, posY, UMLRole.DEFAULT_WIDTH, UMLRole.DEFAULT_HEIGHT, defaultStyle);
                 break;
             case text_box :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
@@ -421,7 +427,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             shapes.add(nShape);
             selections.clear();
             selections.add(nShape);
-            idCpt++;
         }
 
         return nShape;

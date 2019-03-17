@@ -37,6 +37,7 @@ public class HomeActivity extends AppCompatActivity {
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
 	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout collabImageEditingFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
 	@Override
@@ -49,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(mainToolbar);
 		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 
 

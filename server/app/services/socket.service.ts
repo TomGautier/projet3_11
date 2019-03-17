@@ -83,6 +83,8 @@ export class SocketService {
 
     public emit(id: string, event: string, args?: any): void {
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
+        console.log("emit a ", id);
+        console.log("L'event est ", event);
         const success: boolean = this.server.to(id).emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }

@@ -2,10 +2,13 @@ package com.projet3.polypaint;
 
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.projet3.polypaint.Chat.NewMessageListener;
 import com.projet3.polypaint.DrawingCollabSession.CollabShape;
 import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
 import com.projet3.polypaint.DrawingCollabSession.DrawingCollabSessionListener;
+import com.projet3.polypaint.UserList.User;
 import com.projet3.polypaint.UserLogin.UserManager;
 
 import org.json.JSONArray;
@@ -28,10 +31,11 @@ public class SocketManager  {
     public final String LEAVE_CONVERSATION_TAG = "UserLeftConversation";
 
     //Session collaborative
+    public final String NEW_USER_JOINED = "NewUserJoined";
     public final String CREATE_COLLAB_SESSION_TAG = "CreateDrawingSession";
     public final String CREATED_COLLAB_SESSION_TAG = "CreatedDrawingSession";
     public final String JOIN_COLLAB_SESSION_TAG = "JoinDrawingSession";
-    public final String JOINED_COLLAB_SESSION_TAG = "JoinDrawingSession";
+    public final String JOINED_COLLAB_SESSION_TAG = "JoinedDrawingSession";
     public final String ADD_FORM_TAG = "AddElement";
     public final String ADDED_FORM_TAG = "AddedElement";
     public final String DELETE_FORM_TAG = "DeleteElements";
@@ -42,7 +46,7 @@ public class SocketManager  {
     public final String REZIZE_CANVAS_TAG = "ResizeCanvas";
 
     //Properties
-    private final String ELEMENTS_IDS_TAG ="elementIds";
+    private final String ELEMENTS_IDS_TAG ="ids";
     private final String IMAGE_TAG = "image";
     private final String VISIBILITY_TAG = "visibility";
     private final String NAME_TAG = "name";
@@ -100,38 +104,90 @@ public class SocketManager  {
             socket.on(CREATED_COLLAB_SESSION_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    drawingSessionId = (String)args[0];
+                    //drawingSessionId = (String)args[0];
                 }
             });
             socket.on(JOINED_COLLAB_SESSION_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    drawingSessionId = (String)args[0];
-                    drawingCollabSessionListener.onJoinedSession(drawingSessionId);
+                   // drawingSessionId = (String)args[0];
+                    //drawingCollabSessionListener.onJoinedSession(drawingSessionId);
+                }
+            });
+            socket.on(NEW_USER_JOINED, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONArray array = (JSONArray)args[0];
+                    if (array != null){
+                        String[] players = new String[array.length()];
+                        try{
+                            for (int i = 0; i < array.length(); i++){
+                                players[i] = array.getString(i);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        drawingCollabSessionListener.onNewUserJoined(players);
+                    }
                 }
             });
             socket.on(SELECTED_FORM_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    drawingCollabSessionListener.onSelectedElements((String[])args[0], (String[])args[1]);
+                    try {
+                        JSONObject obj = (JSONObject)args[0];
+                        JSONArray olds = obj.getJSONArray("oldElementIds");
+                        JSONArray news = obj.getJSONArray("newElementIds");
+                        String author = obj.getString(USERNAME_TAG);
+                        String[] stringOlds = new String[olds.length()];
+                        String[] stringNews = new String[news.length()];
+                        for (int i = 0; i < olds.length(); i++)
+                            stringOlds[i] = (String)olds.get(i);
+                        for (int j = 0; j < news.length(); j++)
+                            stringNews[j] = (String)news.get(j);
+                        drawingCollabSessionListener.onSelectedElements(stringOlds, stringNews,author);
+
+                    } catch (/*JSONException e*/Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
+
             socket.on(ADDED_FORM_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    drawingCollabSessionListener.onAddElement((CollabShape)args[0]);
+                    JSONObject obj = (JSONObject) args[0];
+
+                    try{
+                        JSONObject shape = obj.getJSONObject("shape");
+                        String author = obj.getString(USERNAME_TAG);
+                        drawingCollabSessionListener.onAddElement(new CollabShape(shape), author);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
-            socket.on(DELETE_FORM_TAG, new Emitter.Listener() {
+            socket.on(DELETED_FORM_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    drawingCollabSessionListener.onDeleteElement((String[])args[0]);
+                    try {
+                        JSONObject obj = (JSONObject) args[0];
+                        JSONArray array = (obj.getJSONArray(ELEMENTS_IDS_TAG));
+                        String author = obj.getString(USERNAME_TAG);
+                        String[] response = new String[array.length()];
+                        for (int i = 0; i < array.length(); i++) {
+                            response[i] = array.getString(i);
+                        }
+                        drawingCollabSessionListener.onDeleteElement(response, author);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             socket.on(MODIFY_FORM_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    drawingCollabSessionListener.onModifyElements((CollabShape[])args[0]);
+                    //drawingCollabSessionListener.onModifyElements((CollabShape[])args[0]);
                 }
             });
 
@@ -174,6 +230,7 @@ public class SocketManager  {
     }
     //SESSION COLLABORATIVE ------------------------------------------------------------------------------------------------------------------
 
+
     public void createCollabSession(String name, String visibility, String image){
         JSONObject json = null;
         try {
@@ -192,8 +249,15 @@ public class SocketManager  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        if(json != null)
-            socket.emit(JOIN_COLLAB_SESSION_TAG, json);
+        if(json != null){
+            socket.emit(JOIN_COLLAB_SESSION_TAG, json.toString());
+            this.drawingSessionId = drawingSessionId;
+            this.drawingCollabSessionListener.onJoinedSession(this.drawingSessionId);
+        }
+
+       //socket.emit(JOIN_COLLAB_SESSION_TAG, drawingSessionId, UserManager.currentInstance.getUserUsername());
+       //this.drawingSessionId = drawingSessionId;
+       //this.drawingCollabSessionListener.onJoinedSession(this.drawingSessionId);
     }
 
     public void addElement(CollabShape shape){
@@ -257,25 +321,25 @@ public class SocketManager  {
     public void deleteElements(String[] ids){
         JSONObject json = null;
         try {
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, sessionId).put(ELEMENTS_IDS_TAG, ids.clone())
+            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId).put(ELEMENTS_IDS_TAG, new JSONArray(ids))
                     .put(USERNAME_TAG, UserManager.currentInstance.getUserUsername());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if (json != null)
-            socket.emit(DELETE_FORM_TAG, json);
+            socket.emit(DELETE_FORM_TAG, json.toString());
     }
     public void selectElements(String[] oldSelections, String[] newSelections){
         JSONObject json = null;
         try {
             json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId)
                     .put(USERNAME_TAG, UserManager.currentInstance.getUserUsername())
-                    .put("oldElementIds", oldSelections).put("newElementIds",newSelections);
+                    .put("oldElementIds", new JSONArray(oldSelections)).put("newElementIds", new JSONArray(newSelections));
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if (json != null)
-            socket.emit(SELECT_FORM_TAG, json);
+            socket.emit(SELECT_FORM_TAG, json.toString());
     }
     /*public void resizeCanvas(){
         socket.emit(REZIZE_CANVAS_TAG, );

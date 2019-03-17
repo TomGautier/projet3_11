@@ -10,6 +10,7 @@ import android.graphics.RectF;
 import android.support.v4.content.res.ResourcesCompat;
 
 import com.projet3.polypaint.R;
+import com.projet3.polypaint.UserLogin.UserManager;
 
 public abstract class GenericShape {
 
@@ -32,6 +33,7 @@ public abstract class GenericShape {
         this.height = height;
         this.style = style;
     }
+
 
     public abstract void drawOnCanvas(Canvas canvas);
 
@@ -106,7 +108,7 @@ public abstract class GenericShape {
         return id;
     }
     public int[] getCenterCoord(){
-        return new int[] {posY,posY};
+        return new int[] {posX,posY};
     }
 
 

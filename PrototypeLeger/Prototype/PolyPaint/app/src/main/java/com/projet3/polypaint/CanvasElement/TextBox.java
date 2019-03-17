@@ -11,6 +11,7 @@ public class TextBox extends GenericShape {
 
     public TextBox(String id, int x, int y, PaintStyle style) {
         super(id, x, y, 0, FONT_SIZE, style);
+        text = "";
         adjustWidthToText();
     }
 
