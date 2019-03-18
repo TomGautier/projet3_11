@@ -14,6 +14,8 @@ namespace PolyPaint.Managers
         public StylusPointCollection Points;
         public Form Shape1;
         public Form Shape2;
+        private int Index1;
+        private int Index2;
         public List<Arrow> Arrows;
         private bool IsDrawingArrow { get; set; }
 
@@ -30,11 +32,12 @@ namespace PolyPaint.Managers
             this.Arrows = new List<Arrow>();
             IsDrawingArrow = false;
         }
-        public bool update(StylusPoint p, bool isOnEncrage, Form shape) //returns true if a new arrow was created
+        public bool update(StylusPoint p, bool isOnEncrage, Form shape, int index) //returns true if a new arrow was created
         {
            if (!IsDrawingArrow && isOnEncrage) //Premier point
             {
-                Shape1 = shape;
+                this.Shape1 = shape;
+                this.Index1 = index;
                 this.Arrows.Add(new Arrow(new StylusPointCollection { p }));
                 this.IsDrawingArrow = true;
                 return true;
@@ -43,11 +46,14 @@ namespace PolyPaint.Managers
             {
                 this.Arrows[this.Arrows.Count-1].StylusPoints.Add(p);
                 this.Shape2 = shape;
+                this.Index2 = index;
 
                 this.Shape1.Arrow = this.Arrows[this.Arrows.Count-1];
                 this.Shape2.Arrow = this.Arrows[this.Arrows.Count-1];
                 this.Arrows[this.Arrows.Count - 1].Shape1 = this.Shape1;
                 this.Arrows[this.Arrows.Count - 1].Shape2 = this.Shape2;
+                this.Arrows[this.Arrows.Count - 1].Index1 = this.Index1;
+                this.Arrows[this.Arrows.Count - 1].Index2 = this.Index2;
                 this.IsDrawingArrow = false; //reset
             }
            else if(IsDrawingArrow && !isOnEncrage)

@@ -34,6 +34,7 @@ namespace PolyPaint.Utilitaires
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
             this.Type = TYPE;
+            this.updatePoints();
         }
         protected override void MakeShape()
         {
@@ -52,15 +53,20 @@ namespace PolyPaint.Utilitaires
         }
         private void updatePoints()
         {
+            this.WidthDirection = Point.Subtract(this.StylusPoints[6].ToPoint(), this.StylusPoints[7].ToPoint());
+            this.WidthDirection /= this.WidthDirection.Length;
+            this.HeightDirection = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[0].ToPoint());
+            this.HeightDirection /= this.HeightDirection.Length;
             double x = this.StylusPoints[0].X + (this.StylusPoints[6].X - this.StylusPoints[0].X) / 2;
             double y = this.StylusPoints[0].Y + (this.StylusPoints[6].Y - this.StylusPoints[0].Y) / 2;
-            this.Center = new Point((int)x, (int)y);
+            this.Center = new Point((int)x, (int)y);        
             this.Width = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[6].ToPoint()).Length;
             this.Height = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+            this.UpdateEncPoints();
 
             if (this.Arrow != null)
             {
-                this.Arrow.ShapeMoved(this.Id, new StylusPoint(this.Center.X, this.Center.Y));
+                this.Arrow.ShapeMoved(this.Id);
             }
         }
         private void Fill(DrawingContext drawingContext)
@@ -89,6 +95,7 @@ namespace PolyPaint.Utilitaires
             base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
             DrawName(drawingContext);
+            DrawEncrage(drawingContext);
         }
         private void DrawName(DrawingContext drawingContext)
         {

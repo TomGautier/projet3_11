@@ -222,32 +222,37 @@ namespace PolyPaint.Modeles
             catch { }
 
         }
-        private void HandleConnector(Point p) {
+        private void HandleConnector(Point p)
+        {
 
             bool isOnEncrage = false;
             bool newArrowCreated = false;
             foreach (Form form in this.traits)
             {
-                if (Math.Abs(Point.Subtract(form.Center,p).Length) < 20)
+                for (int i = 0; i < form.EncPoints.Length; i++)
                 {
-                    newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.Center.X,form.Center.Y), true, form);
-                    isOnEncrage = true;
+                    if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
+                    {
+                        newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);
+                        isOnEncrage = true;
+                    }
                 }
-                
             }
             if (!isOnEncrage)
             {
-                newArrowCreated = this.FormConnectorManager.update(new StylusPoint(p.X,p.Y), false, null);
+                newArrowCreated = this.FormConnectorManager.update(new StylusPoint(p.X, p.Y), false, null, 0);
             }
             if (newArrowCreated)
             {
                 this.traits.Add(this.FormConnectorManager.Arrows.Last());
             }
-            
-
-
-
         }
+               /* if (Math.Abs(Point.Subtract(form.Center,p).Length) < 20)
+                {
+                    newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.Center.X,form.Center.Y), true, form);
+                    isOnEncrage = true;
+                }*/
+      
         public void HandleMouseDown(Point p)
         {
             if (OutilSelectionne == "connexion")
