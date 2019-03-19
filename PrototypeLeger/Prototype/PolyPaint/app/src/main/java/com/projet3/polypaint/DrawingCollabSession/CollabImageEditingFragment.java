@@ -453,6 +453,14 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         if (client.getName().equals(author)){
             this.cutShapes.clear();
         }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
     }
 
 
@@ -489,9 +497,11 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         for (int i = 0; i < ids.length; i++){
             GenericShape shape = findGenShapeById(ids[i]);
             player.removeSelectedShape(shape);
-            cutShapes.add(shape);
             shapes.remove(shape);
+            if (client.getName().equals(author))
+                cutShapes.add(shape);
         }
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
