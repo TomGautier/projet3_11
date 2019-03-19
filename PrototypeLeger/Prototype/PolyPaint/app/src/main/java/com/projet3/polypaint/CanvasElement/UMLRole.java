@@ -8,6 +8,8 @@ public class UMLRole extends GenericShape {
     private final int DEFAULT_WIDTH = 60;
     private final int DEFAULT_HEIGHT = 90;
 
+    public static final String TYPE = "UmlRole";
+
     public UMLRole(int x, int y, PaintStyle style) {
         super(x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
@@ -41,4 +43,6 @@ public class UMLRole extends GenericShape {
         /* Do nothing for now*/
         // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
     }
+
+    public String getType() { return TYPE; }
 }

@@ -9,9 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
-import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.USER.RequestManager;
 
@@ -20,9 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class GalleryFragment extends Fragment {
 
@@ -35,6 +30,8 @@ public class GalleryFragment extends Fragment {
 
         rootView=inflater.inflate(R.layout.fragment_gallery, container, false);
 
+        //RequestManager.currentInstance.postImage(createNewImage());
+
         ArrayList<JSONObject> images = RequestManager.currentInstance.fetchGalleryContent();
 
         if (images != null && !images.isEmpty())
@@ -44,53 +41,37 @@ public class GalleryFragment extends Fragment {
     }
 
     private void addImagesToTable(ArrayList<JSONObject> images) {
-        final int MAX_ROW_LENGTH = 3;
+        final int MAX_ROW_LENGTH = 6;
 
-        LayoutInflater inflater = LayoutInflater.from(getContext());
         FragmentManager manager = getFragmentManager();
         TableLayout table = (TableLayout) rootView.findViewById(R.id.table);
-        //View gRow;
         TableRow row;
+        FragmentTransaction transaction = manager.beginTransaction();
 
         // All but last row
         for (int i = 0; i < images.size() / MAX_ROW_LENGTH; i++) {
-            //gRow = inflater.inflate(R.layout.gallery_row, null);
             row = new TableRow(getContext());
-            row.setId(i);
+            row.setId(i + 1);
             table.addView(row);
-            //row = (TableRow)gRow.findViewById(R.id.row);
-            //row = new TableRow(getContext());
-            System.out.println("Row id #" + i + " : " + row.getId());
-            FragmentTransaction transaction = manager.beginTransaction();
 
             for (int j = 0; j < MAX_ROW_LENGTH; j++) {
                 GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
                 thumbnail.setImageInfo(images.get(i * MAX_ROW_LENGTH + j));
                 transaction.add(row.getId(), thumbnail);
             }
-
-            transaction.addToBackStack(null);
-            transaction.commit();
         }
 
         // Last row
-        /*gRow = inflater.inflate(R.layout.gallery_row, null);
-        table.addView(gRow);
-        row = (TableRow)gRow.findViewById(R.id.row);
-        FragmentTransaction transaction = manager.beginTransaction();
-        for (int i = images.size() - (images.size() % MAX_ROW_LENGTH); i < images.size(); i++) {
+        row = new TableRow(getContext());
+        row.setId((images.size() / MAX_ROW_LENGTH) + 2);
+        table.addView(row);
+        for (int i = (images.size() / MAX_ROW_LENGTH) * MAX_ROW_LENGTH; i < images.size(); i++) {
             GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
             thumbnail.setImageInfo(images.get(i));
             transaction.add(row.getId(), thumbnail);
-            /*View v = inflater.inflate(R.layout.gallery_thumbnail, null);
-            TextView tv = (TextView) v.findViewById(R.id.title);
-            try {
-                tv.setText(images.get(i).getString("author"));
-            } catch (JSONException e) { e.printStackTrace(); }
-            row.addView(v);
         }
         transaction.addToBackStack(null);
-        transaction.commit();*/
+        transaction.commit();
     }
 
     /*private void addImagesToTable(ArrayList<String> names) {
@@ -135,15 +116,15 @@ public class GalleryFragment extends Fragment {
             testShape.put("id", "Tom_randomid");
             testShape.put("drawingSessionId", "testSessionId");
             testShape.put("author", "TestAuthor");
-            testShape.put("properties", generateImageProperties());
+            testShape.put("properties", generateShapeProperties());
 
             JSONArray shapes = new JSONArray();
             shapes.put(testShape);
 
-            image.put("author", "TestAuthor");
+            image.put("author", "OtherAuthor2");
             image.put("visibility", "public");
             image.put("protection", "protected");
-            //image.put("shapes", shapes);
+            image.put("shapes", shapes);
 
             System.out.println(image.toString(2));
         } catch (JSONException e) {
@@ -153,7 +134,7 @@ public class GalleryFragment extends Fragment {
         return image;
     }
 
-    private JSONObject generateImageProperties() {
+    private JSONObject generateShapeProperties() {
         JSONObject testProperties = new JSONObject();
 
         try {

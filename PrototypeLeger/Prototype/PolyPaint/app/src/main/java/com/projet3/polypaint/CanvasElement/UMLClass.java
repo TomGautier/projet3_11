@@ -8,6 +8,8 @@ public class UMLClass extends GenericShape {
     private final int DEFAULT_WIDTH = 200;
     private final int DEFAULT_HEIGHT = 150;
 
+    public static final String TYPE = "UmlClass";
+
     public UMLClass(int x, int y, PaintStyle style) {
         super(x, y, 0, 0, style);
         width = DEFAULT_WIDTH;
@@ -34,4 +36,6 @@ public class UMLClass extends GenericShape {
         /* Do nothing for now*/
         // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
     }
+
+    public String getType() { return TYPE; }
 }
