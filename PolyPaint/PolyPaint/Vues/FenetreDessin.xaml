@@ -71,15 +71,29 @@
                         <Image Source="/Resources/efface.png" />
                     </StackPanel>
                 </Button>
-                <Button Name="connexion" Width="40" Height="40" Margin="5" 
+                <Button Name="connexion" Width="60" Height="40" Margin="5" 
+                        Click="surfaceDessin_OpenConnectorSettings"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=connexion, UpdateSourceTrigger=PropertyChanged}" 
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=connexion, UpdateSourceTrigger=PropertyChanged}" 
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="connexion">
                     <StackPanel>
-                        <Image Source="/Resources/efface.png" />
+                        <TextBlock>
+                    <Bold>ARROW</Bold>
+                        </TextBlock>
                     </StackPanel>
                 </Button>
+                <StackPanel Orientation="Vertical" Margin="5,5,5,5" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Name="Dos" Width="24" Height="24" Margin="0"></Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button Name="Verticale" Width="24" Height="24" Margin="0"
+                            HorizontalContentAlignment="Center"></Button>
+                        <Button Name="Cuatro" Width="24" Height="24" Margin="0"
+                            HorizontalContentAlignment="Center"></Button>
+                    </StackPanel>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
                 </StackPanel>
@@ -117,42 +131,42 @@
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="form_UmlClass">
 
-                  <TextBlock>
+                    <TextBlock>
                     <Bold>CLASS</Bold>
-                  </TextBlock>
+                    </TextBlock>
                 </Button>
                 <Button Name="form_Artefact" Width="70" Height="40" Margin="5"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Artefact, UpdateSourceTrigger=PropertyChanged}"
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Artefact, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="form_Artefact">
-                  <TextBlock>
+                    <TextBlock>
                     <Bold>ARTEFACT</Bold>
-                  </TextBlock>
-                    
+                    </TextBlock>
+
                 </Button>
-              <Button Name="form_Activity" Width="70" Height="40" Margin="5"
+                <Button Name="form_Activity" Width="70" Height="40" Margin="5"
                       BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Activity, UpdateSourceTrigger=PropertyChanged}"
                       Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Activity, UpdateSourceTrigger=PropertyChanged}"
                       Command="{Binding Path=ChoisirOutil}"
                       CommandParameter="form_Activity">
 
-                <TextBlock>
+                    <TextBlock>
                   <Bold>ACTIVITY</Bold>
-                </TextBlock>
-              </Button>
-              <StackPanel>
+                    </TextBlock>
+                </Button>
+                <StackPanel>
 
-              </StackPanel>
+                </StackPanel>
                 <Button Name="form_Role" Width="70" Height="40" Margin="5"
                         BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Role, UpdateSourceTrigger=PropertyChanged}"
                         Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Role, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
                         CommandParameter="form_Role">
 
-                  <TextBlock>
+                    <TextBlock>
                     <Bold>ACTOR</Bold>
-                  </TextBlock>
+                    </TextBlock>
                 </Button>
                 <Button Name="rotation" Width="40" Height="40" Margin="5"               
                         Command="{Binding Path=RotateForm}">
@@ -172,7 +186,7 @@
 
 
             </StackPanel>
-            
+
         </Border>
         <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000"/>
 
@@ -215,7 +229,7 @@
                        Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                        DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
                 </Vues:CustomInkCanvas>
-                
+
                 <Border.Effect>
                     <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
                 </Border.Effect>

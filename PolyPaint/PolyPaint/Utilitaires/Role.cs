@@ -26,6 +26,7 @@ namespace PolyPaint.Utilitaires
         public Role(StylusPointCollection pts) : base(pts)
 
         {
+           
             // this.StylusPoints = pts;
             this.Center = new Point(pts[0].X, pts[0].Y);
             this.Name = "";

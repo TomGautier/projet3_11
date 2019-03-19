@@ -144,6 +144,9 @@
     <Compile Include="Utilitaires\ShapeProperties.cs" />
     <Compile Include="Utilitaires\UMLClass.cs" />
     <Compile Include="VueModeles\VueModele.cs" />
+    <Compile Include="Vues\ConnectorSetter.xaml.cs">
+      <DependentUpon>ConnectorSetter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vues\CustomInkCanvas.cs" />
     <Compile Include="Vues\DrawControl.xaml.cs">
       <DependentUpon>DrawControl.xaml</DependentUpon>
@@ -165,6 +168,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\ChatWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vues\ConnectorSetter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

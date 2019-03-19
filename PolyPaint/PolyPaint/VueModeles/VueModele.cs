@@ -99,6 +99,27 @@ namespace PolyPaint.VueModeles
             get { return editeur.TailleTrait; }
             set { editeur.TailleTrait = value; }
         }
+        public string ConnectorLabel
+        {
+            get { return editeur.ConnectorLabel; }
+            set { editeur.ConnectorLabel = value; }
+        }
+        public string ConnectorType
+        {
+            get { return editeur.ConnectorType; }
+            set { editeur.ConnectorType = value; }
+        }
+        public int ConnectorSize
+        {
+            get { return editeur.ConnectorSize; }
+            set { editeur.ConnectorSize = value; }
+        }
+        public string ConnectorColor
+        {
+            get { return editeur.ConnectorColor; }
+            set { editeur.ConnectorColor = value; }
+        }    
+        
         public StrokeCollection SelectedStrokes
         {
             get { return editeur.selectedStrokes; }
@@ -208,6 +229,13 @@ namespace PolyPaint.VueModeles
         {
             editeur.HandleChangeSelection(strokes);
             //TODO : Send socket -> selection was changed
+        }
+        public void SetConnectorSettings(string label, string type, int size,string color)
+        {
+            this.ConnectorLabel = label;
+            this.ConnectorType = type;
+            this.ConnectorSize = size;
+            this.ConnectorColor = color;
         }
         public void HandleLabelChange(string label)
         {

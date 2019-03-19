@@ -27,6 +27,17 @@ namespace PolyPaint.Utilitaires
         protected Vector WidthDirection { get; set; }
         protected Vector HeightDirection { get; set; }
 
+        private bool showEncrage;
+        public bool ShowEncrage
+        {
+            get { return showEncrage; }
+            set
+            {
+                showEncrage = value;
+                this.update();
+            }
+        }
+
         private Color remplissage;
         public Color Remplissage
         {
@@ -106,20 +117,23 @@ namespace PolyPaint.Utilitaires
         protected void DrawEncrage(DrawingContext drawingContext)
         {
             this.UpdateEncPoints();
-           // Point[] encPoints = new Point[4];          
-            for (int i = 0; i < this.EncPoints.Length; i++)
+            // Point[] encPoints = new Point[4]; 
+            if (this.ShowEncrage)
             {
-                LineSegment[] segments = new LineSegment[4];
+                for (int i = 0; i < this.EncPoints.Length; i++)
+                {
+                    LineSegment[] segments = new LineSegment[4];
 
-                segments[0] = new LineSegment(new Point(this.EncPoints[i].X + 4, this.EncPoints[i].Y - 4), true);
-                segments[1] = new LineSegment(new Point(this.EncPoints[i].X + 4, this.EncPoints[i].Y + 4), true);
-                segments[2] = new LineSegment(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y + 4), true);
-                segments[3] = new LineSegment(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y - 4), true);
-                var figure = new PathFigure(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y - 4), segments, true);
-                var geo = new PathGeometry(new[] { figure });
+                    segments[0] = new LineSegment(new Point(this.EncPoints[i].X + 4, this.EncPoints[i].Y - 4), true);
+                    segments[1] = new LineSegment(new Point(this.EncPoints[i].X + 4, this.EncPoints[i].Y + 4), true);
+                    segments[2] = new LineSegment(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y + 4), true);
+                    segments[3] = new LineSegment(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y - 4), true);
+                    var figure = new PathFigure(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y - 4), segments, true);
+                    var geo = new PathGeometry(new[] { figure });
 
-                SolidColorBrush brush = new SolidColorBrush(Colors.Brown);           
-                drawingContext.DrawGeometry(brush, null, geo);
+                    SolidColorBrush brush = new SolidColorBrush(Colors.Brown);
+                    drawingContext.DrawGeometry(brush, null, geo);
+                }
             }
 
         /*    LineSegment[] segments = new LineSegment[4];
@@ -179,6 +193,7 @@ namespace PolyPaint.Utilitaires
             this.IsSelectedByOther = false;
             this.EncPoints = new Point[4];
             this.Label = "";
+            this.showEncrage = false;
         }   
         
     }
