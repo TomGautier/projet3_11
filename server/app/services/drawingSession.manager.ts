@@ -28,6 +28,8 @@ export class DrawingSessionManager {
         
         this.socketService.subscribe(SocketEvents.DuplicateElements, args => this.duplicateElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.CutElements, args => this.cutElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
+        this.socketService.subscribe(SocketEvents.DuplicateCutElements, args => this.duplicateCutElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
+
         
         this.socketService.subscribe(SocketEvents.StackElement, args =>this.stackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.UnstackElement, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
@@ -102,13 +104,18 @@ export class DrawingSessionManager {
         //for (const shape of doc.shapes){
          //this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
         //}
-       // this.socketService.emit(doc.drawingSessionId, SocketEvents.DuplicatedElements, doc);
+       this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedElements, doc);
     }
 
     public cutElements(doc: any) {
-        
+        console.log(doc);
         this.drawingSessionService.deleteElements(doc.elementIds);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc.elementIds);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc);
+    }
+    public duplicateCutElements(doc : any){
+        console.log(doc);
+        this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedCutElements, doc);
+
     }
 
     public stackElements(doc: any) {

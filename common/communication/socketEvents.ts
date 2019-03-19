@@ -36,6 +36,8 @@ export default {
     DuplicatedElements:"DuplicatedElements",
     CutElements:"CutElements",
     CutedElements:"CutedElements",
+    DuplicateCutElements:"DuplicateCutElements",
+    DuplicatedCutElements: "DuplicatedCutElements",
 
     StackElement:"StackElement",
     StackedElement:"StackedElement",

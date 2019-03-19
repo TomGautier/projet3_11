@@ -44,7 +44,8 @@ export class SocketService {
 
             socket.on(SocketEvents.DuplicateElements, args => this.handleEvent(SocketEvents.DuplicateElements, socket.id, args));
             socket.on(SocketEvents.CutElements, args => this.handleEvent(SocketEvents.CutElements, socket.id, args));
-           
+            socket.on(SocketEvents.DuplicateCutElements, args => this.handleEvent(SocketEvents.DuplicateCutElements, socket.id, args));
+
             socket.on(SocketEvents.StackElement, args => this.handleEvent(SocketEvents.StackElement, socket.id, args));
             socket.on(SocketEvents.UnstackElement, args => this.handleEvent(SocketEvents.UnstackElement, socket.id, args));
 
