@@ -6,6 +6,7 @@ using System.Windows.Controls.Primitives;
 using PolyPaint.VueModeles;
 using System.Windows.Ink;
 using PolyPaint.Utilitaires;
+using System.Windows.Controls;
 
 namespace PolyPaint
 {
@@ -18,6 +19,8 @@ namespace PolyPaint
         {
             InitializeComponent();
             DataContext = new VueModele();
+            (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+            this.surfaceDessin.AllowSelection = false;
         }
         
         // Pour gérer les points de contrôles.
@@ -37,10 +40,14 @@ namespace PolyPaint
             Point p = e.GetPosition(surfaceDessin);
             textBlockPosition.Text = Math.Round(p.X) + ", " + Math.Round(p.Y) + "px";
         }
-        private void surfaceDessin_SelectionChanged(object sender, EventArgs e)
+        private void surfaceDessin_SelectionChanging(object sender, InkCanvasSelectionChangingEventArgs e)
         {
-            (DataContext as VueModele).HandleSelection(surfaceDessin.GetSelectedStrokes());
-            
+            if (!this.surfaceDessin.AllowSelection) //if the change is from the view
+            {
+                (DataContext as VueModele).HandleSelection(e.GetSelectedStrokes());
+                e.Cancel = true;
+            }
+
         }
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -61,13 +68,16 @@ namespace PolyPaint
                 Form duplicate = (Form)(form.Clone());
                 duplicate.translate(30, 30);
                 surfaceDessin.Strokes.Add(duplicate);
+               
             }
         }
+        
 
         private void SupprimerSelection(object sender, RoutedEventArgs e)
         {
-            (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
-            surfaceDessin.CutSelection();        
+            (DataContext as VueModele).HandleSelectionSuppression();
+           // (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
+           // surfaceDessin.CutSelection();        
         }
         
         private void TextBox_TextChanged(object sender, EventArgs e)
@@ -85,14 +95,31 @@ namespace PolyPaint
 
         }
 
+      /*  private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
+        {
+            
+        }*/
+        private void surfaceDessin_SelectionResizing(object sender, EventArgs e)//object sender, InkCanvasSelectionEditingEventArgs e)
+        {
+            (DataContext as VueModele).HandleResize();
+        }
+        private void surfaceDessin_StrokeErasing(object sender, InkCanvasStrokeErasingEventArgs e)
+        {
+            e.Cancel = true; //Prevent deletion
+        }
+        void surfaceDessin_HandleKey(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Delete && e.OriginalSource is InkCanvas) //Redirect to Cut handler if Key.delete is pressed
+            {
+                e.Handled = true;
+                SupprimerSelection(null, null);
+            }
+        }
+        private void ChatControl_Loaded(object sender, RoutedEventArgs e) { }
+
         private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
         {
             (DataContext as VueModele).HandleDrag();
         }
-        private void surfaceDessin_SelectionResized(object sender, EventArgs e)
-        {
-            (DataContext as VueModele).HandleResize();
-        }
-        private void ChatControl_Loaded(object sender, RoutedEventArgs e) { }
     }
 }

@@ -1,7 +1,7 @@
-package com.projet3.polypaint.USER;
+package com.projet3.polypaint.UserLogin;
 
 import com.projet3.polypaint.Chat.Conversation;
-import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.SocketManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;

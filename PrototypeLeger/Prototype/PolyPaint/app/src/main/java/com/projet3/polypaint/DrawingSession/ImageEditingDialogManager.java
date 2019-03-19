@@ -1,6 +1,5 @@
-package com.projet3.polypaint.Image;
+package com.projet3.polypaint.DrawingSession;
 
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 
 import java.util.ArrayList;

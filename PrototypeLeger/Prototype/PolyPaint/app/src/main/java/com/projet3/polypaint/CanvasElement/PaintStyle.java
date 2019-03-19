@@ -14,7 +14,7 @@ public class PaintStyle {
         textPaint = text;
     }
 
-    Paint getBorderPaint() { return borderPaint; }
+    public Paint getBorderPaint() { return borderPaint; }
     Paint getBackgroundPaint() { return backgroundPaint; }
     Paint getTextPaint() { return textPaint; }
 

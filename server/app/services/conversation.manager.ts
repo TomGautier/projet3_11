@@ -20,6 +20,7 @@ export class ConversationManager {
 
     public onMessageSent(socketId: string, args: any) {
         const messageJson = {date: 'date actuelle', username: args[0].username, message: args[0].message};
+        console.log(args[0]);
         this.socketService.emit(args[0].conversationId, SocketEvents.MessageSent, messageJson);
     }
 

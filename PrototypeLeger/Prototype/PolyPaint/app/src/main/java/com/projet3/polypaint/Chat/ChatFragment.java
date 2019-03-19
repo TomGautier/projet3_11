@@ -24,9 +24,10 @@ import android.widget.Toast;
 
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.USER.RequestManager;
-import com.projet3.polypaint.USER.UserManager;
-import com.projet3.polypaint.Utilities;
+import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.UserLogin.RequestManager;
+import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Others.Utilities;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

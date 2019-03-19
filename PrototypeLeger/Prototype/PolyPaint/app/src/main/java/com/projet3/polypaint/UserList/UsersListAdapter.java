@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.UserList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,9 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.projet3.polypaint.R;
+import com.projet3.polypaint.UserList.User;
 
 import java.util.ArrayList;
 

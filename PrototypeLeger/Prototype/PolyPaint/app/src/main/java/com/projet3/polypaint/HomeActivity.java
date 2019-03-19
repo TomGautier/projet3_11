@@ -15,9 +15,13 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.Chat.SocketManager;
-import com.projet3.polypaint.Image.ImageEditingFragment;
-import com.projet3.polypaint.USER.UserManager;
+import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
+import com.projet3.polypaint.DrawingCollabSession.CollabShape;
+import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
+import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.UserLogin.LoginActivity;
+import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.UserList.UsersListFragment;
 
 import java.util.ArrayList;
 
@@ -28,10 +32,12 @@ public class HomeActivity extends AppCompatActivity {
     private final String CHAT_TAG = "CHAT_FRAGMENT";
     private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
 	private final String USER_TABLE_TAG = "USER_TABLE_FRAGMENT";
+	private final String COLLAB_EDITING_TAG = "COLLAB_IMAGE_EDITING_FRAGMENT";
 
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
 	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout collabImageEditingFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
 	@Override
@@ -44,16 +50,22 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(mainToolbar);
 		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 
 
 
 		if (savedInstanceState == null){
-			createUsersTableFragment();
-			createChatFragment();
-			createImageEditingFragment();
-			toggleImageEditingVisibility();
+			//createUsersTableFragment();
+			//createChatFragment();
+			//createImageEditingFragment();
+			//toggleImageEditingVisibility();
+			createCollabImageEditingFragment();
 		}
+		//CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",new int[] {1,2},200,300,0);
+		//CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
+		//SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
+
 	}
 
 	private void createChatFragment() {
@@ -69,6 +81,14 @@ public class HomeActivity extends AppCompatActivity {
 		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
         transaction.addToBackStack(null);
         transaction.commit();
+	}
+
+	private void createCollabImageEditingFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.collabImageEditingFragment, new CollabImageEditingFragment(),COLLAB_EDITING_TAG);
+        transaction.addToBackStack(null);
+		transaction.commit();
 	}
 	private void createUsersTableFragment(){
 		FragmentManager manager = getFragmentManager();
