@@ -18,8 +18,8 @@
                 </StackPanel.Background>
                 <Button x:Name="toggleButton" Padding="3" Height="30" Margin="5" Command="{Binding ToggleChatView}" Content="Toggle view" Click="ToggleButton_Click"/>
                 <Label Content="Cannal :" VerticalAlignment="Center"/>
-                <ComboBox Height="23" Width="100" IsEditable="True" IsTextSearchCaseSensitive="True" ItemsSource="{Binding ChatManager.ConversationsID}" SelectedItem="{Binding ChatManager.ConversationID, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Padding="3" Height="30" Margin="5" Content="Créer..." Command="{Binding ChatManager.CreateConversation}"/>
+                <ComboBox Height="23" Width="100" IsEditable="True" IsTextSearchCaseSensitive="True" ItemsSource="{Binding ChatManager.RoomsID}" SelectedItem="{Binding ChatManager.RoomID, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="ComboBox_SelectionChanged"/>
+                <Button Padding="3" Height="30" Margin="5" Content="Créer..." Command="{Binding ChatManager.CreateChannel}"/>
             </StackPanel>
         </Border>
 

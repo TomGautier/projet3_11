@@ -23,7 +23,21 @@ namespace PolyPaint.VueModeles
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
+
         private string sessionId;
+        public string SessionId
+        {
+            get
+            {
+                return sessionId;
+            }
+            set
+            {
+                sessionId = value;
+                ChatManager.SessionID = value;
+                ProprieteModifiee();
+            }
+        }
 
         private int switchView = 0;
         public int SwitchView
