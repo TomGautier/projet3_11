@@ -10,11 +10,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
-import android.support.constraint.solver.widgets.ConstraintHorizontalLayout;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -37,7 +34,7 @@ import com.projet3.polypaint.R;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingFragment extends Fragment implements TextEditingDialog.TextEditingDialogListener {
+public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber {
 
 
     private Button buttonClass;
@@ -57,9 +54,8 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
     private ImageButton buttonBack;
 
     private enum Mode{selection, lasso, creation, move}
-    private enum ShapeType{uml_class, uml_activity, uml_artefact, uml_role, text_box}
+    private enum ShapeType{none, uml_class, uml_activity, uml_artefact, uml_role, text_box}
 
-    private final float DEFAULT_STROKE_WIDTH = 2f;
     private final float SELECTION_STROKE_WIDTH = 4f;
     private final String ADD_ACTION = "ADD";
     private final String REMOVE_ACTION = "REMOVE";
@@ -86,6 +82,7 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
     private View rootView;
 
     private boolean isResizingCanvas = false;
+    private boolean isLongPressed = false;
 
 
     public ImageEditingFragment() {}
@@ -105,9 +102,16 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
 
         initializeButtons();
         initializePaint();
+        ImageEditingDialogManager.getInstance().subscribe(this);
 
         setTouchListener();
         return rootView;
+    }
+
+    @Override
+    public void onStop() {
+        ImageEditingDialogManager.getInstance().unsubscribe(this);
+        super.onStop();
     }
 
     private void initializeButtons(){
@@ -235,26 +239,15 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();
         borderPaint.setColor(borderColor);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(DEFAULT_STROKE_WIDTH);
-        borderPaint.setStrokeCap(Paint.Cap.ROUND);
-        borderPaint.setAntiAlias(true);
 
         // Background paint
         int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
-        backgroundPaint.setStyle(Paint.Style.FILL);
 
         // Text paint
         Paint textPaint = new Paint();
         textPaint.setColor(borderColor);
-        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        textPaint.setTextSize(TextBox.FONT_SIZE);
-        textPaint.setTypeface(Typeface.MONOSPACE);
-        textPaint.setAntiAlias(true);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setFakeBoldText(true);
 
         defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint);
 
@@ -281,24 +274,26 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
                 int posX = (int)event.getX(0);
                 int posY = (int)event.getY(0);
 
-                if (isResizingCanvas || checkCanvasResizeHandle(posX, posY)) {
+                // Check if an showEditingDialog button was clicked
+                if (event.getAction() != MotionEvent.ACTION_MOVE &&
+                    !selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
+                // Check if canvas is being resized
+                else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
                     return resizeCanvas(event);
-                }
-
-                switch (currentMode) {
-                    case selection :
+                else switch (currentMode) {
+                    case selection:
                         checkSelection(posX, posY);
                         break;
-                    case lasso :
+                    case lasso:
                         doLassoSelection(event);
                         continueListening = true;
                         break;
-                    case creation :
+                    case creation:
                         ArrayList stackElems = new ArrayList();
                         stackElems.add(addShape(posX, posY));
                         addToStack(stackElems, ADD_ACTION);
                         break;
-                    case move :
+                    case move:
                         moveSelectedShape(event);
                         continueListening = true;
                         break;
@@ -335,8 +330,18 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
                 return;
             }
         }
-
-        selections.clear();
+    }
+    private boolean checkEditButton(int x, int y) {
+        for (int i = selections.size() - 1; i >= 0; i--) {
+            if (selections.get(i).getEditButton().contains(x, y)){
+                GenericShape clicked = selections.get(i);
+                selections.clear();
+                selections.add(clicked);
+                clicked.showEditingDialog(getFragmentManager());
+                return true;
+            }
+        }
+        return false;
     }
 
     private void doLassoSelection(MotionEvent event) {
@@ -395,8 +400,7 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
                 break;
             case text_box :
                 nShape = new TextBox(posX, posY, defaultStyle);
-                DialogFragment dialog = new TextEditingDialog(this);
-                dialog.show(getFragmentManager(), "text editing");
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
         }
         if (nShape != null) {
@@ -408,6 +412,7 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
         return nShape;
 
     }
+
     private void addToStack(ArrayList<GenericShape> nShapes, String action){
         Pair pair = new Pair(nShapes, action);
         addStack.push(pair);
@@ -605,7 +610,8 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
         return isResizingCanvas;
     }
 
-    // TextEditingDialogListener
+    // ------------------------- Dialogs -------------------------
+    // TextEditingDialog
     @Override
     public void onTextEditingDialogPositiveClick(String contents) {
         ((TextBox)selections.get(0)).setText(contents);
@@ -613,13 +619,14 @@ public class ImageEditingFragment extends Fragment implements TextEditingDialog.
         drawAllShapes();
         iView.invalidate();
     }
-
     @Override
     public void onTextEditingDialogNegativeClick() {
-        shapes.removeAll(selections);
-        selections.clear();
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
+        if (((TextBox)selections.get(0)).getText().equals("")) {
+            shapes.removeAll(selections);
+            selections.clear();
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
     }
 }

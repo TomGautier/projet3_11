@@ -17,7 +17,7 @@ import { ConnectionService } from "./services/connection.service";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConnectionController } from "./controllers/connection.controller";
 import { ImageController } from "./controllers/image.controller";
-
+import { DrawingSessionManager} from "./services/drawingSession.manager";
 
 @injectable()
 export class Application implements ApplicationInterface {
@@ -31,7 +31,8 @@ export class Application implements ApplicationInterface {
             @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
             @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
             @inject(TYPES.ImageControllerInterface) private imageController: ImageController,
-            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager) {
+            @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
+            @inject(TYPES.DrawingSessionManager) private drawingSessionManager: DrawingSessionManager) {
         this.app = express();
         this.config();
         this.bindRoutes();

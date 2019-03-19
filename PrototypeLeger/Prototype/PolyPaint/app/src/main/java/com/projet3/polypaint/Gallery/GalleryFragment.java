@@ -1,32 +1,25 @@
 package com.projet3.polypaint.Gallery;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.User.UserManager;
+import com.projet3.polypaint.USER.RequestManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class GalleryFragment extends Fragment {
-
-    // TEMP This needs to be in a network manager class
-    private final String AZURE_IP = "40.122.119.160";
-    private final String IP = "10.200.4.205";
-    // ------------------------------------------------
 
     private View rootView;
 
@@ -37,51 +30,51 @@ public class GalleryFragment extends Fragment {
 
         rootView=inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        ArrayList<String> names = fetchContent();/*new ArrayList<>();
-        for (int i = 0; i < 70; i ++) {
-            names.add("img" + i);
-        }*/
-        if (names != null && !names.isEmpty())
-            addImagesToTable(names);
+        //RequestManager.currentInstance.postImage(createNewImage());
+
+        ArrayList<JSONObject> images = RequestManager.currentInstance.fetchGalleryContent();
+
+        if (images != null && !images.isEmpty())
+            addImagesToTable(images);
 
         return rootView;
     }
 
-    private ArrayList<String> fetchContent() {
-        GalleryFetchContentTask fetchTask = new GalleryFetchContentTask();
-        UserManager user = UserManager.currentInstance;
-        String url = "http://" + AZURE_IP + ":3000/api/images/common/" + user.getSessionId() + "/" + user.getUserUsername();
-        fetchTask.execute(url);
+    private void addImagesToTable(ArrayList<JSONObject> images) {
+        final int MAX_ROW_LENGTH = 6;
 
-        try {
-            JSONArray jsons = fetchTask.get(5, TimeUnit.SECONDS);
-            ArrayList<String> authors = new ArrayList<>();
-            for (int i = 0; i < jsons.length(); i ++){
-                JSONObject jsonObject;
-                String author = "";
-                try {
-                    jsonObject = jsons.getJSONObject(i);
-                    author = jsonObject.getString("author");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (!author.isEmpty()){
-                    authors.add(author);
-                }
+        FragmentManager manager = getFragmentManager();
+        TableLayout table = (TableLayout) rootView.findViewById(R.id.table);
+        TableRow row;
+        FragmentTransaction transaction = manager.beginTransaction();
+
+        // All but last row
+        for (int i = 0; i < images.size() / MAX_ROW_LENGTH; i++) {
+            row = new TableRow(getContext());
+            row.setId(i + 1);
+            table.addView(row);
+
+            for (int j = 0; j < MAX_ROW_LENGTH; j++) {
+                GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
+                thumbnail.setImageInfo(images.get(i * MAX_ROW_LENGTH + j));
+                transaction.add(row.getId(), thumbnail);
             }
-            return authors;
-        }catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
         }
 
-        return null;
+        // Last row
+        row = new TableRow(getContext());
+        row.setId((images.size() / MAX_ROW_LENGTH) + 2);
+        table.addView(row);
+        for (int i = (images.size() / MAX_ROW_LENGTH) * MAX_ROW_LENGTH; i < images.size(); i++) {
+            GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
+            thumbnail.setImageInfo(images.get(i));
+            transaction.add(row.getId(), thumbnail);
+        }
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
-    private void addImagesToTable(ArrayList<String> names) {
+    /*private void addImagesToTable(ArrayList<String> names) {
         final int MAX_ROW_LENGTH = 9;
 
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -113,5 +106,52 @@ public class GalleryFragment extends Fragment {
             tv.setText(names.get(i));
             row.addView(v);
         }
+    }*/
+
+    private JSONObject createNewImage() {
+        JSONObject image = new JSONObject();
+
+        try {
+            JSONObject testShape = new JSONObject();
+            testShape.put("id", "Tom_randomid");
+            testShape.put("drawingSessionId", "testSessionId");
+            testShape.put("author", "TestAuthor");
+            testShape.put("properties", generateShapeProperties());
+
+            JSONArray shapes = new JSONArray();
+            shapes.put(testShape);
+
+            image.put("author", "OtherAuthor2");
+            image.put("visibility", "public");
+            image.put("protection", "protected");
+            image.put("shapes", shapes);
+
+            System.out.println(image.toString(2));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return image;
+    }
+
+    private JSONObject generateShapeProperties() {
+        JSONObject testProperties = new JSONObject();
+
+        try {
+            testProperties.put("type", "class");
+            testProperties.put("fillingColor", "ffffff");
+            testProperties.put("borderColor", "000000");
+            JSONArray coords = new JSONArray();
+            coords.put(100);
+            coords.put(100);
+            testProperties.put("middlePointCoord", coords);
+            testProperties.put("height", 100);
+            testProperties.put("width", 100);
+            testProperties.put("rotation", 0);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return testProperties;
     }
 }

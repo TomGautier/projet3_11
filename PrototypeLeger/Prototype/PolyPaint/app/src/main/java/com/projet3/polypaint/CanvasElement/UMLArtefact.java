@@ -1,16 +1,14 @@
 package com.projet3.polypaint.CanvasElement;
 
+import android.app.FragmentManager;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
-
-import com.projet3.polypaint.R;
 
 public class UMLArtefact extends GenericShape {
     private final int DEFAULT_WIDTH = 60;
     private final int DEFAULT_HEIGHT = 80;
+
+    public static final String TYPE = "UmlArtefact";
 
     public UMLArtefact(int x, int y, PaintStyle style) {
         super(x, y, 0, 0, style);
@@ -45,4 +43,11 @@ public class UMLArtefact extends GenericShape {
 
         canvas.drawPath(p, style.getBorderPaint());
     }
+
+    public void showEditingDialog(FragmentManager fragmentManager) {
+        /* Do nothing for now*/
+        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
+    }
+
+    public String getType() { return TYPE; }
 }

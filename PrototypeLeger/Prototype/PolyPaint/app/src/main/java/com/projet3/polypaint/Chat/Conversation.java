@@ -25,19 +25,19 @@ public class Conversation implements Parcelable  {
     }
 
 
-    public String GetName()  {
+    public String getName()  {
         return name;
     }
-    public void SetName(String newName) {
+    public void setName(String newName) {
         name = newName;
     }
-    public String GetHistoryAt(int index) {
+    public String getHistoryAt(int index) {
         return history.get(index);
     }
-    public int GetHistorySize() {
+    public int getHistorySize() {
         return history.size();
     }
-    public void AddToHistory(String message) {
+    public void addToHistory(String message) {
         history.add(message);
     }
 

@@ -29,6 +29,7 @@ const TYPES =  {
 
         // Managers
         ConversationManager:Symbol.for("ConversationManager"),
+        DrawingSessionManager:Symbol.for("DrawingSessionManager"),
         ConnectionManager:Symbol.for("ConnectionManager")
 };
 

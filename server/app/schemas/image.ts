@@ -10,6 +10,7 @@ export let imageSchema: Schema = new Schema({
     author: {
         type: String,
         ref: 'User',
+        required: true
     },
     visibility: {
         type: String,

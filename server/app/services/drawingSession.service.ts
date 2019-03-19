@@ -1,14 +1,14 @@
 import { DrawingSessionServiceInterface } from "../interfaces";
 import Shape from "../schemas/shape";
-import { inject } from "inversify";
+import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { DatabaseService } from "./database.service";
 import { Logger } from "./logger.service";
 import * as uuid from 'node-uuid';
 
+@injectable()
 export class DrawingSessionService implements DrawingSessionServiceInterface {
     private readonly ID_CRITERIA = "id";
-
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
