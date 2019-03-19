@@ -32,7 +32,7 @@
                     </StackPanel.Background>
                     <Label Content="Nom du canal :" VerticalAlignment="Center"/>
                     <TextBox Height="23" Width="100" Text="{Binding ChatManager.NewRoomID}" VerticalContentAlignment="Center"/>
-                    <Button Padding="3" Height="25" Margin="5" Content="Ajouter" Command="{Binding ChatManager.CreateChannel}"/>
+                    <Button Name="AddChannel" Padding="3" Height="25" Margin="5" Content="Ajouter" Command="{Binding ChatManager.CreateChannel}" Click="AddChannel_Click"/>
                 </StackPanel>
             </StackPanel>
         </Border>

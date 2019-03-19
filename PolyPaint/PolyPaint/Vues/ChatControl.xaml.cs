@@ -79,5 +79,10 @@ namespace PolyPaint.Vues
         {
             ((StackPanel)FindName("AddChannelForm")).Visibility = Visibility.Visible;
         }
+
+        private void AddChannel_Click(object sender, RoutedEventArgs e)
+        {
+            ((StackPanel)FindName("AddChannelForm")).Visibility = Visibility.Hidden;
+        }
     }
 }
