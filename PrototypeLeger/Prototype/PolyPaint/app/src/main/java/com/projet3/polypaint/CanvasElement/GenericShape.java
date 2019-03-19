@@ -25,6 +25,7 @@ public abstract class GenericShape {
     protected PaintStyle style;
     protected String id;
 
+
     public GenericShape(String id, int x, int y, int width, int height, PaintStyle style) {
         this.id = id;
         this.posX = x;
@@ -103,6 +104,32 @@ public abstract class GenericShape {
     }
     public  int getWidth() {
         return width;
+    }
+    public final static int getDefaultHeight(String currentShapeType){
+        switch (currentShapeType){
+            case "umlActivity" :
+                return UMLActivity.DEFAULT_HEIGHT;
+            case "umlClass":
+                return UMLClass.DEFAULT_HEIGHT;
+            case "umlArtefact":
+                return UMLArtefact.DEFAULT_HEIGHT;
+            case "umlRole":
+                return UMLRole.DEFAULT_HEIGHT;
+        }
+        return 0;
+    }
+    public final static int getDefaultWidth(String currentShapeType){
+        switch (currentShapeType){
+            case "umlActivity" :
+                return UMLActivity.DEFAULT_WIDTH;
+            case "umlClass":
+                return UMLClass.DEFAULT_WIDTH;
+            case "umlArtefact":
+                return UMLArtefact.DEFAULT_WIDTH;
+            case "umlRole":
+                return UMLRole.DEFAULT_WIDTH;
+        }
+        return 0;
     }
     public String getId() {
         return id;

@@ -38,9 +38,12 @@ export class DrawingSessionManager {
             this.connectedUsers.set(doc.drawingSessionId, new Array<String>());
         }
         var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
-        if (users !== undefined && users.indexOf(doc.username) == -1){
-            users.push(doc.username);
-            console.log("USERS :", users);
+        console.log("USERS: ",users)
+        if (users !== undefined){
+            if (users.indexOf(doc.username) == -1){
+                users.push(doc.username);
+                console.log("AJOUTE LE USER ", doc.username);
+            }
             this.socketService.emit(doc.drawingSessionId,SocketEvents.NewUserJoined, users);
         } 
     }
@@ -71,7 +74,7 @@ export class DrawingSessionManager {
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public modifyElement(doc: any) {
         //this.drawingSessionService.modifyElement(doc);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement,doc);
+        this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.ModifiedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to select.

@@ -41,6 +41,7 @@ public class SocketManager  {
     public final String DELETE_FORM_TAG = "DeleteElements";
     public final String DELETED_FORM_TAG = "DeletedElements";
     public final String MODIFY_FORM_TAG = "ModifyElement";
+    public final String MODIFIED_FORM_TAG = "ModifiedElement";
     public final String SELECT_FORM_TAG = "SelectElements";
     public final String SELECTED_FORM_TAG = "SelectedElements";
     public final String REZIZE_CANVAS_TAG = "ResizeCanvas";
@@ -184,9 +185,21 @@ public class SocketManager  {
                     }
                 }
             });
-            socket.on(MODIFY_FORM_TAG, new Emitter.Listener() {
+            socket.on(MODIFIED_FORM_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
+                    try{
+                        JSONObject obj = (JSONObject)args[0];
+                        JSONArray array = obj.getJSONArray("shapes");
+                        String author = obj.getString(USERNAME_TAG);
+                        CollabShape[] shapes = new CollabShape[array.length()];
+                        for (int i = 0; i < shapes.length; i++){
+                            shapes[i] = new CollabShape(array.getJSONObject(i));
+                        }
+                        drawingCollabSessionListener.onModifyElements(shapes,author);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     //drawingCollabSessionListener.onModifyElements((CollabShape[])args[0]);
                 }
             });
@@ -297,7 +310,7 @@ public class SocketManager  {
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
                         .put(CollabShapeProperties.FILLING_COLOR_TAG, shapes[i].getProperties().getFillingColor())
                         .put(CollabShapeProperties.BORDER_COLOR_TAG, shapes[i].getProperties().getBorderColor())
-                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord().toString()))
+                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord()))
                         .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                         .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
                         .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation());

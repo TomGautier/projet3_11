@@ -61,6 +61,10 @@ public class CollabShapeProperties {
     public int[] getMiddlePointCoord(){
         return middlePointCoord;
     }
+    public void setMiddlePointCoord(int x, int y){
+        middlePointCoord[0] = x;
+        middlePointCoord[1] = y;
+    }
 
 
     public int getHeight(){

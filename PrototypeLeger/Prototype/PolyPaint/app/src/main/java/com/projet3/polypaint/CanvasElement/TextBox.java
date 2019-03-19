@@ -27,7 +27,7 @@ public class TextBox extends GenericShape {
     }
 
     public TextBox clone() {
-        return new TextBox(id,this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
+        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
     }
 
     private void adjustWidthToText() {

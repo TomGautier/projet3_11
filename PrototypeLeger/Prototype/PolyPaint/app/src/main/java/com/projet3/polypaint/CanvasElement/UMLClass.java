@@ -5,8 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Path;
 
 public class UMLClass extends GenericShape {
-    public final static int DEFAULT_WIDTH = 180;
-    public final static int DEFAULT_HEIGHT = 150;
+    protected final static int DEFAULT_WIDTH = 180;
+    protected final static int DEFAULT_HEIGHT = 150;
 
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style) {
         super(id, x, y, width, height, style);
@@ -14,7 +14,7 @@ public class UMLClass extends GenericShape {
         //height = DEFAULT_HEIGHT;
     }
     public UMLClass clone() {
-        return new UMLClass(id, this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
+        return new UMLClass(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
     }
 
     @Override

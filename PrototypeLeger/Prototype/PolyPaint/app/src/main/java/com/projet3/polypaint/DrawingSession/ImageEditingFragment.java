@@ -54,7 +54,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ImageButton buttonBack;
 
     protected enum Mode{selection, lasso, creation, move}
-    protected enum ShapeType{none, umlClass, umlActivity, umlArtefact, umlRole, text_box}
+    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box}
 
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
@@ -72,7 +72,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
 
     protected Mode currentMode = Mode.creation;
-    protected ShapeType currentShapeType = ShapeType.umlClass;
+    protected ShapeType currentShapeType = ShapeType.UmlClass;
 
     protected Paint selectionPaint;
     protected ArrayList<GenericShape> selections = null;
@@ -126,7 +126,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.umlActivity);
+                setShapeType(ShapeType.Activity);
             }
         });
 
@@ -134,7 +134,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonArtefact.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.umlArtefact);
+                setShapeType(ShapeType.Artefact);
             }
         });
 
@@ -142,7 +142,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.umlClass);
+                setShapeType(ShapeType.UmlClass);
             }
         });
 
@@ -150,7 +150,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonRole.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.umlRole);
+                setShapeType(ShapeType.Role);
             }
         });
 
@@ -406,17 +406,21 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         GenericShape nShape = null;
         id = UserManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
-            case umlClass :
-                nShape = new UMLClass(id,posX, posY, UMLClass.DEFAULT_WIDTH, UMLClass.DEFAULT_HEIGHT, defaultStyle);
+            case UmlClass :
+                nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
-            case umlActivity :
-                nShape = new UMLActivity(id, posX, posY, UMLActivity.DEFAULT_WIDTH, UMLActivity.DEFAULT_HEIGHT, defaultStyle);
+            case Activity :
+                nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
-            case umlArtefact :
-                nShape = new UMLArtefact(id, posX, posY,UMLArtefact.DEFAULT_WIDTH, UMLArtefact.DEFAULT_HEIGHT, defaultStyle);
+            case Artefact :
+                nShape = new UMLArtefact(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
-            case umlRole :
-                nShape = new UMLRole(id, posX, posY, UMLRole.DEFAULT_WIDTH, UMLRole.DEFAULT_HEIGHT, defaultStyle);
+            case Role :
+                nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
             case text_box :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
@@ -540,7 +544,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
-    public void reset() {
+    protected void reset() {
 
         if (shapes != null && shapes.size() > 0){
             addToStack(new ArrayList(shapes),REMOVE_ACTION);

@@ -43,8 +43,21 @@ public class Player {
     public void removeSelectedShape(GenericShape shape){
         selectedShapes.remove(shape);
     }
-    public void setSelectedShape(GenericShape shape, int index){selectedShapes.set(index,shape);}
+    public void setSelectedShape(GenericShape shape) {
+        for (int i = 0; i < selectedShapes.size(); i++){
+            if (selectedShapes.get(i).getId().equals(shape.getId())){
+                selectedShapes.set(i,shape);
+            }
+        }
+    }
     public void clearSelectedShape(){selectedShapes.clear();}
+    /*public int findSelectedShapeIndex(String id){
+        for (int i = 0; i< selectedShapes.size(); i++){
+            if (selectedShapes.get(i).getId().equals(id))
+                return i;
+        }
+        return -1;
+    }*/
 
     @SuppressLint("ResourceAsColor")
     private void initializePaint(int selectionColor) {
