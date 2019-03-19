@@ -7,6 +7,9 @@ using PolyPaint.VueModeles;
 using System.Windows.Ink;
 using PolyPaint.Utilitaires;
 using System.Windows.Controls;
+using PolyPaint.Vues;
+using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace PolyPaint
 {
@@ -52,12 +55,13 @@ namespace PolyPaint
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             (DataContext as VueModele).HandleMouseDown(e.GetPosition(surfaceDessin));
+            
         }
 
         private void DupliquerSelection(object sender, RoutedEventArgs e)
         {
             
-            StrokeCollection selection = surfaceDessin.GetSelectedStrokes();
+            /*StrokeCollection selection = surfaceDessin.GetSelectedStrokes();
             if (selection.Count == 0 && (DataContext as VueModele).LastCut != null)
             {
                 surfaceDessin.Strokes.Add((DataContext as VueModele).LastCut);
@@ -69,7 +73,7 @@ namespace PolyPaint
                 duplicate.translate(30, 30);
                 surfaceDessin.Strokes.Add(duplicate);
                
-            }
+            }*/
         }
         
 
@@ -79,7 +83,74 @@ namespace PolyPaint
            // (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
            // surfaceDessin.CutSelection();        
         }
-        
+        private void surfaceDessin_OpenConnectorSettings(object sender, RoutedEventArgs e)
+        {
+            ConnectorSetter menu = new ConnectorSetter();
+            surfaceDessin.Visibility = Visibility.Hidden;
+            menu.Show();
+            menu.Closing += new CancelEventHandler(ConnectorSetterClosingHandler);
+            
+        }
+
+        private void ConnectorSetterClosingHandler(object sender, CancelEventArgs e)
+        {
+            string label = (sender as ConnectorSetter).txtLabel.Text;
+            string type = (sender as ConnectorSetter).typeList.Text;
+            int size = Convert.ToInt32((sender as ConnectorSetter).sizeList.SelectedItem.ToString().Trim(new char[] { 'p', 'x' }));
+            string color = (sender as ConnectorSetter).selecteurCouleur.SelectedColor.ToString();
+            Console.WriteLine(type);
+            surfaceDessin.Visibility = Visibility.Visible;
+
+            (DataContext as VueModele).SetConnectorSettings(label, type, size, color);
+        }
+
+        private void surfaceDessin_SetSelectionText(object sender, RoutedEventArgs e)
+        {
+            if (surfaceDessin.GetSelectedStrokes().Count > 1)
+            {
+                MessageBox.Show("Error : Too many elements selected");
+            }
+            else if (surfaceDessin.GetSelectedStrokes().Count == 0)
+            {
+                MessageBox.Show("Error : No element selected");
+            }
+            else if ((surfaceDessin.GetSelectedStrokes()[0] as Form).Type == "UmlClass")
+            {
+                string name= (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Label;
+                List<string> methods = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Methods;
+                List<string> attributes = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Attributes;
+
+                UmlClassSetter menu = new UmlClassSetter(name,methods,attributes);
+                surfaceDessin.Visibility = Visibility.Hidden;
+                menu.Show();
+                menu.Closing+= new CancelEventHandler(UMLSetterClosingHandler);
+
+            }
+            else
+            {
+                GenericSetter menu = new GenericSetter((surfaceDessin.GetSelectedStrokes()[0] as Form).Label);
+                surfaceDessin.Visibility = Visibility.Hidden;
+                menu.Show();
+                menu.Closing += new CancelEventHandler(GenericSetterClosingHandler);
+            }
+           
+        }
+
+        private void UMLSetterClosingHandler(object sender, CancelEventArgs e)
+        {
+            surfaceDessin.Visibility = Visibility.Visible;
+            string name = (sender as UmlClassSetter).Name;
+            List<string> methods = (sender as UmlClassSetter).Methods;
+            List<string> attributes = (sender as UmlClassSetter).Attributes;
+            
+            (DataContext as VueModele).HandleUmlTextChange(name, methods, attributes);
+        }
+        private void GenericSetterClosingHandler(object sender, CancelEventArgs e)
+        {
+            surfaceDessin.Visibility = Visibility.Visible;
+            (DataContext as VueModele).HandleLabelChange((sender as GenericSetter).Label);
+        }
+
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
 

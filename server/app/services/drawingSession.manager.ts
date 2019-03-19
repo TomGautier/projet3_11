@@ -4,6 +4,8 @@ import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { UserManager } from "./user.manager";
+import { ConnectionManager } from "./connection.service";
+import shape from "../schemas/shape";
 
 @injectable()
 export class DrawingSessionManager {
@@ -23,10 +25,19 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         this.socketService.subscribe(SocketEvents.ModifyElement, args =>this.modifyElement(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
+        
+        this.socketService.subscribe(SocketEvents.DuplicateElements, args => this.duplicateElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
+        this.socketService.subscribe(SocketEvents.CutElements, args => this.cutElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
+        
+        this.socketService.subscribe(SocketEvents.StackElement, args =>this.stackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
+        this.socketService.subscribe(SocketEvents.UnstackElement, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
+
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
-        this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
         this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
         
+
+        this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
+        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
     }
 
     public joinSession(socketId: string, doc : any) {
@@ -83,10 +94,50 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements,doc);
     }
 
+
+    public duplicateElements(doc: any) {
+        console.log(doc);
+        
+        // FOR LOOP
+        //for (const shape of doc.shapes){
+         //this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+        //}
+       // this.socketService.emit(doc.drawingSessionId, SocketEvents.DuplicatedElements, doc);
+    }
+
+    public cutElements(doc: any) {
+        
+        this.drawingSessionService.deleteElements(doc.elementIds);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc.elementIds);
+    }
+
+    public stackElements(doc: any) {
+        // FOR LOOP
+        console.log("STACKING : ");
+        console.log(doc);
+       //s this.drawingSessionService.deleteElements(doc.elementId);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.StackedElement, doc);
+    }
+
+    public unstackElements(doc: any) {
+        
+        console.log("UNSTACKING : ");
+        console.log(doc);
+        //this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
+        
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.UnstackedElement, doc);
+    }
+
+    // doc.elementIds should be an array containing the IDs of the shapes to select.
+
     public resizeCanvas(doc: any) {
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.ResizedCanvas);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.ResizedCanvas, doc);
     }
     
+    public resetCanvas(doc: any) {
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.CanvasReset);
+    }
+
     public verifyAndAct(socketId: string, doc: any, callback: (doc: any) => void) {
         if(!this.isUserLoggedIn(doc.sessionId, doc.username)) {
             this.socketService.emit(socketId, SocketEvents.UserIsNotLogged);
@@ -99,7 +150,7 @@ export class DrawingSessionManager {
         else if (!this.isObjectSelectedBy(doc.sessionId, doc.objectId)) {
             this.socketService.emit(socketId, SocketEvents.ObjectSelectedByOtherUser)
         }
-        callback(doc);
+        callback(doc.shape);
     }
 
     private isUserLoggedIn(sessionId: string, username: string): Boolean {

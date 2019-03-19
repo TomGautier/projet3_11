@@ -9,6 +9,7 @@ using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
 using PolyPaint.Vues;
+using System.Collections.Generic;
 
 namespace PolyPaint.VueModeles
 {
@@ -77,6 +78,11 @@ namespace PolyPaint.VueModeles
             get { return editeur.SocketManager; }
             set { editeur.SocketManager = value; }
         }
+        public FormConnectorManager FormConnectorManager
+        {
+            get { return editeur.FormConnectorManager; }
+            set { editeur.FormConnectorManager = value; }
+        }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
@@ -93,6 +99,27 @@ namespace PolyPaint.VueModeles
             get { return editeur.TailleTrait; }
             set { editeur.TailleTrait = value; }
         }
+        public string ConnectorLabel
+        {
+            get { return editeur.ConnectorLabel; }
+            set { editeur.ConnectorLabel = value; }
+        }
+        public string ConnectorType
+        {
+            get { return editeur.ConnectorType; }
+            set { editeur.ConnectorType = value; }
+        }
+        public int ConnectorSize
+        {
+            get { return editeur.ConnectorSize; }
+            set { editeur.ConnectorSize = value; }
+        }
+        public string ConnectorColor
+        {
+            get { return editeur.ConnectorColor; }
+            set { editeur.ConnectorColor = value; }
+        }    
+        
         public StrokeCollection SelectedStrokes
         {
             get { return editeur.selectedStrokes; }
@@ -110,6 +137,7 @@ namespace PolyPaint.VueModeles
         public RelayCommand<object> Depiler { get; set; }
         public RelayCommand<string> ChoisirOutil { get; set; }
         public RelayCommand<object> Reinitialiser { get; set; }
+        public RelayCommand<object> HandleDuplicate { get; set; }
 
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
@@ -125,6 +153,7 @@ namespace PolyPaint.VueModeles
         public VueModele()
         {
             this.Canvas = new CustomInkCanvas();
+            FormConnectorManager = new FormConnectorManager();
             SocketManager = new SocketManager();
             SocketManager.JoinDrawingSession("MockSessionID");
             //SocketManager.UserName = "Olivier";
@@ -150,6 +179,7 @@ namespace PolyPaint.VueModeles
             // Donc, aucune vérification de type Peut"Action" à faire.
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
+            HandleDuplicate = new RelayCommand<object>(editeur.HandleDuplicate);
         }
         public void SendCanvas(CustomInkCanvas canvas)
         {
@@ -201,6 +231,21 @@ namespace PolyPaint.VueModeles
         {
             editeur.HandleChangeSelection(strokes);
             //TODO : Send socket -> selection was changed
+        }
+        public void SetConnectorSettings(string label, string type, int size,string color)
+        {
+            this.ConnectorLabel = label;
+            this.ConnectorType = type;
+            this.ConnectorSize = size;
+            this.ConnectorColor = color;
+        }
+        public void HandleLabelChange(string label)
+        {
+            editeur.HandleLabelChange(label);
+        }
+        public void HandleUmlTextChange(string name, List<string> methods, List<string> attributes)
+        {
+            editeur.HandleUmlTextChange(name,methods,attributes);
         }
         public void HandleSelectionSuppression()
         {

@@ -26,6 +26,7 @@ namespace PolyPaint.Utilitaires
         public Role(StylusPointCollection pts) : base(pts)
 
         {
+           
             // this.StylusPoints = pts;
             this.Center = new Point(pts[0].X, pts[0].Y);
             this.Name = "";
@@ -36,6 +37,11 @@ namespace PolyPaint.Utilitaires
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
             this.Type = TYPE;
+            this.updatePoints();
+           /* this.HeightDirection = Point.Subtract(this.StylusPoints[5].ToPoint(), this.StylusPoints[0].ToPoint());
+            this.HeightDirection.Normalize();
+            this.WidthDirection = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[2].ToPoint());
+            this.WidthDirection.Normalize();*/
         }
         protected override void MakeShape()
         {
@@ -78,13 +84,24 @@ namespace PolyPaint.Utilitaires
             //double x = this.StylusPoints[0].X + (this.StylusPoints[5].X - this.StylusPoints[0].X) / 2;
             //double y = this.StylusPoints[0].Y - this.Radius + (this.StylusPoints[6].Y - this.StylusPoints[0].Y - this.Radius) / 2;
             //this.Center = new Point(x, y);
-            Vector heightDirection = Point.Subtract(this.StylusPoints[5].ToPoint(), this.StylusPoints[0].ToPoint());
-            heightDirection.Normalize();
-            this.Height = Point.Subtract(this.StylusPoints[6].ToPoint(),this.StylusPoints[0].ToPoint()).Length + this.Radius; 
+
+            this.HeightDirection = Point.Subtract(this.StylusPoints[5].ToPoint(), this.StylusPoints[0].ToPoint());
+            this.HeightDirection /= this.HeightDirection.Length;
+            this.WidthDirection = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[2].ToPoint());
+            this.WidthDirection /= this.WidthDirection.Length;         
+            //this.Height = Point.Subtract(this.StylusPoints[6].ToPoint(),this.StylusPoints[0].ToPoint()).Length + this.Radius; 
             this.Width = Point.Subtract(this.StylusPoints[8].ToPoint(), this.StylusPoints[6].ToPoint()).Length;
-            Point startHeight = Point.Subtract(this.StylusPoints[0].ToPoint(), this.Radius * heightDirection);
-            Point endHeight = startHeight + this.Height*heightDirection;
-            this.Center = startHeight + Point.Subtract(endHeight, startHeight) / 2;
+            Point startHeight = Point.Subtract(this.StylusPoints[0].ToPoint(), 2*this.Radius * this.HeightDirection);
+            Vector widthDistance = Point.Subtract(this.StylusPoints[1].ToPoint(),this.StylusPoints[2].ToPoint());
+            Point endHeight = this.StylusPoints[6].ToPoint() - widthDistance;
+            this.Height = Point.Subtract(endHeight, startHeight).Length;
+            this.Center = startHeight + (this.Height / 2) * this.HeightDirection;
+            // this.Center = startHeight + Point.Subtract(endHeight, startHeight) / 2;
+            this.UpdateEncPoints();
+            if (this.Arrow != null)
+            {
+                this.Arrow.ShapeMoved(this.Id);
+            }
             
          }
         private void Fill(DrawingContext drawingContext)
@@ -103,11 +120,19 @@ namespace PolyPaint.Utilitaires
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
 
         {
-            
-            base.DrawCore(drawingContext, drawingAttributes);
-            updatePoints();
             Fill(drawingContext);
             SetSelection(drawingContext);
+            base.DrawCore(drawingContext, drawingAttributes);
+            updatePoints();
+            DrawName(drawingContext);
+            DrawEncrage(drawingContext);
+        }
+        private void DrawName(DrawingContext drawingContext)
+        {
+            Point origin = new Point(this.Center.X, this.Center.Y + this.Height / 2 + 20);
+            SolidColorBrush brush = new SolidColorBrush(this.BorderColor);
+            Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
         }
     }
 }

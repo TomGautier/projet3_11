@@ -24,7 +24,7 @@ import { DateServiceInterface,
          ConnectionServiceInterface,
          DrawingSessionServiceInterface,
          UserServiceInterface,
-         UserControllerInterface} from "./interfaces";
+UserControllerInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";
@@ -38,6 +38,8 @@ import { DrawingSessionService } from "./services/drawingSession.service";
 import { DrawingSessionManager} from "./services/drawingSession.manager";
 import { UserController } from "./controllers/user.controller";
 import { UserManager } from "./services/user.manager";
+import {ConnectionManager} from "./services/connection.service"
+
 
 const container: Container = new Container();
 
@@ -67,5 +69,6 @@ container.bind<UserManager>(TYPES.UserManager).to(UserManager).inSingletonScope(
 container.bind<DrawingSessionManager>(TYPES.DrawingSessionManager).to(DrawingSessionManager).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
+container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager);
 
 export { container };

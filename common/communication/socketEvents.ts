@@ -31,12 +31,24 @@ export default {
     DeletedElements:"DeletedElements",
     ModifyElement:"ModifyElement",
     ModifiedElement:"ModifiedElement",
+
+    DuplicateElements:"DuplicateElements",
+    DuplicatedElements:"DuplicatedElements",
+    CutElements:"CutElements",
+    CutedElements:"CutedElements",
+
+    StackElement:"StackElement",
+    StackedElement:"StackedElement",
+    UnstackElement:"UnstackElement",
+    UnstackedElement:"UnstackedElement",
+
     SelectElements:"SelectElements",
     SelectedElements:"SelectedElements",
-    UnselectElements:"UnselectElements",
-    UnselectedElements:"UnselectedElements",
+    
     ResizeCanvas:"ResizeCanvas",
     ResizedCanvas:"ResizedCanvas",
+    ResetCanvas:"ResetCanvas",
+    CanvasReset:"CanvasReset",
     // TODO: Te be cleared out
     CannotJoin:"CannotJoin",
     NewUserJoined:"NewUserJoined"

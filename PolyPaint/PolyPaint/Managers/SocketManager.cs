@@ -39,6 +39,26 @@ namespace PolyPaint.Managers
             Socket.Emit("JoinDrawingSession", SessionID);
 
         }
+        public void UnStackElement(Shape shape_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                sessionId = this.SessionID,
+                username = this.UserName,
+                shape = shape_
+            });
+            this.Socket.Emit("UnstackElements",parameters);
+        }
+        public void StackElement(String id_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                sessionId = this.SessionID,
+                username = this.UserName,
+                elementId = id_
+            });
+            this.Socket.Emit("StackElement",parameters);
+        }
         public void Select(String[] oldSelection, String[] newSelection)
         {
             string parameters = new JavaScriptSerializer().Serialize(new
@@ -50,13 +70,17 @@ namespace PolyPaint.Managers
             });
             this.Socket.Emit("SelectElements", parameters);
         }
-        public void AddElement(Shape shape)
+        public void AddElement(Shape shape_)
         {
+            shape_.id = this.UserName + "_" + this.Compteur.ToString();
+            shape_.author = this.UserName;
+
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 sessionId = this.SessionID,
                 username = this.UserName,
-                shape = new
+                shape = shape_
+              /*  shape = new
                 {
                     id = this.UserName + "_" + this.Compteur.ToString(),
                     drawingSessionId = this.SessionID,
@@ -71,7 +95,7 @@ namespace PolyPaint.Managers
                         width = shape.properties.width,
                         rotation = shape.properties.rotation
                     }
-                }
+                }*/
             });
             Compteur++;
             //Object[] parameters = new Object[] { this.SessionID, this.UserName, shape_ };
