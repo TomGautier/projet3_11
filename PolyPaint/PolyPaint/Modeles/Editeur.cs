@@ -570,6 +570,45 @@ namespace PolyPaint.Modeles
                 });
 
             });
+            this.SocketManager.Socket.On("StackedElement", (data) =>
+            {
+                JObject result = (data as JObject);
+                String username = result["username"].ToObject<String>();
+                String id = result["elementId"].ToObject<String>();
+                //Shape shape = (data as JObject).ToObject<Shape>();
+                Stroke toStack = (traits.Where(x => (x as Form).Id == id).First());
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (this.SocketManager.UserName == username)
+                    {
+                        this.traitsRetires.Add(toStack as Form);
+                    }
+                    this.deleteElements(new string[] { (toStack as Form).Id });
+                });
+            });
+            this.SocketManager.Socket.On("UnstackedElement", (data) =>
+            {
+                JObject result = (data as JObject);
+                String username = result["username"].ToObject<String>();
+                Shape shape = result["shape"].ToObject<Shape>();
+
+                StylusPointCollection pts = new StylusPointCollection();
+                pts.Add(new StylusPoint(0, 0));
+                Form toUnstack = new Form(pts);
+                toUnstack.SetToShape(shape);
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    this.AddForm(shape);
+
+                    if (this.SocketManager.UserName == username)
+                    {
+                      
+                        Stroke toRemove = this.traitsRetires.Where(x=> (x as Form).Id == shape.id).Last();
+                        this.traitsRetires.Remove(toRemove);
+                    }
+                });
+            });
             this.SocketManager.Socket.On("ModifiedElement", (data) =>
             {
                 JObject result = (data as JObject);

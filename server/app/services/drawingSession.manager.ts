@@ -104,7 +104,7 @@ export class DrawingSessionManager {
         console.log(doc);
         this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
         
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.UnstackedElement, doc);
+        this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.UnstackedElement, doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to select.

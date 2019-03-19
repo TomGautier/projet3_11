@@ -47,7 +47,7 @@ namespace PolyPaint.Managers
                 username = this.UserName,
                 shape = shape_
             });
-            this.Socket.Emit("UnstackElements",parameters);
+            this.Socket.Emit("UnstackElement",parameters);
         }
         public void StackElement(String id_)
         {
@@ -55,6 +55,7 @@ namespace PolyPaint.Managers
             {
                 sessionId = this.SessionID,
                 username = this.UserName,
+                drawingSessionId = this.SessionID,
                 elementId = id_
             });
             this.Socket.Emit("StackElement",parameters);
