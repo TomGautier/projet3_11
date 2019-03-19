@@ -28,7 +28,25 @@ namespace PolyPaint.Modeles
         public StrokeCollection traits = new StrokeCollection();
         public StrokeCollection selectedStrokes = new StrokeCollection();
         private StrokeCollection traitsRetires = new StrokeCollection();
-        
+
+        public string ConnectorLabel { get; set; }
+        public string ConnectorType { get; set; }
+        public int ConnectorSize { get; set; }
+        public string ConnectorColor { get; set; }
+
+        private bool showEncrage = false;
+        public bool ShowEncrage
+        {
+            get{ return showEncrage; }
+            set
+            {
+                showEncrage = value;                             
+                foreach (Form form in this.traits) { form.ShowEncrage = showEncrage; }
+                
+            }
+
+        }
+
         public SocketManager SocketManager { get; set; }
         public FormConnectorManager FormConnectorManager { get; set; }
         // Outil actif dans l'éditeur
@@ -36,7 +54,13 @@ namespace PolyPaint.Modeles
         public string OutilSelectionne
         {
             get { return outilSelectionne; }
-            set { outilSelectionne = value; ProprieteModifiee(); }
+            set
+            {
+                if (outilSelectionne == "connexion" && value != outilSelectionne) { this.ShowEncrage = false; }
+                else if (value == "connexion") { this.ShowEncrage = true; }
+                outilSelectionne = value;
+                ProprieteModifiee();
+            }
         }
         public StrokeCollection LastCut { get; set; }
         // Forme de la pointe du crayon
@@ -233,7 +257,9 @@ namespace PolyPaint.Modeles
                 {
                     if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
                     {
+                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorSize, this.ConnectorColor);
                         newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);
+                        
                         isOnEncrage = true;
                     }
                 }

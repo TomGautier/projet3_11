@@ -83,6 +83,27 @@ namespace PolyPaint
            // (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
            // surfaceDessin.CutSelection();        
         }
+        private void surfaceDessin_OpenConnectorSettings(object sender, RoutedEventArgs e)
+        {
+            ConnectorSetter menu = new ConnectorSetter();
+            surfaceDessin.Visibility = Visibility.Hidden;
+            menu.Show();
+            menu.Closing += new CancelEventHandler(ConnectorSetterClosingHandler);
+            
+        }
+
+        private void ConnectorSetterClosingHandler(object sender, CancelEventArgs e)
+        {
+            string label = (sender as ConnectorSetter).txtLabel.Text;
+            string type = (sender as ConnectorSetter).typeList.Text;
+            int size = Convert.ToInt32((sender as ConnectorSetter).sizeList.SelectedItem.ToString().Trim(new char[] { 'p', 'x' }));
+            string color = (sender as ConnectorSetter).selecteurCouleur.SelectedColor.ToString();
+            Console.WriteLine(type);
+            surfaceDessin.Visibility = Visibility.Visible;
+
+            (DataContext as VueModele).SetConnectorSettings(label, type, size, color);
+        }
+
         private void surfaceDessin_SetSelectionText(object sender, RoutedEventArgs e)
         {
             if (surfaceDessin.GetSelectedStrokes().Count > 1)
