@@ -280,21 +280,27 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     @Override
     public void duplicateSelection() {
-        ArrayList<GenericShape> duplicatedShapes;
         // Check whether to duplicate selected shapes or clipboard (or nothing)
-        if (!client.getSelectedShapes().isEmpty())
-            duplicatedShapes = client.getSelectedShapes();
-        //else if (!cutShapes.isEmpty())
-            //duplicatedShapes = cutShapes;
+        ArrayList<CollabShape> collabShapes = new ArrayList<>();
+        if (!client.getSelectedShapes().isEmpty()){
+            for (GenericShape shape : client.getSelectedShapes()){
+                collabShapes.add(createCollabShape(shape.clone()));
+            }
+            SocketManager.currentInstance.duplicateElements(collabShapes.toArray(new CollabShape[collabShapes.size()]));
+
+        }
+        else if (!cutShapes.isEmpty()){
+            for (GenericShape shape : cutShapes){
+                collabShapes.add(createCollabShape(shape));
+            }
+            SocketManager.currentInstance.duplicateCutElements(collabShapes.toArray(new CollabShape[collabShapes.size()]));
+        }
         else return;
 
         // Same operation in either case
         //ArrayList<GenericShape> stackElems = new ArrayList<>();
-        for (GenericShape shape : duplicatedShapes){
-            GenericShape nShape = shape.clone();
-            SocketManager.currentInstance.addElement(createCollabShape(nShape));
-            //stackElems.add(nShape);
-        }
+        //ArrayList<CollabShape> collabShapes = new ArrayList<>();
+
 
        // if (selections.isEmpty()) {
            // cutShapes = stackElems;
@@ -330,18 +336,24 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isMovingSelection) {
-                    ArrayList<CollabShape> shapes = new ArrayList<>();
+                   // ArrayList<CollabShape> shapes = new ArrayList<>();
                     for (GenericShape shape : client.getSelectedShapes()){
-                        CollabShape collShape = createCollabShape(shape);
-                        collShape.getProperties().setMiddlePointCoord(posX - lastTouchPosX, posY - lastTouchPosY);
-                        shapes.add(collShape);
+                        shape.relativeMove(posX - lastTouchPosX, posY - lastTouchPosY);
+                        //CollabShape collShape = createCollabShape(shape);
+                        //collShape.getProperties().setMiddlePointCoord(posX - lastTouchPosX, posY - lastTouchPosY);
+                        //shapes.add(collShape);
                     }
-                    SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
+                    //SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                ArrayList<CollabShape> shapes = new ArrayList<>();
+                for (GenericShape shape : client.getSelectedShapes()){
+                    shapes.add(createCollabShape(shape));
+                }
+                SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                 isMovingSelection = false;
                 break;
         }
@@ -409,6 +421,40 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         });
     }
 
+    @Override
+    public void onDuplicateElements(CollabShape[] shapes, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        player.clearSelectedShape();
+        for (int i =0; i < shapes.length; i++){
+            GenericShape shape = createGenShape(shapes[i]);
+            player.addSelectedShape(shape);
+            this.shapes.add(shape);
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+    }
+
+    @Override
+    public void onDuplicateCutElements(CollabShape[] shapes, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        for (int i =0; i < shapes.length; i++){
+            GenericShape shape = createGenShape(shapes[i]);
+            player.addSelectedShape(shape);
+            this.shapes.add(shape);
+        }
+        if (client.getName().equals(author)){
+            this.cutShapes.clear();
+        }
+    }
+
 
     @Override
     public void onDeleteElement(String[] ids, String author) {
@@ -437,15 +483,38 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
 
     @Override
+    public void onCutElements(String[] ids, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        for (int i = 0; i < ids.length; i++){
+            GenericShape shape = findGenShapeById(ids[i]);
+            player.removeSelectedShape(shape);
+            cutShapes.add(shape);
+            shapes.remove(shape);
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+    }
+
+    @Override
     public void onModifyElements(CollabShape[] collabShapes, String author) {
         Player player = findPlayer(author);
         player = (player == null) ? client : player;
+        player.clearSelectedShape();
         for (int i = 0; i < collabShapes.length; i ++){
             GenericShape newShape = createGenShape(collabShapes[i]);
-            //int index = player.findSelectedShapeIndex(newShape.getId());
-            //if (index > -1)
-                //player.setSelectedShape(newShape, index);
-            player.setSelectedShape(newShape);
+            GenericShape oldShape = findGenShapeById(newShape.getId());
+            if (oldShape != null){
+                shapes.remove(oldShape);
+                shapes.add(newShape);
+                player.addSelectedShape(newShape);
+            }
         }
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -514,7 +583,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
-    private boolean shapeAlreadySelected(String id){
+    /*private boolean shapeAlreadySelected(String id){
         for (GenericShape shape : client.getSelectedShapes()){
             if (shape.getId().equals(id))
                 return true;
@@ -526,7 +595,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             }
         }
         return false;
-    }
+    }*/
     private GenericShape findGenShapeById(String id) {
         for (int i = 0; i < shapes.size(); i++) {
             if (shapes.get(i).getId().equals(id))
@@ -539,22 +608,22 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private GenericShape createGenShape(CollabShape collabShape){
         GenericShape genShape = null;
         switch(collabShape.getProperties().getType()){
-            case "umlClass":
+            case "UmlClass":
                 genShape = new UMLClass(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle);
                 break;
-            case "umlArtefact":
+            case "Artefact":
                 genShape = new UMLArtefact(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle);
                 break;
-            case "umlActivity":
+            case "Activity":
                 genShape = new UMLActivity(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle);
                 break;
-            case "umlRole":
+            case "Role":
                 genShape = new UMLRole(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle);
@@ -562,11 +631,19 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         }
         return genShape;
     }
-    /*
+
     protected void cutSelection() {
-        cutShapes.addAll(selections);
-        deleteSelection();
+        if (client.getSelectedShapes().size() > 0){
+            ArrayList<String> ids = new ArrayList<>();
+            for (GenericShape shape: client.getSelectedShapes()){
+                ids.add(shape.getId());
+            }
+            SocketManager.currentInstance.cutElements(ids.toArray(new String[ids.size()]));
+        }
+        //cutShapes.addAll(selections);
+        //deleteSelection();
     }
+    /*
     public void duplicateSelection() {
         ArrayList<GenericShape> duplicatedShapes;
         // Check whether to duplicate selected shapes or clipboard (or nothing)

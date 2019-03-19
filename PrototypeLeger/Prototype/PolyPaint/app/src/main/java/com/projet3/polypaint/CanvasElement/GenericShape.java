@@ -121,26 +121,26 @@ public abstract class GenericShape {
     }
     public final static int getDefaultHeight(String currentShapeType){
         switch (currentShapeType){
-            case "umlActivity" :
+            case "Activity" :
                 return UMLActivity.DEFAULT_HEIGHT;
-            case "umlClass":
+            case "UmlClass":
                 return UMLClass.DEFAULT_HEIGHT;
-            case "umlArtefact":
+            case "Artefact":
                 return UMLArtefact.DEFAULT_HEIGHT;
-            case "umlRole":
+            case "Role":
                 return UMLRole.DEFAULT_HEIGHT;
         }
         return 0;
     }
     public final static int getDefaultWidth(String currentShapeType){
         switch (currentShapeType){
-            case "umlActivity" :
+            case "Activity" :
                 return UMLActivity.DEFAULT_WIDTH;
-            case "umlClass":
+            case "UmlClass":
                 return UMLClass.DEFAULT_WIDTH;
-            case "umlArtefact":
+            case "Artefact":
                 return UMLArtefact.DEFAULT_WIDTH;
-            case "umlRole":
+            case "Role":
                 return UMLRole.DEFAULT_WIDTH;
         }
         return 0;
