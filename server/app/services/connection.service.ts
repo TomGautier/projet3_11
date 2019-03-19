@@ -30,19 +30,6 @@ export class ConnectionManager {
 }
 
 @injectable()
-export class ConnectionManager {
-   // The key is the username and the 2nd field is the session ID.
-   private connectedUsers: Map<String, String> = new Map();    public addUser(sessionId: string, username: string) {
-       console.log("added user ",username + "with sessionId ",sessionId);
-       this.connectedUsers.set(username, sessionId);
-   }    public removeUser(username: string) {
-       this.connectedUsers.delete(username);
-   }    public verifySession(sessionId: string, username: string) : boolean {
-       return this.connectedUsers.get(username) === sessionId;
-   }
-}
-
-@injectable()
 export class ConnectionService implements ConnectionServiceInterface {
     
     constructor(
