@@ -154,27 +154,29 @@ namespace PolyPaint.Managers
         }
         private void OnCreateChannel()
         {
-            //!RoomsID.Contains(newElemet); // TODO : Refresh list before checking
-            var createFormat = new
+            if (!RoomsID.Contains(NewRoomID))
             {
-                sessionId = SessionID,
-                username = Username,
-                conversationId = NewRoomID
-            };
-            socket.Emit("CreateConverstation", JsonConvert.SerializeObject(createFormat));
-            // TEST ONLY
-            RoomsID.Add(NewRoomID);
-            RoomID = NewRoomID;
-
-            socket.On("CreatedCoversation", (data) => {
-                var _roomIDformat = new
+                var createFormat = new
                 {
-                    conversationId = ""
+                    sessionId = SessionID,
+                    username = Username,
+                    conversationId = NewRoomID
                 };
-                var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
-                RoomsID.Add(_roomID.conversationId);
-                RoomID = _roomID.conversationId;
-            });
+                socket.Emit("CreateConverstation", JsonConvert.SerializeObject(createFormat));
+                // TEST ONLY
+                RoomsID.Add(NewRoomID);
+
+                socket.On("CreatedCoversation", (data) => {
+                    var _roomIDformat = new
+                    {
+                        conversationId = ""
+                    };
+                    var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
+                    RoomsID.Add(_roomID.conversationId);
+                    RoomID = _roomID.conversationId;
+                });
+            }
+            RoomID = NewRoomID;
         }
 
         internal void JoinChannel()
