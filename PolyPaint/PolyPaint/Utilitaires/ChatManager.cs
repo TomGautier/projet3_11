@@ -49,6 +49,19 @@ namespace PolyPaint.Managers
                 NotifyPropertyChanged();
             }
         }
+        private string newRoomID;
+        public string NewRoomID
+        {
+            get
+            {
+                return newRoomID;
+            }
+            set
+            {
+                newRoomID = value;
+                NotifyPropertyChanged();
+            }
+        }
         private string _message = string.Empty;
         public string Message
         {
@@ -117,53 +130,6 @@ namespace PolyPaint.Managers
         {
             System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
 
-            IO.Options op = new IO.Options
-            {
-                Reconnection = false
-            };
-
-            socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
-
-            socket.On(Socket.EVENT_CONNECT, () =>
-            {
-                var joinFormat = new
-                {
-                    sessionId = SessionID,
-                    username = Username,
-                    channelId = RoomID
-                };
-                socket.Emit("JoinChannel", JsonConvert.SerializeObject(joinFormat));
-
-                socket.On("JoinedChannel", (data) => {
-                    socket.On("MessageReceived", (messageData) =>
-                    {
-                        var messageFormat = new
-                        {
-                            date = "",
-                            username = "",
-                            message = ""
-                        };
-                        Console.WriteLine("Message Received : " + messageData);
-                        var message = JsonConvert.DeserializeAnonymousType(messageData.ToString(), messageFormat);
-                        ReceiveMessage(message.date, message.username, message.message);
-                    });
-                });
-                socket.On("ChannelAlreadyJoined", (data) => {
-                    Console.WriteLine("ChannelAlreadyJoined : " + data);
-                });
-                socket.On("ChannelCouldntBeJoined", (data) => {
-                    Console.WriteLine("ChannelCouldntBeJoined : " + data);
-                });
-            });
-            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
-            {
-                System.Windows.MessageBox.Show("Connection timeout", "Error");
-            });
-            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
-            {
-                System.Windows.MessageBox.Show("Connection error", "Error");
-            });
-
             RoomsID = new ObservableCollection<string>();
             RoomsID.Add("GeneralRoom"); // TODO : Load from server
         }
@@ -197,12 +163,12 @@ namespace PolyPaint.Managers
         }
         private void OnCreateChannel()
         {
-            //TODO : POP UP TO CREATE
             //!RoomsID.Contains(newElemet); // TODO : Refresh list before checking
             var createFormat = new
             {
                 sessionId = SessionID,
-                username = Username
+                username = Username,
+                channelId = NewRoomID
             };
             socket.Emit("CreateChannel", JsonConvert.SerializeObject(createFormat));
 
@@ -235,17 +201,60 @@ namespace PolyPaint.Managers
                 var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
                 RoomID = _roomID.channelId;
             });
+            socket.On("ChannelAlreadyJoined", (data) => {
+                Console.WriteLine("ChannelAlreadyJoined : " + data);
+            });
+            socket.On("ChannelCouldntBeJoined", (data) => {
+                Console.WriteLine("ChannelCouldntBeJoined : " + data);
+            });
+        }
+
+        public void Connect()
+        {
+            IO.Options op = new IO.Options
+            {
+                Reconnection = false
+            };
+
+            socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
+
+            socket.On(Socket.EVENT_CONNECT, () =>
+            {
+                JoinChannel();
+
+                socket.On("MessageReceived", (data) =>
+                {
+                    var messageFormat = new
+                    {
+                        date = "",
+                        username = "",
+                        message = "",
+                        roomId = ""
+                    };
+                    var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
+                    ReceiveMessage(message.date, message.username, message.message);
+                });
+            });
+            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
+            {
+                System.Windows.MessageBox.Show("Connection timeout", "Error");
+            });
+            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
+            {
+                System.Windows.MessageBox.Show("Connection error", "Error");
+            });
         }
         #endregion
 
         #region Commands 
         public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
         public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
-        public ICommand CreateChannel { get { return new RelayCommand(OnCreateChannel, AlwaysTrue); } }
+        public ICommand CreateChannel { get { return new RelayCommand(OnCreateChannel, RoomIdValid); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
         private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
+        private bool RoomIdValid() { return !string.IsNullOrWhiteSpace(RoomID); }
         #endregion
 
     }

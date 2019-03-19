@@ -140,19 +140,20 @@ namespace PolyPaint.VueModeles
 
         public async void Login(string password)
         {
-            sessionId = await networkManager.LoginAsync(Username, password);
-            if (sessionId == "")
+            SessionId = await networkManager.LoginAsync(Username, password);
+            if (SessionId == "")
             {
                 MessageBox.Show("Wrong login informations", "Error");
                 return;
             }
+            ChatManager.Connect();
             SwitchView = 3;
         }
 
         public async void Signup(string password)
         {
-            sessionId = await networkManager.SignupAsync(Username, password);
-            if (sessionId == "")
+            SessionId = await networkManager.SignupAsync(Username, password);
+            if (SessionId == "")
             {
                 MessageBox.Show("Wrong signup informations", "Error");
                 return;

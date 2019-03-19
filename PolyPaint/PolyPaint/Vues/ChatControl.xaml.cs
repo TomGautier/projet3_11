@@ -74,5 +74,10 @@ namespace PolyPaint.Vues
         {
             ((VueModele)DataContext).ChatManager.JoinChannel();
         }
+
+        private void ShowAddChannelForm_Click(object sender, RoutedEventArgs e)
+        {
+            ((StackPanel)FindName("AddChannelForm")).Visibility = Visibility.Visible;
+        }
     }
 }
