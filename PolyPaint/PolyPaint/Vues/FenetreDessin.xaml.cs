@@ -61,7 +61,7 @@ namespace PolyPaint
         private void DupliquerSelection(object sender, RoutedEventArgs e)
         {
             
-            StrokeCollection selection = surfaceDessin.GetSelectedStrokes();
+            /*StrokeCollection selection = surfaceDessin.GetSelectedStrokes();
             if (selection.Count == 0 && (DataContext as VueModele).LastCut != null)
             {
                 surfaceDessin.Strokes.Add((DataContext as VueModele).LastCut);
@@ -73,7 +73,7 @@ namespace PolyPaint
                 duplicate.translate(30, 30);
                 surfaceDessin.Strokes.Add(duplicate);
                
-            }
+            }*/
         }
         
 

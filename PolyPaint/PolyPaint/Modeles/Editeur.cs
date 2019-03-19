@@ -56,7 +56,16 @@ namespace PolyPaint.Modeles
             get { return outilSelectionne; }
             set
             {
-                if (outilSelectionne == "connexion" && value != outilSelectionne) { this.ShowEncrage = false; }
+                if (outilSelectionne == "connexion" && value != outilSelectionne)
+                {
+                    this.ShowEncrage = false;
+                    if (this.FormConnectorManager.IsDrawingArrow)
+                    {
+                        this.traits.Remove(this.FormConnectorManager.Arrows.Last());
+                        this.FormConnectorManager.reset();
+                        
+                    }
+                }
                 else if (value == "connexion") { this.ShowEncrage = true; }
                 outilSelectionne = value;
                 ProprieteModifiee();
@@ -239,9 +248,14 @@ namespace PolyPaint.Modeles
         {
             try
             {
-                Stroke trait = traits.Last();
+                if (traits.Count > 0)
+                {
+                    Stroke toEmpile = traits.Where(x => (x as Form).Type != "Arrow").Last();
+                    SocketManager.StackElement((toEmpile as Form).Id);
+                }
+              /*  Stroke trait = traits.Last();
                 traitsRetires.Add(trait);
-                traits.Remove(trait);               
+                traits.Remove(trait);   */            
             }
             catch { }
 
@@ -336,9 +350,14 @@ namespace PolyPaint.Modeles
         {
             try
             {
-                Stroke trait = traitsRetires.Last();
+               /* Stroke trait = traitsRetires.Last();
                 traits.Add(trait);
-                traitsRetires.Remove(trait);
+                traitsRetires.Remove(trait);*/
+                if (traitsRetires.Count > 0)
+                {
+                    Stroke toUnstack = traitsRetires.Last();
+                    SocketManager.UnStackElement((toUnstack as Form).ConvertToShape(this.SocketManager.SessionID));
+                }
             }
             catch { }         
         }
@@ -488,6 +507,14 @@ namespace PolyPaint.Modeles
 
         // On vide la surface de dessin de tous ses traits.
         public void Reinitialiser(object o) => traits.Clear();
+
+        public void HandleDuplicate(object o)
+        {
+            if (this.selectedStrokes.Count > 0)
+            {
+                
+            }
+        }
 
         public void initializeSocketEvents()
         {

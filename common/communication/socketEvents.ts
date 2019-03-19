@@ -34,10 +34,10 @@ export default {
     CutElements:"CutElements",
     CutedElements:"CutedElements",
 
-    StackElements:"StackElements",
-    StackedElements:"StackedElements",
-    UnstackElements:"UnstackElements",
-    UnstackedElements:"UnstackedElements",
+    StackElement:"StackElement",
+    StackedElement:"StackedElement",
+    UnstackElement:"UnstackElement",
+    UnstackedElement:"UnstackedElement",
 
     SelectElements:"SelectElements",
     SelectedElements:"SelectedElements",

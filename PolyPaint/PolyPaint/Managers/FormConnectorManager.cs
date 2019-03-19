@@ -23,7 +23,7 @@ namespace PolyPaint.Managers
         private string Type { get; set; }
         private int Size { get; set; }
         private string Color { get; set; }
-        private bool IsDrawingArrow { get; set; }
+        public bool IsDrawingArrow { get; set; }
 
         public FormConnectorManager(StylusPointCollection pts, Form shape1, Form shape2)
         {
@@ -44,6 +44,11 @@ namespace PolyPaint.Managers
             this.Type = type;
             this.Size = size;
             this.Color = color;
+        }
+        public void reset()
+        {
+            this.Arrows.RemoveAt(this.Arrows.Count - 1);
+            this.IsDrawingArrow = false;
         }
         
             public bool update(StylusPoint p, bool isOnEncrage, Form shape, int index) //returns true if a new arrow was created

@@ -29,8 +29,8 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.DuplicateElements, args => this.duplicateElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.CutElements, args => this.cutElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         
-        this.socketService.subscribe(SocketEvents.StackElements, args =>this.stackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
-        this.socketService.subscribe(SocketEvents.UnstackElements, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
+        this.socketService.subscribe(SocketEvents.StackElement, args =>this.stackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
+        this.socketService.subscribe(SocketEvents.UnstackElement, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
 
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
 
@@ -92,17 +92,19 @@ export class DrawingSessionManager {
 
     public stackElements(doc: any) {
         // FOR LOOP
-        this.drawingSessionService.deleteElements(doc.elementIds);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.StackedElements, doc.elementIds);
+        console.log("STACKING : ");
+        console.log(doc);
+        this.drawingSessionService.deleteElements(doc.elementId);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.StackedElement, doc);
     }
 
     public unstackElements(doc: any) {
         
-        //FOR LOOP
-        for (const shape of doc.shapes){
-        this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
-        }
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.UnstackedElements, doc);
+        console.log("UNSTACKING : ");
+        console.log(doc);
+        this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
+        
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.UnstackedElement, doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to select.

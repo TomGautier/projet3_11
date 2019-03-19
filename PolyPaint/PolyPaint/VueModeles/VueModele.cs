@@ -137,6 +137,7 @@ namespace PolyPaint.VueModeles
         public RelayCommand<object> Depiler { get; set; }
         public RelayCommand<string> ChoisirOutil { get; set; }
         public RelayCommand<object> Reinitialiser { get; set; }
+        public RelayCommand<object> HandleDuplicate { get; set; }
 
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
@@ -178,6 +179,7 @@ namespace PolyPaint.VueModeles
             // Donc, aucune vérification de type Peut"Action" à faire.
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
+            HandleDuplicate = new RelayCommand<object>(editeur.HandleDuplicate);
         }
         public void SendCanvas(CustomInkCanvas canvas)
         {

@@ -85,7 +85,7 @@ namespace PolyPaint.Utilitaires
             //double y = this.StylusPoints[0].Y - this.Radius + (this.StylusPoints[6].Y - this.StylusPoints[0].Y - this.Radius) / 2;
             //this.Center = new Point(x, y);
 
-             this.HeightDirection = Point.Subtract(this.StylusPoints[5].ToPoint(), this.StylusPoints[0].ToPoint());
+            this.HeightDirection = Point.Subtract(this.StylusPoints[5].ToPoint(), this.StylusPoints[0].ToPoint());
             this.HeightDirection /= this.HeightDirection.Length;
             this.WidthDirection = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[2].ToPoint());
             this.WidthDirection /= this.WidthDirection.Length;         
