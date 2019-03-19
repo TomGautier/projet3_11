@@ -21,8 +21,12 @@ export let imageSchema: Schema = new Schema({
         required: true
     },
     shapes: [{
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'Shape'
+    }],
+    shapeConnections: [{
+        type: String,
+        ref: 'ShapeConnection'
     }]
 }, {timestamps: true});
 
