@@ -1,4 +1,4 @@
-package com.projet3.polypaint.USER;
+package com.projet3.polypaint.UserLogin;
 
 public class UserInformation  {
     private String username;

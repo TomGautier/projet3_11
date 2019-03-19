@@ -1,7 +1,7 @@
-package com.projet3.polypaint.USER;
+package com.projet3.polypaint.UserLogin;
 
 import com.projet3.polypaint.Chat.Conversation;
-import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.SocketManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.projet3.polypaint.USER.UserJsonPostTask;
 
 public class RequestManager {
     private final int TIMEOUT_DELAY = 5;

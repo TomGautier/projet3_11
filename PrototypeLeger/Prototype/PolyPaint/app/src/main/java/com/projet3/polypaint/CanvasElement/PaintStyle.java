@@ -34,7 +34,7 @@ public class PaintStyle {
         textPaint.setFakeBoldText(true);
     }
 
-    Paint getBorderPaint() { return borderPaint; }
+    public Paint getBorderPaint() { return borderPaint; }
     Paint getBackgroundPaint() { return backgroundPaint; }
     Paint getTextPaint() { return textPaint; }
 

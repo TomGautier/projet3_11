@@ -4,14 +4,14 @@ import { Router, Request, Response, NextFunction } from "express";
 import { TYPES } from "../types";
 import { ConversationService } from "../services/conversation.service";
 import { ConversationControllerInterface } from "../interfaces";
-import { ConnectionManager } from "../services/connection.service";
+import { UserManager } from "../services/user.manager";
 
 @injectable()
 export class ConversationController implements ConversationControllerInterface {
     
     public constructor(
         @inject(TYPES.ConversationServiceInterface) private conversationService: ConversationService,
-        @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager
+        @inject(TYPES.UserManager) private userManager: UserManager
     ) { }
 
     public get router(): Router {
@@ -20,7 +20,7 @@ export class ConversationController implements ConversationControllerInterface {
         router.get("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; };
                 this.conversationService.getAllByUsername(req.params.username).then(conversations => {
                     res.json(conversations);
@@ -29,7 +29,7 @@ export class ConversationController implements ConversationControllerInterface {
 
         router.post("/:sessionId/:username/:conversationName",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username))
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                     { res.json(403); return; }
                 
                 this.conversationService.create(req.params.conversationName, req.params.username).then(conversation => {

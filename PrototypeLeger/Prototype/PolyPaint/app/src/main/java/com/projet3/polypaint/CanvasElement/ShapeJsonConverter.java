@@ -2,7 +2,7 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.graphics.Paint;
 
-import com.projet3.polypaint.USER.UserManager;
+import com.projet3.polypaint.UserLogin.UserManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +17,7 @@ public class ShapeJsonConverter {
 
             PaintStyle style = getPaintStyleFromProperties(properties);
 
-            switch (properties.getString("type")) {
+            /*switch (properties.getString("type")) {
                 case UMLActivity.TYPE :
                     shape = new UMLActivity(properties.getJSONArray("middlePointCoord").getInt(0),
                                             properties.getJSONArray("middlePointCoord").getInt(1), style);
@@ -40,7 +40,7 @@ public class ShapeJsonConverter {
                     break;
                 default :
                     break;
-            }
+            }*/
 
             shape.setSize(properties.getInt("width"), properties.getInt("height"));
         } catch (JSONException e) { e.printStackTrace(); }

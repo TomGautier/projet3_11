@@ -11,7 +11,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.USER.RequestManager;
+import com.projet3.polypaint.UserLogin.RequestManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;

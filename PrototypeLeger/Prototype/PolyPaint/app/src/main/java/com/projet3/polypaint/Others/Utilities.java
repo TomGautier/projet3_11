@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.Others;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -41,6 +41,7 @@ public class Utilities {
             button.setColorFilter(Color.GRAY);
         }
     }
+
 
 
 

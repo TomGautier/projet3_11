@@ -1,4 +1,4 @@
-package com.projet3.polypaint.Image;
+package com.projet3.polypaint.DrawingSession;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -32,8 +32,15 @@ export interface ImageControllerInterface {
     router: Router;
 }
 
+export interface UserServiceInterface {
+
+}
+
+export interface UserControllerInterface {
+    router: Router;
+}
+
 export interface DrawingSessionServiceInterface {
-   
     
 }
 

@@ -13,7 +13,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     }
 
     public async addElement(drawingSessionId: string, username: string, properties: any): Promise<{}> {
-        const shapeId = uuid.v1();
+        const shapeId = this.ID_CRITERIA;
         const shape = new Shape({
             id: shapeId,
             drawingSessionId: drawingSessionId,

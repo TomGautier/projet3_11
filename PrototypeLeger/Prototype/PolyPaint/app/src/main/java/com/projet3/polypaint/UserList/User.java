@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.UserList;
 
 public class User {
 
