@@ -23,7 +23,7 @@ namespace PolyPaint.Managers
         #endregion
 
         #region Parameters
-        private string roomID = "GeneralRoom";
+        private string roomID = "generalRoom";
         public string RoomID
         {
             get
@@ -75,7 +75,7 @@ namespace PolyPaint.Managers
                 NotifyPropertyChanged();
             }
         }
-        private string _history = "Welcome!";
+        private string _history;
         public string History
         {
             get
@@ -115,7 +115,7 @@ namespace PolyPaint.Managers
             }
         }
 
-        private Socket socket;
+        public Socket socket;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -128,22 +128,13 @@ namespace PolyPaint.Managers
         #region Constructors
         public ChatManager()
         {
-            System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
-
             RoomsID = new ObservableCollection<string>();
-            RoomsID.Add("GeneralRoom"); // TODO : Load from server
+            RoomsID.Add("generalRoom"); // TODO : Load from server
+            History = "Bienvenue dans la conversation " + RoomID + "!";
         }
         #endregion
 
         #region Methods
-        public void OnExitApp(object sender, CancelEventArgs e)
-        {
-                socket.Emit("disconnect");
-        }
-        private void OnExitApp()
-        {
-            System.Windows.Application.Current.MainWindow.Close();
-        }
         private void OnSendMessage()
         {
             var messageFormat = new
@@ -151,7 +142,7 @@ namespace PolyPaint.Managers
                 date = DateTime.Now.ToString("hh:mm:ss tt"),
                 username = Username,
                 message = Message.Trim(),
-                roomId = RoomID
+                conversationId = RoomID
             };
             Console.WriteLine("Message Sent : " + JsonConvert.SerializeObject(messageFormat));
             socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
@@ -168,18 +159,21 @@ namespace PolyPaint.Managers
             {
                 sessionId = SessionID,
                 username = Username,
-                channelId = NewRoomID
+                conversationId = NewRoomID
             };
-            socket.Emit("CreateChannel", JsonConvert.SerializeObject(createFormat));
+            socket.Emit("CreateConverstation", JsonConvert.SerializeObject(createFormat));
+            // TEST ONLY
+            RoomsID.Add(NewRoomID);
+            RoomID = NewRoomID;
 
-            socket.On("CreatedChannel", (data) => {
+            socket.On("CreatedCoversation", (data) => {
                 var _roomIDformat = new
                 {
-                    channelId = ""
+                    conversationId = ""
                 };
                 var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
-                RoomsID.Add(_roomID.channelId);
-                RoomID = _roomID.channelId;
+                RoomsID.Add(_roomID.conversationId);
+                RoomID = _roomID.conversationId;
             });
         }
 
@@ -189,17 +183,20 @@ namespace PolyPaint.Managers
             {
                 sessionId = SessionID,
                 username = Username,
-                channelId = RoomID
+                conversationId = RoomID
             };
-            socket.Emit("JoinChannel", JsonConvert.SerializeObject(joinFormat));
+            socket.Emit("UserJoinedConversation", JsonConvert.SerializeObject(joinFormat));
+            // TEST ONLY
+            History = "Bienvenue dans la conversation " + RoomID + "!";
 
-            socket.On("JoinedChannel", (data) => {
+            socket.On("UserJoinedConversation", (data) => {
                 var _roomIDformat = new
                 {
-                    channelId = ""
+                    conversationId = ""
                 };
                 var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
-                RoomID = _roomID.channelId;
+                RoomID = _roomID.conversationId;
+                History = "Bienvenue dans la conversation " + RoomID + "!";
             });
             socket.On("ChannelAlreadyJoined", (data) => {
                 Console.WriteLine("ChannelAlreadyJoined : " + data);
@@ -211,43 +208,25 @@ namespace PolyPaint.Managers
 
         public void Connect()
         {
-            IO.Options op = new IO.Options
+            JoinChannel();
+
+            socket.On("MessageSent", (data) =>
             {
-                Reconnection = false
-            };
-
-            socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
-
-            socket.On(Socket.EVENT_CONNECT, () =>
-            {
-                JoinChannel();
-
-                socket.On("MessageReceived", (data) =>
+                var messageFormat = new
                 {
-                    var messageFormat = new
-                    {
-                        date = "",
-                        username = "",
-                        message = "",
-                        roomId = ""
-                    };
-                    var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
-                    ReceiveMessage(message.date, message.username, message.message);
-                });
-            });
-            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
-            {
-                System.Windows.MessageBox.Show("Connection timeout", "Error");
-            });
-            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
-            {
-                System.Windows.MessageBox.Show("Connection error", "Error");
+                    date = "",
+                    username = "",
+                    message = "",
+                    conversationId = ""
+                };
+                Console.WriteLine("Message recieved : " + data.ToString());
+                var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
+                ReceiveMessage(message.date, message.username, message.message);
             });
         }
         #endregion
 
         #region Commands 
-        public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
         public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
         public ICommand CreateChannel { get { return new RelayCommand(OnCreateChannel, RoomIdValid); } }
 
