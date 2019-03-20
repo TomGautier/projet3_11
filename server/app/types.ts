@@ -30,7 +30,8 @@ const TYPES =  {
         // Managers
         ConversationManager:Symbol.for("ConversationManager"),
         DrawingSessionManager:Symbol.for("DrawingSessionManager"),
-        UserManager:Symbol.for("UserManager")
+        UserManager:Symbol.for("UserManager"),
+        ConnectionManager:Symbol.for("ConnectionManager")
 };
 
 export  { TYPES };

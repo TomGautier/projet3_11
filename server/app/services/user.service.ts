@@ -22,6 +22,13 @@ export class UserService {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService,
                 @inject(TYPES.UserManager) private userManager: UserManager) { }
 
+
+                
+    public async find(username: string): Promise<{}> {
+            return await this.databaseService.getByCriteria(User, this.USERNAME_CRITERIA, username)
+            .catch(err => {throw err;});
+    }
+
     public async getByUsername(username: string): Promise<{}> {
         return await this.databaseService.getByCriteria(User, this.USERNAME_CRITERIA, username)
             .catch(err => {throw err;});
