@@ -4,7 +4,6 @@ import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { UserManager } from "./user.manager";
-import { ConnectionManager } from "./connection.service";
 import shape from "../schemas/shape";
 
 @injectable()
