@@ -1,5 +1,6 @@
 package com.projet3.polypaint.Network;
 
+import com.google.gson.JsonObject;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.Network.UserGetTask;
 import com.projet3.polypaint.UserList.User;
@@ -89,17 +90,18 @@ public class RequestManager {
         else{
              for (int i = 0; i < jsons.length(); i ++){
                  JSONObject jsonObject;
-                 String name = "";
+                 String name;
                  try {
                      jsonObject = jsons.getJSONObject(i);
                      name = jsonObject.getString("name");
+                     if (!name.isEmpty()){
+                         conversations.add(new Conversation(name, new ArrayList()));
+                         SocketManager.currentInstance.joinConversation(name);
+                     }
                  } catch (JSONException e) {
                      e.printStackTrace();
                  }
-                 if (!name.isEmpty()){
-                     conversations.add(new Conversation(name, new ArrayList()));
-                     SocketManager.currentInstance.joinConversation(name);
-                 }
+
              }
              return conversations;
         }
