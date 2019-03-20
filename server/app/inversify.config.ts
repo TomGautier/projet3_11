@@ -69,6 +69,6 @@ container.bind<UserManager>(TYPES.UserManager).to(UserManager).inSingletonScope(
 container.bind<DrawingSessionManager>(TYPES.DrawingSessionManager).to(DrawingSessionManager).inSingletonScope();
 container.bind<UserService>(TYPES.UserService).to(UserService);
 container.bind<UnsaucedEventEmitter>(TYPES.EventEmitter).to(UnsaucedEventEmitter);
-container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager);
+container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager).inSingletonScope();
 
 export { container };

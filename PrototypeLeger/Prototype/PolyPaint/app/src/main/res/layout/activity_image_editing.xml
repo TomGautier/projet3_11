@@ -104,6 +104,18 @@
                     android:layout_height="wrap_content"
                     android:text="@string/buttonDuplicate"
                     style="@style/Widget.AppCompat.Button.Borderless"/>
+                <Button
+                    android:id="@+id/buttonStack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonStack"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                <Button
+                    android:id="@+id/buttonUnstack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonUnstack"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <Button
                     android:id="@+id/buttonReset"

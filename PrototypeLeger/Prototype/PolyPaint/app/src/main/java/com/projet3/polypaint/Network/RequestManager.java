@@ -1,7 +1,11 @@
-package com.projet3.polypaint.UserLogin;
+package com.projet3.polypaint.Network;
 
 import com.projet3.polypaint.Chat.Conversation;
-import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.Network.UserGetTask;
+import com.projet3.polypaint.UserList.User;
+import com.projet3.polypaint.UserLogin.UserInformation;
+import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.UserPostTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,7 +64,7 @@ public class RequestManager {
         return response_.isEmpty() ? false : true;
     }
 
-    public ArrayList<Conversation> fetchUserConversations(UserInformation userInformation_) {
+    public ArrayList<Conversation> fetchUserConversations() {
         url = formatUrl(Request.Conversations,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
@@ -125,6 +129,41 @@ public class RequestManager {
         return ret;
     }
 
+    public ArrayList<User> fetchUsers(){
+        url = formatUrl(Request.Users_Fetch,null);
+        UserGetTask getTask = new UserGetTask();
+        getTask.execute(url);
+        try{
+            ArrayList<User> users = configureFetchUsersResponse(getTask.get(TIMEOUT_DELAY,TimeUnit.SECONDS));
+            return users;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private ArrayList<User> configureFetchUsersResponse(JSONArray jsons) {
+        ArrayList<User> users = new ArrayList<>();
+        if (jsons == null || jsons.length() == 0)
+            return users;
+        else {
+            try {
+                for (int i = 0; i < jsons.length(); i++) {
+                    JSONObject jsonObject = jsons.getJSONObject(i);
+                    String name = jsonObject.getString("username");
+                    boolean connected = jsonObject.getBoolean("connected");
+                    users.add(new User(name, connected));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return users;
+        }
+    }
+
     private String formatUrl(String request, String information){
         String formatUrl = null;
         switch (request){
@@ -138,6 +177,8 @@ public class RequestManager {
                 else
                     formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
                     break;
+            case Request.Users_Fetch:
+                formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
         }
         return formatUrl;
     }
@@ -152,6 +193,7 @@ final class Request {
     public static final String Connection = "/connection/login/";
     public static final String Sign_Up = "/connection/signup/";
     public static final String Conversations = "/api/chat/";
+    public static final String Users_Fetch ="/api/user/";
 
 
 }

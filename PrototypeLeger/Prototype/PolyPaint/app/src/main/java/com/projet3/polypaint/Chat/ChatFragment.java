@@ -24,8 +24,8 @@ import android.widget.Toast;
 
 
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.SocketManager;
-import com.projet3.polypaint.UserLogin.RequestManager;
+import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.UserLogin.UserManager;
 import com.projet3.polypaint.Others.Utilities;
 
@@ -62,6 +62,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
+        RequestManager.currentInstance.fetchUserConversations();
         if (UserManager.currentInstance.getUserConversationsNames().size() != 0) {
             currentConversation = UserManager.currentInstance.getUserConversationAt(0);
         } else {

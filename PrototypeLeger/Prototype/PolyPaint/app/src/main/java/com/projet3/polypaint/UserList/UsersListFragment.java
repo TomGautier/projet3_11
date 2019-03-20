@@ -15,6 +15,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.projet3.polypaint.R;
+import com.projet3.polypaint.Network.RequestManager;
 
 import java.util.ArrayList;
 
@@ -33,13 +34,6 @@ public class UsersListFragment extends Fragment {
 
     private boolean isOpen;
 
-    public static UsersListFragment newInstance(ArrayList<String> users_) {
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("USERS", users_);
-        UsersListFragment fragobj = new UsersListFragment();
-        fragobj.setArguments(bundle);
-        return fragobj;
-    }
 
     public UsersListFragment() {
     }
@@ -57,7 +51,8 @@ public class UsersListFragment extends Fragment {
         searchView = (SearchView) rootView.findViewById(R.id.searchView);
         listView = (ListView) rootView.findViewById(R.id.listView);
         filterSpinner = (Spinner)rootView.findViewById(R.id.filterSpinner);
-        users = new ArrayList<>();
+        users = RequestManager.currentInstance.fetchUsers();
+       /* users = new ArrayList<>();
         users.add(new User("Bob", true));
         users.add(new User("Bob2", true));
         users.add(new User("Bob3", true));
@@ -72,7 +67,7 @@ public class UsersListFragment extends Fragment {
         users.add(new User("Bob12", true));
 
         users.add(new User("Alice", false));
-        users.add(new User("Alice2", false));
+        users.add(new User("Alice2", false));*/
         isOpen = true;
 
         setupListeners();

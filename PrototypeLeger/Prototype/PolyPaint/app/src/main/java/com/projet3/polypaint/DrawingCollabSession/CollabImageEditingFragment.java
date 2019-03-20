@@ -1,48 +1,26 @@
 package com.projet3.polypaint.DrawingCollabSession;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.graphics.Typeface;
-import android.opengl.GLException;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v4.content.res.ResourcesCompat;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
-import com.projet3.polypaint.CanvasElement.PaintStyle;
-import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
-import com.projet3.polypaint.R;
-import com.projet3.polypaint.SocketManager;
-import com.projet3.polypaint.UserList.User;
-import com.projet3.polypaint.UserLogin.UserInformation;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.UserLogin.UserManager;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class CollabImageEditingFragment extends ImageEditingFragment
         implements ImageEditingDialogManager.ImageEditingDialogSubscriber, DrawingCollabSessionListener {
@@ -266,6 +244,16 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         SocketManager.currentInstance.deleteElements(ids.toArray(new String[ids.size()]));
     }
 
+    @Override
+    protected void stack(){
+        if (shapes.size() > 0)
+            SocketManager.currentInstance.stackElement(shapes.get(shapes.size()-1).getId());
+    }
+    @Override
+    protected void unStack(){
+        if (!stack.empty())
+            SocketManager.currentInstance.unstackElement(createCollabShape(stack.peek()));
+    }
     @Override
     public void deleteSelection() {
         /*String[] ids = new String[selections.size()];
@@ -593,6 +581,51 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
+
+    @Override
+    public void onStackElement(String id, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        GenericShape shape = findGenShapeById(id);
+        shapes.remove(shape);
+        player.removeSelectedShape(shape);
+        //if (player.getSelectedShapes().contains(shape)){
+          //  player.removeSelectedShape(shape);
+        //}
+        if (client.getName().equals(author)){
+            stack.push(shape);
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+    }
+
+    @Override
+    public void onUnstackElement(CollabShape shape, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        GenericShape genShape = createGenShape(shape);
+        shapes.add(genShape);
+        player.clearSelectedShape();
+        player.addSelectedShape(genShape);
+        if (client.getName().equals(author)){
+            stack.pop();
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+    }
+
     /*private boolean shapeAlreadySelected(String id){
         for (GenericShape shape : client.getSelectedShapes()){
             if (shape.getId().equals(id))

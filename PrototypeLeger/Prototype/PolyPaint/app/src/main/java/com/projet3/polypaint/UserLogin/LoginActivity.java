@@ -14,7 +14,8 @@ import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.Network.RequestManager;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.Others.Utilities;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
 	private final String AZURE_IP = "40.122.119.160";
-	private final String IP = "10.200.26.216";
+	private final String IP = "192.168.0.181";
 
 
 
@@ -76,9 +77,9 @@ public class LoginActivity extends Activity  {
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					if (RequestManager.currentInstance.requestLogin(userInformation)) {
-						ArrayList<Conversation> fetchedConversations = RequestManager.currentInstance.fetchUserConversations(userInformation);
+						//RequestManager.currentInstance.fetchUserConversations();
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
-						intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
+						//intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
 						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
