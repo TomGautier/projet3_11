@@ -1,7 +1,6 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.UserList;
 
 import android.app.Fragment;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -13,12 +12,10 @@ import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.SearchView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
-import com.projet3.polypaint.USER.UserManager;
+import com.projet3.polypaint.R;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 
 

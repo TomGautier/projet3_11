@@ -18,34 +18,47 @@ namespace PolyPaint.Managers
     class ChatManager : INotifyPropertyChanged
     {
         #region Constant
-        private const string SERVER_ADDRESS = "40.122.119.160";
+        private const string SERVER_ADDRESS = "127.0.0.1"; //"40.122.119.160";
         private const string SERVER_PORT = "3000";
         #endregion
 
         #region Parameters
-        private string conversationID = "General";
-        public string ConversationID
+        private string roomID = "generalRoom";
+        public string RoomID
         {
             get
             {
-                return conversationID;
+                return roomID;
             }
             set
             {
-                conversationID = value;
+                roomID = value;
                 NotifyPropertyChanged();
             }
         }
-        private ObservableCollection<string> conversationsID;
-        public ObservableCollection<string> ConversationsID
+        private ObservableCollection<string> roomsID;
+        public ObservableCollection<string> RoomsID
         {
             get
             {
-                return conversationsID;
+                return roomsID;
             }
             set
             {
-                conversationsID = value;
+                roomsID = value;
+                NotifyPropertyChanged();
+            }
+        }
+        private string newRoomID;
+        public string NewRoomID
+        {
+            get
+            {
+                return newRoomID;
+            }
+            set
+            {
+                newRoomID = value;
                 NotifyPropertyChanged();
             }
         }
@@ -62,7 +75,7 @@ namespace PolyPaint.Managers
                 NotifyPropertyChanged();
             }
         }
-        private string _history = "Welcome!";
+        private string _history;
         public string History
         {
             get
@@ -88,33 +101,21 @@ namespace PolyPaint.Managers
                 NotifyPropertyChanged();
             }
         }
-        private string _serverAddress = SERVER_ADDRESS;
-        public string ServerAddress
+        private string sessionID;
+        public string SessionID
         {
             get
             {
-                return _serverAddress;
+                return sessionID;
             }
             set
             {
-                _serverAddress = value;
+                sessionID = value;
                 NotifyPropertyChanged();
             }
         }
-        private string _connectionStatus = "disconnected";
-        public string ConnectionStatus
-        {
-            get
-            {
-                return _connectionStatus;
-            }
-            set
-            {
-                _connectionStatus = value;
-                NotifyPropertyChanged();
-            }
-        }
-        private Socket socket;
+
+        public Socket socket;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -127,33 +128,23 @@ namespace PolyPaint.Managers
         #region Constructors
         public ChatManager()
         {
-            System.Windows.Application.Current.MainWindow.Closing += OnExitApp;
-            ConversationsID = new ObservableCollection<string>();
-            ConversationsID.Add("General"); // TODO : Load from server
+            RoomsID = new ObservableCollection<string>();
+            RoomsID.Add("generalRoom"); // TODO : Load from server
+            History = "Bienvenue dans la conversation " + RoomID + "!";
         }
         #endregion
 
         #region Methods
-        public void OnExitApp(object sender, CancelEventArgs e)
-        {
-            if (ConnectionStatus == "connected")
-                socket.Emit("UserLeft", Username);
-            if (ConnectionStatus != "disconnected")
-                socket.Emit("disconnect");
-        }
-        private void OnExitApp()
-        {
-            System.Windows.Application.Current.MainWindow.Close();
-        }
         private void OnSendMessage()
         {
             var messageFormat = new
             {
                 date = DateTime.Now.ToString("hh:mm:ss tt"),
                 username = Username,
-                message = Message.Trim()
+                message = Message.Trim(),
+                conversationId = RoomID
             };
-            Console.WriteLine(JsonConvert.SerializeObject(messageFormat));
+            Console.WriteLine("Message Sent : " + JsonConvert.SerializeObject(messageFormat));
             socket.Emit("MessageSent", JsonConvert.SerializeObject(messageFormat));
             Message = string.Empty;
         }
@@ -161,94 +152,90 @@ namespace PolyPaint.Managers
         {
             History += Environment.NewLine + date + "  [" + username + "] : " + message;
         }
-        private void OnConnect()
+        private void OnCreateChannel()
         {
-            ConnectionStatus = "connectAttempt";
-            Regex rgx = new Regex("^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
-            if (!rgx.IsMatch(ServerAddress))
+            if (!RoomsID.Contains(NewRoomID))
             {
-                System.Windows.MessageBox.Show("Wrong Address format", "Error");
-                ConnectionStatus = "disconnected";
-                return;
-            }
-            IO.Options op = new IO.Options
-            {
-                Reconnection = false
-            };
-
-            socket = IO.Socket("http://" + ServerAddress + ":" + SERVER_PORT, op);
-
-            socket.On(Socket.EVENT_CONNECT, () =>
-            {
-                ConnectionStatus = "connecting";
-            });
-            socket.On(Socket.EVENT_CONNECT_TIMEOUT, () =>
-            {
-                System.Windows.MessageBox.Show("Connection timeout", "Error");
-                ConnectionStatus = "disconnected";
-            });
-            socket.On(Socket.EVENT_CONNECT_ERROR, () =>
-            {
-                System.Windows.MessageBox.Show("Connection error", "Error");
-                ConnectionStatus = "disconnected";
-            });
-        }
-
-        private void OnLogin()
-        {
-            Username = Username.Trim();
-            socket.Emit("LoginAttempt", Username);
-            socket.On("UsernameAlreadyExists", () =>
-            {
-                System.Windows.MessageBox.Show("Username already exists.", "Error");
-            });
-            socket.On("UserLogged", () =>
-            {
-                ConnectionStatus = "connected";
-                socket.On("MessageSent", (data) =>
+                var createFormat = new
                 {
-                    var messageFormat = new
+                    sessionId = SessionID,
+                    username = Username,
+                    conversationId = NewRoomID
+                };
+                socket.Emit("CreateConverstation", JsonConvert.SerializeObject(createFormat));
+                // TEST ONLY
+                RoomsID.Add(NewRoomID);
+
+                socket.On("CreatedCoversation", (data) => {
+                    var _roomIDformat = new
                     {
-                        date = "",
-                        username = "",
-                        message = ""
+                        conversationId = ""
                     };
-                    Console.WriteLine(data);
-                    var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
-                    ReceiveMessage(message.date, message.username, message.message);
+                    var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
+                    RoomsID.Add(_roomID.conversationId);
+                    RoomID = _roomID.conversationId;
                 });
+            }
+            RoomID = NewRoomID;
+        }
+
+        internal void JoinChannel()
+        {
+            var joinFormat = new
+            {
+                sessionId = SessionID,
+                username = Username,
+                conversationId = RoomID
+            };
+            socket.Emit("UserJoinedConversation", JsonConvert.SerializeObject(joinFormat));
+            // TEST ONLY
+            History = "Bienvenue dans la conversation " + RoomID + "!";
+
+            socket.On("UserJoinedConversation", (data) => {
+                var _roomIDformat = new
+                {
+                    conversationId = ""
+                };
+                var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
+                RoomID = _roomID.conversationId;
+                History = "Bienvenue dans la conversation " + RoomID + "!";
+            });
+            socket.On("ChannelAlreadyJoined", (data) => {
+                Console.WriteLine("ChannelAlreadyJoined : " + data);
+            });
+            socket.On("ChannelCouldntBeJoined", (data) => {
+                Console.WriteLine("ChannelCouldntBeJoined : " + data);
             });
         }
 
-        private void OnDisconnect()
+        public void Connect()
         {
-            socket.Emit("UserLeft", Username);
-            socket.Disconnect();
-            ConnectionStatus = "disconnected";
-            History = "Welcome!";
-            Username = string.Empty;
-        }
-        private void OnCreateConversation()
-        {
-            //TODO : POP UP TO CREATE
-            //!ConversationsID.Contains(newElelemet); // TODO : Refresh list before checking
-            ConversationsID.Add("Test");
+            JoinChannel();
+
+            socket.On("MessageSent", (data) =>
+            {
+                var messageFormat = new
+                {
+                    date = "",
+                    username = "",
+                    message = "",
+                    conversationId = ""
+                };
+                Console.WriteLine("Message recieved : " + data.ToString());
+                var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
+                ReceiveMessage(message.date, message.username, message.message);
+            });
         }
         #endregion
 
         #region Commands 
-        public ICommand ExitCmd { get { return new RelayCommand(OnExitApp, AlwaysTrue); } }
         public ICommand SendMessage { get { return new RelayCommand(OnSendMessage, MessageValid); } }
-        public ICommand Connect { get { return new RelayCommand(OnConnect, AddressValid); } }
-        public ICommand Disconnect { get { return new RelayCommand(OnDisconnect, AlwaysTrue); } }
-        public ICommand Login { get { return new RelayCommand(OnLogin, UsernameValid); } }
-        public ICommand CreateConversation { get { return new RelayCommand(OnCreateConversation, AlwaysTrue); } }
+        public ICommand CreateChannel { get { return new RelayCommand(OnCreateChannel, RoomIdValid); } }
 
         private bool AlwaysTrue() { return true; }
         private bool AlwaysFalse() { return false; }
         private bool MessageValid() { return !string.IsNullOrWhiteSpace(Message); }
-        private bool AddressValid() { return !string.IsNullOrWhiteSpace(ServerAddress) && ConnectionStatus == "disconnected"; }
-        private bool UsernameValid() { return !string.IsNullOrWhiteSpace(Username); }
+        private bool RoomIdValid() { return !string.IsNullOrWhiteSpace(RoomID); }
         #endregion
 
     }
