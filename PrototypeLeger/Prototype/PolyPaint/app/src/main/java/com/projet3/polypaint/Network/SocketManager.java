@@ -5,6 +5,7 @@ import com.projet3.polypaint.Chat.NewMessageListener;
 import com.projet3.polypaint.DrawingCollabSession.CollabShape;
 import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
 import com.projet3.polypaint.DrawingCollabSession.DrawingCollabSessionListener;
+import com.projet3.polypaint.UserList.UsersListListener;
 import com.projet3.polypaint.UserLogin.UserManager;
 
 import org.json.JSONArray;
@@ -52,6 +53,9 @@ public class SocketManager  {
     public final String UNSTACK_FORM_TAG = "UnstackElement";
     public final String UNSTACKED_FORM_TAG = "UnstackedElement";
 
+    //Liste d'utilisateurs
+    public final String NEW_USER_CONNECTED_TAG = "UserJoinedChat";
+
 
 
 
@@ -71,6 +75,7 @@ public class SocketManager  {
     private Socket socket;
     private NewMessageListener newMessagelistener;
     private DrawingCollabSessionListener drawingCollabSessionListener;
+    private UsersListListener usersListListener;
 
     private String uri;
     private String sessionId;
@@ -89,6 +94,9 @@ public class SocketManager  {
     public void setupDrawingCollabSessionListener(DrawingCollabSessionListener listener_) {
         drawingCollabSessionListener = listener_;
     }
+    public void setupUsersListListener(UsersListListener listener_){
+        usersListListener = listener_;
+    }
     private void setupSocket() {
         try {
             socket = IO.socket(uri);
@@ -103,13 +111,26 @@ public class SocketManager  {
                     String username = "";
                     try {
                         //JSONObject json = new JSONObject((JSONObject)args[0]);
-                        JSONObject json = (JSONObject) args[0];
+                        JSONObject json = (JSONObject)args[0];
                         date = json.getString(DATE_TAG);
                         username = json.getString(USERNAME_TAG);
                         message = json.getString(MESSAGE_TAG);
                     }
                     catch(JSONException e) {}
                     newMessagelistener.onNewMessage(formatMessage(date,username,message));
+                }
+            });
+            socket.on(NEW_USER_CONNECTED_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    //try{
+                        //JSONObject obj = (JSONObject)args[0];
+                        //String username = obj.getString(USERNAME_TAG);
+                        String username = (String)args[0];
+                        usersListListener.onUserConnected(username);
+                    //} //catch (JSONException e) {
+                       // e.printStackTrace();
+                    //}
                 }
             });
             socket.on(CREATED_COLLAB_SESSION_TAG, new Emitter.Listener() {

@@ -14,13 +14,14 @@ import android.support.v7.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.Network.RequestManager;
 
 import java.util.ArrayList;
 
 
-public class UsersListFragment extends Fragment {
+public class UsersListFragment extends Fragment implements UsersListListener {
 
     private ListView listView;
     private RelativeLayout usersTableRelativeLayout;
@@ -51,6 +52,7 @@ public class UsersListFragment extends Fragment {
         searchView = (SearchView) rootView.findViewById(R.id.searchView);
         listView = (ListView) rootView.findViewById(R.id.listView);
         filterSpinner = (Spinner)rootView.findViewById(R.id.filterSpinner);
+        SocketManager.currentInstance.setupUsersListListener(this);
         users = RequestManager.currentInstance.fetchUsers();
        /* users = new ArrayList<>();
         users.add(new User("Bob", true));
@@ -72,6 +74,7 @@ public class UsersListFragment extends Fragment {
 
         setupListeners();
         setupSpinner();
+        setupListView();
         setupSearchView();
         return rootView;
     }
@@ -123,14 +126,21 @@ public class UsersListFragment extends Fragment {
             }
         });
     }
-
-    private void setupSearchView() {
+    private void setupListView(){
         ArrayList<String> names = new ArrayList<>();
         for (User user : users) {
             names.add(user.getUsername());
         }
         adapter = new UsersListAdapter(getActivity(), names, users);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)).isConnected());
+            }
+        });
+    }
+    private void setupSearchView() {
         searchView.setIconified(false);
         searchView.setSubmitButtonEnabled(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -143,12 +153,6 @@ public class UsersListFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
                 return false;
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)).isConnected());
             }
         });
     }
@@ -176,6 +180,24 @@ public class UsersListFragment extends Fragment {
             }
         });
         dropDownMenu.show();
+    }
+
+    @Override
+    public void onUserConnected(String username) {
+        for (User user : users){
+            if (user.getUsername().equals(username)){
+                user.changeConnectionState(true);
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setupListView();
+                    }
+                });
+                return;
+            }
+        }
+
+
     }
 }
 

@@ -20,11 +20,12 @@ export class ConversationManager {
 
     public onMessageSent(socketId: string, args: any) {
         const messageJson = {date: 'date actuelle', username: args[0].username, message: args[0].message};
-        console.log(args[0]);
+        console.log(messageJson);
         this.socketService.emit(args[0].conversationId, SocketEvents.MessageSent, messageJson);
     }
 
     public joinConversation(socketId: string, args: any) {
+        console.log("JE JOIN LA CONVO ", args[0].conversationId);
         this.socketService.joinRoom(args[0].conversationId, socketId);
     }
 

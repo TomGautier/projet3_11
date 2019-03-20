@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class RequestManager {
-    private final int TIMEOUT_DELAY = 5;
+    private final int TIMEOUT_DELAY = 20;
     private final String PORT =":3000";
 
     private String url;
@@ -155,7 +155,8 @@ public class RequestManager {
                     JSONObject jsonObject = jsons.getJSONObject(i);
                     String name = jsonObject.getString("username");
                     boolean connected = jsonObject.getBoolean("connected");
-                    users.add(new User(name, connected));
+                    if (!user.getUsername().equals(name))
+                        users.add(new User(name, connected));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
