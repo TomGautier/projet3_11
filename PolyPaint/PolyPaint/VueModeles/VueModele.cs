@@ -118,7 +118,12 @@ namespace PolyPaint.VueModeles
         {
             get { return editeur.ConnectorColor; }
             set { editeur.ConnectorColor = value; }
-        }    
+        } 
+        public string ConnectorBorderStyle
+        {
+            get { return editeur.ConnectorBorderStyle; }
+            set { editeur.ConnectorBorderStyle = value; }
+        }
         
         public StrokeCollection SelectedStrokes
         {
@@ -232,20 +237,22 @@ namespace PolyPaint.VueModeles
             editeur.HandleChangeSelection(strokes);
             //TODO : Send socket -> selection was changed
         }
-        public void SetConnectorSettings(string label, string type, int size,string color)
+        public void SetConnectorSettings(string label, string type, string border, int size,string color)
         {
             this.ConnectorLabel = label;
             this.ConnectorType = type;
+            this.ConnectorBorderStyle = border;
             this.ConnectorSize = size;
             this.ConnectorColor = color;
+            //TODO BORDER
         }
-        public void HandleLabelChange(string label)
+        public void HandleLabelChange(string label, string border)
         {
-            editeur.HandleLabelChange(label);
+            editeur.HandleLabelChange(label,border);
         }
-        public void HandleUmlTextChange(string name, List<string> methods, List<string> attributes)
+        public void HandleUmlTextChange(string name, string border, List<string> methods, List<string> attributes)
         {
-            editeur.HandleUmlTextChange(name,methods,attributes);
+            editeur.HandleUmlTextChange(name,border,methods,attributes);
         }
         public void HandleSelectionSuppression()
         {

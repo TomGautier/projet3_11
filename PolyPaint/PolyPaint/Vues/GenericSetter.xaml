@@ -30,9 +30,16 @@
 
         <TextBlock Text="Label" Grid.Row="1" Margin="3"/>
         <TextBox x:Name="txtLabel" TextChanged="genericSetter_LabelChanged" Grid.Row="1" Margin="97,3,0,5" MinWidth="100" HorizontalAlignment="Left" Grid.ColumnSpan="4" Width="250"/>
+            <TextBlock Text="Border Style" Grid.Row="2" Margin="3"/>
+            <ComboBox x:Name="borderList" Width="100" Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="2" Margin="2,0,98,0">
+                <ComboBoxItem Content="Solid"/>
+                <ComboBoxItem Content="Dash"/>
+                <ComboBoxItem Content="Dot"/>
+                <ComboBoxItem Content="DashDot"/>
+                <ComboBoxItem Content="DashDotDot"/>
+            </ComboBox>
 
-        
-        <Button  Click="genericSetter_ApplyChanges" Content="APPLY" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20"/>
+            <Button  Click="genericSetter_ApplyChanges" Content="APPLY" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20"/>
 
     </Grid>
 </Grid>

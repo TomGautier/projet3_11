@@ -33,6 +33,7 @@ namespace PolyPaint.Modeles
         public string ConnectorType { get; set; }
         public int ConnectorSize { get; set; }
         public string ConnectorColor { get; set; }
+        public string ConnectorBorderStyle { get; set; }
 
         private bool showEncrage = false;
         public bool ShowEncrage
@@ -218,15 +219,19 @@ namespace PolyPaint.Modeles
             }
             this.SocketManager.HandleModification(modifiedShapes);
         }
-        public void HandleLabelChange(string label)
+        public void HandleLabelChange(string label,string border)
         {
             (this.selectedStrokes[0] as Form).Label = label;
+            (this.selectedStrokes[0] as Form).BorderStyle = border;
+
         }
-        public void HandleUmlTextChange(string name, List<string> methods, List<string> attributes)
+        public void HandleUmlTextChange(string name,string border, List<string> methods, List<string> attributes)
         {
             (this.selectedStrokes[0] as UMLClass).Label = name;
             (this.selectedStrokes[0] as UMLClass).Methods = methods;
             (this.selectedStrokes[0] as UMLClass).Attributes = attributes;
+            (this.selectedStrokes[0] as UMLClass).BorderStyle = border;
+
         }
 
         /// <summary>
@@ -271,7 +276,7 @@ namespace PolyPaint.Modeles
                 {
                     if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
                     {
-                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorSize, this.ConnectorColor);
+                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType,this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor);
                         newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);
                         
                         isOnEncrage = true;
@@ -315,7 +320,7 @@ namespace PolyPaint.Modeles
                         //type = UMLClass.TYPE;
                         break;
                     case "form_Artefact":
-                        form = new Artefact(pts);
+                        form = new Artefact(pts);                     
                         //height = Artefact.DEFAULT_HEIGHT;
                         //width = Artefact.DEFAULT_WIDTH;
                         //type = Artefact.TYPE;
@@ -390,7 +395,7 @@ namespace PolyPaint.Modeles
 
                     break;
                 case "form_Artefact":
-                    Artefact artefact = new Artefact(pts);
+                    Artefact artefact = new Artefact(pts);                  
                     artefact.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
                     artefact.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
                     traits.Add(artefact);
@@ -424,7 +429,7 @@ namespace PolyPaint.Modeles
 
                     break;
                 case "Artefact":
-                    Artefact artefact = new Artefact(pts);
+                    Artefact artefact = new Artefact(pts);                
                     artefact.SetToShape(shape);
                     traits.Add(artefact);
                     break;
