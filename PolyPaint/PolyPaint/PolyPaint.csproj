@@ -152,13 +152,11 @@
     <Compile Include="Vues\DrawControl.xaml.cs">
       <DependentUpon>DrawControl.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
     <Compile Include="Vues\HomeControl.xaml.cs">
       <DependentUpon>HomeControl.xaml</DependentUpon>
-=======
+    </Compile>
     <Compile Include="Vues\GenericSetter.xaml.cs">
       <DependentUpon>GenericSetter.xaml</DependentUpon>
->>>>>>> 246f9c6236d92fc6744e4a1f32f192ae3f030ed8
     </Compile>
     <Compile Include="Vues\LoginControl.xaml.cs">
       <DependentUpon>LoginControl.xaml</DependentUpon>
@@ -166,13 +164,11 @@
     <Compile Include="Vues\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
     <Compile Include="Vues\SignupControl.xaml.cs">
       <DependentUpon>SignupControl.xaml</DependentUpon>
-=======
+    </Compile>
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
->>>>>>> 246f9c6236d92fc6744e4a1f32f192ae3f030ed8
     </Compile>
     <Page Include="Vues\ChatControl.xaml">
       <SubType>Designer</SubType>
@@ -207,11 +203,11 @@
     <Compile Include="Vues\FenetreDessin.xaml.cs">
       <DependentUpon>FenetreDessin.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
     <Page Include="Vues\HomeControl.xaml">
-=======
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vues\GenericSetter.xaml">
->>>>>>> 246f9c6236d92fc6744e4a1f32f192ae3f030ed8
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -223,11 +219,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-<<<<<<< HEAD
     <Page Include="Vues\SignupControl.xaml">
-=======
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vues\UmlClassSetter.xaml">
->>>>>>> 246f9c6236d92fc6744e4a1f32f192ae3f030ed8
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
