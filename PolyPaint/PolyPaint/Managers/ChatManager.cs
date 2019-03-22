@@ -210,8 +210,6 @@ namespace PolyPaint.Managers
 
         public void Connect()
         {
-            JoinChannel();
-
             socket.On("MessageSent", (data) =>
             {
                 var messageFormat = new
