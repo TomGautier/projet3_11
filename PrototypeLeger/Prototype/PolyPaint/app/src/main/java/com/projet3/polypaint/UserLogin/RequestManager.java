@@ -126,8 +126,16 @@ public class RequestManager {
         return ret;
     }
 
-    public ArrayList<JSONObject> fetchGalleryContent() {
-        url = formatUrl(Request.ImagesCommon,null);
+    public ArrayList<JSONObject> fetchPublicGallery() {
+        return fetchGalleryContent(Request.ImagesCommon);
+    }
+
+    public ArrayList<JSONObject> fetchPrivateGallery() {
+        return fetchGalleryContent(Request.Images);
+    }
+
+    private ArrayList<JSONObject> fetchGalleryContent(String request) {
+        url = formatUrl(request,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
         try{

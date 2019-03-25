@@ -35,6 +35,7 @@ export class SocketService {
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
+            socket.on(SocketEvents.CreateConversation, args => this.handleEvent(SocketEvents.CreateConversation, socket.id, args));
             
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
 
@@ -93,8 +94,6 @@ export class SocketService {
 
     public emit(id: string, event: string, args?: any): void {
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
-        console.log("emit a ", id);
-        console.log("L'event est ", event);
         const success: boolean = this.server.to(id).emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }

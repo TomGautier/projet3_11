@@ -5,6 +5,8 @@ export default {
     UserJoinedRoom:"UserJoinedRoom",
     UserJoinedConversation:"UserJoinedConversation",
     UserLeftConversation:"UserLeftConversation",
+    CreateConversation:"CreateConversation",
+    CreatedConversation:"CreatedConversation",
     // Connexion
     LoginAttempt:"LoginAttempt",
     SignUp:"SignUp",

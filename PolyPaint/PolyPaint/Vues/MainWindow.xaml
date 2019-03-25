@@ -11,11 +11,23 @@
         mc:Ignorable="d"
         Title="Poly Paint" Height="700" Width="900" Background="#CBD4E4" MinWidth="627" MinHeight="200">
     <Window.Resources>
-        <DataTemplate x:Key="View1Template" DataType="{x:Type VueModels:VueModele}">
-            <Vues:LoginControl VerticalAlignment="Center"/>
+        <DataTemplate x:Key="HomeView" DataType="{x:Type VueModels:VueModele}">
+            <Vues:HomeControl VerticalAlignment="Center"/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="LoginView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:LoginControl/>
+            </DockPanel>
         </DataTemplate>
 
-        <DataTemplate x:Key="View2Template" DataType="{x:Type VueModels:VueModele}">
+        <DataTemplate x:Key="SignupView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:SignupControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DrawView" DataType="{x:Type VueModels:VueModele}">
             <DockPanel>
                 <Vues:ChatControl/>
                 <Vues:DrawControl/>
@@ -28,15 +40,26 @@
     </Window.DataContext>
 
     <DockPanel>
-        <ContentControl Content="{Binding }">
+        <ContentControl Content="{Binding }" >
             <ContentControl.Style>
                 <Style TargetType="{x:Type ContentControl}">
-                    <Setter Property="ContentTemplate" Value="{StaticResource View1Template}" />
+                    <Setter Property="ContentTemplate" Value="{StaticResource HomeView}" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding ChatManager.ConnectionStatus}" Value="connected">
-                            <Setter Property="ContentTemplate" Value="{StaticResource View2Template}" />
+                        <DataTrigger Binding="{Binding SwitchView}" Value="1">
+                            <Setter Property="ContentTemplate" Value="{StaticResource LoginView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="2">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SignupView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="3">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DrawView}" />
                         </DataTrigger>
                     </Style.Triggers>
+                    
                 </Style>
             </ContentControl.Style>
         </ContentControl>

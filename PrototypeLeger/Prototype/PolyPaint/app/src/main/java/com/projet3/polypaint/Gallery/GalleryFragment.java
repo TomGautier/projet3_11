@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
@@ -21,7 +23,12 @@ import java.util.ArrayList;
 
 public class GalleryFragment extends Fragment {
 
+    private final int MAX_ROW_LENGTH = 9;
+
     private View rootView;
+    private Switch privacySwitch;
+
+    private boolean isPrivateImages = false;
 
     public GalleryFragment() {}
     @Override
@@ -30,21 +37,41 @@ public class GalleryFragment extends Fragment {
 
         rootView=inflater.inflate(R.layout.fragment_gallery, container, false);
 
-        //RequestManager.currentInstance.postImage(createNewImage());
+        setPrivacySwitch();
 
-        ArrayList<JSONObject> images = RequestManager.currentInstance.fetchGalleryContent();
-
-        if (images != null && !images.isEmpty())
-            addImagesToTable(images);
+        populateGrid();
 
         return rootView;
     }
 
-    private void addImagesToTable(ArrayList<JSONObject> images) {
-        final int MAX_ROW_LENGTH = 6;
+    private void setPrivacySwitch() {
+        privacySwitch = (Switch) rootView.findViewById(R.id.privacySwitch);
+        isPrivateImages = privacySwitch.isChecked();
 
+        privacySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isPrivateImages = isChecked;
+                populateGrid();
+            }
+        });
+    }
+
+    private void populateGrid() {
+        ArrayList<JSONObject> images;
+
+        if (isPrivateImages)
+            images = RequestManager.currentInstance.fetchPrivateGallery();
+        else
+            images = RequestManager.currentInstance.fetchPublicGallery();
+
+        if (images != null /*&& !images.isEmpty()*/)
+            addImagesToTable(images);
+    }
+
+    private void addImagesToTable(ArrayList<JSONObject> images) {
         FragmentManager manager = getFragmentManager();
         TableLayout table = (TableLayout) rootView.findViewById(R.id.table);
+        table.removeAllViews();
         TableRow row;
         FragmentTransaction transaction = manager.beginTransaction();
 
@@ -73,40 +100,6 @@ public class GalleryFragment extends Fragment {
         transaction.addToBackStack(null);
         transaction.commit();
     }
-
-    /*private void addImagesToTable(ArrayList<String> names) {
-        final int MAX_ROW_LENGTH = 9;
-
-        LayoutInflater inflater = LayoutInflater.from(getContext());
-        TableLayout table = (TableLayout) rootView.findViewById(R.id.table);
-        View gRow;
-        TableRow row;
-
-        // All but last row
-        for (int i = 0; i < names.size() / MAX_ROW_LENGTH; i++) {
-            gRow = inflater.inflate(R.layout.gallery_row, null);
-            table.addView(gRow);
-            row = (TableRow)gRow.findViewById(R.id.row);
-
-            for (int j = 0; j < MAX_ROW_LENGTH; j++) {
-                final View v = inflater.inflate(R.layout.gallery_thumbnail, null);
-                final TextView tv = (TextView) v.findViewById(R.id.title);
-                tv.setText(names.get(i * MAX_ROW_LENGTH + j));
-                row.addView(v);
-            }
-        }
-
-        // Last row
-        gRow = inflater.inflate(R.layout.gallery_row, null);
-        table.addView(gRow);
-        row = (TableRow)gRow.findViewById(R.id.row);
-        for (int i = names.size() - (names.size() % MAX_ROW_LENGTH); i < names.size(); i++) {
-            View v = inflater.inflate(R.layout.gallery_thumbnail, null);
-            TextView tv = (TextView) v.findViewById(R.id.title);
-            tv.setText(names.get(i));
-            row.addView(v);
-        }
-    }*/
 
     private JSONObject createNewImage() {
         JSONObject image = new JSONObject();
@@ -154,4 +147,6 @@ public class GalleryFragment extends Fragment {
 
         return testProperties;
     }
+
+
 }
