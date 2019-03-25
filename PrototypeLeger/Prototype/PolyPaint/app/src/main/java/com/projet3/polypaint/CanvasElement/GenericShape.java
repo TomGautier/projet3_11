@@ -108,26 +108,26 @@ public abstract class GenericShape {
     }
     public final static int getDefaultHeight(String currentShapeType){
         switch (currentShapeType){
-            case "umlActivity" :
+            case "Activity" :
                 return UMLActivity.DEFAULT_HEIGHT;
-            case "umlClass":
+            case "UmlClass":
                 return UMLClass.DEFAULT_HEIGHT;
-            case "umlArtefact":
+            case "Artefact":
                 return UMLArtefact.DEFAULT_HEIGHT;
-            case "umlRole":
+            case "Role":
                 return UMLRole.DEFAULT_HEIGHT;
         }
         return 0;
     }
     public final static int getDefaultWidth(String currentShapeType){
         switch (currentShapeType){
-            case "umlActivity" :
+            case "Activity" :
                 return UMLActivity.DEFAULT_WIDTH;
-            case "umlClass":
+            case "UmlClass":
                 return UMLClass.DEFAULT_WIDTH;
-            case "umlArtefact":
+            case "Artefact":
                 return UMLArtefact.DEFAULT_WIDTH;
-            case "umlRole":
+            case "Role":
                 return UMLRole.DEFAULT_WIDTH;
         }
         return 0;
@@ -152,7 +152,6 @@ public abstract class GenericShape {
                 canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
                 break;
             case dotted :
-
                 while (attainedLength < lineLength) {
                     int currentX = x1 + (int)((x2 - x1) * attainedLength / lineLength);
                     int currentY = y1 + (int)((y2 - y1) * attainedLength / lineLength);
@@ -162,16 +161,22 @@ public abstract class GenericShape {
 
                 break;
             case dashed :
+                int currentX1;
+                int currentY1;
+                int currentX2;
+                int currentY2;
                 while (attainedLength + DOT_SPACING < lineLength) {
-                    int deltaX = (int)((x2 - x1) * attainedLength / lineLength);
-                    int deltaY = (int)((y2 - y1) * attainedLength / lineLength);
-                    int currentX1 = x1 + deltaX;
-                    int currentY1 = y1 + deltaY;
-                    int currentX2 = currentX1 + deltaX;
-                    int currentY2 = currentY1 + deltaY;
+                    currentX1 = x1 + (int)((x2 - x1) * attainedLength / lineLength);
+                    currentY1 = y1 + (int)((y2 - y1) * attainedLength / lineLength);
+                    currentX2 = x1 + (int)((x2 - x1) * (attainedLength + DOT_SPACING) / lineLength);
+                    currentY2 = y1 + (int)((y2 - y1) * (attainedLength + DOT_SPACING) / lineLength);
                     canvas.drawLine(currentX1, currentY1, currentX2, currentY2, style.getBorderPaint());
                     attainedLength += 2 * DOT_SPACING;
                 }
+                currentX1 = x1 + (int)((x2 - x1) * attainedLength / lineLength);
+                currentY1 = y1 + (int)((y2 - y1) * attainedLength / lineLength);
+                canvas.drawLine(currentX1, currentY1, x2, y2, style.getBorderPaint());
+
 
                 break;
         }

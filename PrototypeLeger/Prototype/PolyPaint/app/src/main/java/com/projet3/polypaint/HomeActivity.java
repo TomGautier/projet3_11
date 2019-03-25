@@ -60,7 +60,7 @@ public class HomeActivity extends AppCompatActivity {
 			//createChatFragment();
 			//createImageEditingFragment();
 			//toggleImageEditingVisibility();
-			createCollabImageEditingFragment();
+			createImageEditingFragment();
 		}
 		//CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",new int[] {1,2},200,300,0);
 		//CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);

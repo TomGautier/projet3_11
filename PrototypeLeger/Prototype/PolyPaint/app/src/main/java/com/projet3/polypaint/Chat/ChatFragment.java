@@ -62,6 +62,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
+        RequestManager.currentInstance.fetchUserConversations();
         if (UserManager.currentInstance.getUserConversationsNames().size() != 0) {
             currentConversation = UserManager.currentInstance.getUserConversationAt(0);
         } else {

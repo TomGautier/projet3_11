@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class RequestManager {
-    private final int TIMEOUT_DELAY = 5;
+    private final int TIMEOUT_DELAY = 20;
     private final String PORT =":3000";
 
     private String url;
@@ -60,7 +60,7 @@ public class RequestManager {
         return response_.isEmpty() ? false : true;
     }
 
-    public ArrayList<Conversation> fetchUserConversations(UserInformation userInformation_) {
+    public ArrayList<Conversation> fetchUserConversations() {
         url = formatUrl(Request.Conversations,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
@@ -85,16 +85,16 @@ public class RequestManager {
         else{
              for (int i = 0; i < jsons.length(); i ++){
                  JSONObject jsonObject;
-                 String name = "";
+                 String name;
                  try {
                      jsonObject = jsons.getJSONObject(i);
                      name = jsonObject.getString("name");
+                     if (!name.isEmpty()){
+                         conversations.add(new Conversation(name, new ArrayList()));
+                         SocketManager.currentInstance.joinConversation(name);
+                     }
                  } catch (JSONException e) {
                      e.printStackTrace();
-                 }
-                 if (!name.isEmpty()){
-                     conversations.add(new Conversation(name, new ArrayList()));
-                     SocketManager.currentInstance.joinConversation(name);
                  }
              }
              return conversations;

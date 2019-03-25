@@ -218,7 +218,7 @@ public class SocketManager  {
         }catch(JSONException e) {}
 
         if (args != null)
-            socket.emit(SENDMESSAGE_TAG, args);
+            socket.emit(SENDMESSAGE_TAG, args.toString());
 
     }
     public void joinConversation(String conversationID){
@@ -229,7 +229,7 @@ public class SocketManager  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        socket.emit(JOIN_CONVERSATION_TAG, json);
+        socket.emit(JOIN_CONVERSATION_TAG, json.toString());
     }
     public void leaveConversation(String conversationID){
         JSONObject json = null;

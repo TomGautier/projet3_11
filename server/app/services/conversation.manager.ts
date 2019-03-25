@@ -27,6 +27,7 @@ export class ConversationManager {
     public joinConversation(socketId: string, args: any) {
         console.log('Joined conversation : ' + args.conversationId);
         this.socketService.joinRoom(args.conversationId, socketId);
+        this.socketService.emit(args.conversationId, SocketEvents.UserJoinedConversation, args.conversationId);
     }
 
     public leaveConversation(socketId: string, args: any) {
