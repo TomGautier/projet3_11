@@ -14,11 +14,12 @@ namespace PolyPaint.Utilitaires
 {
     class UMLClass : Form
     {
+        public const int DEFAULT_HEIGHT = 220;
+        public const int DEFAULT_WIDTH = 110;
+        public const string TYPE = "UmlClass";
+
         public string Name { get; set; }
 
-        public double Height { get; set; }
-
-        public double Width { get; set; }
         
         private List<String> Methods { get; set; }
         private List<String> Attributes { get; set; }
@@ -36,10 +37,11 @@ namespace PolyPaint.Utilitaires
             this.Attributes = new List<String>();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
-            this.Remplissage = Colors.White;   
-            
+            this.Remplissage = Colors.White;
+            this.Type = TYPE;
+
         }
-        public void MakeShape()
+        protected override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));
@@ -93,7 +95,9 @@ namespace PolyPaint.Utilitaires
         {       
             Fill(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
-            updatePoints();
+                      
+            SetSelection(drawingContext);
+            updatePoints(); 
         }
         private void DrawName(DrawingContext drawingContext)
         {

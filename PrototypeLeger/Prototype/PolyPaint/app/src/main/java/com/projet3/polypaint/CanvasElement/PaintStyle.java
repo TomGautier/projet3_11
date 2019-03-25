@@ -17,7 +17,7 @@ public class PaintStyle {
         strokeType = StrokeType.dashed;
     }
 
-    Paint getBorderPaint() { return borderPaint; }
+    public Paint getBorderPaint() { return borderPaint; }
     Paint getBackgroundPaint() { return backgroundPaint; }
     Paint getTextPaint() { return textPaint; }
     StrokeType getStrokeType() { return strokeType; }

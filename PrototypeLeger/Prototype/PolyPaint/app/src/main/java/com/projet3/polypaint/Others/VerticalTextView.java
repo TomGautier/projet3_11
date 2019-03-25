@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.Others;
 
 import android.content.Context;
 import android.graphics.Canvas;

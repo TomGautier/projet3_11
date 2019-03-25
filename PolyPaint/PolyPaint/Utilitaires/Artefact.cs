@@ -15,9 +15,12 @@ namespace PolyPaint.Utilitaires
 {
     class Artefact : Form
     {
+        public const int DEFAULT_HEIGHT = 65;
+        public const int DEFAULT_WIDTH = 50;
+        public const string TYPE = "Artefact";
+
         public string Name { get; set; }
-        public double Height { get; set; }
-        public double Width { get; set; }
+
 
 
         public Artefact(StylusPointCollection pts) : base(pts)
@@ -30,8 +33,9 @@ namespace PolyPaint.Utilitaires
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
             this.Remplissage = Colors.White;
+            this.Type = TYPE;
         }
-        public void MakeShape()
+        protected override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));
@@ -51,7 +55,7 @@ namespace PolyPaint.Utilitaires
             double x = this.StylusPoints[0].X + (this.StylusPoints[6].X - this.StylusPoints[0].X) / 2;
             double y = this.StylusPoints[0].Y + (this.StylusPoints[6].Y - this.StylusPoints[0].Y) / 2;
             this.Center = new Point((int)x, (int)y);
-            this.Width = Point.Subtract(this.StylusPoints[6].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+            this.Width = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[6].ToPoint()).Length;
             this.Height = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
         }
         private void Fill(DrawingContext drawingContext)
@@ -74,7 +78,9 @@ namespace PolyPaint.Utilitaires
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
 
         {
+           
             Fill(drawingContext);
+            SetSelection(drawingContext);
             base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
         }

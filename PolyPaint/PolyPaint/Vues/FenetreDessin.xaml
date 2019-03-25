@@ -102,31 +102,31 @@
                   RecentColorsHeader="Récemment utilisées"
                   UsingAlphaChannel="True"
                   AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" />
-                <Button Name="form_class" Width="70" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_class, UpdateSourceTrigger=PropertyChanged}"
+                <Button Name="form_UmlClass" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_UmlClass, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_UmlClass, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_class">
+                        CommandParameter="form_UmlClass">
 
                   <TextBlock>
                     <Bold>CLASS</Bold>
                   </TextBlock>
                 </Button>
-                <Button Name="form_artefact" Width="70" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_artefact, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_artefact, UpdateSourceTrigger=PropertyChanged}"
+                <Button Name="form_Artefact" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Artefact, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Artefact, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_artefact">
+                        CommandParameter="form_Artefact">
                   <TextBlock>
                     <Bold>ARTEFACT</Bold>
                   </TextBlock>
                     
                 </Button>
-              <Button Name="form_activity" Width="70" Height="40" Margin="5"
-                      BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
-                      Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_activity, UpdateSourceTrigger=PropertyChanged}"
+              <Button Name="form_Activity" Width="70" Height="40" Margin="5"
+                      BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Activity, UpdateSourceTrigger=PropertyChanged}"
+                      Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Activity, UpdateSourceTrigger=PropertyChanged}"
                       Command="{Binding Path=ChoisirOutil}"
-                      CommandParameter="form_activity">
+                      CommandParameter="form_Activity">
 
                 <TextBlock>
                   <Bold>ACTIVITY</Bold>
@@ -135,11 +135,11 @@
               <StackPanel>
 
               </StackPanel>
-                <Button Name="form_role" Width="70" Height="40" Margin="5"
-                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_role, UpdateSourceTrigger=PropertyChanged}"
-                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_role, UpdateSourceTrigger=PropertyChanged}"
+                <Button Name="form_Role" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Role, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Role, UpdateSourceTrigger=PropertyChanged}"
                         Command="{Binding Path=ChoisirOutil}"
-                        CommandParameter="form_role">
+                        CommandParameter="form_Role">
 
                   <TextBlock>
                     <Bold>ACTOR</Bold>
@@ -151,6 +151,7 @@
                         <Image Source="/Resources/position.png" />
                     </StackPanel>
                 </Button>
+                <TextBox Width="80" Text="{Binding Username}"></TextBox>
             </StackPanel>
         </Border>
         <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000"/>
@@ -181,16 +182,20 @@
                       DragStarted="GlisserCommence" DragCompleted="GlisserTermine" Margin="278,1,169.824,0"
                       />
             <Border BorderThickness="5,5,0,0" Grid.ColumnSpan="2">
-                <InkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" Name="surfaceDessin" AllowDrop="True"
+                <Vues:CustomInkCanvas ClipToBounds="True" Grid.Column="0" Grid.Row="0" x:Name="surfaceDessin" AllowDrop="True"
+                                      
                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                        MouseLeave="surfaceDessin_MouseLeave" MouseMove="surfaceDessin_MouseMove"
-                       SelectionChanged="surfaceDessin_SelectionChanged"
-                       SelectionResized="surfaceDessin_SelectionResized"
+                       SelectionChanging="surfaceDessin_SelectionChanging"
+                       SelectionResized="surfaceDessin_SelectionResizing"
                        PreviewMouseDown="surfaceDessin_PreviewMouseDown"
                        SelectionMoved="surfaceDessin_SelectionMoved"
+                       StrokeErasing="surfaceDessin_StrokeErasing"
+                       PreviewKeyDown="surfaceDessin_HandleKey"
                        Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                        DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
-                </InkCanvas>
+                </Vues:CustomInkCanvas>
+                
                 <Border.Effect>
                     <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
                 </Border.Effect>

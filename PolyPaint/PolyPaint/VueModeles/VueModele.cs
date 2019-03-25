@@ -9,6 +9,7 @@ using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
 using System.Windows.Input;
+using PolyPaint.Vues;
 
 namespace PolyPaint.VueModeles
 {
@@ -23,16 +24,31 @@ namespace PolyPaint.VueModeles
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
+
         private string sessionId;
+        public string SessionId
+        {
+            get
+            {
+                return sessionId;
+            }
+            set
+            {
+                sessionId = value;
+                ChatManager.SessionID = value;
+                ProprieteModifiee();
+            }
+        }
 
         private int switchView = 0;
         public int SwitchView
         {
             get { return switchView; }
-            set { switchView = value; ProprieteModifiee(); }    
+            set { switchView = value; ProprieteModifiee(); }
             //get { return editeur.OutilSelectionne; }            
             //set { ProprieteModifiee(); }
         }
+        private CustomInkCanvas Canvas { get; set; }
         public string CouleurSelectionnee
         {
             get { return editeur.CouleurSelectionnee; }
@@ -53,13 +69,17 @@ namespace PolyPaint.VueModeles
                 editeur.RemplissageSelectionne = value;
             }
         }
-        
+
         private ChatManager chatManager = new ChatManager();
         public ChatManager ChatManager
         {
             get { return chatManager; }
             set { ProprieteModifiee(); }
 
+        }
+        public SocketManager SocketManager {
+            get { return editeur.SocketManager; }
+            set { editeur.SocketManager = value; }
         }
 
         private string username;
@@ -70,6 +90,7 @@ namespace PolyPaint.VueModeles
             {
                 username = value;
                 ChatManager.Username = value;
+                this.SocketManager.UserName = username;
                 ProprieteModifiee();
             }
         }
@@ -82,6 +103,7 @@ namespace PolyPaint.VueModeles
             get { return editeur.OutilSelectionne; }            
             set { ProprieteModifiee(); }
         }
+        
 
         public int TailleTrait
         {
@@ -126,19 +148,20 @@ namespace PolyPaint.VueModeles
 
         public async void Login(string password)
         {
-            sessionId = await networkManager.LoginAsync(Username, password);
-            if (sessionId == "")
+            SessionId = await networkManager.LoginAsync(Username, password);
+            if (SessionId == "")
             {
                 MessageBox.Show("Wrong login informations", "Error");
                 return;
             }
+            ChatManager.Connect();
             SwitchView = 3;
         }
 
         public async void Signup(string password)
         {
-            sessionId = await networkManager.SignupAsync(Username, password);
-            if (sessionId == "")
+            SessionId = await networkManager.SignupAsync(Username, password);
+            if (SessionId == "")
             {
                 MessageBox.Show("Wrong signup informations", "Error");
                 return;
@@ -153,6 +176,12 @@ namespace PolyPaint.VueModeles
         /// </summary>
         public VueModele()
         {
+            this.Canvas = new CustomInkCanvas();
+            SocketManager = new SocketManager();
+            //SocketManager.JoinDrawingSession("MockSessionID");
+            ChatManager.socket = SocketManager.Socket;
+            //SocketManager.UserName = "Olivier";
+            editeur.initializeSocketEvents();
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -174,6 +203,10 @@ namespace PolyPaint.VueModeles
             // Donc, aucune vérification de type Peut"Action" à faire.
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
+        }
+        public void SendCanvas(CustomInkCanvas canvas)
+        {
+            this.Canvas = canvas;
         }
 
         /// <summary>
@@ -208,19 +241,32 @@ namespace PolyPaint.VueModeles
             else if (e.PropertyName == "OutilSelectionne")
             {
                 OutilSelectionne = editeur.OutilSelectionne;
-            }                    
+            }
+            else if (e.PropertyName == "Selection")
+            {
+                this.Canvas.AllowSelection = true;
+                this.Canvas.Select(editeur.selectedStrokes);
+                this.Canvas.AllowSelection = false;
+            }
+            
         }
         public void HandleSelection(StrokeCollection strokes)
         {
-            editeur.ChangeSelection(strokes);
+            editeur.HandleChangeSelection(strokes);
             //TODO : Send socket -> selection was changed
+        }
+        public void HandleSelectionSuppression()
+        {
+            editeur.HandleDeleteSelection();
         }
         public void HandleDrag()
         {
             // TODO : Send socket -> selection has moved
+            editeur.HandleSelectionModification();
         }
         public void HandleResize()
         {
+            editeur.HandleSelectionModification();
             // TODO : Send socket -> selection was resized
         }
         public void RestoreLastTrait()

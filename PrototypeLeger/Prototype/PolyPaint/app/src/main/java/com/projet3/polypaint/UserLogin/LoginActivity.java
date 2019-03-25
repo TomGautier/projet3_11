@@ -1,4 +1,4 @@
-package com.projet3.polypaint;
+package com.projet3.polypaint.UserLogin;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
-import com.projet3.polypaint.Chat.SocketManager;
-import com.projet3.polypaint.USER.RequestManager;
-import com.projet3.polypaint.USER.UserInformation;
-import com.projet3.polypaint.USER.UserManager;
+import com.projet3.polypaint.HomeActivity;
+import com.projet3.polypaint.R;
+import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.Others.Utilities;
 
 import java.util.ArrayList;
 

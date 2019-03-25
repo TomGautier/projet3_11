@@ -6,11 +6,10 @@
         android:id="@+id/galleryAction"
         android:title="@string/mainToolbarGalleryTag"
         app:showAsAction="always" />
-    <!--<item
-        android:id="@+id/chatAction"
-        android:title="Chat"
-        app:showAsAction="always"/>-->
-    <!--app:actionViewClass="android.widget.Button"-->
+    <item
+        android:id="@+id/collabDrawingEdition"
+        android:title="@string/mainToolbarCollabImageEditionTag"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/imageEditingAction"

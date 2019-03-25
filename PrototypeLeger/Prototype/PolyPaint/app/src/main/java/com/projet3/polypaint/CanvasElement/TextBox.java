@@ -3,19 +3,20 @@ package com.projet3.polypaint.CanvasElement;
 import android.app.FragmentManager;
 import android.graphics.Canvas;
 
-import com.projet3.polypaint.Image.ImageEditingDialogManager;
+import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class TextBox extends GenericShape {
     public static final int FONT_SIZE = 25;
     private String text = "";
 
-    public TextBox(int x, int y, PaintStyle style) {
-        super(x, y, 0, FONT_SIZE, style);
+    public TextBox(String id, int x, int y, PaintStyle style) {
+        super(id, x, y, 0, FONT_SIZE, style);
+        text = "";
         adjustWidthToText();
     }
 
-    private TextBox(int x, int y, PaintStyle style, String contents) {
-        super(x, y, 0, FONT_SIZE, style);
+    private TextBox(String id, int x, int y, PaintStyle style, String contents) {
+        super(id, x, y, 0, FONT_SIZE, style);
         text = contents;
         adjustWidthToText();
     }
@@ -26,7 +27,7 @@ public class TextBox extends GenericShape {
     }
 
     public TextBox clone() {
-        return new TextBox(this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
+        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
     }
 
     private void adjustWidthToText() {
