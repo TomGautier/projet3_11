@@ -10,11 +10,11 @@ public class PaintStyle {
     private Paint textPaint;
     private StrokeType strokeType;
 
-    public PaintStyle(Paint border, Paint background, Paint text) {
-        borderPaint = border;
-        backgroundPaint = background;
-        textPaint = text;
-        strokeType = StrokeType.full;
+    public PaintStyle(Paint border, Paint background, Paint text, StrokeType stroke) {
+        borderPaint = new Paint(border);
+        backgroundPaint = new Paint(background);
+        textPaint = new Paint(text);
+        strokeType = stroke;
     }
 
     public PaintStyle(PaintStyle src) {

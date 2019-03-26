@@ -266,7 +266,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         textPaint.setTextAlign(Paint.Align.CENTER);
         textPaint.setFakeBoldText(true);
 
-        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint);
+        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint, PaintStyle.StrokeType.full);
 
         // Selection paint
         int selectionColor = ResourcesCompat.getColor(getResources(), R.color.shapeSelection, null);
