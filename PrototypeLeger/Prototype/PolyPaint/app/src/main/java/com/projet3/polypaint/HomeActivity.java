@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.Network.FetchManager;
 import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.UserLogin.LoginActivity;
-import com.projet3.polypaint.UserLogin.UserManager;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
 public class HomeActivity extends AppCompatActivity {
@@ -129,7 +129,7 @@ public class HomeActivity extends AppCompatActivity {
 				break;
 
 			case R.id.menuLogout:
-				SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
+				SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 				startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 				break;
 			case R.id.galleryAction:
@@ -195,7 +195,7 @@ public class HomeActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
+		SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 	}
 }

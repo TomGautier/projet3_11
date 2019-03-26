@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
@@ -18,7 +19,7 @@ import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 import com.projet3.polypaint.Network.SocketManager;
-import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         rootView = super.onCreateView(inflater,container,savedInstanceState);
         players = new ArrayList<>();
         selectedColorCpt = 0;
-        client = new Player(UserManager.currentInstance.getUserUsername(), selectedColorCpt);
+        client = new Player(FetchManager.currentInstance.getUserUsername(), selectedColorCpt);
         //selectedColorCpt++;
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         SocketManager.currentInstance.joinCollabSession("MockSessionID");
@@ -77,7 +78,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                             //ArrayList stackElems = new ArrayList();
                             //stackElems.add(addShape(posX, posY));
                             //addToStack(stackElems, ADD_ACTION);
-                            SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
+                            addShape(posX,posY);
+                           // SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
                             break;
                         case move:
                             moveSelectedShape(event);
@@ -172,6 +174,15 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 shape.drawSelectionBox(canvas, player.getSelectionPaint());
         }
         // }
+    }
+    protected GenericShape addShape(int posX, int posY) {
+        CollabShape shape = createCollabShape(posX,posY);
+        if (shape.getClass().equals(TextBox.class)){
+            ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
+        }
+        SocketManager.currentInstance.addElement(shape);
+
+        return null;
     }
 
 
@@ -369,6 +380,23 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             case MotionEvent.ACTION_UP:
                 isMovingSelection = false;
                 break;
+        }*/
+    }
+    @Override
+    public void onTextEditingDialogPositiveClick(String contents) {
+        /*((TextBox)client.getSelectedShapes().get(0)).setText(contents);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();*/
+    }
+    @Override
+    public void onTextEditingDialogNegativeClick() {
+       /* if (((TextBox)selections.get(0)).getText().equals("")) {
+            shapes.removeAll(selections);
+            selections.clear();
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
         }*/
     }
 
@@ -581,14 +609,22 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
-
+    private void removeSelectedShape(GenericShape shape_){
+        for (Player player : players){
+            if (player.getSelectedShapes().contains(shape_)){
+                player.removeSelectedShape(shape_);
+                return;
+            }
+        }
+    }
     @Override
     public void onStackElement(String id, String author) {
-        Player player = findPlayer(author);
-        player = (player == null) ? client : player;
+        //Player player = findPlayer(author);
+        //player = (player == null) ? client : player;
         GenericShape shape = findGenShapeById(id);
         shapes.remove(shape);
-        player.removeSelectedShape(shape);
+        //player.removeSelectedShape(shape);
+        removeSelectedShape(shape);
         //if (player.getSelectedShapes().contains(shape)){
           //  player.removeSelectedShape(shape);
         //}
@@ -670,6 +706,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 genShape = new UMLRole(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle);
+                break;
+            case "text_box":
+                genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
+                        collabShape.getProperties().getMiddlePointCoord()[1],defaultStyle);
                 break;
         }
         return genShape;

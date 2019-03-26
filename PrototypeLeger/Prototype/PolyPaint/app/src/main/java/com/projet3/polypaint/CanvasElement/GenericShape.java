@@ -7,10 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v4.content.res.ResourcesCompat;
-
-import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
 
 public abstract class GenericShape {
 

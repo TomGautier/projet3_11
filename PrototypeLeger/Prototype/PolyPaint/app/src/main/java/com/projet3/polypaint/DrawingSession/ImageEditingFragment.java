@@ -29,7 +29,7 @@ import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -108,7 +108,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         removeStack = new Stack<>();
         stack = new Stack();
         idCpt = 0;
-        id = UserManager.currentInstance.getUserUsername() + idCpt;
+        id = FetchManager.currentInstance.getUserUsername() + idCpt;
 
         initializeButtons();
         initializePaint();
@@ -429,7 +429,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected GenericShape addShape(int posX, int posY) {
         selections.clear();
         GenericShape nShape = null;
-        id = UserManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
+        id = FetchManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),

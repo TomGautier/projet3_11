@@ -100,6 +100,15 @@
                 android:inputType="text"
                 android:gravity="center_horizontal"/>
         </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/loginProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordModule"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:visibility="visible"
+            style="@style/MyProgressBar"/>
 
 
         <ImageButton

@@ -1,6 +1,7 @@
 package com.projet3.polypaint.UserList;
 
 import android.app.Fragment;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -14,11 +15,10 @@ import android.support.v7.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.Network.RequestManager;
-
-import java.util.ArrayList;
+import com.projet3.polypaint.Network.FetchManager;
 
 
 public class UsersListFragment extends Fragment implements UsersListListener {
@@ -29,7 +29,7 @@ public class UsersListFragment extends Fragment implements UsersListListener {
     private View rootView;
     private TextView title;
     private Spinner filterSpinner;
-    private ArrayList<User> users;
+    //private ArrayList<User> users;
     private SearchView searchView;
     private UsersListAdapter adapter;
 
@@ -53,7 +53,7 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         listView = (ListView) rootView.findViewById(R.id.listView);
         filterSpinner = (Spinner)rootView.findViewById(R.id.filterSpinner);
         SocketManager.currentInstance.setupUsersListListener(this);
-        users = RequestManager.currentInstance.fetchUsers();
+       // users = RequestManager.currentInstance.fetchUsers();
        /* users = new ArrayList<>();
         users.add(new User("Bob", true));
         users.add(new User("Bob2", true));
@@ -79,12 +79,12 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         return rootView;
     }
     private void setupSpinner() {
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("Tous");
-        strings.add("En ligne");
-        strings.add("Hors ligne");
+        //ArrayList<String> strings = new ArrayList<>();
+        //strings.add("Tous");
+        //strings.add("En ligne");
+        //strings.add("Hors ligne");
         android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
-                (getContext(), android.R.layout.simple_spinner_item, strings);
+                (getContext(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.userListFilter));
         filterSpinner.setAdapter(spinnerArrayAdapter);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -127,11 +127,11 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         });
     }
     private void setupListView(){
-        ArrayList<String> names = new ArrayList<>();
-        for (User user : users) {
-            names.add(user.getUsername());
-        }
-        adapter = new UsersListAdapter(getActivity(), names, users);
+       // ArrayList<String> names = new ArrayList<>();
+        //for (User user : FetchManager.currentInstance.getUsers()) {
+          //  names.add(user.getUsername());
+        //}
+        adapter = new UsersListAdapter(getActivity(),FetchManager.currentInstance.getUsersNames(), FetchManager.currentInstance.getUsers());
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -184,17 +184,13 @@ public class UsersListFragment extends Fragment implements UsersListListener {
 
     @Override
     public void onUserConnected(String username) {
-        for (User user : users){
-            if (user.getUsername().equals(username)){
-                user.changeConnectionState(true);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        setupListView();
-                    }
-                });
-                return;
-            }
+        if (FetchManager.currentInstance.changeConnectedState(username, true)){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupListView();
+                }
+            });
         }
 
 

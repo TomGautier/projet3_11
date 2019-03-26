@@ -26,7 +26,7 @@ import android.widget.Toast;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.Network.RequestManager;
-import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.FetchManager;
 import com.projet3.polypaint.Others.Utilities;
 
 import java.text.SimpleDateFormat;
@@ -62,9 +62,9 @@ public class ChatFragment extends Fragment implements NewMessageListener {
 
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
-        RequestManager.currentInstance.fetchUserConversations();
-        if (UserManager.currentInstance.getUserConversationsNames().size() != 0) {
-            currentConversation = UserManager.currentInstance.getUserConversationAt(0);
+//        RequestManager.currentInstance.fetchUserConversations();
+        if (FetchManager.currentInstance.getUserConversationsNames().size() != 0) {
+            currentConversation = FetchManager.currentInstance.getUserConversationAt(0);
         } else {
             currentConversation = new Conversation("GENERAL");
         }
@@ -136,7 +136,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         });
         final Spinner spinner = (Spinner)popupView.findViewById(R.id.removeConversationSpinner);
         android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter
-                (getActivity(), android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
+                (getActivity(), android.R.layout.simple_spinner_item, FetchManager.currentInstance.getUserConversationsNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                 .simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerArrayAdapter);
@@ -145,7 +145,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
             @Override
             public void onClick(View v) {
                 String conversation = spinner.getSelectedItem().toString();
-                UserManager.currentInstance.removeUserConversation(conversation);
+                FetchManager.currentInstance.removeUserConversation(conversation);
                 SocketManager.currentInstance.leaveConversation(conversation);
                 setupChatConversationSpinner();
                 popupWindow.dismiss();
@@ -179,7 +179,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                 if (!name.isEmpty()){
                     boolean ret = RequestManager.currentInstance.addUserConversation(name);
                     if (ret){
-                        UserManager.currentInstance.addUserConversation(name);
+                        FetchManager.currentInstance.addUserConversation(name);
                         setupChatConversationSpinner();
                         Toast.makeText(getActivity(),"Conversation " + name + " cree",Toast.LENGTH_SHORT).show();
                         popupWindow.dismiss();
@@ -276,14 +276,14 @@ public class ChatFragment extends Fragment implements NewMessageListener {
 
     /*private ArrayList<String> getConversationsNames() {
         ArrayList<String> stringConversations = new ArrayList<>();
-        for (int i = 0; i < UserManager.currentInstance.getUserConversationsNames().size(); i++) {
+        for (int i = 0; i < FetchManager.currentInstance.getUserConversationsNames().size(); i++) {
             stringConversations.add();
         }
         return stringConversations;
     }*/
     private void setupChatConversationSpinner() {
         android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
-                (getContext(), android.R.layout.simple_spinner_item, UserManager.currentInstance.getUserConversationsNames());
+                (getContext(), android.R.layout.simple_spinner_item, FetchManager.currentInstance.getUserConversationsNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                 .simple_spinner_dropdown_item);
         conversationSpinner.setAdapter(spinnerArrayAdapter);
@@ -292,8 +292,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String selected = adapterView.getItemAtPosition(i).toString();
                 if (currentConversation.getName() != selected) {
-                    for (int j = 0; j < UserManager.currentInstance.getUserConversationsNames().size(); j++) {
-                        Conversation current = UserManager.currentInstance.getUserConversationAt(j);
+                    for (int j = 0; j < FetchManager.currentInstance.getUserConversationsNames().size(); j++) {
+                        Conversation current = FetchManager.currentInstance.getUserConversationAt(j);
                         if (current.getName() == selected && current.getName() != currentConversation.getName()){
                             currentConversation = current;
                             loadConversation();

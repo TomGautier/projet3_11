@@ -1,12 +1,8 @@
 package com.projet3.polypaint.Network;
 
-import com.google.gson.JsonObject;
 import com.projet3.polypaint.Chat.Conversation;
-import com.projet3.polypaint.Network.UserGetTask;
 import com.projet3.polypaint.UserList.User;
 import com.projet3.polypaint.UserLogin.UserInformation;
-import com.projet3.polypaint.UserLogin.UserManager;
-import com.projet3.polypaint.Network.UserPostTask;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -46,7 +42,7 @@ public class RequestManager {
         try{
             response = configureLoginResponse(loginTask.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
             if (response){
-                UserManager.currentInstance = new UserManager(user);
+                FetchManager.currentInstance = new FetchManager(user);
                 SocketManager.currentInstance = new SocketManager(ip, sessionID);
             }
             else
@@ -72,7 +68,7 @@ public class RequestManager {
         try{
             ArrayList<Conversation> userConversations = configureFetchConversationsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
             if (!userConversations.isEmpty())
-                UserManager.currentInstance.setUserConversations(userConversations);
+                FetchManager.currentInstance.setUserConversations(userConversations);
             return userConversations;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -137,6 +133,9 @@ public class RequestManager {
         getTask.execute(url);
         try{
             ArrayList<User> users = configureFetchUsersResponse(getTask.get(TIMEOUT_DELAY,TimeUnit.SECONDS));
+            if (users != null){
+                FetchManager.currentInstance.setUsers(users);
+            }
             return users;
         } catch (InterruptedException e) {
             e.printStackTrace();
