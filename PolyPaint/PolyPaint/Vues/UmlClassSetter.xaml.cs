@@ -22,13 +22,14 @@ namespace PolyPaint.Vues
         public new string Name { get; set; }
         public List<string> Methods { get; set; }
         public List<string> Attributes { get; set; }
-        public UmlClassSetter(string name, List<string> methods, List<string> attributes)
+        public UmlClassSetter(string name,string border, List<string> methods, List<string> attributes)
         {
             Name = name;
             Methods = methods;
             Attributes = attributes;      
             InitializeComponent();
             txtName.Text = Name;
+            borderList.Text = border;
             SetMethodList();
             SetAttributeList();
         }

@@ -24,6 +24,7 @@
                 <RowDefinition/>
                 <RowDefinition/>
                 <RowDefinition/>
+                <RowDefinition/>
 
             </Grid.RowDefinitions>
             <TextBlock Text="Connector" Grid.ColumnSpan="3" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Margin="5" FontSize="20"/>
@@ -39,24 +40,31 @@
                 <ComboBoxItem Content="Aggregation"/>
                 <ComboBoxItem Content="Composition"/>
             </ComboBox>
-            <TextBlock Text="Size" Grid.Row="3" Margin="3,7,3,26" Grid.RowSpan="2"/>
-            <ComboBox x:Name="sizeList" Width="100" Grid.Column="1" Grid.Row="3" Margin="2,1,98,26" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            <TextBlock Text="Border Style" Grid.Row="3" Margin="3"/>
+            <ComboBox x:Name="borderList" Width="100" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="2,0,98,0">
+                <ComboBoxItem Content="Solid"/>
+                <ComboBoxItem Content="Dash"/>
+                <ComboBoxItem Content="Dot"/>
+                <ComboBoxItem Content="DashDot"/>
+                <ComboBoxItem Content="DashDotDot"/>
+            </ComboBox>
+            <TextBlock Text="Size" Grid.Row="4" Margin="3,2,3,7"/>
+            <ComboBox x:Name="sizeList" Width="100" Grid.Column="1" Grid.Row="4" Margin="2,1,98,26" Grid.RowSpan="2" Grid.ColumnSpan="2">
             </ComboBox>
 
-            <TextBlock Text="Color" Grid.Row="4" Margin="3,6,3,0"/>
+            <TextBlock Text="Color" Grid.Row="4" Margin="3,23,3,7.96" Grid.RowSpan="2"/>
             <xctk:ColorPicker x:Name="selecteurCouleur"   Grid.Row="4" MinWidth="100" HorizontalAlignment="Left"                  
                   VerticalContentAlignment="Stretch"
                   Background="Black"
                   ShowDropDownButton="False"
                   ShowRecentColors="True"
-                  BorderBrush="Black"
-                  Margin="2,1,0,0" Width="100"                  
+                  BorderBrush="Black" Width="100"                  
                   AvailableColorsHeader="Palette"
                   StandardColorsHeader="Couleurs de base"
                   StandardButtonHeader="Standard"
                   RecentColorsHeader="Récemment utilisées"
                   UsingAlphaChannel="True"
-                  AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.765,0.806" Grid.ColumnSpan="2" />
+                  AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.765,0.806" Grid.ColumnSpan="2" Margin="2,23,0,0" Grid.RowSpan="2" />
         </Grid>
     </Grid>
 </Window>

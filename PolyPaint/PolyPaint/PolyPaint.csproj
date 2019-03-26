@@ -130,15 +130,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
+    <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Managers\FormConnectorManager.cs" />
-    <Compile Include="Utilitaires\ChatManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />
     <Compile Include="Modeles\Editeur.cs" />
     <Compile Include="Utilitaires\NetworkManager.cs" />
     <Compile Include="Utilitaires\Activity.cs" />
     <Compile Include="Utilitaires\Arrow.cs" />
     <Compile Include="Utilitaires\Artefact.cs" />
+    <Compile Include="Utilitaires\Comment.cs" />
+    <Compile Include="Utilitaires\FloatingText.cs" />
     <Compile Include="Utilitaires\Form.cs" />
+    <Compile Include="Utilitaires\Phase.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
     <Compile Include="Utilitaires\Role.cs" />
     <Compile Include="Utilitaires\Shape.cs" />
@@ -164,11 +167,11 @@
     <Compile Include="Vues\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Vues\SignupControl.xaml.cs">
-      <DependentUpon>SignupControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vues\SignupControl.xaml.cs">
+      <DependentUpon>SignupControl.xaml</DependentUpon>
     </Compile>
     <Page Include="Vues\ChatControl.xaml">
       <SubType>Designer</SubType>
@@ -204,6 +207,7 @@
       <DependentUpon>FenetreDessin.xaml</DependentUpon>
     </Compile>
     <Page Include="Vues\GenericSetter.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\HomeControl.xaml">
@@ -218,11 +222,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Vues\SignupControl.xaml">
+    <Page Include="Vues\UmlClassSetter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Vues\UmlClassSetter.xaml">
+    <Page Include="Vues\SignupControl.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

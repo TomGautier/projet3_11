@@ -107,9 +107,11 @@ namespace PolyPaint.Utilitaires
          
         {       
             Fill(drawingContext);
-            base.DrawCore(drawingContext, drawingAttributes);
+            
                       
             SetSelection(drawingContext);
+
+            OnDrawCore(drawingContext, drawingAttributes);
             updatePoints();
             /*RotateTransform RT = new RotateTransform();
             RT.Angle = this.CurrentRotation;

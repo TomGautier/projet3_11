@@ -89,10 +89,10 @@ namespace PolyPaint.Utilitaires
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
 
         {
-           
             Fill(drawingContext);
             SetSelection(drawingContext);
-            base.DrawCore(drawingContext, drawingAttributes);
+            OnDrawCore(drawingContext, drawingAttributes);
+            //          base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
             DrawName(drawingContext);
             DrawEncrage(drawingContext);
@@ -100,9 +100,11 @@ namespace PolyPaint.Utilitaires
         private void DrawName(DrawingContext drawingContext)
         {
             Point origin = new Point(this.Center.X, this.Center.Y + this.Height / 2 + 20);
-            SolidColorBrush brush = new SolidColorBrush(this.BorderColor);
+            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
             Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-            drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+            FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush);
+            origin.X -= text.Width / 2;
+            drawingContext.DrawText(text, origin);
         }
     }
 }

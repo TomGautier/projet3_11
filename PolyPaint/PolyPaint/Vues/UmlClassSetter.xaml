@@ -43,6 +43,14 @@
             <TextBox x:Name="txtAttributes"  Grid.Column="3" Grid.Row="3" Margin="3" MinWidth="100" HorizontalAlignment="Left"/>
             <Button  Click="textSetter_ApplyAttributeAdding" Content="Add" Grid.Row="3" Grid.Column="4" Margin="3"/>
             <Button  Click="textSetter_ApplyChanges" Content="APPLY" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20"/>
+            <TextBlock Text="Border Style" Grid.Row="4" Margin="3"/>
+            <ComboBox x:Name="borderList" Width="100" Grid.Column="1" Grid.Row="4" RenderTransformOrigin="-0.04,0.731">
+                <ComboBoxItem Content="Solid"/>
+                <ComboBoxItem Content="Dash"/>
+                <ComboBoxItem Content="Dot"/>
+                <ComboBoxItem Content="DashDot"/>
+                <ComboBoxItem Content="DashDotDot"/>
+            </ComboBox>
 
         </Grid>
     </Grid>
