@@ -598,7 +598,9 @@ namespace PolyPaint.Modeles
 
                     //  string author = (data as JObject)["author"].ToObject<String>();
                     //   string id = (data as JObject)["id"].ToObject<String>();
-                    Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
+                    JObject result = (data as JObject);                
+                    Shape shape = result["shape"].ToObject<Shape>();
+                    //Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
                     Application.Current.Dispatcher.Invoke(() =>
                      {
                          this.AddForm(shape);
@@ -612,10 +614,12 @@ namespace PolyPaint.Modeles
                 //  string author = (data as JObject)["author"].ToObject<String>();
                 //   string id = (data as JObject)["id"].ToObject<String>();
                 // Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
-                String[] idList = new string[(data as JArray).Count];
+                JObject result = (data as JObject);
+                String[] idList = new string[(result["elementIds"] as JArray).Count];
+
                 for (int i = 0; i < idList.Length; i++)
                 {
-                    idList[i] = (data as JArray)[i].ToObject<String>();
+                    idList[i] = (result["elementIds"] as JArray)[i].ToObject<String>();
                 }
                 //string list = (data as JArray)[0].ToObject<String>();//(data as JObject).ToObject<String[]>();
                 Application.Current.Dispatcher.Invoke(() =>
