@@ -251,7 +251,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         borderPaint.setAntiAlias(true);
 
         // Background paint
-        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
+        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFill, null);
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
         backgroundPaint.setStyle(Paint.Style.FILL);
@@ -664,6 +664,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     @Override
     public void onStyleDialogNegativeClick() {
-        // Do nothing
+        selections.get(0).setStyle(defaultStyle);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
     }
 }

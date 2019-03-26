@@ -18,9 +18,9 @@ public class PaintStyle {
     }
 
     public PaintStyle(PaintStyle src) {
-        borderPaint = src.borderPaint;
-        backgroundPaint = src.backgroundPaint;
-        textPaint = src.textPaint;
+        borderPaint = new Paint(src.borderPaint);
+        backgroundPaint = new Paint(src.backgroundPaint);
+        textPaint = new Paint(src.textPaint);
         strokeType = src.strokeType;
     }
 
@@ -30,5 +30,11 @@ public class PaintStyle {
     public StrokeType getStrokeType() { return strokeType; }
 
     public void setStrokeType(StrokeType type) { strokeType = type; }
-
+    public void setBorderColor(int color) {
+        borderPaint.setColor(color);
+        textPaint.setColor(color);
+    }
+    public void setBackgroundColor(int color) {
+        backgroundPaint.setColor(color);
+    }
 }

@@ -57,7 +57,7 @@ public class RequestManager {
     }
     private boolean configureLoginResponse(String response_){
         sessionID = response_;
-        return response_.isEmpty() ? false : true;
+        return (response_ == null || response_.isEmpty()) ? false : true;
     }
 
     public ArrayList<Conversation> fetchUserConversations() {

@@ -53,6 +53,9 @@
     <string name="styleFull">Plein</string>
     <string name="styleDotted">Pointillé</string>
     <string name="styleDashed">Tirets</string>
+    <string name="revertDefault">Valeur par défaut</string>
+    <string name="backgroundColor">Couleur de remplissage</string>
+    <string name="borderColor">Couleur de trait</string>
 
 
 </resources>
