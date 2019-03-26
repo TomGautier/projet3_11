@@ -242,7 +242,10 @@ namespace PolyPaint.VueModeles
         }
         public void HandleSelection(StrokeCollection strokes)
         {
-            editeur.HandleChangeSelection(strokes);
+            if (strokes.Count > 0)
+            {
+                editeur.HandleChangeSelection(strokes);
+            }
             //TODO : Send socket -> selection was changed
         }
         public void SetConnectorSettings(string label, string type, string border, int size,string color)
@@ -286,7 +289,28 @@ namespace PolyPaint.VueModeles
         }
         public void HandleMouseDown(Point mousePos)
         {
-            editeur.HandleMouseDown(mousePos);
+            if (this.OutilSelectionne == "lasso")
+            {
+                StrokeCollection selection = new StrokeCollection();
+                foreach (Stroke s in this.Traits)
+                {
+                    if (s.GetBounds().Contains(mousePos) && selection.Count == 0)
+                    {
+                        selection.Add(s);
+                       
+                    }
+                   
+                }
+                if (!this.Canvas.IsDraging)
+                {
+                    editeur.HandleChangeSelection(selection);
+                }
+
+            }
+            else
+            {
+                editeur.HandleMouseDown(mousePos);
+            }
         }
         public void HandleRotation(Point rotatePoint)
         {

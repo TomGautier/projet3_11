@@ -12,6 +12,7 @@ namespace PolyPaint.Vues
     {
         public CustomInkCanvas() : base() { }
         public Boolean AllowSelection { get; set; }
+        public Boolean IsDraging { get; set; }
 
     }
 }

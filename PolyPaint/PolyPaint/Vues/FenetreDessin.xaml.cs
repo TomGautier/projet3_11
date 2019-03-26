@@ -15,20 +15,36 @@ namespace PolyPaint
 {
     /// <summary>
     /// Logique d'interaction pour FenetreDessin.xaml
-    /// </summary>
+    /// </summary
+    
+   
     public partial class FenetreDessin : Window
     {
+        
         public FenetreDessin()
         {
             InitializeComponent();
             DataContext = new VueModele();
             (DataContext as VueModele).SendCanvas(this.surfaceDessin);
             this.surfaceDessin.AllowSelection = false;
+            this.surfaceDessin.IsDraging = false;
         }
-        
+
         // Pour gérer les points de contrôles.
-        private void GlisserCommence(object sender, DragStartedEventArgs e) => (sender as Thumb).Background = Brushes.Black;
-        private void GlisserTermine(object sender, DragCompletedEventArgs e) => (sender as Thumb).Background = Brushes.White;
+        private void GlisserCommence(object sender, DragStartedEventArgs e) {
+             //this.surfaceDessin.IsDraging = true;
+             (sender as Thumb).Background = Brushes.Black;
+        }
+        private void GlisserTermine(object sender, DragCompletedEventArgs e)
+        {
+            //this.surfaceDessin.IsDraging = false;
+            (sender as Thumb).Background = Brushes.White;
+        }
+
+        void surfaceDessin_SelectionMoving(object sender, InkCanvasSelectionEditingEventArgs e)
+        {
+            this.surfaceDessin.IsDraging = true;
+        }
         private void GlisserMouvementRecu(object sender, DragDeltaEventArgs e)
         {
             String nom = (sender as Thumb).Name;
@@ -198,6 +214,7 @@ namespace PolyPaint
 
         private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
         {
+            this.surfaceDessin.IsDraging = false;
             (DataContext as VueModele).HandleDrag();
         }
     }

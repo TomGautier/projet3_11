@@ -165,29 +165,53 @@ namespace PolyPaint.Modeles
             }
            
         }
+        private bool SameCollection(StrokeCollection a, StrokeCollection b)
+        {
+            if (a.Count != b.Count) { return false; }
+            List<string> ids = new List<string>();
+            foreach (Stroke s in a)
+            {
+                ids.Add((s as Form).Id);
+            }
+            foreach (Stroke s in b)
+            {
+                if (!ids.Contains((s as Form).Id))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         public void HandleChangeSelection(StrokeCollection strokes)
         {
             //ProprieteModifiee("Test");
-           // bool validRequest = true;
-          
-            for (int i = 0; i< strokes.Count; i++)
+            // bool validRequest = true;
+
+            for (int i = 0; i < strokes.Count; i++)
             {
-               if((strokes[i] as Form).IsSelectedByOther) { strokes.RemoveAt(i); }
+                if ((strokes[i] as Form).IsSelectedByOther) { strokes.RemoveAt(i); }
+
+            }
+            if (!SameCollection(selectedStrokes, strokes))
+            {
+
+
+                String[] toBeSelected = new String[strokes.Count];
+
+                for (int i = 0; i < toBeSelected.Length; i++)
+                {
+                    toBeSelected[i] = (strokes[i] as Form).Id;
+                }
+                
+                    String[] oldSelection = new string[selectedStrokes.Count];
+                    for (int i = 0; i < oldSelection.Length; i++)
+                    {
+                        oldSelection[i] = (selectedStrokes[i] as Form).Id;
+                    }
+                    this.SocketManager.Select(oldSelection, toBeSelected);
+                    //this.SocketManager
                 
             }
-            String[] toBeSelected = new String[strokes.Count];
-            
-            for (int i = 0; i< toBeSelected.Length; i++)
-            {
-                toBeSelected[i] = (strokes[i] as Form).Id;
-            }
-            String[] oldSelection = new string[selectedStrokes.Count];
-            for (int i = 0; i < oldSelection.Length; i++)
-            {
-                oldSelection[i] = (selectedStrokes[i] as Form).Id;
-            }
-            this.SocketManager.Select(oldSelection, toBeSelected);
-            //this.SocketManager
         }
         public void HandleDeleteSelection()
         {
