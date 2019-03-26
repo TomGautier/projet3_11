@@ -36,8 +36,34 @@ namespace PolyPaint.Managers
         public void JoinDrawingSession(string sessionID)
         {
             this.SessionID = sessionID;
-            Socket.Emit("JoinDrawingSession", SessionID);
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                username = this.UserName,              
+            });
+            Socket.Emit("JoinDrawingSession", parameters);
 
+        }
+        public void UnStackElement(Shape shape_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                sessionId = this.SessionID,
+                username = this.UserName,
+                shape = shape_
+            });
+            this.Socket.Emit("UnstackElement",parameters);
+        }
+        public void StackElement(String id_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                sessionId = this.SessionID,
+                username = this.UserName,
+                drawingSessionId = this.SessionID,
+                elementId = id_
+            });
+            this.Socket.Emit("StackElement",parameters);
         }
         public void Select(String[] oldSelection, String[] newSelection)
         {
@@ -50,13 +76,17 @@ namespace PolyPaint.Managers
             });
             this.Socket.Emit("SelectElements", parameters);
         }
-        public void AddElement(Shape shape)
+        public void AddElement(Shape shape_)
         {
+            shape_.id = this.UserName + "_" + this.Compteur.ToString();
+            shape_.author = this.UserName;
+
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 sessionId = this.SessionID,
                 username = this.UserName,
-                shape = new
+                shape = shape_
+              /*  shape = new
                 {
                     id = this.UserName + "_" + this.Compteur.ToString(),
                     drawingSessionId = this.SessionID,
@@ -71,7 +101,7 @@ namespace PolyPaint.Managers
                         width = shape.properties.width,
                         rotation = shape.properties.rotation
                     }
-                }
+                }*/
             });
             Compteur++;
             //Object[] parameters = new Object[] { this.SessionID, this.UserName, shape_ };
@@ -92,6 +122,17 @@ namespace PolyPaint.Managers
             });
             this.Socket.Emit("DeleteElements", parameters);
 
+
+        }
+        public void CutElements(String[] idList)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                elementIds = idList,
+                username = this.UserName
+            });
+            this.Socket.Emit("CutElements", parameters);
 
         }
         public void HandleModification(Shape[] shapes_)

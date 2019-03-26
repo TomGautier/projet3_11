@@ -22,6 +22,32 @@ namespace PolyPaint.Utilitaires
         public string Type { get; set; }
         public int CurrentRotation { get; set; }
         public Point Center { get; set; }
+        public Arrow Arrow { get; set; }
+        public Point[] EncPoints { get; set; }
+        protected Vector WidthDirection { get; set; }
+        protected Vector HeightDirection { get; set; }
+
+        private string borderStyle;
+        public string BorderStyle
+        {
+            get { return borderStyle; }
+            set
+            {
+                borderStyle = value;
+                this.update();
+            }
+        }
+
+        private bool showEncrage;
+        public bool ShowEncrage
+        {
+            get { return showEncrage; }
+            set
+            {
+                showEncrage = value;
+                this.update();
+            }
+        }
 
         private Color remplissage;
         public Color Remplissage
@@ -33,6 +59,18 @@ namespace PolyPaint.Utilitaires
                 this.update();
             }
         }
+        private string label;
+        public string Label
+        {
+            get { return label; }
+            set
+            {
+                label = value;
+                this.update();
+                this.MakeShape();
+            }
+        }
+
         private Boolean isSelectedByOther;
         public Boolean IsSelectedByOther
         {
@@ -43,24 +81,26 @@ namespace PolyPaint.Utilitaires
                 this.update();
             }
         }
-       
-        public  void rotate()
+
+        public void rotate()
         {
             int angleInc = 10;
-            SetRotation(this.CurrentRotation + angleInc);     
-           // this.CurrentRotation += angleInc;
-            
+            SetRotation(this.CurrentRotation + angleInc);
+            // this.CurrentRotation += angleInc;
+
         }
         protected virtual void MakeShape() { }
         public void SetRotation(int degrees)
         {
             Matrix rotatingMatrix = new Matrix();
-            rotatingMatrix.RotateAt(360 -this.CurrentRotation, Center.X, Center.Y); //reset angle
+            rotatingMatrix.RotateAt(360 - this.CurrentRotation, Center.X, Center.Y); //reset angle
             rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
+            this.CurrentRotation = degrees;
             Stroke copy = this.Clone();
             copy.Transform(rotatingMatrix, false);
             this.StylusPoints = copy.StylusPoints;
-            this.CurrentRotation = degrees;
+
+
         }
         public void SetToShape(Shape shape)
         {
@@ -69,22 +109,111 @@ namespace PolyPaint.Utilitaires
             this.Width = shape.properties.width;
             this.Height = shape.properties.height;
             this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
-            
+
             this.MakeShape();
             this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
             this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
             //this.CurrentRotation = shape.properties.rotation;
             //this.SetRotation(this.CurrentRotation);
             this.CurrentRotation = 0;
             this.SetRotation(shape.properties.rotation);
-           
+
         }
         public Shape ConvertToShape(string drawingSessionID)
         {
             int[] middlePoint = new int[2] { (int)this.Center.X, (int)this.Center.Y };
-            ShapeProperties properties = new ShapeProperties(this.Type,this.Remplissage.ToString(),this.DrawingAttributes.Color.ToString(), middlePoint,
+            ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
                 (int)this.Height, (int)this.Width, this.CurrentRotation);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
+        }
+        protected Pen GetPen()
+        {
+            var pen = new Pen(new SolidColorBrush(this.DrawingAttributes.Color), 2.5);
+            pen.Thickness = this.DrawingAttributes.Width;
+            //pen.Thickness = 3;
+           switch (this.BorderStyle)
+            {
+                case "Dash":
+                    pen.DashStyle = DashStyles.Dash;
+                    break;
+
+                case "Dot":
+                    pen.DashStyle = DashStyles.Dot;
+                    break;
+
+                case "DashDot":
+                    pen.DashStyle = DashStyles.DashDot;
+                    break;
+
+                case "DashDotDot":
+                    pen.DashStyle = DashStyles.DashDotDot;
+                    break;
+
+                default:
+                    pen.DashStyle = DashStyles.Solid;
+                    break;
+            }
+            return pen;
+        }
+        protected void OnDrawCore(DrawingContext drawingContext,DrawingAttributes drawingAttributes)
+        {
+            if (this.BorderStyle == "Solid")
+            {
+                base.DrawCore(drawingContext, drawingAttributes);
+            }
+            else
+            {
+                Pen pen = this.GetPen();
+                for (int i = 0; i < this.StylusPoints.Count - 1; i++)
+                {
+                    drawingContext.DrawLine(pen, this.StylusPoints[i].ToPoint(), this.StylusPoints[i + 1].ToPoint());
+                }
+            }
+        }
+        protected void DrawEncrage(DrawingContext drawingContext)
+        {
+            this.UpdateEncPoints();
+            // Point[] encPoints = new Point[4]; 
+            if (this.ShowEncrage)
+            {
+                for (int i = 0; i < this.EncPoints.Length; i++)
+                {
+                    LineSegment[] segments = new LineSegment[4];
+
+                    segments[0] = new LineSegment(new Point(this.EncPoints[i].X + 4, this.EncPoints[i].Y - 4), true);
+                    segments[1] = new LineSegment(new Point(this.EncPoints[i].X + 4, this.EncPoints[i].Y + 4), true);
+                    segments[2] = new LineSegment(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y + 4), true);
+                    segments[3] = new LineSegment(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y - 4), true);
+                    var figure = new PathFigure(new Point(this.EncPoints[i].X - 4, this.EncPoints[i].Y - 4), segments, true);
+                    var geo = new PathGeometry(new[] { figure });
+
+                    SolidColorBrush brush = new SolidColorBrush(Colors.Brown);
+                    drawingContext.DrawGeometry(brush, null, geo);
+                }
+            }
+
+        /*    LineSegment[] segments = new LineSegment[4];
+
+            segments[0] = new LineSegment(new Point(this.Center.X + 5, this.Center.Y - 5), true);
+            segments[1] = new LineSegment(new Point(this.Center.X + 5, this.Center.Y + 5), true);
+            segments[2] = new LineSegment(new Point(this.Center.X - 5, this.Center.Y + 5), true);
+            segments[3] = new LineSegment(new Point(this.Center.X - 5, this.Center.Y - 5), true);
+            var figure = new PathFigure(new Point(this.Center.X - 5, this.Center.Y - 5), segments, true);
+            var geo = new PathGeometry(new[] { figure });
+
+            SolidColorBrush brush = new SolidColorBrush(Colors.Green);
+            drawingContext.DrawGeometry(brush, null, geo);*/
+        }
+        protected void UpdateEncPoints()
+        {
+            this.EncPoints[0] = this.Center - (this.HeightDirection * this.Height / 2);
+
+            this.EncPoints[1] = this.Center + (this.WidthDirection * this.Width / 2);
+
+            this.EncPoints[2] = this.Center + (this.HeightDirection * this.Height / 2);
+
+            this.EncPoints[3] = this.Center - (this.WidthDirection * this.Width / 2);
         }
         protected void SetSelection(DrawingContext drawingContext)
         {
@@ -117,7 +246,13 @@ namespace PolyPaint.Utilitaires
             }
         }
         public Form(StylusPointCollection pts)
-            : base(pts) { this.IsSelectedByOther = false; }   
+            : base(pts) {
+            this.IsSelectedByOther = false;
+            this.EncPoints = new Point[4];
+            this.Label = "";
+            this.showEncrage = false;
+            this.BorderStyle = "Solid";
+        }   
         
     }
 }
