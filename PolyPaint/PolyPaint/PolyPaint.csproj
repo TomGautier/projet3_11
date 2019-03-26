@@ -134,6 +134,7 @@
     <Compile Include="Managers\FormConnectorManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />
     <Compile Include="Modeles\Editeur.cs" />
+    <Compile Include="Utilitaires\NetworkManager.cs" />
     <Compile Include="Utilitaires\Activity.cs" />
     <Compile Include="Utilitaires\Arrow.cs" />
     <Compile Include="Utilitaires\Artefact.cs" />
@@ -157,6 +158,9 @@
     <Compile Include="Vues\GenericSetter.xaml.cs">
       <DependentUpon>GenericSetter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vues\HomeControl.xaml.cs">
+      <DependentUpon>HomeControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vues\LoginControl.xaml.cs">
       <DependentUpon>LoginControl.xaml</DependentUpon>
     </Compile>
@@ -165,6 +169,9 @@
     </Compile>
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vues\SignupControl.xaml.cs">
+      <DependentUpon>SignupControl.xaml</DependentUpon>
     </Compile>
     <Page Include="Vues\ChatControl.xaml">
       <SubType>Designer</SubType>
@@ -203,6 +210,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Vues\HomeControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vues\LoginControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -212,6 +223,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\UmlClassSetter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vues\SignupControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

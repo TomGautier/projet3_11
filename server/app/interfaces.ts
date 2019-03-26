@@ -23,8 +23,16 @@ export interface ConnectionServiceInterface {
 export interface ConnectionControllerInterface {
     router: Router;
 }
+
+export interface UserServiceInterface {
+
+}
+
+export interface UserControllerInterface {
+    router: Router;
+}
+
 export interface DrawingSessionServiceInterface {
-   
     
 }
 

@@ -34,7 +34,8 @@ export class SocketService {
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
-            socket.on(SocketEvents.UserJoinedRoom, args => this.handleEvent(SocketEvents.UserJoinedRoom, socket.id, args));
+            socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
+            socket.on(SocketEvents.CreateConversation, args => this.handleEvent(SocketEvents.CreateConversation, socket.id, args));
             
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
 
@@ -49,14 +50,15 @@ export class SocketService {
             socket.on(SocketEvents.UnstackElement, args => this.handleEvent(SocketEvents.UnstackElement, socket.id, args));
 
             socket.on(SocketEvents.SelectElements, args => this.handleEvent(SocketEvents.SelectElements, socket.id, args));
-
             socket.on(SocketEvents.ResizeCanvas, args => this.handleEvent(SocketEvents.ResizeCanvas, socket.id, args));
             socket.on(SocketEvents.ResetCanvas, args => this.handleEvent(SocketEvents.ResetCanvas, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
+            console.log('in the disconnect!', socket.id);
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
+            socket.disconnect();
             this.handleEvent(SocketEvents.UserLeft, socket.id);
             this.sockets.delete(socket.id);
         });
@@ -95,7 +97,13 @@ export class SocketService {
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
-    private handleEvent(event: string, socketId: string, ...args: string[]): void { 
+    public broadcast(event: string, args?: any): void {
+        Logger.debug("SocketService", `Broadcasting ${event}`);
+        const success = this.server.emit(event, args);
+        Logger.debug("SocketService", `Result of emit : ${success}`);
+    }
+
+    private handleEvent(event: string, socketId: string, ...args: string[]): void {
         Logger.debug("SocketService", `Received ${event} event from ${socketId}.`);
         this.eventEmitter.emit(event, socketId, args);
     }

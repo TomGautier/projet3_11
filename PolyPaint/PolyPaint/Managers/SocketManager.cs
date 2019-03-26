@@ -36,7 +36,12 @@ namespace PolyPaint.Managers
         public void JoinDrawingSession(string sessionID)
         {
             this.SessionID = sessionID;
-            Socket.Emit("JoinDrawingSession", SessionID);
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                username = this.UserName,              
+            });
+            Socket.Emit("JoinDrawingSession", parameters);
 
         }
         public void UnStackElement(Shape shape_)

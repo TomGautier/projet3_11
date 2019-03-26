@@ -12,7 +12,10 @@
     <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
     <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
     <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
+    <string name="ok">Confirmer</string>
+    <string name="cancel">Annuler</string>
 
+    <!-- IMAGE EDITING -->
     <string name="buttonClass">Classe</string>
     <string name="buttonActivity">Activité</string>
     <string name="buttonRole">Rôle</string>
@@ -20,8 +23,34 @@
     <string name="buttonSelection">Sélection</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>
-    <string name="buttonDuplicate">Duppliquer</string>
+    <string name="buttonDuplicate">Dupliquer</string>
     <string name="buttonReset">Réinitialiser</string>
     <string name="buttonMove">Déplacer</string>
+    <string name="buttonCut">Couper</string>
+
+    <!-- MAIN TOOLBAR -->
+    <string name="mainToolbarGalleryTag">Gallerie</string>
+    <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+    <string name="mainToolbarCollabImageEditionTag">Édition d\'image collaborative</string>
+    <string name="buttonTextBox">Texte</string>
+    <string name="textEditing">Insertion de texte flottant</string>
+
+    <!-- CHAT TOOLBAR -->
+    <string name="chatToolbarAddConversation">Ajouter une conversation</string>
+    <string name="chatToolbarRemoveConversation">Retirer une conversation</string>
+    <string name="chatToolbarHideShow">Montrer/Cacher</string>
+
+    <!-- CONVERSATION POPUP -->
+    <string name="addConversationTextView">Entrez le nom de la nouvelle conversation :</string>
+    <string name="removeConversationTextView">Choisir la conversation à retirer:</string>
+    <string name="conversationButton">Terminé</string>
+
+    <!-- USERS LIST -->
+    <string name="userListTitle">Liste d\'utilisateurs</string>
+    <string name="userListInviteToConversation">Inviter à une conversation</string>
+    <string name="userListInviteToFriends">Inviter à être amis</string>
+    <string name="userListInviteToDrawSession">Inviter à une session</string>
+
+
 
 </resources>

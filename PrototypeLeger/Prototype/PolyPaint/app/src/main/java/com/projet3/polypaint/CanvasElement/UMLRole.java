@@ -1,20 +1,20 @@
 package com.projet3.polypaint.CanvasElement;
 
+import android.app.FragmentManager;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
 
 public class UMLRole extends GenericShape {
-    private final int DEFAULT_WIDTH = 60;
-    private final int DEFAULT_HEIGHT = 90;
+    protected final static int DEFAULT_WIDTH = 60;
+    protected final static int DEFAULT_HEIGHT = 90;
 
-    public UMLRole(int x, int y, PaintStyle style) {
-        super(x, y, 0, 0, style);
-        width = DEFAULT_WIDTH;
-        height = DEFAULT_HEIGHT;
+    public UMLRole(String id,int x, int y, int width, int height, PaintStyle style) {
+        super(id, x, y, width,height, style);
+        //width = DEFAULT_WIDTH;
+        //height = DEFAULT_HEIGHT;
     }
     public UMLRole clone() {
-        return new UMLRole(this.posX + 30, this.posY + 30, this.style);
+        return new UMLRole(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
     }
 
     @Override
@@ -35,5 +35,10 @@ public class UMLRole extends GenericShape {
 
         canvas.drawPath(p, style.getBackgroundPaint());
         canvas.drawPath(p, style.getBorderPaint());
+    }
+
+    public void showEditingDialog(FragmentManager fragmentManager) {
+        /* Do nothing for now*/
+        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
     }
 }

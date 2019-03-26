@@ -8,6 +8,7 @@ using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
+using System.Windows.Input;
 using PolyPaint.Vues;
 using System.Collections.Generic;
 
@@ -23,6 +24,22 @@ namespace PolyPaint.VueModeles
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
+        private NetworkManager networkManager = new NetworkManager();
+
+        private string sessionId;
+        public string SessionId
+        {
+            get
+            {
+                return sessionId;
+            }
+            set
+            {
+                sessionId = value;
+                ChatManager.SessionID = value;
+                ProprieteModifiee();
+            }
+        }
 
         private int switchView = 0;
         public int SwitchView
@@ -38,19 +55,6 @@ namespace PolyPaint.VueModeles
             get { return editeur.CouleurSelectionnee; }
             set {
                 editeur.CouleurSelectionnee = value;
-            }
-        }
-        private string username;
-        public string Username
-        {
-            get
-            {
-                return username;
-            }
-            set
-            {
-                username = value;
-                this.SocketManager.UserName = username;
             }
         }
         public StrokeCollection LastCut
@@ -82,6 +86,19 @@ namespace PolyPaint.VueModeles
         {
             get { return editeur.FormConnectorManager; }
             set { editeur.FormConnectorManager = value; }
+        }
+
+        private string username;
+        public string Username
+        {
+            get { return username; }
+            set
+            {
+                username = value;
+                ChatManager.Username = value;
+                this.SocketManager.UserName = username;
+                ProprieteModifiee();
+            }
         }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
@@ -147,8 +164,43 @@ namespace PolyPaint.VueModeles
         public RelayCommand<string> ChoisirForme { get; set; }
         public RelayCommand<string> AddForm { get; set; }
         public RelayCommand<object> RotateForm { get; set; }
-       // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
-        
+        // public RelayCommand<MouseButtonEventArgs> HandleMouseDown { get; set; }
+
+        public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
+        public ICommand NavigateSignup { get { return new RelayCommand(OnNavigateSignup, () => { return true; }); } }
+
+        private void OnNavigateLogin()
+        {
+            SwitchView = 1;
+        }
+
+        private void OnNavigateSignup()
+        {
+            SwitchView = 2;
+        }
+
+        public async void Login(string password)
+        {
+            SessionId = await networkManager.LoginAsync(Username, password);
+            if (SessionId == "")
+            {
+                MessageBox.Show("Wrong login informations", "Error");
+                return;
+            }
+            ChatManager.Connect();
+            SwitchView = 3;
+        }
+
+        public async void Signup(string password)
+        {
+            SessionId = await networkManager.SignupAsync(Username, password);
+            if (SessionId == "")
+            {
+                MessageBox.Show("Wrong signup informations", "Error");
+                return;
+            }
+            SwitchView = 3;
+        }
 
         /// <summary>
         /// Constructeur de VueModele
@@ -160,8 +212,11 @@ namespace PolyPaint.VueModeles
             this.Canvas = new CustomInkCanvas();
             FormConnectorManager = new FormConnectorManager();
             SocketManager = new SocketManager();
-            SocketManager.JoinDrawingSession("MockSessionID");
+            
+            //SocketManager.JoinDrawingSession("MockSessionID");
+            ChatManager.socket = SocketManager.Socket;
             //SocketManager.UserName = "Olivier";
+            SocketManager.JoinDrawingSession("MockSessionId");
             editeur.initializeSocketEvents();
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
@@ -185,6 +240,8 @@ namespace PolyPaint.VueModeles
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
             HandleDuplicate = new RelayCommand<object>(editeur.HandleDuplicate);
+
+
         }
         public void SendCanvas(CustomInkCanvas canvas)
         {
