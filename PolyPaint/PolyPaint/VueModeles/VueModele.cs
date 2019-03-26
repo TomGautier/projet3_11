@@ -229,6 +229,14 @@ namespace PolyPaint.VueModeles
                 this.Canvas.AllowSelection = true;
                 this.Canvas.Select(editeur.selectedStrokes);
                 this.Canvas.AllowSelection = false;
+                this.Canvas.ResizeEnabled = true;
+                foreach (Stroke s in this.SelectedStrokes)
+                {
+                    if ((s as Form).Type == "Text")
+                    {
+                        this.Canvas.ResizeEnabled = false;
+                    }
+                }
             }
             
         }
@@ -267,6 +275,10 @@ namespace PolyPaint.VueModeles
         {
             editeur.HandleSelectionModification();
             // TODO : Send socket -> selection was resized
+        }
+        public void HandleErasing(Stroke stroke)
+        {
+            editeur.HandleErasing(stroke);
         }
         public void RestoreLastTrait()
         {

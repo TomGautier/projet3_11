@@ -87,7 +87,7 @@ export class DrawingSessionManager {
     public cutElements(doc: any) {
         
         this.drawingSessionService.deleteElements(doc.elementIds);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc.elementIds);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc);
     }
 
     public stackElements(doc: any) {

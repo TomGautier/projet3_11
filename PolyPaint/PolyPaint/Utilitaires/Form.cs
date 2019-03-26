@@ -67,6 +67,7 @@ namespace PolyPaint.Utilitaires
             {
                 label = value;
                 this.update();
+                this.MakeShape();
             }
         }
 

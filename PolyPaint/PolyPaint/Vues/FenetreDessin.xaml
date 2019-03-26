@@ -169,6 +169,35 @@
                     <Bold>ACTOR</Bold>
                     </TextBlock>
                 </Button>
+                <Button Name="form_TexteFlottant" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_TexteFlottant, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_TexteFlottant, UpdateSourceTrigger=PropertyChanged}"
+                        Command="{Binding Path=ChoisirOutil}"
+                        CommandParameter="form_Texte">
+
+                    <TextBlock>
+                    <Bold>TEXT</Bold>
+                    </TextBlock>
+                </Button>
+                <Button Name="form_Phase" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Phase, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Phase, UpdateSourceTrigger=PropertyChanged}"
+                        Command="{Binding Path=ChoisirOutil}"
+                        CommandParameter="form_Phase">
+                    <TextBlock>
+                    <Bold>PHASE</Bold>
+                    </TextBlock>
+                </Button>
+                <Button Name="form_Comment" Width="70" Height="40" Margin="5"
+                        BorderBrush="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurBordure}, ConverterParameter=form_Comment, UpdateSourceTrigger=PropertyChanged}"
+                        Background="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurCouleurFond}, ConverterParameter=form_Comment, UpdateSourceTrigger=PropertyChanged}"
+                        Command="{Binding Path=ChoisirOutil}"
+                        CommandParameter="form_Comment">
+                    <TextBlock>
+                    <Bold>COMMENT</Bold>
+                    </TextBlock>
+                </Button>
+                
                 <Button Name="rotation" Width="40" Height="40" Margin="5"               
                         Command="{Binding Path=RotateForm}">
                     <StackPanel>

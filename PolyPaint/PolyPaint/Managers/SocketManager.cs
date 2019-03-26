@@ -119,6 +119,17 @@ namespace PolyPaint.Managers
 
 
         }
+        public void CutElements(String[] idList)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                elementIds = idList,
+                username = this.UserName
+            });
+            this.Socket.Emit("CutElements", parameters);
+
+        }
         public void HandleModification(Shape[] shapes_)
         {
             string parameters = new JavaScriptSerializer().Serialize(new

@@ -14,20 +14,25 @@ namespace PolyPaint.Utilitaires
 {
     class FloatingText : Form
     {
-        public const int DEFAULT_HEIGHT = 70;
-        public const int DEFAULT_WIDTH = 130;
-        public const string TYPE = "Activity";
-
-        public string Name { get; set; }
-
-
+        public const int DEFAULT_HEIGHT = 5;
+        public const int DEFAULT_WIDTH = 5;
+        public const string TYPE = "Text";
+        public int TextSize { get; set; }
 
         public FloatingText(StylusPointCollection pts) : base(pts)
 
         {
+            this.Label = "text";
+            this.TextSize = 30;
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 5;
-            this.Width = 5;
+            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
+            Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, this.TextSize, brush);
+
+            this.Height = text.Height;
+           
+            this.Width = text.Width;
+
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
@@ -35,6 +40,8 @@ namespace PolyPaint.Utilitaires
             this.Type = TYPE;
             this.updatePoints();
             this.DrawingAttributes.Color = Colors.Transparent;
+            //this.IsSelectedByOther = true;
+            
 
             //this.StrokeDashArray = new DoubleCollection() { 2 };
 
@@ -58,22 +65,30 @@ namespace PolyPaint.Utilitaires
             this.StylusPoints = pts;
         }
         private void updatePoints()
-        {
-            this.HeightDirection = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint());
-            Point startWidth = new Point(this.StylusPoints[0].X + this.HeightDirection.X / 2, this.StylusPoints[0].Y + this.HeightDirection.Y / 2);
+        {        
+            this.HeightDirection = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[0].ToPoint());
+            //Point startWidth = new Point(this.StylusPoints[0].X + this.HeightDirection.X / 2, this.StylusPoints[0].Y + this.HeightDirection.Y / 2);
             this.HeightDirection /= this.HeightDirection.Length;
             this.WidthDirection = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint());
             this.WidthDirection /= this.WidthDirection.Length;
+
+            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
+            Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, this.TextSize, brush);
+
+            this.Height = text.Height;//Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+            //FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, this.TextSize, brush);
+            this.Width = text.Width;//Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+
             //Vector heightDirection = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint());
 
             //  double x = startWidth.X + (this.StylusPoints[2].X - startWidth.X) / 2;
             //  double y = this.StylusPoints[0].Y + (this.StylusPoints[4].Y - this.StylusPoints[0].Y) / 2;
             //  this.Center = new Point((int)x, (int)y); 
 
-            this.Center = startWidth + Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth) / 2;
-
-            this.Width = Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth).Length;
-            this.Height = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
+            this.Center = this.StylusPoints[0].ToPoint() + this.HeightDirection * this.Height/2;//startWidth + Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth) / 2;
+            this.Center += this.WidthDirection * this.Width/2;
+            
             this.UpdateEncPoints();
 
             if (this.Arrow != null)
@@ -97,7 +112,7 @@ namespace PolyPaint.Utilitaires
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
 
         {
-            //this.DrawingAttributes.Color = Colors.Transparent;
+            this.DrawingAttributes.Color = Colors.Transparent;
             //Fill(drawingContext);
             SetSelection(drawingContext);
             OnDrawCore(drawingContext, drawingAttributes);
@@ -108,12 +123,20 @@ namespace PolyPaint.Utilitaires
         }
         private void DrawName(DrawingContext drawingContext)
         {
-            Point origin = new Point(this.Center.X, this.Center.Y);
+            Point origin = new Point(this.Center.X, this.Center.Y); 
             SolidColorBrush brush = new SolidColorBrush(Colors.Red);
             Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-            FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush);
+            FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, this.TextSize, brush);
+            origin.X -= text.Width / 2;
+            origin.Y -= text.Height / 2;
+
+            RotateTransform RT = new RotateTransform(this.CurrentRotation, this.Center.X, this.Center.Y);
+            drawingContext.PushTransform(RT);
+
             //this.Width = text.Width;
-            drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+            drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, this.TextSize, brush), origin);
+
+            drawingContext.Pop();
         }
     }
 }

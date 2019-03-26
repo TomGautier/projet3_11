@@ -205,7 +205,7 @@ namespace PolyPaint.Modeles
                   
                 }
                 this.SocketManager.DeleteElement(shapes);*/
-              this.SocketManager.DeleteElement(idList);
+              this.SocketManager.CutElements(idList);
             }
            
         }
@@ -304,6 +304,7 @@ namespace PolyPaint.Modeles
             {
                 HandleConnector(p);
             }
+            
             if (OutilSelectionne.Contains("form"))
             {
                 //Point center = new Point((int)position.X, (int)position.Y);
@@ -339,6 +340,15 @@ namespace PolyPaint.Modeles
                         // width = Role.DEFAULT_WIDTH;
                         //type = Role.TYPE;
 
+                        break;
+                    case "form_Texte":
+                        form = new FloatingText(pts);
+                        break;
+                    case "form_Phase":
+                        form = new Phase(pts);
+                        break;
+                    case "form_Comment":
+                        form = new Comment(pts);
                         break;
                 }
                 //SocketManager.AddElement(type, RemplissageSelectionne, CouleurSelectionnee, center,height,width,0);
@@ -445,6 +455,22 @@ namespace PolyPaint.Modeles
                     role.SetToShape(shape);
                     traits.Add(role);
                     break;
+                case "Text":
+                    FloatingText text = new FloatingText(pts);
+                    text.SetToShape(shape);
+                    traits.Add(text);
+                    break;
+                case "Phase":
+                    Phase phase = new Phase(pts);
+                    phase.SetToShape(shape);
+                    traits.Add(phase);
+                    break;
+                case "Comment":
+                    Comment comment = new Comment(pts);
+                    comment.SetToShape(shape);
+                    traits.Add(comment);
+                    break;
+                    
             }
             if (shape.author == this.SocketManager.UserName)
             {
@@ -520,6 +546,25 @@ namespace PolyPaint.Modeles
                 
             }
         }
+        public void HandleErasing(Stroke stroke)
+        {           
+                String[] idList = new string[1];
+                idList[0] = (stroke as Form).Id;
+
+            /* Shape[] shapes = new Shape[this.selectedStrokes.Count];
+             for (int i = 0; i < shapes.Length; i++)
+             {
+                 shapes[i] = (this.selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
+
+             }
+             this.SocketManager.DeleteElement(shapes);*/
+            if (!(stroke as Form).IsSelectedByOther)
+            {
+                this.SocketManager.DeleteElement(idList);
+            }
+            
+        }
+
 
         public void initializeSocketEvents()
         {
@@ -557,6 +602,30 @@ namespace PolyPaint.Modeles
                 });
 
             });
+            this.SocketManager.Socket.On("CutedElements", (data) =>
+            {
+                JObject result = (data as JObject);
+                String[] idList = new string[(result["elementIds"] as JArray).Count];
+                string username = result["username"].ToObject<String>();
+                for (int i = 0; i < idList.Length; i++)
+                {
+                    idList[i] = (result["elementIds"] as JArray)[i].ToObject<String>();
+                }
+                //string list = (data as JArray)[0].ToObject<String>();//(data as JObject).ToObject<String[]>();
+                Application.Current.Dispatcher.Invoke(() =>
+                {              
+
+                    if (username == this.SocketManager.UserName)
+                    {
+                        StrokeCollection toBeDeleted = new StrokeCollection(traits.Where(s => idList.Contains((s as Form).Id)));
+                        LastCut = toBeDeleted;
+                    }
+                    this.deleteElements(idList);
+                    // this.AddForm(shape);
+                    // Code causing the exception or requires UI thread access
+                });
+            });
+            
             this.SocketManager.Socket.On("SelectedElements", (data) =>
             {
                 JObject result = (data as JObject);

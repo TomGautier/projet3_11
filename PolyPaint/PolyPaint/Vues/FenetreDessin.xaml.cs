@@ -183,6 +183,7 @@ namespace PolyPaint
         }
         private void surfaceDessin_StrokeErasing(object sender, InkCanvasStrokeErasingEventArgs e)
         {
+            (DataContext as VueModele).HandleErasing(e.Stroke);
             e.Cancel = true; //Prevent deletion
         }
         void surfaceDessin_HandleKey(object sender, KeyEventArgs e)
