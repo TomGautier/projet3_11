@@ -34,7 +34,13 @@ public class UMLRole extends GenericShape {
         p.addCircle(posX, posY - h4, h4, Path.Direction.CW);
 
         canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
+
+        traceStyledLine(posX - w4, posY, posX + w4, posY, canvas);
+        traceStyledLine(posX + w4, posY, posX + w2, posY + h2, canvas);
+        traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w4, posY, canvas);
+        traceStyledCircle(posX, posY - h4, h4, canvas);
+        //canvas.drawPath(p, style.getBorderPaint());
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

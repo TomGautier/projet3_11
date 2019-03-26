@@ -35,11 +35,19 @@ public class UMLArtefact extends GenericShape {
 
         canvas.drawPath(p, style.getBackgroundPaint());
 
-        p.moveTo(posX + w2, posY - h4);
-        p.lineTo(posX + w4, posY - h4);
-        p.lineTo(posX + w4, posY - h2);
+        traceStyledLine(posX - w2, posY - h2, posX + w4, posY - h2, canvas);
+        traceStyledLine(posX + w4, posY - h2, posX + w2, posY - h4, canvas);
+        traceStyledLine(posX + w2, posY - h4, posX + w2, posY + h2, canvas);
+        traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
+        traceStyledLine(posX + w2, posY - h4, posX + w4, posY - h4, canvas);
+        traceStyledLine(posX + w4, posY - h4, posX + w4, posY - h2, canvas);
 
-        canvas.drawPath(p, style.getBorderPaint());
+        /*p.moveTo(posX + w2, posY - h4);
+        p.lineTo(posX + w4, posY - h4);
+        p.lineTo(posX + w4, posY - h2);*/
+
+        //canvas.drawPath(p, style.getBorderPaint());
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

@@ -14,7 +14,7 @@ public class PaintStyle {
         borderPaint = border;
         backgroundPaint = background;
         textPaint = text;
-        strokeType = StrokeType.dashed;
+        strokeType = StrokeType.dotted;
     }
 
     public Paint getBorderPaint() { return borderPaint; }
