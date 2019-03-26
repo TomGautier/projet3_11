@@ -230,4 +230,7 @@ public abstract class GenericShape {
             currentAngle += 2 * sweepAngle;
         }
     }
+
+    public PaintStyle getStyle() { return style; }
+    public void setStyle(PaintStyle style) { this.style = style; }
 }

@@ -50,7 +50,9 @@
     <string name="userListInviteToConversation">Inviter à une conversation</string>
     <string name="userListInviteToFriends">Inviter à être amis</string>
     <string name="userListInviteToDrawSession">Inviter à une session</string>
-
+    <string name="styleFull">Plein</string>
+    <string name="styleDotted">Pointillé</string>
+    <string name="styleDashed">Tirets</string>
 
 
 </resources>

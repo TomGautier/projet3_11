@@ -653,4 +653,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             iView.invalidate();
         }
     }
+
+    // StyleEditingDialog
+    @Override
+    public void onStyleDialogPositiveClick(PaintStyle style) {
+        selections.get(0).setStyle(style);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
+    @Override
+    public void onStyleDialogNegativeClick() {
+        // Do nothing
+    }
 }

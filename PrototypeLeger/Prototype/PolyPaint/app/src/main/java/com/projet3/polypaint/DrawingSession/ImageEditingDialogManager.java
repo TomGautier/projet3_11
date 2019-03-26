@@ -2,12 +2,16 @@ package com.projet3.polypaint.DrawingSession;
 
 import android.app.FragmentManager;
 
+import com.projet3.polypaint.CanvasElement.PaintStyle;
+
 import java.util.ArrayList;
 
 public class ImageEditingDialogManager {
     public interface ImageEditingDialogSubscriber {
         void onTextEditingDialogPositiveClick(String contents);
         void onTextEditingDialogNegativeClick();
+        void onStyleDialogPositiveClick(PaintStyle style);
+        void onStyleDialogNegativeClick();
     }
 
     private static ImageEditingDialogManager instance = null;
@@ -41,6 +45,12 @@ public class ImageEditingDialogManager {
         dialog.show(fragmentManager, "text editing");
     }
 
+    public void showStyleDialog(FragmentManager fragmentManager, PaintStyle style) {
+        StyleEditingDialog dialog = new StyleEditingDialog();
+        dialog.setStyle(style);
+        dialog.show(fragmentManager, "style editing");
+    }
+
     public void onTextEditingDialogPositiveClick(String contents) {
         for (ImageEditingDialogSubscriber s : subscribers)
             s.onTextEditingDialogPositiveClick(contents);
@@ -48,5 +58,14 @@ public class ImageEditingDialogManager {
     public void onTextEditingDialogNegativeClick() {
         for (ImageEditingDialogSubscriber s : subscribers)
             s.onTextEditingDialogNegativeClick();
+    }
+
+    void onStyleDialogPositiveClick(PaintStyle style) {
+        for (ImageEditingDialogSubscriber s : subscribers)
+            s.onStyleDialogPositiveClick(style);
+    }
+    void onStyleDialogNegativeClick() {
+        for (ImageEditingDialogSubscriber s : subscribers)
+            s.onStyleDialogNegativeClick();
     }
 }

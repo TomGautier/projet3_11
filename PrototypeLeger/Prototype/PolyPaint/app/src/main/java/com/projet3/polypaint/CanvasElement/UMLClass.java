@@ -4,14 +4,14 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
+
 public class UMLClass extends GenericShape {
     protected final static int DEFAULT_WIDTH = 180;
     protected final static int DEFAULT_HEIGHT = 150;
 
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style) {
         super(id, x, y, width, height, style);
-        //width = DEFAULT_WIDTH;
-        //height = DEFAULT_HEIGHT;
     }
     public UMLClass clone() {
         return new UMLClass(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
@@ -35,7 +35,6 @@ public class UMLClass extends GenericShape {
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
-        /* Do nothing for now*/
-        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
+        ImageEditingDialogManager.getInstance().showStyleDialog(fragmentManager, style);
     }
 }
