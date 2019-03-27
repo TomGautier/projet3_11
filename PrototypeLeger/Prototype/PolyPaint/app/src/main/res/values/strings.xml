@@ -27,6 +27,8 @@
     <string name="buttonReset">Réinitialiser</string>
     <string name="buttonMove">Déplacer</string>
     <string name="buttonCut">Couper</string>
+    <string name="buttonStack">Empiler</string>
+    <string name="buttonUnstack">Dépiler</string>
 
     <!-- MAIN TOOLBAR -->
     <string name="mainToolbarGalleryTag">Gallerie</string>

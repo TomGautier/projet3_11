@@ -3,8 +3,9 @@ import { SocketService } from "./socket.service";
 import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
-import shape from "../schemas/shape";
 import { UserManager } from "./user.manager";
+import shape from "../schemas/shape";
+
 @injectable()
 export class DrawingSessionManager {
     /*If it is selected: the key is the object id and the value is the user's sessionId who selected it.
@@ -26,16 +27,17 @@ export class DrawingSessionManager {
         
         this.socketService.subscribe(SocketEvents.DuplicateElements, args => this.duplicateElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.CutElements, args => this.cutElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
+        this.socketService.subscribe(SocketEvents.DuplicateCutElements, args => this.duplicateCutElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
+
         
         this.socketService.subscribe(SocketEvents.StackElement, args =>this.stackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         this.socketService.subscribe(SocketEvents.UnstackElement, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
 
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
-
-        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
-        this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
         this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
         
+
+        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
     }
 
     public joinSession(socketId: string, doc : any) {
@@ -71,13 +73,13 @@ export class DrawingSessionManager {
         console.log(doc);
         this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
         //this.drawingSessionService.addElement(doc.drawingSessionId, doc.author, doc.properties);
-        this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.AddedElement,doc.shape);
+        this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.AddedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to delete.
     public deleteElements(doc: any) {
         this.drawingSessionService.deleteElements(doc.elementIds);
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.DeletedElements, doc.elementIds);
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.DeletedElements, doc);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
@@ -88,28 +90,37 @@ export class DrawingSessionManager {
         
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement, doc);
     }
+    public selectElements(doc : any) {
+        this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements, doc);
+    }
+
 
     public duplicateElements(doc: any) {
         console.log(doc);
         
         // FOR LOOP
-        for (const shape of doc.shapes){
-         this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
-        }
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.DuplicatedElements, doc);
+        //for (const shape of doc.shapes){
+         //this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+        //}
+       this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedElements, doc);
     }
 
     public cutElements(doc: any) {
-        
+        console.log(doc);
         this.drawingSessionService.deleteElements(doc.elementIds);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc);
+    }
+    public duplicateCutElements(doc : any){
+        console.log(doc);
+        this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedCutElements, doc);
+
     }
 
     public stackElements(doc: any) {
         // FOR LOOP
         console.log("STACKING : ");
         console.log(doc);
-        this.drawingSessionService.deleteElements(doc.elementId);
+       //s this.drawingSessionService.deleteElements(doc.elementId);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.StackedElement, doc);
     }
 
@@ -117,15 +128,12 @@ export class DrawingSessionManager {
         
         console.log("UNSTACKING : ");
         console.log(doc);
-        this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
+        //this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
         
         this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.UnstackedElement, doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to select.
-    public selectElements(doc: any) {
-        this.socketService.emit(doc.drawingSessionId, SocketEvents.SelectedElements, doc);
-    }
 
     public resizeCanvas(doc: any) {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ResizedCanvas, doc);

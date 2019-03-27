@@ -7,10 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v4.content.res.ResourcesCompat;
-
-import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
 
 public abstract class GenericShape {
 
@@ -107,26 +103,26 @@ public abstract class GenericShape {
     }
     public final static int getDefaultHeight(String currentShapeType){
         switch (currentShapeType){
-            case "umlActivity" :
+            case "Activity" :
                 return UMLActivity.DEFAULT_HEIGHT;
-            case "umlClass":
+            case "UmlClass":
                 return UMLClass.DEFAULT_HEIGHT;
-            case "umlArtefact":
+            case "Artefact":
                 return UMLArtefact.DEFAULT_HEIGHT;
-            case "umlRole":
+            case "Role":
                 return UMLRole.DEFAULT_HEIGHT;
         }
         return 0;
     }
     public final static int getDefaultWidth(String currentShapeType){
         switch (currentShapeType){
-            case "umlActivity" :
+            case "Activity" :
                 return UMLActivity.DEFAULT_WIDTH;
-            case "umlClass":
+            case "UmlClass":
                 return UMLClass.DEFAULT_WIDTH;
-            case "umlArtefact":
+            case "Artefact":
                 return UMLArtefact.DEFAULT_WIDTH;
-            case "umlRole":
+            case "Role":
                 return UMLRole.DEFAULT_WIDTH;
         }
         return 0;

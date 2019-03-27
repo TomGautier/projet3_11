@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="userListFilter">
+        <item name="userListAllFilter">Tous</item>
+        <item name="userListOnlineFilter">En ligne</item>
+        <item name="userListOfflineFilter">Hors ligne</item>
+    </array>
+</resources>

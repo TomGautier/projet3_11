@@ -29,7 +29,7 @@ import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -50,6 +50,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonCut;
     protected Button buttonDuplicate;
     protected Button buttonDelete;
+    protected Button buttonStack;
+    protected Button buttonUnstack;
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
 
@@ -70,6 +72,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ArrayList<GenericShape> cutShapes;
     protected Stack<Pair<ArrayList<GenericShape>, String>> addStack;
     protected Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
+    protected Stack<GenericShape> stack;
 
     protected Mode currentMode = Mode.creation;
     protected ShapeType currentShapeType = ShapeType.UmlClass;
@@ -103,8 +106,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
+        stack = new Stack();
         idCpt = 0;
-        id = UserManager.currentInstance.getUserUsername() + idCpt;
+        id = FetchManager.currentInstance.getUserUsername() + idCpt;
 
         initializeButtons();
         initializePaint();
@@ -187,6 +191,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 duplicateSelection();
             }
         });
+
+        buttonStack = (Button)rootView.findViewById(R.id.buttonStack);
+        buttonStack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stack();
+            }
+        });
+        buttonUnstack = (Button)rootView.findViewById(R.id.buttonUnstack);
+        buttonUnstack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unStack();
+            }
+        });
+
 
         buttonReset = (Button)rootView.findViewById(R.id.buttonReset);
         buttonReset.setOnClickListener(new View.OnClickListener() {
@@ -339,7 +359,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
 
+    protected void stack(){
 
+    }
+    protected void unStack(){
+
+    }
     protected void checkSelection(int x, int y) {
         selections.clear();
 
@@ -404,7 +429,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected GenericShape addShape(int posX, int posY) {
         selections.clear();
         GenericShape nShape = null;
-        id = UserManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
+        id = FetchManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),

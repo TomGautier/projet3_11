@@ -17,8 +17,8 @@ export class UserController {
 
         router.get("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+               if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  { res.json(403); return; }
                 // Send the request to the service and send the response
                 this.userService.getAll().then(users => {
                     res.json(users);
