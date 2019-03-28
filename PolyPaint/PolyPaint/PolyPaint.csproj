@@ -130,14 +130,19 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
-    <Compile Include="Utilitaires\ChatManager.cs" />
+
+    <Compile Include="Managers\ChatManager.cs" />
+    <Compile Include="Managers\FormConnectorManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />
     <Compile Include="Modeles\Editeur.cs" />
     <Compile Include="Utilitaires\NetworkManager.cs" />
     <Compile Include="Utilitaires\Activity.cs" />
     <Compile Include="Utilitaires\Arrow.cs" />
     <Compile Include="Utilitaires\Artefact.cs" />
+    <Compile Include="Utilitaires\Comment.cs" />
+    <Compile Include="Utilitaires\FloatingText.cs" />
     <Compile Include="Utilitaires\Form.cs" />
+    <Compile Include="Utilitaires\Phase.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
     <Compile Include="Utilitaires\Role.cs" />
     <Compile Include="Utilitaires\Shape.cs" />
@@ -151,13 +156,12 @@
     <Compile Include="Vues\DrawControl.xaml.cs">
       <DependentUpon>DrawControl.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+    
     <Compile Include="Vues\GenericSetter.xaml.cs">
       <DependentUpon>GenericSetter.xaml</DependentUpon>
-=======
+    </Compile>
     <Compile Include="Vues\HomeControl.xaml.cs">
       <DependentUpon>HomeControl.xaml</DependentUpon>
->>>>>>> dev
     </Compile>
     <Compile Include="Vues\LoginControl.xaml.cs">
       <DependentUpon>LoginControl.xaml</DependentUpon>
@@ -165,13 +169,12 @@
     <Compile Include="Vues\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
-=======
+    </Compile>
     <Compile Include="Vues\SignupControl.xaml.cs">
       <DependentUpon>SignupControl.xaml</DependentUpon>
->>>>>>> dev
     </Compile>
     <Page Include="Vues\ChatControl.xaml">
       <SubType>Designer</SubType>
@@ -206,11 +209,12 @@
     <Compile Include="Vues\FenetreDessin.xaml.cs">
       <DependentUpon>FenetreDessin.xaml</DependentUpon>
     </Compile>
-<<<<<<< HEAD
+
     <Page Include="Vues\GenericSetter.xaml">
-=======
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vues\HomeControl.xaml">
->>>>>>> dev
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -222,11 +226,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-<<<<<<< HEAD
+
     <Page Include="Vues\UmlClassSetter.xaml">
-=======
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Vues\SignupControl.xaml">
->>>>>>> dev
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

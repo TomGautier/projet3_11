@@ -1,33 +1,16 @@
 package com.projet3.polypaint.DrawingCollabSession;
 
 import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.Region;
-import android.graphics.Typeface;
-import android.opengl.GLException;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v4.content.res.ResourcesCompat;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.projet3.polypaint.CanvasElement.GenericShape;
-import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
@@ -35,14 +18,10 @@ import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
-import com.projet3.polypaint.R;
-import com.projet3.polypaint.SocketManager;
-import com.projet3.polypaint.UserList.User;
-import com.projet3.polypaint.UserLogin.UserInformation;
-import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 public class CollabImageEditingFragment extends ImageEditingFragment
         implements ImageEditingDialogManager.ImageEditingDialogSubscriber, DrawingCollabSessionListener {
@@ -62,7 +41,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         rootView = super.onCreateView(inflater,container,savedInstanceState);
         players = new ArrayList<>();
         selectedColorCpt = 0;
-        client = new Player(UserManager.currentInstance.getUserUsername(), selectedColorCpt);
+        client = new Player(FetchManager.currentInstance.getUserUsername(), selectedColorCpt);
         //selectedColorCpt++;
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         SocketManager.currentInstance.joinCollabSession("MockSessionID");
@@ -99,7 +78,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                             //ArrayList stackElems = new ArrayList();
                             //stackElems.add(addShape(posX, posY));
                             //addToStack(stackElems, ADD_ACTION);
-                            SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
+                            addShape(posX,posY);
+                           // SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
                             break;
                         case move:
                             moveSelectedShape(event);
@@ -195,6 +175,15 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         }
         // }
     }
+    protected GenericShape addShape(int posX, int posY) {
+        CollabShape shape = createCollabShape(posX,posY);
+        if (shape.getClass().equals(TextBox.class)){
+            ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
+        }
+        SocketManager.currentInstance.addElement(shape);
+
+        return null;
+    }
 
 
     @Override
@@ -266,6 +255,16 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         SocketManager.currentInstance.deleteElements(ids.toArray(new String[ids.size()]));
     }
 
+    @Override
+    protected void stack(){
+        if (shapes.size() > 0)
+            SocketManager.currentInstance.stackElement(shapes.get(shapes.size()-1).getId());
+    }
+    @Override
+    protected void unStack(){
+        if (!stack.empty())
+            SocketManager.currentInstance.unstackElement(createCollabShape(stack.peek()));
+    }
     @Override
     public void deleteSelection() {
         /*String[] ids = new String[selections.size()];
@@ -383,6 +382,23 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 break;
         }*/
     }
+    @Override
+    public void onTextEditingDialogPositiveClick(String contents) {
+        /*((TextBox)client.getSelectedShapes().get(0)).setText(contents);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();*/
+    }
+    @Override
+    public void onTextEditingDialogNegativeClick() {
+       /* if (((TextBox)selections.get(0)).getText().equals("")) {
+            shapes.removeAll(selections);
+            selections.clear();
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }*/
+    }
 
     //EVENT SERVER
     @Override
@@ -453,6 +469,14 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         if (client.getName().equals(author)){
             this.cutShapes.clear();
         }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
     }
 
 
@@ -489,9 +513,11 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         for (int i = 0; i < ids.length; i++){
             GenericShape shape = findGenShapeById(ids[i]);
             player.removeSelectedShape(shape);
-            cutShapes.add(shape);
             shapes.remove(shape);
+            if (client.getName().equals(author))
+                cutShapes.add(shape);
         }
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -583,6 +609,59 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
+    private void removeSelectedShape(GenericShape shape_){
+        for (Player player : players){
+            if (player.getSelectedShapes().contains(shape_)){
+                player.removeSelectedShape(shape_);
+                return;
+            }
+        }
+    }
+    @Override
+    public void onStackElement(String id, String author) {
+        //Player player = findPlayer(author);
+        //player = (player == null) ? client : player;
+        GenericShape shape = findGenShapeById(id);
+        shapes.remove(shape);
+        //player.removeSelectedShape(shape);
+        removeSelectedShape(shape);
+        //if (player.getSelectedShapes().contains(shape)){
+          //  player.removeSelectedShape(shape);
+        //}
+        if (client.getName().equals(author)){
+            stack.push(shape);
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+    }
+
+    @Override
+    public void onUnstackElement(CollabShape shape, String author) {
+        Player player = findPlayer(author);
+        player = (player == null) ? client : player;
+        GenericShape genShape = createGenShape(shape);
+        shapes.add(genShape);
+        player.clearSelectedShape();
+        player.addSelectedShape(genShape);
+        if (client.getName().equals(author)){
+            stack.pop();
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+            }
+        });
+    }
+
     /*private boolean shapeAlreadySelected(String id){
         for (GenericShape shape : client.getSelectedShapes()){
             if (shape.getId().equals(id))
@@ -627,6 +706,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 genShape = new UMLRole(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle);
+                break;
+            case "text_box":
+                genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
+                        collabShape.getProperties().getMiddlePointCoord()[1],defaultStyle);
                 break;
         }
         return genShape;

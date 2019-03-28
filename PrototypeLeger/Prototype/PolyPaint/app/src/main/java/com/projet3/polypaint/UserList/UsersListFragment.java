@@ -1,6 +1,7 @@
 package com.projet3.polypaint.UserList;
 
 import android.app.Fragment;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -14,12 +15,13 @@ import android.support.v7.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.projet3.polypaint.Network.RequestManager;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.R;
+import com.projet3.polypaint.Network.FetchManager;
 
-import java.util.ArrayList;
 
-
-public class UsersListFragment extends Fragment {
+public class UsersListFragment extends Fragment implements UsersListListener {
 
     private ListView listView;
     private RelativeLayout usersTableRelativeLayout;
@@ -27,19 +29,12 @@ public class UsersListFragment extends Fragment {
     private View rootView;
     private TextView title;
     private Spinner filterSpinner;
-    private ArrayList<User> users;
+    //private ArrayList<User> users;
     private SearchView searchView;
     private UsersListAdapter adapter;
 
     private boolean isOpen;
 
-    public static UsersListFragment newInstance(ArrayList<String> users_) {
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList("USERS", users_);
-        UsersListFragment fragobj = new UsersListFragment();
-        fragobj.setArguments(bundle);
-        return fragobj;
-    }
 
     public UsersListFragment() {
     }
@@ -57,7 +52,9 @@ public class UsersListFragment extends Fragment {
         searchView = (SearchView) rootView.findViewById(R.id.searchView);
         listView = (ListView) rootView.findViewById(R.id.listView);
         filterSpinner = (Spinner)rootView.findViewById(R.id.filterSpinner);
-        users = new ArrayList<>();
+        SocketManager.currentInstance.setupUsersListListener(this);
+       // users = RequestManager.currentInstance.fetchUsers();
+       /* users = new ArrayList<>();
         users.add(new User("Bob", true));
         users.add(new User("Bob2", true));
         users.add(new User("Bob3", true));
@@ -72,21 +69,22 @@ public class UsersListFragment extends Fragment {
         users.add(new User("Bob12", true));
 
         users.add(new User("Alice", false));
-        users.add(new User("Alice2", false));
+        users.add(new User("Alice2", false));*/
         isOpen = true;
 
         setupListeners();
         setupSpinner();
+        setupListView();
         setupSearchView();
         return rootView;
     }
     private void setupSpinner() {
-        ArrayList<String> strings = new ArrayList<>();
-        strings.add("Tous");
-        strings.add("En ligne");
-        strings.add("Hors ligne");
+        //ArrayList<String> strings = new ArrayList<>();
+        //strings.add("Tous");
+        //strings.add("En ligne");
+        //strings.add("Hors ligne");
         android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
-                (getContext(), android.R.layout.simple_spinner_item, strings);
+                (getContext(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.userListFilter));
         filterSpinner.setAdapter(spinnerArrayAdapter);
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -128,14 +126,21 @@ public class UsersListFragment extends Fragment {
             }
         });
     }
-
-    private void setupSearchView() {
-        ArrayList<String> names = new ArrayList<>();
-        for (User user : users) {
-            names.add(user.getUsername());
-        }
-        adapter = new UsersListAdapter(getActivity(), names, users);
+    private void setupListView(){
+       // ArrayList<String> names = new ArrayList<>();
+        //for (User user : FetchManager.currentInstance.getUsers()) {
+          //  names.add(user.getUsername());
+        //}
+        adapter = new UsersListAdapter(getActivity(),FetchManager.currentInstance.getUsersNames(), FetchManager.currentInstance.getUsers());
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)).isConnected());
+            }
+        });
+    }
+    private void setupSearchView() {
         searchView.setIconified(false);
         searchView.setSubmitButtonEnabled(false);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -148,12 +153,6 @@ public class UsersListFragment extends Fragment {
             public boolean onQueryTextChange(String newText) {
                 adapter.getFilter().filter(newText);
                 return false;
-            }
-        });
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)).isConnected());
             }
         });
     }
@@ -181,6 +180,20 @@ public class UsersListFragment extends Fragment {
             }
         });
         dropDownMenu.show();
+    }
+
+    @Override
+    public void onUserConnected(String username) {
+        if (FetchManager.currentInstance.changeConnectedState(username, true)){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupListView();
+                }
+            });
+        }
+
+
     }
 }
 

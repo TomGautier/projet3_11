@@ -36,7 +36,12 @@ namespace PolyPaint.Managers
         public void JoinDrawingSession(string sessionID)
         {
             this.SessionID = sessionID;
-            Socket.Emit("JoinDrawingSession", SessionID);
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                username = this.UserName,              
+            });
+            Socket.Emit("JoinDrawingSession", parameters);
 
         }
         public void UnStackElement(Shape shape_)
@@ -47,7 +52,7 @@ namespace PolyPaint.Managers
                 username = this.UserName,
                 shape = shape_
             });
-            this.Socket.Emit("UnstackElements",parameters);
+            this.Socket.Emit("UnstackElement",parameters);
         }
         public void StackElement(String id_)
         {
@@ -55,6 +60,7 @@ namespace PolyPaint.Managers
             {
                 sessionId = this.SessionID,
                 username = this.UserName,
+                drawingSessionId = this.SessionID,
                 elementId = id_
             });
             this.Socket.Emit("StackElement",parameters);
@@ -116,6 +122,17 @@ namespace PolyPaint.Managers
             });
             this.Socket.Emit("DeleteElements", parameters);
 
+
+        }
+        public void CutElements(String[] idList)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                elementIds = idList,
+                username = this.UserName
+            });
+            this.Socket.Emit("CutElements", parameters);
 
         }
         public void HandleModification(Shape[] shapes_)

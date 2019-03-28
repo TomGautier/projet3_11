@@ -13,7 +13,9 @@ export class UserManager {
     }
 
     public addUser(sessionId: string, username: string) {
+        console.log('addUser', sessionId, username);
         this.connectedUsers.set(username, sessionId);
+        console.log("addedUser:", sessionId, username, this.connectedUsers.get(username));
         this.socketService.broadcast(SocketEvents.UserJoinedChat, username);
     }
 
@@ -26,6 +28,7 @@ export class UserManager {
     } 
 
     public verifySession(sessionId: string, username: string) : boolean {
+        console.log("ConnectedUsers:", sessionId, username, this.connectedUsers.get(username));
         return this.connectedUsers.get(username) === sessionId;
     }
 }

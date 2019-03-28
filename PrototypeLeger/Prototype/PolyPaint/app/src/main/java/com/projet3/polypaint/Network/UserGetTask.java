@@ -1,4 +1,4 @@
-package com.projet3.polypaint.UserLogin;
+package com.projet3.polypaint.Network;
 
 import android.os.AsyncTask;
 
@@ -38,7 +38,7 @@ class UserGetTask extends AsyncTask<String, String, JSONArray> {
             JSONArray jsonArray = new JSONArray();
             while ((line = rd.readLine()) != null) {
                 //response.append(line);
-                if (line == "403")
+                if (line.equals("403"))
                     return null;
                 jsonArray = new JSONArray(line);
                // response.append('\r');

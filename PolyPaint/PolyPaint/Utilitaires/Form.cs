@@ -27,6 +27,17 @@ namespace PolyPaint.Utilitaires
         protected Vector WidthDirection { get; set; }
         protected Vector HeightDirection { get; set; }
 
+        private string borderStyle;
+        public string BorderStyle
+        {
+            get { return borderStyle; }
+            set
+            {
+                borderStyle = value;
+                this.update();
+            }
+        }
+
         private bool showEncrage;
         public bool ShowEncrage
         {
@@ -56,6 +67,7 @@ namespace PolyPaint.Utilitaires
             {
                 label = value;
                 this.update();
+                this.MakeShape();
             }
         }
 
@@ -100,6 +112,7 @@ namespace PolyPaint.Utilitaires
 
             this.MakeShape();
             this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
             this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
             //this.CurrentRotation = shape.properties.rotation;
             //this.SetRotation(this.CurrentRotation);
@@ -113,6 +126,50 @@ namespace PolyPaint.Utilitaires
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
                 (int)this.Height, (int)this.Width, this.CurrentRotation);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
+        }
+        protected Pen GetPen()
+        {
+            var pen = new Pen(new SolidColorBrush(this.DrawingAttributes.Color), 2.5);
+            pen.Thickness = this.DrawingAttributes.Width;
+            //pen.Thickness = 3;
+           switch (this.BorderStyle)
+            {
+                case "Dash":
+                    pen.DashStyle = DashStyles.Dash;
+                    break;
+
+                case "Dot":
+                    pen.DashStyle = DashStyles.Dot;
+                    break;
+
+                case "DashDot":
+                    pen.DashStyle = DashStyles.DashDot;
+                    break;
+
+                case "DashDotDot":
+                    pen.DashStyle = DashStyles.DashDotDot;
+                    break;
+
+                default:
+                    pen.DashStyle = DashStyles.Solid;
+                    break;
+            }
+            return pen;
+        }
+        protected void OnDrawCore(DrawingContext drawingContext,DrawingAttributes drawingAttributes)
+        {
+            if (this.BorderStyle == "Solid")
+            {
+                base.DrawCore(drawingContext, drawingAttributes);
+            }
+            else
+            {
+                Pen pen = this.GetPen();
+                for (int i = 0; i < this.StylusPoints.Count - 1; i++)
+                {
+                    drawingContext.DrawLine(pen, this.StylusPoints[i].ToPoint(), this.StylusPoints[i + 1].ToPoint());
+                }
+            }
         }
         protected void DrawEncrage(DrawingContext drawingContext)
         {
@@ -194,6 +251,7 @@ namespace PolyPaint.Utilitaires
             this.EncPoints = new Point[4];
             this.Label = "";
             this.showEncrage = false;
+            this.BorderStyle = "Solid";
         }   
         
     }

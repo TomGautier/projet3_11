@@ -135,7 +135,12 @@ namespace PolyPaint.VueModeles
         {
             get { return editeur.ConnectorColor; }
             set { editeur.ConnectorColor = value; }
-        }    
+        } 
+        public string ConnectorBorderStyle
+        {
+            get { return editeur.ConnectorBorderStyle; }
+            set { editeur.ConnectorBorderStyle = value; }
+        }
         
         public StrokeCollection SelectedStrokes
         {
@@ -207,9 +212,11 @@ namespace PolyPaint.VueModeles
             this.Canvas = new CustomInkCanvas();
             FormConnectorManager = new FormConnectorManager();
             SocketManager = new SocketManager();
+            
             //SocketManager.JoinDrawingSession("MockSessionID");
             ChatManager.socket = SocketManager.Socket;
             //SocketManager.UserName = "Olivier";
+            SocketManager.JoinDrawingSession("MockSessionId");
             editeur.initializeSocketEvents();
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
@@ -233,6 +240,8 @@ namespace PolyPaint.VueModeles
             ChoisirOutil = new RelayCommand<string>(editeur.ChoisirOutil);
             Reinitialiser = new RelayCommand<object>(editeur.Reinitialiser);
             HandleDuplicate = new RelayCommand<object>(editeur.HandleDuplicate);
+
+
         }
         public void SendCanvas(CustomInkCanvas canvas)
         {
@@ -277,28 +286,41 @@ namespace PolyPaint.VueModeles
                 this.Canvas.AllowSelection = true;
                 this.Canvas.Select(editeur.selectedStrokes);
                 this.Canvas.AllowSelection = false;
+                this.Canvas.ResizeEnabled = true;
+                foreach (Stroke s in this.SelectedStrokes)
+                {
+                    if ((s as Form).Type == "Text")
+                    {
+                        this.Canvas.ResizeEnabled = false;
+                    }
+                }
             }
             
         }
         public void HandleSelection(StrokeCollection strokes)
         {
-            editeur.HandleChangeSelection(strokes);
+            if (strokes.Count > 0)
+            {
+                editeur.HandleChangeSelection(strokes);
+            }
             //TODO : Send socket -> selection was changed
         }
-        public void SetConnectorSettings(string label, string type, int size,string color)
+        public void SetConnectorSettings(string label, string type, string border, int size,string color)
         {
             this.ConnectorLabel = label;
             this.ConnectorType = type;
+            this.ConnectorBorderStyle = border;
             this.ConnectorSize = size;
             this.ConnectorColor = color;
+            //TODO BORDER
         }
-        public void HandleLabelChange(string label)
+        public void HandleLabelChange(string label, string border)
         {
-            editeur.HandleLabelChange(label);
+            editeur.HandleLabelChange(label,border);
         }
-        public void HandleUmlTextChange(string name, List<string> methods, List<string> attributes)
+        public void HandleUmlTextChange(string name, string border, List<string> methods, List<string> attributes)
         {
-            editeur.HandleUmlTextChange(name,methods,attributes);
+            editeur.HandleUmlTextChange(name,border,methods,attributes);
         }
         public void HandleSelectionSuppression()
         {
@@ -314,13 +336,38 @@ namespace PolyPaint.VueModeles
             editeur.HandleSelectionModification();
             // TODO : Send socket -> selection was resized
         }
+        public void HandleErasing(Stroke stroke)
+        {
+            editeur.HandleErasing(stroke);
+        }
         public void RestoreLastTrait()
         {
             editeur.Depiler(null);
         }
         public void HandleMouseDown(Point mousePos)
         {
-            editeur.HandleMouseDown(mousePos);
+            if (this.OutilSelectionne == "lasso")
+            {
+                StrokeCollection selection = new StrokeCollection();
+                foreach (Stroke s in this.Traits)
+                {
+                    if (s.GetBounds().Contains(mousePos) && selection.Count == 0)
+                    {
+                        selection.Add(s);
+                       
+                    }
+                   
+                }
+                if (!this.Canvas.IsDraging)
+                {
+                    editeur.HandleChangeSelection(selection);
+                }
+
+            }
+            else
+            {
+                editeur.HandleMouseDown(mousePos);
+            }
         }
         public void HandleRotation(Point rotatePoint)
         {
