@@ -94,4 +94,9 @@ public class ConnectionForm extends GenericShape {
     public void showEditingDialog(FragmentManager fragmentManager) {
 
     }
+
+    @Override
+    public String getType() {
+        return type;
+    }
 }

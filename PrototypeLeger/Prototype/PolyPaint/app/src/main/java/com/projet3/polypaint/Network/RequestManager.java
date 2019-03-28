@@ -13,6 +13,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.projet3.polypaint.USER.UserJsonPostTask;
+
 public class RequestManager {
     private final int TIMEOUT_DELAY = 20;
     private final String PORT =":3000";
@@ -58,7 +60,7 @@ public class RequestManager {
     }
     private boolean configureLoginResponse(String response_){
         sessionID = response_;
-        return response_.isEmpty() ? false : true;
+        return !response_.isEmpty();
     }
 
     public ArrayList<Conversation> fetchUserConversations() {
@@ -102,6 +104,7 @@ public class RequestManager {
              return conversations;
         }
     }
+
     public boolean addUserConversation(String name){
         url = formatUrl(Request.Conversations, name);
         UserPostTask task = new UserPostTask();
@@ -120,11 +123,32 @@ public class RequestManager {
         }
         return false;
     }
+    private boolean configureAddConversationResponse(String response){
+        return response != null && !response.contains("409");
+    }
 
+    public ArrayList<JSONObject> fetchPublicGallery() {
+        return fetchGalleryContent(Request.ImagesCommon);
+    }
 
-    public boolean configureAddConversationResponse(String response){
-        boolean ret = response != null && response.contains("409") ? false: true;
-        return ret;
+    public ArrayList<JSONObject> fetchPrivateGallery() {
+        return fetchGalleryContent(Request.Images);
+    }
+
+    private ArrayList<JSONObject> fetchGalleryContent(String request) {
+        url = formatUrl(request,null);
+        UserGetTask task = new UserGetTask();
+        task.execute(url);
+        try{
+            return configureFetchGalleryResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public ArrayList<User> fetchUsers(){
@@ -146,6 +170,49 @@ public class RequestManager {
         }
         return null;
     }
+
+    private ArrayList<JSONObject> configureFetchGalleryResponse(JSONArray jsons){
+        ArrayList<JSONObject> images = new ArrayList<>();
+        if (jsons == null || jsons.length() == 0) {
+            return images;
+        }
+        else{
+            JSONObject image;
+            for (int i = 0; i < jsons.length(); i ++){
+                try {
+                    image = jsons.getJSONObject(i);
+                    if (image != null)
+                        images.add(image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            return images;
+        }
+    }
+
+    public void postImage(JSONObject image) {
+        url = formatUrl(Request.Images,null);
+        UserJsonPostTask task = new UserJsonPostTask();
+        task.setData(image);
+        task.execute(url);
+        try {
+            boolean response = task.get(TIMEOUT_DELAY, TimeUnit.SECONDS) != null;
+
+            if (response)
+                System.out.println("Successfully added image");
+            else
+                System.out.println("Couldn't successfully add image");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ArrayList<User> configureFetchUsersResponse(JSONArray jsons) {
         ArrayList<User> users = new ArrayList<>();
         if (jsons == null || jsons.length() == 0)
@@ -166,27 +233,19 @@ public class RequestManager {
         }
     }
 
-    private String formatUrl(String request, String information){
-        String formatUrl = null;
-        switch (request){
-            case Request.Connection:
-                formatUrl = "http://" + ip + PORT + request + user.getUsername()+ "/"
+    private String formatUrl(String request, String information) {
+        String formatUrl;
+
+        if (request.equals(Request.Connection))
+            formatUrl = "http://" + ip + PORT + request + user.getUsername() + "/"
                     + user.getPassword();
-                break;
-            case Request.Conversations:
-                if (information == null)
-                    formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
-                else
-                    formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
-                    break;
-            case Request.Users_Fetch:
-                formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
-        }
+        else if (information == null)
+            formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
+        else
+            formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername() + '/' + information;
+
         return formatUrl;
     }
-   // public final String getSessionId(){
-  //      return sessionID;
-    //}
 
 }
 
@@ -195,6 +254,8 @@ final class Request {
     public static final String Connection = "/connection/login/";
     public static final String Sign_Up = "/connection/signup/";
     public static final String Conversations = "/api/chat/";
+    public static final String Images = "/api/images/";
+    public static final String ImagesCommon = "/api/images/common/";
     public static final String Users_Fetch ="/api/user/";
 
 

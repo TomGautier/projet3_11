@@ -9,6 +9,8 @@ public class TextBox extends GenericShape {
     public static final int FONT_SIZE = 25;
     private String text = "";
 
+    public static final String TYPE = "Text";
+
     public TextBox(String id, int x, int y, PaintStyle style) {
         super(id, x, y, 0, FONT_SIZE, style);
         text = "";
@@ -50,4 +52,6 @@ public class TextBox extends GenericShape {
     public void showEditingDialog(FragmentManager fragmentManager) {
         ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, text);
     }
+
+    public String getType() { return TYPE; }
 }
