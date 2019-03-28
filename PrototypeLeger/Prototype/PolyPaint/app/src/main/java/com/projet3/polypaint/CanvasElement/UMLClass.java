@@ -3,6 +3,7 @@ package com.projet3.polypaint.CanvasElement;
 import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
+import android.graphics.Rect;
 
 public class UMLClass extends GenericShape {
     protected final static int DEFAULT_WIDTH = 180;
@@ -13,6 +14,9 @@ public class UMLClass extends GenericShape {
         //width = DEFAULT_WIDTH;
         //height = DEFAULT_HEIGHT;
     }
+
+
+
     public UMLClass clone() {
         return new UMLClass(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
     }
@@ -25,6 +29,9 @@ public class UMLClass extends GenericShape {
         Path p = new Path();
 
         p.addRect(posX - w2, posY - h2, posX + w2, posY + h2, Path.Direction.CW);
+
+        for (AnchorPoint anchorPoint : anchorPoints)
+            anchorPoint.drawOnCanvas(canvas);
 
         canvas.drawPath(p, style.getBackgroundPaint());
         canvas.drawPath(p, style.getBorderPaint());

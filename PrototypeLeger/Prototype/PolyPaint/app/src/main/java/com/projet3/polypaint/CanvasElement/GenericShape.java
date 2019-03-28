@@ -7,10 +7,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Region;
+
+import java.util.ArrayList;
 
 public abstract class GenericShape {
 
-    private final int SELECTION_GAP = 4;
+    protected final int SELECTION_GAP = 4;
     private final int EDIT_BUTTON_SIZE = 30;
     protected final int CLONE_OFFSET = 30;
 
@@ -20,6 +23,8 @@ public abstract class GenericShape {
     protected int height;
     protected PaintStyle style;
     protected String id;
+    protected ArrayList<AnchorPoint> anchorPoints;
+    protected ArrayList<ConnectionForm> connections;
 
 
     public GenericShape(String id, int x, int y, int width, int height, PaintStyle style) {
@@ -29,9 +34,18 @@ public abstract class GenericShape {
         this.width = width;
         this.height = height;
         this.style = style;
+        anchorPoints = new ArrayList<>();
+        connections = new ArrayList<>();
+        setAnchorPoints();
     }
 
-
+    public void setAnchorPoints(){
+        anchorPoints = new ArrayList<>();
+        anchorPoints.add(new AnchorPoint("right",this));
+        anchorPoints.add(new AnchorPoint("left",this));
+        anchorPoints.add(new AnchorPoint("top",this));
+        anchorPoints.add(new AnchorPoint("bottom",this));
+    }
     public abstract void drawOnCanvas(Canvas canvas);
 
     public abstract GenericShape clone();
@@ -81,7 +95,6 @@ public abstract class GenericShape {
     public Rect getBoundingBox() {
         int w2 = width/2;
         int h2 = height/2;
-
         return new Rect(posX - w2, posY - h2, posX + w2, posY + h2);
     }
     public Rect getEditButton() {
@@ -94,6 +107,7 @@ public abstract class GenericShape {
     public void relativeMove(int x, int y) {
         posX += x;
         posY += y;
+        setAnchorPoints();
     }
     public int getHeight(){
         return height;
@@ -111,6 +125,8 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_HEIGHT;
             case "Role":
                 return UMLRole.DEFAULT_HEIGHT;
+            case "ConnectionForm":
+                return ConnectionForm.DEFAULT_HEIGHT;
         }
         return 0;
     }
@@ -124,6 +140,8 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_WIDTH;
             case "Role":
                 return UMLRole.DEFAULT_WIDTH;
+            case "ConnectionForm":
+                return ConnectionForm.DEFAULT_WIDTH;
         }
         return 0;
     }
@@ -133,8 +151,20 @@ public abstract class GenericShape {
     public int[] getCenterCoord(){
         return new int[] {posX,posY};
     }
+    public ArrayList<AnchorPoint> getAnchorPoints(){
+        return anchorPoints;
+    }
 
-
+    public boolean tryConnect(int x, int y, ConnectionForm connection){
+        for (AnchorPoint anchorPoint : anchorPoints){
+            if (!anchorPoint.isConnected() && anchorPoint.contains(x,y) && !getBoundingBox().contains(x,y)){
+                anchorPoint.setConnectedState(true);
+                connections.add(connection);
+                return true;
+            }
+        }
+        return false;
+    }
 
     public abstract void showEditingDialog(FragmentManager fragmentManager);
 }

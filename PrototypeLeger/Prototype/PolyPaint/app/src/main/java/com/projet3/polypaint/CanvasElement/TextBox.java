@@ -2,6 +2,7 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.app.FragmentManager;
 import android.graphics.Canvas;
+import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
@@ -19,6 +20,10 @@ public class TextBox extends GenericShape {
         super(id, x, y, 0, FONT_SIZE, style);
         text = contents;
         adjustWidthToText();
+    }
+
+    @Override
+    public void setAnchorPoints() {
     }
 
     @Override

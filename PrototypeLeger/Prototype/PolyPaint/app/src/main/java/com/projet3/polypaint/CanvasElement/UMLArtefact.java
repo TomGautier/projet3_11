@@ -13,6 +13,12 @@ public class UMLArtefact extends GenericShape {
         //width = DEFAULT_WIDTH;
         //height = DEFAULT_HEIGHT;
     }
+
+    @Override
+    public void setAnchorPoints() {
+
+    }
+
     public UMLArtefact clone() {
         return new UMLArtefact(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style);
     }

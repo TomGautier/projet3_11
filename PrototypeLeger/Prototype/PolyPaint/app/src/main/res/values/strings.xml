@@ -20,6 +20,7 @@
     <string name="buttonActivity">Activité</string>
     <string name="buttonRole">Rôle</string>
     <string name="buttonArtefact">Artéfact</string>
+    <string name="buttonConnectionForm">Connection</string>
     <string name="buttonSelection">Sélection</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>

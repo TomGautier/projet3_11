@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
@@ -21,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.projet3.polypaint.CanvasElement.ConnectionForm;
+import com.projet3.polypaint.CanvasElement.ConnectionFormVertex;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.TextBox;
@@ -42,6 +45,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonActivity;
     protected Button buttonArtefact;
     protected Button buttonText;
+    protected Button buttonConnectionForm;
     protected Button buttonCanvas;
     protected Button buttonMove;
     protected Button buttonSelection;
@@ -55,9 +59,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
 
-    protected enum Mode{selection, lasso, creation, move}
-    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box}
-
+    protected enum Mode{selection, lasso, creation, move, resize}
+    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
+    protected enum ConnectionFormType{Agregation, Composition, Inheritance}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
@@ -81,6 +85,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ArrayList<GenericShape> selections = null;
     protected Path selectionPath = new Path();
     protected boolean isMovingSelection = false;
+    protected boolean isResizingShape = false;
+    protected Path resizeConnectionFormPath = new Path();
     protected int lastTouchPosX;
     protected int lastTouchPosY;
 
@@ -163,6 +169,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.text_box);
+            }
+        });
+
+        buttonConnectionForm = (Button)rootView.findViewById(R.id.buttonConnectionForm);
+        buttonConnectionForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.ConnectionForm);
             }
         });
 
@@ -298,7 +312,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         selectionPaint.setAntiAlias(true);
 
     }
-
+    protected boolean canResize(){
+        return selections.size() == 1 && selections.get(0).getClass().equals(ConnectionForm.class);
+    }
     @SuppressLint("ClickableViewAccessibility")
     protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
@@ -319,11 +335,16 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                     return resizeCanvas(event);
                 else switch (currentMode) {
                     case selection:
-                        checkSelection(posX, posY);
+                        checkSelection(posX,posY);
+                        //checkSelection(posX, posY);
                         break;
                     case lasso:
-                        doLassoSelection(event);
-                        continueListening = true;
+                        //doLassoSelection(event);
+                        if (canResize()){
+                            resizeShape(event);
+                            continueListening = true;
+                        }
+                        //continueListening = true;
                         break;
                     case creation:
                         ArrayList stackElems = new ArrayList();
@@ -448,9 +469,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
             case text_box :
-                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new TextBox(id, posX, posY, defaultStyle);
                 ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
+            case ConnectionForm:
+                nShape = new ConnectionForm(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle, ConnectionFormType.Inheritance.toString());
         }
         if (nShape != null) {
             shapes.add(nShape);
@@ -506,6 +530,42 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
+    }
+    protected void resizeShape(MotionEvent event){
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+        ConnectionForm connectionForm =((ConnectionForm) selections.get(0));
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                connectionForm.tryClipVertex(posX,posY);
+                lastTouchPosY = posY;
+                lastTouchPosX = posX;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if ( connectionForm.isVertexTouched()){
+                    /*if (connectionForm.getVertexNumber() < 4){
+                        resizeConnectionFormPath.moveTo(lastTouchPosX,lastTouchPosY);
+                        resizeConnectionFormPath.lineTo(posX,posY);
+                        canvas.drawPath(resizeConnectionFormPath, selectionPaint);
+                    }
+                    else*/
+                    connectionForm.relativeSelectedVertexMove(posX - lastTouchPosX,posY - lastTouchPosY);
+                    lastTouchPosX = posX;
+                    lastTouchPosY = posY;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                /*if (connectionForm.isVertexTouched() && connectionForm.getVertexNumber() < 4){ //et deplacement valide
+                    connectionForm.updateVertex(posX,posY);
+                    resizeConnectionFormPath.close();
+                    resizeConnectionFormPath.reset();
+                }*/
+                if (connectionForm.isVertexTouched())
+                    connectionForm.resetTouch();
+                break;
+        }
+
     }
     protected void moveSelectedShape(MotionEvent event) {
         int posX = (int)event.getX(0);

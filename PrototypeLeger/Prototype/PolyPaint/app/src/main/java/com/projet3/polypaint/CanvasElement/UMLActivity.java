@@ -15,6 +15,11 @@ public class UMLActivity extends GenericShape {
         //height = DEFAULT_HEIGHT;
     }
 
+    @Override
+    public void setAnchorPoints() {
+
+    }
+
     public UMLActivity clone() {
         return new UMLActivity(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
     }
