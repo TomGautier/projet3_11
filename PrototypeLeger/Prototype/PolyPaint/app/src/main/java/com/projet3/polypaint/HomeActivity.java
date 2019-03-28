@@ -32,6 +32,7 @@ public class HomeActivity extends AppCompatActivity {
     private final String CHAT_TAG = "CHAT_FRAGMENT";
     private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
 	private final String USER_TABLE_TAG = "USER_TABLE_FRAGMENT";
+	private final String GALLERY_TAG = "GALLERY_FRAGMENT";
 	private final String COLLAB_EDITING_TAG = "COLLAB_IMAGE_EDITING_FRAGMENT";
 
 	private  Toolbar mainToolbar;
@@ -62,6 +63,7 @@ public class HomeActivity extends AppCompatActivity {
 			toggleImageEditingVisibility();
 			createCollabImageEditingFragment();
 			toggleCollabImageEditingVisibility();
+			createGalleryFragment();
 		}
 		int[] position = {1,2};
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
@@ -183,6 +185,13 @@ public class HomeActivity extends AppCompatActivity {
 			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
+	private void createGalleryFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.galleryFragment,new GalleryFragment(),GALLERY_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
 	private void toggleGalleryVisibility(){
 		if (galleryFragmentLayout.getVisibility() == View.VISIBLE)
 			galleryFragmentLayout.setVisibility(View.GONE);

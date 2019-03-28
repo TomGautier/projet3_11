@@ -2,8 +2,6 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.graphics.Paint;
 
-import com.projet3.polypaint.UserLogin.UserManager;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +51,7 @@ public class ShapeJsonConverter {
         JSONObject json = new JSONObject();
         JSONObject properties = new JSONObject();
 
-        try {
+        /*try {
             properties.put("type", shape.getType());
             properties.put("fillingColor", shape.getBackgroundColorString());
             properties.put("borderColor", shape.getBorderColorString());
@@ -69,7 +67,7 @@ public class ShapeJsonConverter {
             json.put("drawingSessionId", "");   // TBD
             json.put("author", UserManager.currentInstance.getUserUsername());
             json.put("properties", properties);
-        } catch (JSONException e) { e.printStackTrace(); }
+        } catch (JSONException e) { e.printStackTrace(); }*/
 
         return json;
     }

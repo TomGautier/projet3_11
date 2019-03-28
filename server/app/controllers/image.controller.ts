@@ -2,7 +2,7 @@ import { injectable, inject } from "inversify";
 import { Router, Request, Response, NextFunction } from "express";
 
 import { TYPES } from "../types";
-import { ConnectionManager } from "../services/connection.service";
+import { UserManager } from "../services/user.manager";
 import { ImageControllerInterface } from "../interfaces";
 import { ImageService } from "../services/image.service";
 
@@ -11,7 +11,7 @@ export class ImageController implements ImageControllerInterface {
     
     public constructor(
         @inject(TYPES.ImageServiceInterface) private imageService: ImageService,
-        @inject(TYPES.ConnectionManager) private connectionManager: ConnectionManager
+        @inject(TYPES.UserManager) private userManager: UserManager
     ) { }
 
     public get router(): Router {
@@ -20,7 +20,7 @@ export class ImageController implements ImageControllerInterface {
         router.get("/single/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; }
                 
                 this.imageService.getById(req.params.imageId).then(image => {
@@ -31,7 +31,7 @@ export class ImageController implements ImageControllerInterface {
         router.get("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; }
                 
                 this.imageService.getAllByAuthor(req.params.username).then(image => {
@@ -42,7 +42,7 @@ export class ImageController implements ImageControllerInterface {
         router.get("/common/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username)) 
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; }
 
                 this.imageService.getAll().then(image => {
@@ -52,7 +52,7 @@ export class ImageController implements ImageControllerInterface {
 
         router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.connectionManager.verifySession(req.params.sessionId, req.params.username))
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                     { res.json(403); return; }
                 
                 this.imageService.create(req.body.author,

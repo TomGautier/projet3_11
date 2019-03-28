@@ -31,7 +31,7 @@ import { SocketService } from "./services/socket.service";
 import { UnsaucedEventEmitter } from "./interfaces/events";
 import { DatabaseService, DatabaseConnection } from "./services/database.service";
 import { ConversationManager} from "./services/conversation.manager";
-import { ConnectionService, ConnectionManager } from "./services/connection.service";
+import { ConnectionService } from "./services/connection.service";
 import { UserService } from "./services/user.service";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConversationService } from "./services/conversation.service";
@@ -69,7 +69,6 @@ container.bind<DateServiceInterface>(TYPES.DateServiceInterface).to(DateService)
 container.bind<DatabaseService>(TYPES.DatabaseService).to(DatabaseService);
 container.bind<SocketService>(TYPES.SocketService).to(SocketService).inSingletonScope();
 container.bind<ConversationManager>(TYPES.ConversationManager).to(ConversationManager);
-container.bind<ConnectionManager>(TYPES.ConnectionManager).to(ConnectionManager).inSingletonScope();
 
 container.bind<UserManager>(TYPES.UserManager).to(UserManager).inSingletonScope();
 container.bind<DrawingSessionManager>(TYPES.DrawingSessionManager).to(DrawingSessionManager).inSingletonScope();
