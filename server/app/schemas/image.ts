@@ -20,6 +20,9 @@ export let imageSchema: Schema = new Schema({
         type: String,
         required: true
     },
+    thumbnail: {
+        type: String
+    },
     shapes: [{
         type: String,
         ref: 'Shape'
