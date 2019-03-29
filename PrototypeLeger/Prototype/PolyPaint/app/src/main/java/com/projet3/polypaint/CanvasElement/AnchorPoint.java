@@ -24,7 +24,7 @@ public class AnchorPoint {
         connectionVertex = null;
         paint = new Paint();
         paint.setAntiAlias(true);
-        paint.setColor(Color.BLACK);
+        paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(4.5f);
         setBox();

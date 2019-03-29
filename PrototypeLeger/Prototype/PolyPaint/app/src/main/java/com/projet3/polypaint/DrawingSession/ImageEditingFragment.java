@@ -360,6 +360,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 else switch (currentMode) {
                     case selection:
                         if (canResize() && selections.get(0).canResize(posX,posY)){
+                            drawAnchorPoints();
                             resizeShape(event);
                             continueListening = true;
                         }
@@ -404,7 +405,11 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         });
     }
 
-
+    protected void drawAnchorPoints(){
+        for (GenericShape shape : shapes){
+            shape.drawAnchorPoints(canvas);
+        }
+    }
     protected void stack(){
 
     }

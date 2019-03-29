@@ -30,8 +30,8 @@ public class UMLClass extends GenericShape {
 
         p.addRect(posX - w2, posY - h2, posX + w2, posY + h2, Path.Direction.CW);
 
-        for (AnchorPoint anchorPoint : anchorPoints)
-            anchorPoint.drawOnCanvas(canvas);
+        //for (AnchorPoint anchorPoint : anchorPoints)
+          //  anchorPoint.drawOnCanvas(canvas);
 
         canvas.drawPath(p, style.getBackgroundPaint());
         canvas.drawPath(p, style.getBorderPaint());

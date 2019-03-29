@@ -123,6 +123,11 @@ public abstract class GenericShape {
         return new Rect(posX + w2, posY - h2 - EDIT_BUTTON_SIZE, posX + w2 + EDIT_BUTTON_SIZE, posY - h2);
     }
 
+    public void drawAnchorPoints(Canvas canvas){
+        for (AnchorPoint anchor : anchorPoints){
+            anchor.drawOnCanvas(canvas);
+        }
+    }
     public void relativeMove(int x, int y) {
         posX += x;
         posY += y;
