@@ -11,6 +11,8 @@ using PolyPaint.Managers;
 using System.Windows.Input;
 using PolyPaint.Vues;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace PolyPaint.VueModeles
 {
@@ -100,6 +102,8 @@ namespace PolyPaint.VueModeles
                 ProprieteModifiee();
             }
         }
+        public Stroke StrokeBeingDragged { get; set; }
+        public int IndexBeingDragged { get; set; }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
@@ -227,7 +231,12 @@ namespace PolyPaint.VueModeles
             AjusterPointe();
             
             Traits = editeur.traits;
+            StylusPointCollection pts = new StylusPointCollection();
+            
+            //editeur.traits.Add(new Stroke(pts));
             SelectedStrokes = editeur.selectedStrokes;
+            this.IndexBeingDragged = -1;
+            
             
 
             // Pour chaque commande, on effectue la liaison avec des méthodes du modèle.            
@@ -309,7 +318,8 @@ namespace PolyPaint.VueModeles
 
                 this.Canvas.Select(editeur.selectedStrokes);
                 this.Canvas.AllowSelection = false;
-                this.Canvas.ResizeEnabled = true;                
+                this.Canvas.ResizeEnabled = true;
+                this.Canvas.MoveEnabled = true;
                 switch (OutilSelectionne)
                 {
                     case "lasso":
@@ -329,6 +339,11 @@ namespace PolyPaint.VueModeles
                     if ((s as Form).Type == "Text")
                     {
                         this.Canvas.ResizeEnabled = false;
+                    }
+                    else if ((s as Form).Type == "Arrow")
+                    {
+                        this.Canvas.ResizeEnabled = false;
+                        this.Canvas.MoveEnabled = false;
                     }
                 }
                 
@@ -402,7 +417,24 @@ namespace PolyPaint.VueModeles
                 
                 selectionZone.Inflate(new Size(15, 15)); //To cover the resizing bounds
             }
-            if (this.OutilSelectionne == "lasso" && !selectionZone.Contains(mousePos))
+            if (this.OutilSelectionne == "lasso" && this.StrokeBeingDragged == null)
+            if (this.OutilSelectionne == "lasso" && this.StrokeBeingDragged == null)
+            {
+                foreach (Stroke s in Traits.Where(x=> (x as Form).Type == "Arrow"))
+                {
+                    for (int i = 0; i< s.StylusPoints.Count; i++)
+                    {
+                        Point pts = s.StylusPoints[i].ToPoint();
+                        if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10 && this.IndexBeingDragged == -1)
+                        {
+                            this.StrokeBeingDragged = s;
+                            this.IndexBeingDragged = i;
+                            editeur.ShowEncrage = true;
+                        }
+                    }
+                }
+            }
+            if (this.OutilSelectionne == "lasso" && !selectionZone.Contains(mousePos) && this.StrokeBeingDragged == null)
             {
                 StrokeCollection selection = new StrokeCollection();
                 for (int i = Traits.Count -1; i >= 0; i--)
@@ -421,6 +453,17 @@ namespace PolyPaint.VueModeles
             {
                 editeur.HandleMouseDown(mousePos);
             }
+        }
+        public void HandlePreviewMouseUp(Point mousePos)
+        {
+            if (this.StrokeBeingDragged != null)
+            {
+                editeur.ShowEncrage = false;
+                this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+                this.StrokeBeingDragged = null;
+                this.IndexBeingDragged = -1;
+            }
+            
         }
         public void HandleRotation(Point rotatePoint)
         {

@@ -3,6 +3,7 @@ using PolyPaint.VueModeles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,9 @@ namespace PolyPaint.Vues
             (DataContext as VueModele).SendCanvas(this.surfaceDessin);
             this.surfaceDessin.AllowSelection = false;
             this.surfaceDessin.IsDraging = false;
+            this.surfaceDessin.LastSelection = new MemoryStream();
+            this.AllowDrop = true;
+            
         }
 
         // Pour gérer les points de contrôles.
@@ -74,8 +78,19 @@ namespace PolyPaint.Vues
         }
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+           
             (DataContext as VueModele).HandlePreviewMouseDown(e.GetPosition(surfaceDessin));
-
+            this.surfaceDessin.IsDraging = true;
+        }
+        private void surfaceDessin_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            (DataContext as VueModele).HandlePreviewMouseUp(e.GetPosition(surfaceDessin));
+            this.surfaceDessin.IsDraging = false;
+        }
+        private void surfaceDessin_Drop(object sender, DragEventArgs e)
+        {
+           
+           // (DataContext as VueModele).HandleDrop(e.GetPosition(surfaceDessin));
         }
         private void surfaceDessin_MouseDown(object sender, MouseButtonEventArgs e)
         {

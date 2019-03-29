@@ -65,7 +65,7 @@ namespace PolyPaint.Managers
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Color = (Color)ColorConverter.ConvertFromString(this.Color);
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Width = this.Size;
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Height = this.Size;
-                this.Arrows[this.Arrows.Count - 1].Type = this.Type;
+                //this.Arrows[this.Arrows.Count - 1].Type = this.Type;
                 this.IsDrawingArrow = true;
                 return true;
             }

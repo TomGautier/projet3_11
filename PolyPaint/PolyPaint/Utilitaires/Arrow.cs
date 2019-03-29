@@ -23,7 +23,7 @@ namespace PolyPaint.Utilitaires
             :base(pts)
         {
             this.DrawingAttributes.Color = Colors.Red;
-            
+            this.Type = TYPE;
  
 
         }

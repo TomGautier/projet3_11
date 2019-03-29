@@ -305,6 +305,7 @@ namespace PolyPaint.Modeles
                         
                         isOnEncrage = true;
                     }
+                    
                 }
             }
             if (!isOnEncrage)

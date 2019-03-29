@@ -254,11 +254,14 @@
                SelectionChanging="surfaceDessin_SelectionChanging"
                SelectionResized="surfaceDessin_SelectionResized"
                SelectionResizing="surfaceDessin_SelectionResizing"
-               PreviewMouseDown="surfaceDessin_PreviewMouseDown"                       
+               PreviewMouseDown="surfaceDessin_PreviewMouseDown"
+               PreviewMouseUp="surfaceDessin_PreviewMouseUp"
+               PreviewDrop ="surfaceDessin_Drop"
                SelectionMoving="surfaceDessin_SelectionMoving"
                SelectionMoved="surfaceDessin_SelectionMoved"
                StrokeErasing="surfaceDessin_StrokeErasing"
                PreviewKeyDown="surfaceDessin_HandleKey"
+               
                              
                Strokes="{Binding Path=Traits, Mode=OneTime}" EditingMode="{Binding Path=OutilSelectionne, Converter={StaticResource convertisseurModeEdition}, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"
                DefaultDrawingAttributes="{Binding Path=AttributsDessin, Mode=OneTime}">
