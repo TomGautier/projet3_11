@@ -56,6 +56,37 @@
                 <Button Content="Send" Height="23" Margin="1,248,4.667,-0.333" Name="sendMessageButton" VerticalAlignment="Top" Command="{Binding ChatManager.SendMessage}" Click="SendMessageButton_Click" Grid.Column="1"/>
                 <TextBox Height="232" HorizontalAlignment="Left" Margin="7,7,0,0" Name="chatBox" VerticalAlignment="Top" Width="235" IsReadOnly="True" VerticalScrollBarVisibility="Visible" Text="{Binding ChatManager.History, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Bottom" TextWrapping="Wrap"/>
             </Grid>
+            <Separator Margin="0,5,0,3"/>
+            <StackPanel Orientation="Horizontal">
+                <ListBox Name="UsersList" HorizontalContentAlignment="Stretch" MinHeight="60" Width="235" Margin="4">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="15" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="10" />
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Content="+" Click="InviteUser_Click">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="IsEnabled" Value="False"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ConnectionStatus}" Value="1">
+                                                    <Setter Property="IsEnabled" Value="True"/>
+                                                </DataTrigger>  
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <TextBlock Grid.Column="1" Text="{Binding Username}" Margin="5,0,0,0"/>
+                                <ProgressBar Grid.Column="2" Minimum="0" Maximum="1" Value="{Binding ConnectionStatus}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <Button Name="UpdateUsersList" Content="Rafraîchir" Height="23" Click="UpdateUsersList_Click"/>
+            </StackPanel>
         </StackPanel>
     </DockPanel>
 </UserControl>

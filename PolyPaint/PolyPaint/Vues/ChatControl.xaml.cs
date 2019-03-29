@@ -32,6 +32,7 @@ namespace PolyPaint.Vues
                 textBox.ScrollToEnd();
             };
             chatWindow = null;
+            UpdateUserList();
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
@@ -83,6 +84,36 @@ namespace PolyPaint.Vues
         private void AddChannel_Click(object sender, RoutedEventArgs e)
         {
             ((StackPanel)FindName("AddChannelForm")).Visibility = Visibility.Hidden;
+        }
+
+        private void UpdateUserList()
+        {
+            List<UserItem> items = new List<UserItem>();
+
+            // TODO : Load from server
+            items.Add(new UserItem() { Username = "Roger", ConnectionStatus = 0 });
+            items.Add(new UserItem() { Username = "J_Doe", ConnectionStatus = 1 });
+            items.Add(new UserItem() { Username = "GarsDeTrop", ConnectionStatus = 0 });
+            
+            UsersList.ItemsSource = items.OrderByDescending(x => x.ConnectionStatus).ToList();
+        }
+        
+        public class UserItem
+        {
+            public string Username { get; set; }
+            public int ConnectionStatus { get; set; }
+        }
+
+        private void UpdateUsersList_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateUserList();
+        }
+
+        private void InviteUser_Click(object sender, RoutedEventArgs e)
+        {
+            string invited = ((Grid)((Button)sender).Parent).Children.OfType<TextBlock>().Single().Text;
+            Console.WriteLine("You try to invite " + invited);
+            //TODO : INVITE
         }
     }
 }
