@@ -9,17 +9,19 @@ public class AnchorPoint {
     protected final int ANCHOR_POINT_RADIUS =  15;
     private Rect box;
     private Paint paint;
-    private boolean isConnected;
     private String direction;
-    private GenericShape shape;
+    private GenericShape owner;
+    private ConnectionFormVertex connectionVertex;
+   // private int connectedVertexIndex;
 
-    public AnchorPoint(String direction, GenericShape shape){
+
+    public AnchorPoint(String direction,GenericShape shape){
         this.direction = direction;
-        this.shape = shape;
+        this.owner = shape;
         initialize();
     }
     private void initialize(){
-        isConnected = false;
+        connectionVertex = null;
         paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.BLACK);
@@ -28,29 +30,40 @@ public class AnchorPoint {
         setBox();
     }
     public boolean isConnected(){
-        return isConnected;
+        return connectionVertex != null;
     }
-    public void setConnectedState(boolean state){
-        isConnected = state;
+    public void setConnection(ConnectionFormVertex vertex){
+        this.connectionVertex = vertex;
+    }
+    public void relativeMove(int x, int y){
+        setBox();
+        if (connectionVertex != null)
+            connectionVertex.relativeMove(x,y);
     }
     public void setBox(){
         switch (direction){
             case "left":
-            box = new Rect(shape.posX - shape.width/2 - ANCHOR_POINT_RADIUS,shape.posY - ANCHOR_POINT_RADIUS,
-                    shape.posX - shape.width/2, shape.posY + ANCHOR_POINT_RADIUS );
+            box = new Rect(owner.posX - owner.width/2 - 2*ANCHOR_POINT_RADIUS,owner.posY - ANCHOR_POINT_RADIUS,
+                    owner.posX - owner.width/2, owner.posY + ANCHOR_POINT_RADIUS );
             break;
             case "right":
-            box = new Rect(shape.posX + shape.width/2,shape.posY - ANCHOR_POINT_RADIUS,
-                    shape.posX + shape.width/2 + ANCHOR_POINT_RADIUS, shape.posY + ANCHOR_POINT_RADIUS );
+            box = new Rect(owner.posX + owner.width/2,owner.posY - ANCHOR_POINT_RADIUS,
+                    owner.posX + owner.width/2 + 2*ANCHOR_POINT_RADIUS, owner.posY + ANCHOR_POINT_RADIUS );
             break;
             case "top":
-            box = new Rect(shape.posX - ANCHOR_POINT_RADIUS,shape.posY - shape.height/2 - ANCHOR_POINT_RADIUS,
-                    shape.posX + ANCHOR_POINT_RADIUS, shape.posY - shape.height/2 );
+            box = new Rect(owner.posX - ANCHOR_POINT_RADIUS,owner.posY - owner.height/2 - 2*ANCHOR_POINT_RADIUS,
+                    owner.posX + ANCHOR_POINT_RADIUS, owner.posY - owner.height/2 );
             break;
             case "bottom":
-            box = new Rect(shape.posX - ANCHOR_POINT_RADIUS,shape.posY + shape.height/2,
-                    shape.posX + ANCHOR_POINT_RADIUS, shape.posY + shape.height/2 + ANCHOR_POINT_RADIUS );
+            box = new Rect(owner.posX - ANCHOR_POINT_RADIUS,owner.posY + owner.height/2,
+                    owner.posX + ANCHOR_POINT_RADIUS, owner.posY + owner.height/2 + 2*ANCHOR_POINT_RADIUS );
         }
+    }
+    public boolean stillConnected(){
+        return Rect.intersects(box,connectionVertex.getBox());
+    }
+    public boolean intersect(Rect vertexBox){
+        return Rect.intersects(box,vertexBox);
     }
     public boolean contains(int x, int y){
         return box.contains(x,y);

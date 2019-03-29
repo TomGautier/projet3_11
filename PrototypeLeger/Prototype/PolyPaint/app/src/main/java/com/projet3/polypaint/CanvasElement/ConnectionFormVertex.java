@@ -14,6 +14,9 @@ public class ConnectionFormVertex {
         this.next = next;
         setBox();
     }
+    public Rect getBox(){
+        return box;
+    }
     public void setBox(){
         box = new Rect(point.x - ANCHOR_POINT_RADIUS - 5, point.y - ANCHOR_POINT_RADIUS - 5,
                 point.x + ANCHOR_POINT_RADIUS + 5, point.y + ANCHOR_POINT_RADIUS + 5);
@@ -25,6 +28,7 @@ public class ConnectionFormVertex {
         point.x += x;
         point.y += y;
         setBox();
+        //box.offset(x,y);
         /*if (next != null){
             next.x += x;
             next.y += y;

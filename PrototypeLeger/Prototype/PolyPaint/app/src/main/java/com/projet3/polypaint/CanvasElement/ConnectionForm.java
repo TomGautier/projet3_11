@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.opengl.Matrix;
+import android.util.Pair;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -27,26 +28,24 @@ import java.util.Vector;
 public class ConnectionForm extends GenericShape {
     protected final static int DEFAULT_WIDTH = 250;
     protected final static int DEFAULT_HEIGHT = 30;
-    protected final int ARROW_WIDTH = 70;
-    protected final int ARROW_HEIGHT = 50;
-
-
     private String type;
-    //private ArrayList<ConnectionFormVertex> vertexs;
-    //private ArrayList<ConnectionFormVertex> vertices;
+    private int arrowHeight;
+    private int arrowWidth;
     private ConnectionFormVertex first;
+    private ConnectionFormVertex last;
     private ConnectionFormVertex selectedVertex;
+
     private Path path;
     private Path verticesPath;
-    private Path selectPath;
     private Path arrow;
+
     private Paint linePaint;
     private Paint arrowPaint;
     private Paint selectPaint;
     private Paint modifyPaint;
     private boolean isResizing;
-    private int arrowHeight;
-    private int arrowWidth;
+    //private Pair<GenericShape,GenericShape> connectedShapes;
+
 
     public ConnectionForm(String id, int x, int y, int width, int height, PaintStyle style, String type) {
         super(id, x, y, width, height, style);
@@ -60,9 +59,7 @@ public class ConnectionForm extends GenericShape {
     }
     private void initializeType(){
         arrowPaint = new Paint();
-        // smooths
         arrowPaint.setAntiAlias(true);
-
         switch(type) {
             case "Inheritance":
                 arrowHeight = 50;
@@ -85,6 +82,7 @@ public class ConnectionForm extends GenericShape {
         }
     }
     private void initializeVertices() {
+        //connectedShapes = new Pair(null,null);
         //vertices = new ArrayList<>();
         path = new Path();
         selectedVertex = null;
@@ -94,7 +92,7 @@ public class ConnectionForm extends GenericShape {
         Point middle1 = new Point(origin.x + width/3, posY);
         Point middle2 = new Point(middle1.x + width/3, posY);
         Point end = new Point(posX + width/2,posY);
-        ConnectionFormVertex last = new ConnectionFormVertex(end, null);
+        last = new ConnectionFormVertex(end, null);
         ConnectionFormVertex middleVertex2  = new ConnectionFormVertex(middle2,last);
         ConnectionFormVertex middleVertex1 = new ConnectionFormVertex(middle1,middleVertex2);
         first = new ConnectionFormVertex(origin,middleVertex1);
@@ -150,10 +148,28 @@ public class ConnectionForm extends GenericShape {
             current = current.getNext();
         }
     }
-    public void relativeSelectedVertexMove(int x, int y) {
-        selectedVertex.relativeMove(x,y);
+    public void relativeVertexMove(int x, int y, int index) {
+       switch(index){
+           case 0:
+               selectedVertex.relativeMove(x,y);
+               break;
+           case 1:
+               first.relativeMove(x,y);
+               break;
+           case 2:
+               last.relativeMove(x,y);
+               break;
+       }
     }
 
+    public ConnectionFormVertex getDockingVertex(){
+        if (selectedVertex == first)
+            return first;
+        else if (selectedVertex == last)
+            return last;
+
+        return null;
+    }
     /*public void updateVertex(int x, int y){
         ConnectionFormVertex nVertex = null;
         if (selectedVertex != null) {

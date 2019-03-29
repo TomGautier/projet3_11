@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class RequestManager {
-    private final int TIMEOUT_DELAY = 20;
+    private final int TIMEOUT_DELAY = 5;
     private final String PORT =":3000";
 
     private String url;

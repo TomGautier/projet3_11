@@ -10,6 +10,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
+import android.graphics.drawable.shapes.Shape;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.util.Pair;
@@ -466,8 +467,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 selections.add(shape);
         }
 
-        // Reset clip to full canvas
         canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
+        // Reset clip to full canvas
     }
 
     protected GenericShape addShape(int posX, int posY) {
@@ -557,6 +558,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
+    protected void tryToAnchor(ConnectionForm connection,int x, int y){
+        for (GenericShape shape : shapes) {
+            if (shape != connection) {
+                shape.updateAnchor(connection);
+            }
+        }
+    }
     protected void resizeShape(MotionEvent event){
         int posX = (int)event.getX(0);
         int posY = (int)event.getY(0);
@@ -564,30 +572,16 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                //connectionForm.tryClipVertex(posX,posY);
                 lastTouchPosY = posY;
                 lastTouchPosX = posX;
                 break;
             case MotionEvent.ACTION_MOVE:
-                //if ( connectionForm.isVertexTouched()){
-                    /*if (connectionForm.getVertexNumber() < 4){
-                        resizeConnectionFormPath.moveTo(lastTouchPosX,lastTouchPosY);
-                        resizeConnectionFormPath.lineTo(posX,posY);
-                        canvas.drawPath(resizeConnectionFormPath, selectionPaint);
-                    }
-                    else*/
-                    connectionForm.relativeSelectedVertexMove(posX - lastTouchPosX,posY - lastTouchPosY);
-                    lastTouchPosX = posX;
-                    lastTouchPosY = posY;
-               // }
+                connectionForm.relativeVertexMove(posX - lastTouchPosX,posY - lastTouchPosY, 0);
+                lastTouchPosX = posX;
+                lastTouchPosY = posY;
                 break;
             case MotionEvent.ACTION_UP:
-                /*if (connectionForm.isVertexTouched() && connectionForm.getVertexNumber() < 4){ //et deplacement valide
-                    connectionForm.updateVertex(posX,posY);
-                    resizeConnectionFormPath.close();
-                    resizeConnectionFormPath.reset();
-                }*/
-               // if (connectionForm.isVertexTouched())
+                tryToAnchor(connectionForm,posX, posY);
                 connectionForm.finishResize();
                 break;
         }

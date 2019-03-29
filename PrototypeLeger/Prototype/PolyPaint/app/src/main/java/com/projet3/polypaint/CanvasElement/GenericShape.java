@@ -100,8 +100,21 @@ public abstract class GenericShape {
     public boolean contains(int x, int y) {
         return getBoundingBox().contains(x,y);
     }
+    public void updateAnchor(ConnectionForm connection){
+        ConnectionFormVertex vertex = connection.getDockingVertex();
+        if (vertex == null)
+            return;
+        for (AnchorPoint anchorPoint : anchorPoints){
+            if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
+                anchorPoint.setConnection(vertex);
+            }
+            else if (anchorPoint.isConnected() && !anchorPoint.stillConnected()){
+                anchorPoint.setConnection(null);
+            }
+        }
+    }
     public boolean canResize(int x, int y){
-        return true;
+        return false;
     }
     public Rect getEditButton() {
         int w2 = width/2;
@@ -113,7 +126,8 @@ public abstract class GenericShape {
     public void relativeMove(int x, int y) {
         posX += x;
         posY += y;
-        setAnchorPoints();
+        for (AnchorPoint anchorPoint : anchorPoints)
+            anchorPoint.relativeMove(x,y);
     }
     public int getHeight(){
         return height;
@@ -161,16 +175,7 @@ public abstract class GenericShape {
         return anchorPoints;
     }
 
-    public boolean tryConnect(int x, int y, ConnectionForm connection){
-        for (AnchorPoint anchorPoint : anchorPoints){
-            if (!anchorPoint.isConnected() && anchorPoint.contains(x,y) && !getBoundingBox().contains(x,y)){
-                anchorPoint.setConnectedState(true);
-                connections.add(connection);
-                return true;
-            }
-        }
-        return false;
-    }
+
 
     public abstract void showEditingDialog(FragmentManager fragmentManager);
 }
