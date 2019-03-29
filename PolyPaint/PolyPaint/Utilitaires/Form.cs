@@ -67,7 +67,13 @@ namespace PolyPaint.Utilitaires
             {
                 label = value;
                 this.update();
-                this.MakeShape();
+                if (this.Type != "Arrow") {
+
+                    this.MakeShape();                       
+                    int rotation = this.CurrentRotation;
+                    this.CurrentRotation = 0;
+                    this.SetRotation(rotation);
+                }
             }
         }
 
@@ -92,13 +98,15 @@ namespace PolyPaint.Utilitaires
         protected virtual void MakeShape() { }
         public void SetRotation(int degrees)
         {
-            Matrix rotatingMatrix = new Matrix();
-            rotatingMatrix.RotateAt(360 - this.CurrentRotation, Center.X, Center.Y); //reset angle
-            rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
-            this.CurrentRotation = degrees;
-            Stroke copy = this.Clone();
-            copy.Transform(rotatingMatrix, false);
-            this.StylusPoints = copy.StylusPoints;
+            
+                Matrix rotatingMatrix = new Matrix();
+                rotatingMatrix.RotateAt(360 - this.CurrentRotation, Center.X, Center.Y); //reset angle
+                rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
+                this.CurrentRotation = degrees;
+                Stroke copy = this.Clone();
+                copy.Transform(rotatingMatrix, false);
+                this.StylusPoints = copy.StylusPoints;
+            
 
 
         }
