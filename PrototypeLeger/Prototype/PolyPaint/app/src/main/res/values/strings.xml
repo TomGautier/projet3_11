@@ -54,6 +54,14 @@
     <string name="userListInviteToFriends">Inviter à être amis</string>
     <string name="userListInviteToDrawSession">Inviter à une session</string>
 
+    <!-- CONNECTION FORMS -->
+    <string name="connectionFormAgregation">Agrégation</string>
+    <string name="connectionFormComposition">Composition</string>
+    <string name="connectionFormInheritance">Héritage</string>
+
+
+
+
 
 
 </resources>

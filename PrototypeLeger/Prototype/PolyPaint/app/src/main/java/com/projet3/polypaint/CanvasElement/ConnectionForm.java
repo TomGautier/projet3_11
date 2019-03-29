@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.opengl.Matrix;
 
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -24,7 +27,7 @@ import java.util.Vector;
 public class ConnectionForm extends GenericShape {
     protected final static int DEFAULT_WIDTH = 250;
     protected final static int DEFAULT_HEIGHT = 30;
-    protected final int ARROW_WIDTH = 30;
+    protected final int ARROW_WIDTH = 70;
     protected final int ARROW_HEIGHT = 50;
 
 
@@ -34,27 +37,58 @@ public class ConnectionForm extends GenericShape {
     private ConnectionFormVertex first;
     private ConnectionFormVertex selectedVertex;
     private Path path;
+    private Path verticesPath;
     private Path selectPath;
+    private Path arrow;
     private Paint linePaint;
     private Paint arrowPaint;
     private Paint selectPaint;
     private Paint modifyPaint;
-    private boolean vertexTouched;
-
+    private boolean isResizing;
+    private int arrowHeight;
+    private int arrowWidth;
 
     public ConnectionForm(String id, int x, int y, int width, int height, PaintStyle style, String type) {
         super(id, x, y, width, height, style);
         this.type = type;
+        initializeType();
         initializeVertices();
         initializePaints();
     }
     public ConnectionForm clone() {
         return new ConnectionForm(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, type);
     }
+    private void initializeType(){
+        arrowPaint = new Paint();
+        // smooths
+        arrowPaint.setAntiAlias(true);
+
+        switch(type) {
+            case "Inheritance":
+                arrowHeight = 50;
+                arrowWidth = 30;
+                arrowPaint.setColor(Color.BLACK);
+                arrowPaint.setStyle(Paint.Style.STROKE);
+                break;
+            case "Agregation":
+                arrowHeight = 30;
+                arrowWidth = 50;
+                arrowPaint.setColor(Color.BLACK);
+                arrowPaint.setStyle(Paint.Style.STROKE);
+                break;
+            case "Composition":
+                arrowHeight = 30;
+                arrowWidth = 50;
+                arrowPaint.setColor(Color.BLACK);
+                arrowPaint.setStyle(Paint.Style.FILL);
+                break;
+        }
+    }
     private void initializeVertices() {
         //vertices = new ArrayList<>();
+        path = new Path();
         selectedVertex = null;
-        vertexTouched = false;
+        isResizing = false;
         //int wLine = width - ARROW_WIDTH;
         Point origin = new Point(posX - width/2, posY);
         Point middle1 = new Point(origin.x + width/3, posY);
@@ -75,15 +109,11 @@ public class ConnectionForm extends GenericShape {
         linePaint = new Paint();
         // smooths
         linePaint.setAntiAlias(true);
-        linePaint.setColor(Color.BLACK);
+        linePaint.setColor(Color.DKGRAY);
         linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setStrokeWidth(12.0f);
+        linePaint.setStrokeWidth(6.0f);
 
-        arrowPaint = new Paint();
-        // smooths
-        arrowPaint.setAntiAlias(true);
-        arrowPaint.setColor(Color.BLUE);
-        arrowPaint.setStyle(Paint.Style.FILL);
+
         //arrowPaint.setStrokeWidth(2.0f);
 
         modifyPaint = new Paint();
@@ -102,27 +132,15 @@ public class ConnectionForm extends GenericShape {
 
     }
 
-    public boolean isVertexTouched(){
+   /* public boolean isVertexTouched(){
         return vertexTouched;
-    }
+    }*/
 
-    public void resetTouch(){
-        vertexTouched = false;
+    public void finishResize(){
+        isResizing = false;
         selectedVertex = null;
     }
 
-    public void tryClipVertex(int x, int y){
-        ConnectionFormVertex current = first;
-        while (current != null){
-            if (current.contains(x, y)) {
-                selectedVertex = current;
-                vertexTouched = true;
-                return;
-            }
-            current = current.getNext();
-        }
-        //selectedVertex = null;
-    }
     @Override
     public void relativeMove(int x, int y) {
         super.relativeMove(x,y);
@@ -153,7 +171,32 @@ public class ConnectionForm extends GenericShape {
 
     @Override
     public Rect getBoundingBox() {
-      return super.getBoundingBox();
+        //boundingBox = new Region();
+        //boundingBox.setPath(path,new Region((int)rect.left,(int)rect.top,(int)rect.right,(int)rect.bottom));
+        //return boundingBox;
+        return super.getBoundingBox();
+    }
+    @Override
+    public boolean contains(int x, int y){
+        ConnectionFormVertex current = first;
+        while (current != null){
+            if (current.contains(x, y)){
+                selectedVertex = current;
+                return true;
+            }
+            current = current.getNext();
+        }
+        return false;
+    }
+    @Override
+    public boolean canResize(int x, int y){
+        if (isResizing)
+            return true;
+        if (contains(x,y)){
+            isResizing = true;
+            return true;
+        }
+        return false;
     }
 
 
@@ -164,35 +207,64 @@ public class ConnectionForm extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        //Path p = new Path();
-
-        path = new Path();
-        Path arrow = new Path();
+        path.reset();
         ConnectionFormVertex firstVertex = first;
         path.moveTo(firstVertex.x(), firstVertex.y());
         ConnectionFormVertex currentVertex = firstVertex;
+        float angle = 0;
         while (currentVertex.getNext() != null){
+            path.addCircle(currentVertex.x(),currentVertex.y(),5, Path.Direction.CW);
             path.lineTo(currentVertex.getNext().x(),currentVertex.getNext().y());
+            angle = getAngle(currentVertex.getNext().getPoint(), currentVertex.getPoint());
             currentVertex = currentVertex.getNext();
         }
-        //ConnectionFormVertex lastVertex = findLastVertex();
-        ConnectionFormVertex lastVertex = currentVertex;
-        arrow.moveTo(lastVertex.x() + ARROW_WIDTH, lastVertex.y());
-        arrow.lineTo(lastVertex.x() + ARROW_WIDTH, lastVertex.y());
-        arrow.lineTo(lastVertex.x(), lastVertex.y() + ARROW_HEIGHT / 2);
-        arrow.lineTo(lastVertex.x(), lastVertex.y() - ARROW_HEIGHT / 2);
+
         canvas.drawPath(path, linePaint);
-        canvas.drawPath(arrow, arrowPaint);
+        drawArrow(currentVertex, angle, canvas);
+       // canvas.drawPath(arrow, arrowPaint);
+    }
+
+    private void drawArrow(ConnectionFormVertex lastVertex, float angle, Canvas canvas){
+        arrow = new Path();
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,lastVertex.x(),lastVertex.y());
+        switch (type){
+            case "Inheritance":
+                arrow.moveTo(lastVertex.x() + arrowWidth/2, lastVertex.y()); // Top
+                arrow.lineTo(lastVertex.x() - arrowWidth/2, lastVertex.y() - arrowHeight/2); // Bottom left
+                arrow.lineTo(lastVertex.x() - arrowWidth/2, lastVertex.y() + arrowHeight/2); // Bottom right
+                arrow.lineTo(lastVertex.x() + arrowWidth/2, lastVertex.y()); // Back to Top
+                arrow.close();
+                break;
+
+            default: //composition et aggregation
+                arrow.moveTo(lastVertex.x(), lastVertex.y() + arrowHeight/2); // Top
+                arrow.lineTo(lastVertex.x() - arrowWidth/2, lastVertex.y()); // Left
+                arrow.lineTo(lastVertex.x(), lastVertex.y() - arrowHeight/2); // Bottom
+                arrow.lineTo(lastVertex.x() + arrowWidth/2, lastVertex.y()); // Right
+                arrow.lineTo(lastVertex.x(), lastVertex.y() + arrowHeight/2); // Back to Top
+                arrow.close();
+                break;
+        }
+        canvas.drawPath(arrow,arrowPaint);
+        canvas.restore();
+    }
+    private float getAngle(Point target, Point source) {
+        float angle = (float) Math.toDegrees(Math.atan2(target.y - source.y, target.x - source.x));
+        if(angle < 0){
+            angle += 360;
+        }
+        return angle;
     }
     @Override
     public void drawSelectionBox(Canvas canvas, Paint paint) {
-        selectPath = new Path();
+        verticesPath = new Path();
         ConnectionFormVertex current = first;
         while(current != null){
-            selectPath.addCircle(current.x(),current.y(),20, Path.Direction.CW);
+            verticesPath.addCircle(current.x(),current.y(),20, Path.Direction.CW);
             current = current.getNext();
         }
-        canvas.drawPath(selectPath,modifyPaint);
+        canvas.drawPath(verticesPath,modifyPaint);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

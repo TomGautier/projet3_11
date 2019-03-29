@@ -14,6 +14,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.ConnectionFormVertex;
@@ -80,6 +82,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
     protected Mode currentMode = Mode.creation;
     protected ShapeType currentShapeType = ShapeType.UmlClass;
+    protected ConnectionFormType currentConnectionFormType = ConnectionFormType.Inheritance;
 
     protected Paint selectionPaint;
     protected ArrayList<GenericShape> selections = null;
@@ -177,6 +180,26 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.ConnectionForm);
+                PopupMenu dropDownMenu = new PopupMenu(getActivity(), buttonConnectionForm);
+                dropDownMenu.getMenuInflater().inflate(R.menu.connection_forms_menu, dropDownMenu.getMenu());
+                dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.connectionFormAgregation:
+                                setConnectionFormType(ConnectionFormType.Agregation);
+                                break;
+                            case R.id.connectionFormInheritance:
+                                setConnectionFormType(ConnectionFormType.Inheritance);
+                                break;
+                            case R.id.connectionFormComposition:
+                                setConnectionFormType(ConnectionFormType.Composition);
+                                break;
+                        }
+                        return true;
+                    }
+                });
+                dropDownMenu.show();
             }
         });
 
@@ -335,16 +358,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                     return resizeCanvas(event);
                 else switch (currentMode) {
                     case selection:
-                        checkSelection(posX,posY);
-                        //checkSelection(posX, posY);
-                        break;
-                    case lasso:
-                        //doLassoSelection(event);
-                        if (canResize()){
+                        if (canResize() && selections.get(0).canResize(posX,posY)){
                             resizeShape(event);
                             continueListening = true;
                         }
-                        //continueListening = true;
+                        else
+                            checkSelection(posX,posY);
+                        //checkSelection(posX, posY);
+                        break;
+                    case lasso:
+                        doLassoSelection(event);
+                        continueListening = true;
                         break;
                     case creation:
                         ArrayList stackElems = new ArrayList();
@@ -388,9 +412,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     protected void checkSelection(int x, int y) {
         selections.clear();
-
         for (int i = shapes.size() - 1; i >= 0; i--) {
-            if (shapes.get(i).getBoundingBox().contains(x, y)){
+            if (shapes.get(i).contains(x, y)){
                 selections.add(shapes.get(i));
                 return;
             }
@@ -474,7 +497,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case ConnectionForm:
                 nShape = new ConnectionForm(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle, ConnectionFormType.Inheritance.toString());
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle, currentConnectionFormType.toString());
         }
         if (nShape != null) {
             shapes.add(nShape);
@@ -510,6 +533,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         currentShapeType = type;
         currentMode = Mode.creation;
     }
+    protected void setConnectionFormType(ConnectionFormType type){
+        currentConnectionFormType = type;
+    }
 
     protected void setMode(Mode mode) {
         currentMode = mode;
@@ -538,12 +564,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                connectionForm.tryClipVertex(posX,posY);
+                //connectionForm.tryClipVertex(posX,posY);
                 lastTouchPosY = posY;
                 lastTouchPosX = posX;
                 break;
             case MotionEvent.ACTION_MOVE:
-                if ( connectionForm.isVertexTouched()){
+                //if ( connectionForm.isVertexTouched()){
                     /*if (connectionForm.getVertexNumber() < 4){
                         resizeConnectionFormPath.moveTo(lastTouchPosX,lastTouchPosY);
                         resizeConnectionFormPath.lineTo(posX,posY);
@@ -553,7 +579,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                     connectionForm.relativeSelectedVertexMove(posX - lastTouchPosX,posY - lastTouchPosY);
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
-                }
+               // }
                 break;
             case MotionEvent.ACTION_UP:
                 /*if (connectionForm.isVertexTouched() && connectionForm.getVertexNumber() < 4){ //et deplacement valide
@@ -561,8 +587,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                     resizeConnectionFormPath.close();
                     resizeConnectionFormPath.reset();
                 }*/
-                if (connectionForm.isVertexTouched())
-                    connectionForm.resetTouch();
+               // if (connectionForm.isVertexTouched())
+                connectionForm.finishResize();
                 break;
         }
 
@@ -574,7 +600,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 for (GenericShape shape : selections) {
-                    if (shape.getBoundingBox().contains(posX, posY)) {
+                    if (shape.contains(posX, posY)) {
                         isMovingSelection = true;
                         lastTouchPosX = posX;
                         lastTouchPosY = posY;

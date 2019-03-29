@@ -97,6 +97,12 @@ public abstract class GenericShape {
         int h2 = height/2;
         return new Rect(posX - w2, posY - h2, posX + w2, posY + h2);
     }
+    public boolean contains(int x, int y) {
+        return getBoundingBox().contains(x,y);
+    }
+    public boolean canResize(int x, int y){
+        return true;
+    }
     public Rect getEditButton() {
         int w2 = width/2;
         int h2 = height/2;

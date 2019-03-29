@@ -36,6 +36,9 @@ public class ConnectionFormVertex {
     public final int y(){
         return point.y;
     }
+    public final Point getPoint(){
+        return point;
+    }
     public void setPoint(Point point){
         this.point = point;
     }
