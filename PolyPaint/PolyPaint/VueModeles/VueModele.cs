@@ -430,6 +430,7 @@ namespace PolyPaint.VueModeles
                             this.StrokeBeingDragged = s;
                             this.IndexBeingDragged = i;
                             editeur.ShowEncrage = true;
+                            this.Canvas.EditingMode = InkCanvasEditingMode.None;
                         }
                     }
                 }
@@ -459,6 +460,8 @@ namespace PolyPaint.VueModeles
             if (this.StrokeBeingDragged != null)
             {
                 editeur.ShowEncrage = false;
+                this.Canvas.EditingMode = InkCanvasEditingMode.Select;
+                editeur.UpdateArrow(this.StrokeBeingDragged, this.IndexBeingDragged,mousePos);
                 this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
                 this.StrokeBeingDragged = null;
                 this.IndexBeingDragged = -1;

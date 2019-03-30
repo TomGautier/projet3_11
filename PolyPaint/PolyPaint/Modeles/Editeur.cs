@@ -289,6 +289,67 @@ namespace PolyPaint.Modeles
             catch { }
 
         }
+        public void UpdateArrow(Stroke arrow, int index, Point pts)
+        {
+            bool isOnEncrage = false;
+            foreach (Form form in this.traits)
+            {
+                for (int i = 0; i < form.EncPoints.Length; i++)
+                {
+                    if (Math.Abs(Point.Subtract(form.EncPoints[i], pts).Length) < 20)
+                    {
+                        
+                        if (index == 0)
+                        {
+                            if (form != (arrow as Arrow).Shape1)
+                            {
+                                isOnEncrage = true;
+                                form.Arrow = (arrow as Arrow);
+                                if ((arrow as Arrow).Shape1 != null)
+                                {
+                                    (arrow as Arrow).Shape1.Arrow = null;
+                                }
+                                (arrow as Arrow).Shape1 = form;
+                                (arrow as Arrow).Index1 = i;
+
+                                arrow.StylusPoints[index] = new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y);
+                            }
+                        }
+                        else
+                        {
+                            if (form != (arrow as Arrow).Shape1)
+                            {
+                                isOnEncrage = true;
+                                form.Arrow = (arrow as Arrow);
+                                if ((arrow as Arrow).Shape2 != null)
+                                {
+                                    (arrow as Arrow).Shape2.Arrow = null;
+                                }
+                                (arrow as Arrow).Shape2 = form;
+                                (arrow as Arrow).Index2 = i;
+
+                                arrow.StylusPoints[index] = new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y);
+                            }
+                        }
+                    }
+                }
+                if (!isOnEncrage)
+                {
+                    arrow.StylusPoints[index] = new StylusPoint(pts.X, pts.Y);
+                    if (index == 0 && (arrow as Arrow).Shape1 != null)
+                    {
+                        (arrow as Arrow).Shape1.Arrow = null;
+                        (arrow as Arrow).Shape1 = null;
+                    }
+                    else if (index == arrow.StylusPoints.Count - 1 && (arrow as Arrow).Shape2 != null)
+                    {
+                        (arrow as Arrow).Shape2.Arrow = null;
+                        (arrow as Arrow).Shape2 = null;
+                    }
+
+                }
+            }
+        }
         private void HandleConnector(Point p)
         {
 
