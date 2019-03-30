@@ -6,39 +6,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RadioGroup
-        android:id="@+id/lineStyle"
+
+    <LinearLayout
+        android:id="@+id/lineStyleLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/stroke_bg"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/stroke_bg"
-        android:checkedButton="@+id/radioFull"
-        android:padding="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <RadioButton
-            android:id="@+id/radioFull"
+        <TextView
+            android:id="@+id/textViewLineStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/styleFull" />
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/lineStyle"
+            android:textAlignment="viewStart" />
 
-        <RadioButton
-            android:id="@+id/radioDotted"
+        <RadioGroup
+            android:id="@+id/lineStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/styleDotted" />
+            android:checkedButton="@+id/radioFull"
+            android:padding="4dp">
 
-        <RadioButton
-            android:id="@+id/radioDashed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/styleDashed" />
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/radioFull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/styleFull" />
+
+            <RadioButton
+                android:id="@+id/radioDotted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/styleDotted" />
+
+            <RadioButton
+                android:id="@+id/radioDashed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/styleDashed" />
+        </RadioGroup>
+    </LinearLayout>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/backgroundColorPicker"
@@ -49,7 +67,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/stroke_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/lineStyle"
+        app:layout_constraintStart_toEndOf="@id/lineStyleLayout"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -64,37 +82,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textViewBG-R"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sliderRed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBG" />
+
+        <TextView
+            android:id="@+id/textViewBG-G"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sliderGreen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBG-R" />
+
+        <TextView
+            android:id="@+id/textViewBG-B"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sliderBlue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBG-G"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <SeekBar
             android:id="@+id/redSliderBG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:max="255"
             android:progress="255"
             app:layout_constraintEnd_toStartOf="@id/colorPreviewBG"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewBG-R"
             app:layout_constraintTop_toBottomOf="@+id/textViewBG" />
 
         <SeekBar
             android:id="@+id/greenSliderBG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:max="255"
             android:progress="255"
             app:layout_constraintEnd_toStartOf="@id/colorPreviewBG"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewBG-R"
             app:layout_constraintTop_toBottomOf="@id/redSliderBG" />
 
         <SeekBar
             android:id="@+id/blueSliderBG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
@@ -102,7 +152,7 @@
             android:progress="255"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/colorPreviewBG"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewBG-R"
             app:layout_constraintTop_toBottomOf="@id/greenSliderBG" />
 
         <ImageView
@@ -115,7 +165,7 @@
             android:background="@color/shapeFill"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewBG"
+            app:layout_constraintTop_toBottomOf="@id/textViewBG"
             app:layout_constraintVertical_bias="0.0" />
     </android.support.constraint.ConstraintLayout>
 
@@ -128,7 +178,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/stroke_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/lineStyle"
+        app:layout_constraintStart_toEndOf="@id/lineStyleLayout"
         app:layout_constraintTop_toBottomOf="@id/backgroundColorPicker">
 
         <TextView
@@ -143,37 +193,69 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textViewFG-R"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sliderRed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFG" />
+
+        <TextView
+            android:id="@+id/textViewFG-G"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/sliderGreen"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFG-R" />
+
+        <TextView
+            android:id="@+id/textViewFG-B"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/sliderBlue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewFG-G"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
         <SeekBar
             android:id="@+id/redSliderFG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:max="255"
             android:progress="255"
             app:layout_constraintEnd_toStartOf="@id/colorPreviewFG"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewFG-R"
             app:layout_constraintTop_toBottomOf="@+id/textViewFG" />
 
         <SeekBar
             android:id="@+id/greenSliderFG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:max="255"
             android:progress="255"
             app:layout_constraintEnd_toStartOf="@id/colorPreviewFG"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewFG-R"
             app:layout_constraintTop_toBottomOf="@id/redSliderFG" />
 
         <SeekBar
             android:id="@+id/blueSliderFG"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
@@ -181,7 +263,7 @@
             android:progress="255"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/colorPreviewFG"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textViewFG-R"
             app:layout_constraintTop_toBottomOf="@id/greenSliderFG" />
 
         <ImageView

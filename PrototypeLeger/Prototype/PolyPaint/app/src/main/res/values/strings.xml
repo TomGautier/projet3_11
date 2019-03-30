@@ -29,7 +29,7 @@
     <string name="buttonCut">Couper</string>
 
     <!-- MAIN TOOLBAR -->
-    <string name="mainToolbarGalleryTag">Gallerie</string>
+    <string name="mainToolbarGalleryTag">Galerie</string>
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
     <string name="mainToolbarCollabImageEditionTag">Édition d\'image collaborative</string>
     <string name="buttonTextBox">Texte</string>
@@ -56,6 +56,12 @@
     <string name="revertDefault">Valeur par défaut</string>
     <string name="backgroundColor">Couleur de remplissage</string>
     <string name="borderColor">Couleur de trait</string>
+    <string name="lineStyle">Style de trait</string>
+
+    <!-- COLOR SLIDERS -->
+    <string name="sliderRed">R</string>
+    <string name="sliderGreen">G</string>
+    <string name="sliderBlue">B</string>
 
 
 </resources>
