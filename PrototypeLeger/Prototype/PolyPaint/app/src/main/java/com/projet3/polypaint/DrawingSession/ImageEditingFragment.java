@@ -424,7 +424,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case text_box :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
         }
         if (nShape != null) {
@@ -637,14 +637,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     // ------------------------- Dialogs -------------------------
     // TextEditingDialog
     @Override
-    public void onTextEditingDialogPositiveClick(String contents) {
+    public void onTextDialogPositiveResponse(String contents) {
         ((TextBox)selections.get(0)).setText(contents);
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
     @Override
-    public void onTextEditingDialogNegativeClick() {
+    public void onTextDialogNegativeResponse() {
         if (((TextBox)selections.get(0)).getText().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
@@ -656,14 +656,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
     // StyleEditingDialog
     @Override
-    public void onStyleDialogPositiveClick(PaintStyle style) {
+    public void onStyleDialogPositiveResponse(PaintStyle style) {
         selections.get(0).setStyle(style);
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
     @Override
-    public void onStyleDialogNegativeClick() {
+    public void onStyleDialogNegativeResponse() {
         selections.get(0).setStyle(defaultStyle);
         updateCanvas();
         drawAllShapes();

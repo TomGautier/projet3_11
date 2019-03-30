@@ -33,7 +33,7 @@
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
     <string name="mainToolbarCollabImageEditionTag">Édition d\'image collaborative</string>
     <string name="buttonTextBox">Texte</string>
-    <string name="textEditing">Insertion de texte flottant</string>
+    <string name="textEditing">Texte</string>
 
     <!-- CHAT TOOLBAR -->
     <string name="chatToolbarAddConversation">Ajouter une conversation</string>
@@ -62,6 +62,7 @@
     <string name="sliderRed">R</string>
     <string name="sliderGreen">G</string>
     <string name="sliderBlue">B</string>
+    <string name="textColor">Couleur du texte</string>
 
 
 </resources>

@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 public class ImageEditingDialogManager {
     public interface ImageEditingDialogSubscriber {
-        void onTextEditingDialogPositiveClick(String contents);
-        void onTextEditingDialogNegativeClick();
-        void onStyleDialogPositiveClick(PaintStyle style);
-        void onStyleDialogNegativeClick();
+        void onTextDialogPositiveResponse(String contents);
+        void onTextDialogNegativeResponse();
+        void onStyleDialogPositiveResponse(PaintStyle style);
+        void onStyleDialogNegativeResponse();
     }
 
     private static ImageEditingDialogManager instance = null;
@@ -39,8 +39,9 @@ public class ImageEditingDialogManager {
         subscribers.remove(subscriber);
     }
 
-    public void showTextEditingDialog(FragmentManager fragmentManager, String contents) {
+    public void showTextEditingDialog(FragmentManager fragmentManager, PaintStyle style, String contents) {
         TextEditingDialog dialog = new TextEditingDialog();
+        dialog.setStyle(style);
         dialog.setContents(contents);
         dialog.show(fragmentManager, "text editing");
     }
@@ -51,21 +52,20 @@ public class ImageEditingDialogManager {
         dialog.show(fragmentManager, "style editing");
     }
 
-    public void onTextEditingDialogPositiveClick(String contents) {
-        for (ImageEditingDialogSubscriber s : subscribers)
-            s.onTextEditingDialogPositiveClick(contents);
-    }
-    public void onTextEditingDialogNegativeClick() {
-        for (ImageEditingDialogSubscriber s : subscribers)
-            s.onTextEditingDialogNegativeClick();
-    }
-
-    void onStyleDialogPositiveClick(PaintStyle style) {
-        for (ImageEditingDialogSubscriber s : subscribers)
-            s.onStyleDialogPositiveClick(style);
+    void onDialogPositiveClick(PaintStyle style, String contents) {
+        for (ImageEditingDialogSubscriber s : subscribers) {
+            if (style != null)
+                s.onStyleDialogPositiveResponse(style);
+            if (contents != null && !contents.isEmpty())
+                s.onTextDialogPositiveResponse(contents);
+        }
     }
     void onStyleDialogNegativeClick() {
         for (ImageEditingDialogSubscriber s : subscribers)
-            s.onStyleDialogNegativeClick();
+            s.onStyleDialogNegativeResponse();
+    }
+    void onTextDialogNegativeClick() {
+        for (ImageEditingDialogSubscriber s : subscribers)
+            s.onTextDialogNegativeResponse();
     }
 }

@@ -688,14 +688,14 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     // ------------------------- Dialogs -------------------------
     // TextEditingDialog
     @Override
-    public void onTextEditingDialogPositiveClick(String contents) {
+    public void onTextDialogPositiveResponse(String contents) {
         ((TextBox)selections.get(0)).setText(contents);
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
     @Override
-    public void onTextEditingDialogNegativeClick() {
+    public void onTextDialogNegativeResponse() {
         if (((TextBox)selections.get(0)).getText().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
