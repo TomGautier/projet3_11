@@ -195,7 +195,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             olds.add(shape.getId());
         }
         for (GenericShape shape : shapes){
-            if (shape.getBoundingBox().contains(x, y) && isFreeToSelect(shape.getId())){
+            if (shape.contains(x, y) && isFreeToSelect(shape.getId())){
                 newIds.add(shape.getId());
                 break;
             }
@@ -213,7 +213,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             olds.add(shape.getId());
         }
         for (GenericShape shape : shapes){
-            canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
+            canvas.clipPath(shape.getSelectionPath(), Region.Op.REPLACE);
+
             if (!canvas.clipPath(selectionPath, Region.Op.DIFFERENCE) && isFreeToSelect(shape.getId()))
                 news.add(shape.getId());
         }
@@ -326,7 +327,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         switch(event.getAction()){
             case MotionEvent.ACTION_DOWN:
                 for (GenericShape shape : client.getSelectedShapes()){
-                    if (shape.getBoundingBox().contains(posX, posY)) {
+                    if (shape.contains(posX, posY)) {
                         isMovingSelection = true;
                         lastTouchPosX = posX;
                         lastTouchPosY = posY;

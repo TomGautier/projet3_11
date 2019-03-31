@@ -465,7 +465,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         selections.clear();
 
         for (GenericShape shape : shapes) {
-            canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
+            canvas.clipPath(shape.getSelectionPath(), Region.Op.REPLACE);
 
             // Check if entire bounding box is contained in selectionPath
             if (!canvas.clipPath(selectionPath, Region.Op.DIFFERENCE))

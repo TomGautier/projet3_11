@@ -186,12 +186,12 @@ public class ConnectionForm extends GenericShape {
     }*/
 
     @Override
-    public Rect getBoundingBox() {
-        //boundingBox = new Region();
-        //boundingBox.setPath(path,new Region((int)rect.left,(int)rect.top,(int)rect.right,(int)rect.bottom));
-        //return boundingBox;
-        return super.getBoundingBox();
+    public Path getSelectionPath() {
+        /*Path p = new Path();
+        p.moveTo()*/
+        return path;
     }
+
     @Override
     public boolean contains(int x, int y){
         ConnectionFormVertex current = first;

@@ -92,10 +92,15 @@ public abstract class GenericShape {
         canvas.drawPath(p, paint);
     }
 
-    public Rect getBoundingBox() {
+    private Rect getBoundingBox() {
         int w2 = width/2;
         int h2 = height/2;
         return new Rect(posX - w2, posY - h2, posX + w2, posY + h2);
+    }
+    public Path getSelectionPath() {
+        Path p = new Path();
+        p.addRect(new RectF(getBoundingBox()), Path.Direction.CW);
+        return p;
     }
     public boolean contains(int x, int y) {
         return getBoundingBox().contains(x,y);
