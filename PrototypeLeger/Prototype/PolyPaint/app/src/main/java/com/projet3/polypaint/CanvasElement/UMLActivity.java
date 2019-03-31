@@ -26,6 +26,14 @@ public class UMLActivity extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
+        Path p = getSelectionPath();
+
+        canvas.drawPath(p, style.getBackgroundPaint());
+        canvas.drawPath(p, style.getBorderPaint());
+    }
+
+    @Override
+    public Path getSelectionPath() {
         int w2 = width/2;
         int h2 = height/2;
 
@@ -38,8 +46,7 @@ public class UMLActivity extends GenericShape {
         p.lineTo(posX - w2, posY + h2);
         p.lineTo(posX - w2, posY - h2);
 
-        canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
+        return p;
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

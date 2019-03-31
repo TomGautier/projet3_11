@@ -25,6 +25,14 @@ public class UMLRole extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
+        Path p = getSelectionPath();
+
+        canvas.drawPath(p, style.getBackgroundPaint());
+        canvas.drawPath(p, style.getBorderPaint());
+    }
+
+    @Override
+    public Path getSelectionPath() {
         int w2 = width/2;
         int h2 = height/2;
         int w4 = width/4;
@@ -39,8 +47,7 @@ public class UMLRole extends GenericShape {
         p.lineTo(posX - w4, posY);
         p.addCircle(posX, posY - h4, h4, Path.Direction.CW);
 
-        canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
+        return p;
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

@@ -30,6 +30,24 @@ public class UMLArtefact extends GenericShape {
         int w4 = width/4;
         int h4 = height/4;
 
+        Path p = getSelectionPath();
+
+        canvas.drawPath(p, style.getBackgroundPaint());
+
+        p.moveTo(posX + w2, posY - h4);
+        p.lineTo(posX + w4, posY - h4);
+        p.lineTo(posX + w4, posY - h2);
+
+        canvas.drawPath(p, style.getBorderPaint());
+    }
+
+    @Override
+    public Path getSelectionPath() {
+        int w2 = width/2;
+        int h2 = height/2;
+        int w4 = width/4;
+        int h4 = height/4;
+
         Path p = new Path();
 
         p.moveTo(posX - w2, posY - h2);
@@ -39,13 +57,7 @@ public class UMLArtefact extends GenericShape {
         p.lineTo(posX - w2, posY + h2);
         p.lineTo(posX - w2, posY - h2);
 
-        canvas.drawPath(p, style.getBackgroundPaint());
-
-        p.moveTo(posX + w2, posY - h4);
-        p.lineTo(posX + w4, posY - h4);
-        p.lineTo(posX + w4, posY - h2);
-
-        canvas.drawPath(p, style.getBorderPaint());
+        return p;
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
