@@ -7,7 +7,6 @@ import android.graphics.Path;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class Comment extends GenericTextShape {
-    private final int PADDING = 18;
 
     public Comment(String id, int x, int y, PaintStyle style) {
         super(id, x, y, style);

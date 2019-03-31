@@ -430,6 +430,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Activity :
                 nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
@@ -446,15 +448,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             case Phase :
                 nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Comment :
                 nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
+                nShape.showEditingDialog(getFragmentManager());
                 break;
             case text_box :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
         }
         if (nShape != null) {

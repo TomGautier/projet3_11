@@ -7,7 +7,6 @@ import android.graphics.Path;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLPhase extends GenericTextShape {
-    private final int PADDING = 18;
     protected final static int DEFAULT_WIDTH = 400;
     protected final static int DEFAULT_HEIGHT = 300;
 

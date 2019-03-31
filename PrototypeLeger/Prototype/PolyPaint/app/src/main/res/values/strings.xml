@@ -66,6 +66,9 @@
     <string name="sliderBlue">B</string>
     <string name="textColor">Couleur du texte</string>
     <string name="borderAndTextColor">Couleur de trait / texte</string>
+    <string name="classTitle">Nom de classe</string>
+    <string name="classAttributes">Attributs</string>
+    <string name="classMethods">Méthodes</string>
 
 
 </resources>
