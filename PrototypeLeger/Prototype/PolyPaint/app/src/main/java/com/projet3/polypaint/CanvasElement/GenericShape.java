@@ -116,6 +116,8 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_HEIGHT;
             case "Role":
                 return UMLRole.DEFAULT_HEIGHT;
+            case "Phase":
+                return UMLPhase.DEFAULT_HEIGHT;
         }
         return 0;
     }
@@ -129,6 +131,8 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_WIDTH;
             case "Role":
                 return UMLRole.DEFAULT_WIDTH;
+            case "Phase":
+                return UMLPhase.DEFAULT_WIDTH;
         }
         return 0;
     }

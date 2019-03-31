@@ -52,6 +52,13 @@ public class ImageEditingDialogManager {
         dialog.show(fragmentManager, "style editing");
     }
 
+    public void showTextAndStyleDialog(FragmentManager fragmentManager, PaintStyle style, String contents) {
+        TextAndStyleEditingDialog dialog = new TextAndStyleEditingDialog();
+        dialog.setStyle(style);
+        dialog.setContents(contents);
+        dialog.show(fragmentManager, "text and style editing");
+    }
+
     void onDialogPositiveClick(PaintStyle style, String contents) {
         for (ImageEditingDialogSubscriber s : subscribers) {
             if (style != null)

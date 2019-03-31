@@ -63,6 +63,7 @@
     <string name="sliderGreen">G</string>
     <string name="sliderBlue">B</string>
     <string name="textColor">Couleur du texte</string>
+    <string name="borderAndTextColor">Couleur de trait / texte</string>
 
 
 </resources>

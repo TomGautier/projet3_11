@@ -21,12 +21,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.projet3.polypaint.CanvasElement.Comment;
 import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.GenericTextShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
+import com.projet3.polypaint.CanvasElement.UMLPhase;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.UserLogin.UserManager;
@@ -423,8 +426,11 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
             case text_box :
-                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
+                /*nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");*/
+                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth("Phase"),
+                        GenericShape.getDefaultHeight("Phase"), defaultStyle);
+                ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
         }
         if (nShape != null) {
@@ -638,14 +644,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     // TextEditingDialog
     @Override
     public void onTextDialogPositiveResponse(String contents) {
-        ((TextBox)selections.get(0)).setText(contents);
+        ((GenericTextShape)selections.get(0)).setText(contents);
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
     @Override
     public void onTextDialogNegativeResponse() {
-        if (((TextBox)selections.get(0)).getText().equals("")) {
+        if (((GenericTextShape)selections.get(0)).getText().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
             updateCanvas();
