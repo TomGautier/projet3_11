@@ -44,6 +44,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonRole;
     protected Button buttonActivity;
     protected Button buttonArtefact;
+    protected Button buttonPhase;
+    protected Button buttonComment;
     protected Button buttonText;
     protected Button buttonCanvas;
     protected Button buttonMove;
@@ -57,7 +59,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ImageButton buttonBack;
 
     protected enum Mode{selection, lasso, creation, move}
-    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box}
+    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, Phase, Comment, text_box}
 
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
@@ -154,6 +156,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.Role);
+            }
+        });
+
+        buttonPhase = (Button)rootView.findViewById(R.id.buttonPhase);
+        buttonPhase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.Phase);
+            }
+        });
+
+        buttonComment = (Button)rootView.findViewById(R.id.buttonComment);
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.Comment);
             }
         });
 
@@ -425,12 +443,18 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
-            case text_box :
-                /*nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");*/
-                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth("Phase"),
-                        GenericShape.getDefaultHeight("Phase"), defaultStyle);
+            case Phase :
+                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
+                break;
+            case Comment :
+                nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
+                ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
+                break;
+            case text_box :
+                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
         }
         if (nShape != null) {

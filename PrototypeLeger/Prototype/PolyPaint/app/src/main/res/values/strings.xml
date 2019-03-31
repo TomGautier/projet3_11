@@ -21,6 +21,8 @@
     <string name="buttonRole">Rôle</string>
     <string name="buttonArtefact">Artéfact</string>
     <string name="buttonSelection">Sélection</string>
+    <string name="buttonPhase">Phase</string>
+    <string name="buttonComment">Commentaire</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>
     <string name="buttonDuplicate">Dupliquer</string>
