@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 
 import com.projet3.polypaint.CanvasElement.PaintStyle;
@@ -19,6 +20,8 @@ public class ClassEditingDialog extends DialogFragment {
     private EditText titleEdit;
     private EditText attributesEdit;
     private EditText methodsEdit;
+
+    private RadioGroup radioGroup;
 
     private SeekBar redSliderBG;
     private SeekBar greenSliderBG;
@@ -70,6 +73,12 @@ public class ClassEditingDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         ImageEditingDialogManager.getInstance().onTextDialogNegativeClick();
                     }
+                })
+                .setNeutralButton(R.string.revertDefault, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ImageEditingDialogManager.getInstance().onClassDialogPositiveClick(style, name, attributes, methods);
+                        ImageEditingDialogManager.getInstance().onStyleDialogNegativeClick();
+                    }
                 });
         return builder.create();
     }
@@ -82,6 +91,8 @@ public class ClassEditingDialog extends DialogFragment {
         attributesEdit = (EditText) rootView.findViewById(R.id.attributesEdit);
         methodsEdit = (EditText) rootView.findViewById(R.id.methodsEdit);
 
+        radioGroup = (RadioGroup) rootView.findViewById(R.id.lineStyle);
+
         redSliderBG = (SeekBar) rootView.findViewById(R.id.redSliderBG);
         greenSliderBG = (SeekBar) rootView.findViewById(R.id.greenSliderBG);
         blueSliderBG = (SeekBar) rootView.findViewById(R.id.blueSliderBG);
@@ -93,6 +104,18 @@ public class ClassEditingDialog extends DialogFragment {
         borderPreview = (ImageView) rootView.findViewById(R.id.colorPreviewFG);
     }
     private void initializeStyle() {
+        switch (style.getStrokeType()) {
+            case full:
+                radioGroup.check(R.id.radioFull);
+                break;
+            case dotted:
+                radioGroup.check(R.id.radioDotted);
+                break;
+            case dashed:
+                radioGroup.check(R.id.radioDashed);
+                break;
+        }
+
         backgroundColor = style.getBackgroundPaint().getColor();
         borderColor = style.getBorderPaint().getColor();
 
@@ -197,6 +220,18 @@ public class ClassEditingDialog extends DialogFragment {
     }
 
     private void modifyCurrentStyle() {
+        switch (radioGroup.getCheckedRadioButtonId()) {
+            case R.id.radioFull :
+                style.setStrokeType(PaintStyle.StrokeType.full);
+                break;
+            case R.id.radioDotted :
+                style.setStrokeType(PaintStyle.StrokeType.dotted);
+                break;
+            case R.id.radioDashed :
+                style.setStrokeType(PaintStyle.StrokeType.dashed);
+                break;
+        }
+
         style.setBackgroundColor(backgroundColor);
         style.setBorderColor(borderColor);
     }

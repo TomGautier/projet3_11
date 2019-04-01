@@ -122,6 +122,57 @@
             app:layout_constraintTop_toBottomOf="@+id/labelMethods" />
     </android.support.constraint.ConstraintLayout>
 
+    <LinearLayout
+        android:id="@+id/lineStyleLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/stroke_bg"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/attributesLayout">
+
+        <TextView
+            android:id="@+id/textViewLineStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/lineStyle"
+            android:textAlignment="viewStart" />
+
+        <RadioGroup
+            android:id="@+id/lineStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkedButton="@+id/radioFull"
+            android:padding="4dp">
+
+            <RadioButton
+                android:id="@+id/radioFull"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/styleFull" />
+
+            <RadioButton
+                android:id="@+id/radioDotted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/styleDotted" />
+
+            <RadioButton
+                android:id="@+id/radioDashed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/styleDashed" />
+        </RadioGroup>
+    </LinearLayout>
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/backgroundColorPicker"
         android:layout_width="0dp"
@@ -131,7 +182,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/stroke_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lineStyleLayout"
         app:layout_constraintTop_toBottomOf="@id/attributesLayout">
 
         <TextView
@@ -242,7 +293,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/stroke_bg"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lineStyleLayout"
         app:layout_constraintTop_toBottomOf="@id/backgroundColorPicker">
 
         <TextView
