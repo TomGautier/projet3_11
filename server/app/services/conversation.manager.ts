@@ -20,14 +20,16 @@ export class ConversationManager {
 
     public onMessageSent(socketId: string, args: any) {
         const messageJson = {date: 'date actuelle', username: args.username, message: args.message};
-        console.log(args.conversationId);
         this.socketService.emit(args.conversationId, SocketEvents.MessageSent, messageJson);
     }
 
     public joinConversation(socketId: string, args: any) {
-        console.log('Joined conversation : ' + args.conversationId);
         this.socketService.joinRoom(args.conversationId, socketId);
+<<<<<<< HEAD
         this.socketService.emit(args.conversationId, SocketEvents.UserJoinedConversation, args.conversationId);
+=======
+       // this.socketService.emit(args.conversationId, SocketEvents.UserJoinedConversation, args.conversationId);
+>>>>>>> dev
     }
 
     public leaveConversation(socketId: string, args: any) {

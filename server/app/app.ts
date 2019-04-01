@@ -15,6 +15,7 @@ import { ApplicationInterface } from "./interfaces";
 import { ConversationManager } from "./services/conversation.manager";
 import { ConversationController } from "./controllers/conversation.controller";
 import { ConnectionController } from "./controllers/connection.controller";
+import { ImageController } from "./controllers/image.controller";
 import { DrawingSessionManager} from "./services/drawingSession.manager";
 import { UserController } from "./controllers/user.controller";
 
@@ -29,6 +30,7 @@ export class Application implements ApplicationInterface {
             @inject(TYPES.DateControllerInterface) private dateController: DateController,
             @inject(TYPES.ConversationControllerInterface) private conversationController: ConversationController,
             @inject(TYPES.ConnectionControllerInterface) private connectionController: ConnectionController,
+            @inject(TYPES.ImageControllerInterface) private imageController: ImageController,
             @inject(TYPES.UserControllerInterface) private userController: UserController,
             @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
             @inject(TYPES.DrawingSessionManager) private drawingSessionManager: DrawingSessionManager) {
@@ -48,6 +50,7 @@ export class Application implements ApplicationInterface {
 
     public bindRoutes(): void {
         this.app.use("/connection/", this.connectionController.router);
+        this.app.use("/api/images/", this.imageController.router);
         this.app.use("/api/user/", this.userController.router);
         this.app.use("/api/chat/", this.conversationController.router);
         this.app.use("/api/index", this.indexController.router);

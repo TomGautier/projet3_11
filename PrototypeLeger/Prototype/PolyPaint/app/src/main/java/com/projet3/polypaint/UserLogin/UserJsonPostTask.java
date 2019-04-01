@@ -1,6 +1,8 @@
-package com.projet3.polypaint.UserLogin;
+package com.projet3.polypaint.USER;
 
 import android.os.AsyncTask;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -9,7 +11,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-class UserPostTask extends AsyncTask<String, String, String> {
+public class UserJsonPostTask extends AsyncTask<String, String, String> {
+
+    JSONObject data = null;
+
+    public void setData(JSONObject data) { this.data = data; }
+
     protected String doInBackground(String... urls) {
         HttpURLConnection connection = null;
 
@@ -18,15 +25,17 @@ class UserPostTask extends AsyncTask<String, String, String> {
             URL url = new URL(urls[0]);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
-            /*connection.setRequestProperty("Content-Type",
-                    "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
             connection.setRequestProperty("Content-Language", "en-US");
-            connection.setUseCaches(false);*/
+            connection.setRequestProperty("Accept","application/json");
+            connection.setUseCaches(false);
             connection.setDoOutput(true);
+            connection.setDoInput(true);
 
             //Send request
             DataOutputStream wr = new DataOutputStream (
                     connection.getOutputStream());
+            if (data != null)  wr.writeBytes(data.toString());
             wr.close();
 
             //Get Response

@@ -7,10 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v4.content.res.ResourcesCompat;
-
-import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
 
 public abstract class GenericShape {
 
@@ -83,6 +79,16 @@ public abstract class GenericShape {
         canvas.drawPath(p, paint);
     }
 
+    public void relativeMove(int x, int y) {
+        posX += x;
+        posY += y;
+    }
+
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public Rect getBoundingBox() {
         int w2 = width/2;
         int h2 = height/2;
@@ -95,11 +101,13 @@ public abstract class GenericShape {
 
         return new Rect(posX + w2, posY - h2 - EDIT_BUTTON_SIZE, posX + w2 + EDIT_BUTTON_SIZE, posY - h2);
     }
-
-    public void relativeMove(int x, int y) {
-        posX += x;
-        posY += y;
+    public String getBorderColorString() {
+        return Integer.toHexString(style.getBorderPaint().getColor()).substring(2);
     }
+    public String getBackgroundColorString() {
+        return Integer.toHexString(style.getBackgroundPaint().getColor()).substring(2);
+    }
+    public abstract String getType();
     public int getHeight(){
         return height;
     }
@@ -142,8 +150,6 @@ public abstract class GenericShape {
     public int[] getCenterCoord(){
         return new int[] {posX,posY};
     }
-
-
 
     public abstract void showEditingDialog(FragmentManager fragmentManager);
 

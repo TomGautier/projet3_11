@@ -37,11 +37,21 @@ export class SocketService {
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
 
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+
             socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
             socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));
             socket.on(SocketEvents.ModifyElement, args => this.handleEvent(SocketEvents.ModifyElement, socket.id, args));
+
+            socket.on(SocketEvents.DuplicateElements, args => this.handleEvent(SocketEvents.DuplicateElements, socket.id, args));
+            socket.on(SocketEvents.CutElements, args => this.handleEvent(SocketEvents.CutElements, socket.id, args));
+            socket.on(SocketEvents.DuplicateCutElements, args => this.handleEvent(SocketEvents.DuplicateCutElements, socket.id, args));
+
+            socket.on(SocketEvents.StackElement, args => this.handleEvent(SocketEvents.StackElement, socket.id, args));
+            socket.on(SocketEvents.UnstackElement, args => this.handleEvent(SocketEvents.UnstackElement, socket.id, args));
+
             socket.on(SocketEvents.SelectElements, args => this.handleEvent(SocketEvents.SelectElements, socket.id, args));
             socket.on(SocketEvents.ResizeCanvas, args => this.handleEvent(SocketEvents.ResizeCanvas, socket.id, args));
+            socket.on(SocketEvents.ResetCanvas, args => this.handleEvent(SocketEvents.ResetCanvas, socket.id, args));
             Logger.debug("SocketService", "New connection: " + socket.id);
         });
 
@@ -83,12 +93,15 @@ export class SocketService {
 
     public emit(id: string, event: string, args?: any): void {
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
+        console.log("emit a ", id);
+        console.log("L'event est ", event);
         const success: boolean = this.server.to(id).emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
     public broadcast(event: string, args?: any): void {
         Logger.debug("SocketService", `Broadcasting ${event}`);
+        console.log("BROADCAST L'EVENT : ", event);
         const success = this.server.emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }

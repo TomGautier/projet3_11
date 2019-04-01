@@ -7,7 +7,7 @@
         android:title="@string/mainToolbarGalleryTag"
         app:showAsAction="always" />
     <item
-        android:id="@+id/collabDrawingEdition"
+        android:id="@+id/collabImageEditingAction"
         android:title="@string/mainToolbarCollabImageEditionTag"
         app:showAsAction="always"/>
 

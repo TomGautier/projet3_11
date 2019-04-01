@@ -7,14 +7,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Chat.Conversation;
+import com.projet3.polypaint.Network.FetchManager;
 import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.SocketManager;
+import com.projet3.polypaint.Network.RequestManager;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.Others.Utilities;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ public class LoginActivity extends Activity  {
 	//EditText ipEntry;
 	RelativeLayout userModuleLayout;
 	UserInformation userInformation;
+	ProgressBar progressBar;
 
 
 
@@ -48,6 +52,8 @@ public class LoginActivity extends Activity  {
 		passwordEntry = (EditText)findViewById(R.id.passwordEditText);
 		//ipEntry = (EditText)findViewById(R.id.ipEditText);
 		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
+		progressBar = (ProgressBar)findViewById(R.id.loginProgressBar);
+		progressBar.setVisibility(View.GONE);
 
 		RequestManager.currentInstance = new RequestManager(IP);
 
@@ -74,9 +80,14 @@ public class LoginActivity extends Activity  {
 					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
 
 					if (RequestManager.currentInstance.requestLogin(userInformation)) {
-						ArrayList<Conversation> fetchedConversations = RequestManager.currentInstance.fetchUserConversations();
+						//FETCH
+						progressBar.setVisibility(View.VISIBLE);
+						RequestManager.currentInstance.fetchUserConversations();
+						progressBar.setProgress(50);
+						RequestManager.currentInstance.fetchUsers();
+						progressBar.setProgress(100);
 						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
-						intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
+						//intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
 						//intent.putExtra("USER_INFORMATION", userInformation);
 						startActivity(intent);
 					}
@@ -159,8 +170,8 @@ public class LoginActivity extends Activity  {
 	/*Fonction temporaire pour passer directement à l'édition d'images*/
 	public void gotoImageEditing(View button) {
 		SocketManager.currentInstance = new SocketManager("122123","");
-		UserManager.currentInstance = new UserManager(new UserInformation("allo", "allo"));
-		UserManager.currentInstance.setUserConversations(new ArrayList<Conversation>());
+		FetchManager.currentInstance = new FetchManager(new UserInformation("allo", "allo"));
+		FetchManager.currentInstance.setUserConversations(new ArrayList<Conversation>());
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 		transaction.add(R.id.chatFragment,new ChatFragment(),"CHAT_FRAGMENT");

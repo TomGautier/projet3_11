@@ -10,6 +10,8 @@ public class UMLPhase extends GenericTextShape {
     protected final static int DEFAULT_WIDTH = 400;
     protected final static int DEFAULT_HEIGHT = 300;
 
+    public static final String TYPE = "Phase";
+
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style) {
         super(id, x, y, style);
         this.width = width;
@@ -53,4 +55,7 @@ public class UMLPhase extends GenericTextShape {
     public void setText(String text) {
         this.text = text;
     }
+
+    @Override
+    public String getType() { return TYPE; }
 }

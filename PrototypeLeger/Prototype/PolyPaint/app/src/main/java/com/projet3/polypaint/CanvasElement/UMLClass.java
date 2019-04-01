@@ -19,6 +19,8 @@ public class UMLClass extends GenericTextShape {
 
     private Paint leftAlignedText;
 
+    public static final String TYPE = "UmlClass";
+
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style) {
         super(id, x, y, style);
 
@@ -132,4 +134,6 @@ public class UMLClass extends GenericTextShape {
             return result;
         }
     }
+
+    public String getType() { return TYPE; }
 }

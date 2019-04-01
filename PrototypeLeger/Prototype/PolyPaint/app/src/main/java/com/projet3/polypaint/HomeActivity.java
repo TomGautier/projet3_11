@@ -15,15 +15,15 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingCollabSession.CollabShape;
 import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
+import com.projet3.polypaint.Gallery.GalleryFragment;
+import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.Network.FetchManager;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.UserLogin.LoginActivity;
-import com.projet3.polypaint.UserLogin.UserManager;
 import com.projet3.polypaint.UserList.UsersListFragment;
-
-import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -32,11 +32,13 @@ public class HomeActivity extends AppCompatActivity {
     private final String CHAT_TAG = "CHAT_FRAGMENT";
     private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
 	private final String USER_TABLE_TAG = "USER_TABLE_FRAGMENT";
+	private final String GALLERY_TAG = "GALLERY_FRAGMENT";
 	private final String COLLAB_EDITING_TAG = "COLLAB_IMAGE_EDITING_FRAGMENT";
 
 	private  Toolbar mainToolbar;
 	private FrameLayout chatFragmentLayout;
 	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout galleryFragmentLayout;
 	private FrameLayout collabImageEditingFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
@@ -50,22 +52,23 @@ public class HomeActivity extends AppCompatActivity {
 		setSupportActionBar(mainToolbar);
 		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
 		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
 		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 
-
-
 		if (savedInstanceState == null){
-			//createUsersTableFragment();
-			//createChatFragment();
-			//createImageEditingFragment();
-			//toggleImageEditingVisibility();
+			createUsersListFragment();
+			createChatFragment();
 			createImageEditingFragment();
+			toggleImageEditingVisibility();
+			createCollabImageEditingFragment();
+			toggleCollabImageEditingVisibility();
+			createGalleryFragment();
 		}
-		//CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",new int[] {1,2},200,300,0);
-		//CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
-		//SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
-
+		int[] position = {1,2};
+		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
+		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
+        //SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
 	}
 
 	private void createChatFragment() {
@@ -75,26 +78,14 @@ public class HomeActivity extends AppCompatActivity {
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
-	private void createImageEditingFragment(){
+	private void createUsersListFragment(){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
-        transaction.addToBackStack(null);
-        transaction.commit();
-	}
-
-	private void createCollabImageEditingFragment(){
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.collabImageEditingFragment, new CollabImageEditingFragment(),COLLAB_EDITING_TAG);
-        transaction.addToBackStack(null);
+		transaction.add(R.id.usersTableFragment, new UsersListFragment(),USER_TABLE_TAG);
+		transaction.addToBackStack(null);
 		transaction.commit();
-	}
-	private void createUsersTableFragment(){
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		ArrayList<String> users = new ArrayList<>();
-		users.add("Marcel");
+		//ArrayList<String> users = new ArrayList<>();
+		/*users.add("Marcel");
 		users.add("Marcel2");
 		users.add("Marcel3");
 		users.add("Marcel4");
@@ -102,13 +93,24 @@ public class HomeActivity extends AppCompatActivity {
 		users.add("Marcel6");
 		users.add("Marcel7");
 		users.add("Marcel8");
-		users.add("Marcel9");
-		transaction.add(R.id.usersTableFragment, UsersListFragment.newInstance(users),USER_TABLE_TAG);
-		transaction.addToBackStack(null);
-		transaction.commit();
+		users.add("Marcel9");*/
+
 	}
 
-
+	private void createImageEditingFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
+	}
+	private void createCollabImageEditingFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.collabImageEditingFragment, new CollabImageEditingFragment(),COLLAB_EDITING_TAG);
+        transaction.addToBackStack(null);
+		transaction.commit();
+	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
@@ -132,10 +134,11 @@ public class HomeActivity extends AppCompatActivity {
 				break;
 
 			case R.id.menuLogout:
-				SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
+				SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 				startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 				break;
 			case R.id.galleryAction:
+				toggleGalleryVisibility();
 				break;
 			/*case R.id.chatAction:
 				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
@@ -163,6 +166,9 @@ public class HomeActivity extends AppCompatActivity {
 			case R.id.imageEditingAction:
 				toggleImageEditingVisibility();
 				break;
+			case R.id.collabImageEditingAction:
+				toggleCollabImageEditingVisibility();
+				break;
 		}
 		return true;
 	}
@@ -171,6 +177,26 @@ public class HomeActivity extends AppCompatActivity {
 			imageEditingFragmentLayout.setVisibility(View.GONE);
 		else
 			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
+	}
+	private void toggleCollabImageEditingVisibility(){
+		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
+			collabImageEditingFragmentLayout.setVisibility(View.GONE);
+		else
+			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+	}
+
+	private void createGalleryFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.galleryFragment,new GalleryFragment(),GALLERY_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+	private void toggleGalleryVisibility(){
+		if (galleryFragmentLayout.getVisibility() == View.VISIBLE)
+			galleryFragmentLayout.setVisibility(View.GONE);
+		else
+			galleryFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
 	/*private void toggleChatVisibility(){
@@ -189,7 +215,7 @@ public class HomeActivity extends AppCompatActivity {
 
 	@Override
 	public void onBackPressed() {
-		SocketManager.currentInstance.leave(UserManager.currentInstance.getUserUsername());
+		SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 	}
 }

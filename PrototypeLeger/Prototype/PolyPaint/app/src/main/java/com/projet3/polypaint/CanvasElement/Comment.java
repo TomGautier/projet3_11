@@ -7,6 +7,7 @@ import android.graphics.Path;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class Comment extends GenericTextShape {
+    public static final String TYPE = "Comment";
 
     public Comment(String id, int x, int y, PaintStyle style) {
         super(id, x, y, style);
@@ -51,4 +52,7 @@ public class Comment extends GenericTextShape {
         super.adjustWidthToText();
         width += 2*PADDING;
     }
+
+    @Override
+    public String getType() { return TYPE; }
 }

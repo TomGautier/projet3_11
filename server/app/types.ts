@@ -11,6 +11,8 @@ const TYPES =  {
         ConversationServiceInterface: Symbol.for("ConversationServiceInterface"),
         ConnectionControllerInterface:Symbol.for("ConnectionControllerInterface"),
         ConnectionServiceInterface:Symbol.for("ConnectionServiceInterface"),
+        ImageControllerInterface:Symbol.for("ImageControllerInterface"),
+        ImageServiceInterface:Symbol.for("ImageServiceInterface"),
         UserControllerInterface:Symbol.for("UserControllerInterface"),
         UserServiceInterface:Symbol.for("UserServiceInterface"),
         DrawingSessionServiceInterface:Symbol.for("DrawingSessionServiceInterface"),
@@ -28,6 +30,7 @@ const TYPES =  {
         UserService:Symbol.for("UserService"),
 
         // Managers
+        ConnectionManager:Symbol.for("ConnectionManager"),
         ConversationManager:Symbol.for("ConversationManager"),
         DrawingSessionManager:Symbol.for("DrawingSessionManager"),
         UserManager:Symbol.for("UserManager")

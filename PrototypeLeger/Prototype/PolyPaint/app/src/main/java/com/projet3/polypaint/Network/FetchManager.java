@@ -1,22 +1,48 @@
-package com.projet3.polypaint.UserLogin;
+package com.projet3.polypaint.Network;
 
 import com.projet3.polypaint.Chat.Conversation;
+import com.projet3.polypaint.UserList.User;
+import com.projet3.polypaint.UserLogin.UserInformation;
 
 import java.util.ArrayList;
 
-public class UserManager {
+public class FetchManager {
 
-    public static UserManager currentInstance;
+    public static FetchManager currentInstance;
     private UserInformation user;
     private ArrayList<Conversation> userConversations;
+    private ArrayList<User> users;
 
-    public UserManager(UserInformation user_){
+    public FetchManager(UserInformation user_){
         user = user_;
         userConversations = new ArrayList<>();
+        users = new ArrayList<>();
     }
 
     public void setUserConversations(ArrayList<Conversation> conversations){
         userConversations = conversations;
+    }
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
+    }
+    public final ArrayList<String> getUsersNames(){
+        ArrayList<String> ret = new ArrayList<>();
+        for (User user : users){
+            ret.add(user.getUsername());
+        }
+        return ret;
+    }
+    public final ArrayList<User> getUsers(){
+        return users;
+    }
+    public boolean changeConnectedState(String username, boolean state){
+        for (User user : users){
+            if (user.getUsername().equals(username)){
+                user.changeConnectionState(state);
+                return true;
+            }
+        }
+        return false;
     }
 
     public final ArrayList<String> getUserConversationsNames(){

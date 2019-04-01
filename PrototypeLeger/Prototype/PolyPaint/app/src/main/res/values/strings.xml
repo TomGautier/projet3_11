@@ -29,6 +29,8 @@
     <string name="buttonReset">Réinitialiser</string>
     <string name="buttonMove">Déplacer</string>
     <string name="buttonCut">Couper</string>
+    <string name="buttonStack">Empiler</string>
+    <string name="buttonUnstack">Dépiler</string>
 
     <!-- MAIN TOOLBAR -->
     <string name="mainToolbarGalleryTag">Galerie</string>
@@ -69,6 +71,8 @@
     <string name="classTitle">Nom de classe</string>
     <string name="classAttributes">Attributs</string>
     <string name="classMethods">Méthodes</string>
+    <string name="publicGallery">Galerie publique</string>
+    <string name="privateGallery">Galerie privée</string>
 
 
 </resources>

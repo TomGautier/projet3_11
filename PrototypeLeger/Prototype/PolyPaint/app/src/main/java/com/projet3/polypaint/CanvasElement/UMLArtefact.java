@@ -10,6 +10,8 @@ public class UMLArtefact extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 80;
 
+    public static final String TYPE = "UmlArtefact";
+
     public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style) {
         super(id,x, y, width, height, style);
     }
@@ -53,4 +55,6 @@ public class UMLArtefact extends GenericShape {
     public void showEditingDialog(FragmentManager fragmentManager) {
         ImageEditingDialogManager.getInstance().showStyleDialog(fragmentManager, style);
     }
+
+    public String getType() { return TYPE; }
 }
