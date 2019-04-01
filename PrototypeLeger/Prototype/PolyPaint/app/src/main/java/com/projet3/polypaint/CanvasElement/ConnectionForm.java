@@ -80,9 +80,6 @@ public class ConnectionForm extends GenericShape {
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.STROKE);
                 break;
-            case Dependance:
-                //no arrows
-                break;
             case Bidirectional:
                 arrowHeight = 50;
                 arrowWidth = 30;
@@ -283,9 +280,7 @@ public class ConnectionForm extends GenericShape {
                 arrow.lineTo(last.x() + arrowWidth/2, last.y()); // Back to Top
                 arrow.close();
                 break;
-            case Dependance:
-                //no arrows
-                break;
+
             default: //composition et aggregation
                 canvas.rotate(angle,last.x(),last.y());
                 arrow.moveTo(last.x(), last.y() + arrowHeight/2); // Top

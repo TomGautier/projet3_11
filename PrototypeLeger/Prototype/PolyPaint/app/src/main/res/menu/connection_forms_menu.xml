@@ -14,7 +14,4 @@
     <item
         android:id="@+id/connectionFormBidirectional"
         android:title="@string/connectionFormBidirectional" />
-    <item
-        android:id="@+id/connectionFormDependance"
-        android:title="@string/connectionFormDependance" />
 </menu>

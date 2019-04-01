@@ -64,7 +64,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
     protected enum Mode{selection, lasso, creation, move, resize}
     public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
-    public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional, Dependance}
+    public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
@@ -182,25 +182,25 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             public void onClick(View v) {
                 PopupMenu dropDownMenu = new PopupMenu(getActivity(), buttonConnectionForm);
                 dropDownMenu.getMenuInflater().inflate(R.menu.connection_forms_menu, dropDownMenu.getMenu());
-                setShapeType(ShapeType.ConnectionForm);
                 dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.connectionFormAgregation:
                                 setConnectionFormType(ConnectionFormType.Agregation);
+                                setShapeType(ShapeType.ConnectionForm);
                                 break;
                             case R.id.connectionFormInheritance:
                                 setConnectionFormType(ConnectionFormType.Inheritance);
+                                setShapeType(ShapeType.ConnectionForm);
                                 break;
                             case R.id.connectionFormBidirectional:
                                 setConnectionFormType(ConnectionFormType.Bidirectional);
-                                break;
-                            case R.id.connectionFormDependance:
-                                setConnectionFormType(ConnectionFormType.Dependance);
+                                setShapeType(ShapeType.ConnectionForm);
                                 break;
                             case R.id.connectionFormComposition:
                                 setConnectionFormType(ConnectionFormType.Composition);
+                                setShapeType(ShapeType.ConnectionForm);
                         }
                         return true;
                     }
