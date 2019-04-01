@@ -23,16 +23,17 @@ export class SocketService {
 
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
-    ) { }
+    ) {
+    }
     
     public init(server: SocketIO.Server): void {
         this.server = server;
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
-            console.log("Socket id" + socket.id + " connected.");
+            console.log("Socket id" + socket.id);
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
-            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
+            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
 
@@ -56,7 +57,6 @@ export class SocketService {
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
-            console.log('in the disconnect!', socket.id);
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
             socket.disconnect();
             this.handleEvent(SocketEvents.UserLeft, socket.id);
@@ -74,7 +74,6 @@ export class SocketService {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.join(roomId);
-            console.log(socketId + " JOINED ROOM " + roomId);
         }
         else {
             Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);
@@ -93,15 +92,12 @@ export class SocketService {
 
     public emit(id: string, event: string, args?: any): void {
         Logger.debug("SocketService", `Emitting ${event} to ${id}`);
-        console.log("emit a ", id);
-        console.log("L'event est ", event);
         const success: boolean = this.server.to(id).emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }
 
     public broadcast(event: string, args?: any): void {
         Logger.debug("SocketService", `Broadcasting ${event}`);
-        console.log("BROADCAST L'EVENT : ", event);
         const success = this.server.emit(event, args);
         Logger.debug("SocketService", `Result of emit : ${success}`);
     }

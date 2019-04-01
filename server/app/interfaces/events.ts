@@ -20,6 +20,5 @@ export class UnsaucedEventEmitter {
 
     public emit(event: string, ...args: any[]) {
         this.eventEmitter.emit(event, args);
-        console.log("EVENT :" + event);
     }
 }

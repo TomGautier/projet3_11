@@ -19,7 +19,7 @@ export class DrawingSessionManager {
                { 
         // args[0] contains the socket id, args[1][0] the drawing session id.
         this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], JSON.parse(args[1][0])));
-        this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], args[1][0]));
+        this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], JSON.parse(args[1][0])));
         // args[0] contains the socket id, args[1] is a json with the session id, username and properties of the object.
         this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
@@ -49,11 +49,9 @@ export class DrawingSessionManager {
             this.connectedUsers.set(doc.drawingSessionId, new Array<String>());
         }
         var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
-        console.log("USERS: ",users)
         if (users !== undefined){
             if (users.indexOf(doc.username) == -1){
                 users.push(doc.username);
-                console.log("AJOUTE LE USER ", doc.username);
             }
             this.socketService.emit(doc.drawingSessionId,SocketEvents.NewUserJoined, users);
         } 
