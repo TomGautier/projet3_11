@@ -25,7 +25,11 @@ export class ConversationManager {
 
     public joinConversation(socketId: string, args: any) {
         this.socketService.joinRoom(args.conversationId, socketId);
+<<<<<<< HEAD
+        this.socketService.emit(args.conversationId, SocketEvents.UserJoinedConversation, args.conversationId);
+=======
        // this.socketService.emit(args.conversationId, SocketEvents.UserJoinedConversation, args.conversationId);
+>>>>>>> dev
     }
 
     public leaveConversation(socketId: string, args: any) {
