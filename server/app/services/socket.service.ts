@@ -31,7 +31,7 @@ export class SocketService {
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
-            console.log("Socket id" + socket.id);
+            console.log("Socket id", socket.id, "connected.");
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
