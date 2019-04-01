@@ -666,11 +666,9 @@ namespace PolyPaint.Modeles
                 //   string id = (data as JObject)["id"].ToObject<String>();
                 //  Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
                 Application.Current.Dispatcher.Invoke(() =>
-                {
-                    this.selectElements(username, oldIds, newIds);
-                    // Code causing the exception or requires UI thread access
-                });
-
+                {                 
+                    this.selectElements(username, oldIds, newIds);             
+                });              
             });
             this.SocketManager.Socket.On("StackedElement", (data) =>
             {

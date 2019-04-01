@@ -268,7 +268,7 @@ namespace PolyPaint.VueModeles
         /// <param name="e">Les paramètres de l'évènement. PropertyName est celui qui nous intéresse. 
         /// Il indique quelle propriété a été modifiée dans le modèle.</param>
         private void EditeurProprieteModifiee(object sender, PropertyChangedEventArgs e)
-        {     
+        {
             if (e.PropertyName == "CouleurSelectionnee")
             {
                 ProprieteModifiee(e.PropertyName);
@@ -280,13 +280,50 @@ namespace PolyPaint.VueModeles
             else if (e.PropertyName == "OutilSelectionne")
             {
                 OutilSelectionne = editeur.OutilSelectionne;
+                editeur.HandleChangeSelection(new StrokeCollection());
+                //ProprieteModifiee(e.PropertyName);
+                switch (OutilSelectionne)
+                {
+                    case "lasso":
+                        this.Canvas.EditingMode = InkCanvasEditingMode.Select;
+                        break;
+                    case "efface_trait":
+                        this.Canvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+                        break;
+                    default:
+                        this.Canvas.EditingMode = InkCanvasEditingMode.None;
+                        break;
+                }
+
+                //InkCanvasEditingMode current = this.Canvas.EditingMode;
+
+                // this.Canvas.EditingMode = current;
+
+                //StrokeCollection S = this.Canvas.GetSelectedStrokes();
+                // editeur.HandleChangeSelection(this.Canvas.GetSelectedStrokes());
+                //    this.HandleSelection(this.Canvas.GetSelectedStrokes());            
             }
             else if (e.PropertyName == "Selection")
             {
                 this.Canvas.AllowSelection = true;
+
                 this.Canvas.Select(editeur.selectedStrokes);
                 this.Canvas.AllowSelection = false;
-                this.Canvas.ResizeEnabled = true;
+                this.Canvas.ResizeEnabled = true;                
+                switch (OutilSelectionne)
+                {
+                    case "lasso":
+                        this.Canvas.EditingMode = InkCanvasEditingMode.Select;
+                        break;
+                    case "efface_trait":
+                        this.Canvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+                        break;
+                    default:
+                        this.Canvas.EditingMode = InkCanvasEditingMode.None;
+                        break;
+                }
+                //this.Canvas.EditingMode = InkCanvasEditingMode.None;
+ 
                 foreach (Stroke s in this.SelectedStrokes)
                 {
                     if ((s as Form).Type == "Text")
@@ -294,14 +331,19 @@ namespace PolyPaint.VueModeles
                         this.Canvas.ResizeEnabled = false;
                     }
                 }
+                
             }
             
         }
         public void HandleSelection(StrokeCollection strokes)
         {
-            if (strokes.Count > 0)
+            if (strokes.Count > 1)
             {
                 editeur.HandleChangeSelection(strokes);
+            }
+            else if (strokes.Count == 1)
+            {
+                this.HandlePreviewMouseDown((strokes[0] as Form).Center);
             }
             //TODO : Send socket -> selection was changed
         }
@@ -346,22 +388,33 @@ namespace PolyPaint.VueModeles
         }
         public void HandleMouseDown(Point mousePos)
         {
-            if (this.OutilSelectionne == "lasso")
+            
+   /*         else
+            {
+                editeur.HandleMouseDown(mousePos);
+            }*/
+        }
+        public void HandlePreviewMouseDown(Point mousePos)
+        {
+            Rect selectionZone = this.Canvas.GetSelectionBounds();
+            if (selectionZone.Size != Size.Empty)
+            {
+                
+                selectionZone.Inflate(new Size(15, 15)); //To cover the resizing bounds
+            }
+            if (this.OutilSelectionne == "lasso" && !selectionZone.Contains(mousePos))
             {
                 StrokeCollection selection = new StrokeCollection();
-                foreach (Stroke s in this.Traits)
+                for (int i = Traits.Count -1; i >= 0; i--)
                 {
-                    if (s.GetBounds().Contains(mousePos) && selection.Count == 0)
+                    if (Traits[i].GetBounds().Contains(mousePos) && selection.Count == 0)
                     {
-                        selection.Add(s);
-                       
+                        selection.Add(Traits[i]);
                     }
-                   
+
                 }
-                if (!this.Canvas.IsDraging)
-                {
                     editeur.HandleChangeSelection(selection);
-                }
+                
 
             }
             else

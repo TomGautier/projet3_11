@@ -47,7 +47,7 @@ namespace PolyPaint.Vues
 
         void surfaceDessin_SelectionMoving(object sender, InkCanvasSelectionEditingEventArgs e)
         {
-            this.surfaceDessin.IsDraging = true;
+           // this.surfaceDessin.IsDraging = true;
         }
         private void GlisserMouvementRecu(object sender, DragDeltaEventArgs e)
         {
@@ -74,9 +74,15 @@ namespace PolyPaint.Vues
         }
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            (DataContext as VueModele).HandlePreviewMouseDown(e.GetPosition(surfaceDessin));
+
+        }
+        private void surfaceDessin_MouseDown(object sender, MouseButtonEventArgs e)
+        {
             (DataContext as VueModele).HandleMouseDown(e.GetPosition(surfaceDessin));
 
         }
+
 
         private void DupliquerSelection(object sender, RoutedEventArgs e)
         {
@@ -197,10 +203,18 @@ namespace PolyPaint.Vues
           {
 
           }*/
-        private void surfaceDessin_SelectionResizing(object sender, EventArgs e)//object sender, InkCanvasSelectionEditingEventArgs e)
+        private void surfaceDessin_SelectionResized(object sender, EventArgs e)//object sender, InkCanvasSelectionEditingEventArgs e)
         {
+            this.surfaceDessin.IsDraging = false;
             (DataContext as VueModele).HandleResize();
         }
+        private void surfaceDessin_SelectionResizing(object sender, InkCanvasSelectionEditingEventArgs e)//object sender, InkCanvasSelectionEditingEventArgs e)
+        {
+            this.surfaceDessin.Select(surfaceDessin.GetSelectedStrokes());
+            this.surfaceDessin.IsDraging = true;
+            //(DataContext as VueModele).HandleResize();
+        }
+
         private void surfaceDessin_StrokeErasing(object sender, InkCanvasStrokeErasingEventArgs e)
         {
             (DataContext as VueModele).HandleErasing(e.Stroke);
@@ -218,8 +232,9 @@ namespace PolyPaint.Vues
 
         private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
         {
-            this.surfaceDessin.IsDraging = false;
+            //this.surfaceDessin.IsDraging = false;
             (DataContext as VueModele).HandleDrag();
         }
+        
     }
 }
