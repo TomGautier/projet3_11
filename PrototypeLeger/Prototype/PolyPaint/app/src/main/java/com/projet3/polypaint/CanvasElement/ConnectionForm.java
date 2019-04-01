@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -13,7 +14,6 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.opengl.Matrix;
 import android.util.Pair;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -28,7 +28,7 @@ import java.util.Vector;
 public class ConnectionForm extends GenericShape {
     protected final static int DEFAULT_WIDTH = 250;
     protected final static int DEFAULT_HEIGHT = 30;
-    private String type;
+    private ImageEditingFragment.ConnectionFormType type;
     private int arrowHeight;
     private int arrowWidth;
     private ConnectionFormVertex first;
@@ -38,6 +38,7 @@ public class ConnectionForm extends GenericShape {
     private Path path;
     private Path verticesPath;
     private Path arrow;
+    private Path frontArrow;
 
     private Paint linePaint;
     private Paint arrowPaint;
@@ -47,37 +48,46 @@ public class ConnectionForm extends GenericShape {
     //private Pair<GenericShape,GenericShape> connectedShapes;
 
 
-    public ConnectionForm(String id, int x, int y, int width, int height, PaintStyle style, String type) {
+    public ConnectionForm(String id, int x, int y, int width, int height, PaintStyle style, ImageEditingFragment.ConnectionFormType type) {
         super(id, x, y, width, height, style);
-        this.type = type;
-        initializeType();
-        initializeVertices();
+        initializeType(type);
         initializePaints();
+        initializeVertices();
     }
     public ConnectionForm clone() {
         return new ConnectionForm(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, type);
     }
-    private void initializeType(){
+    private void initializeType(ImageEditingFragment.ConnectionFormType type){
+        this.type = type;
         arrowPaint = new Paint();
         arrowPaint.setAntiAlias(true);
         switch(type) {
-            case "Inheritance":
+            case Agregation:
+                arrowHeight = 30;
+                arrowWidth = 50;
+                arrowPaint.setColor(Color.BLACK);
+                arrowPaint.setStyle(Paint.Style.STROKE);
+                break;
+            case Composition:
+                arrowHeight = 30;
+                arrowWidth = 50;
+                arrowPaint.setColor(Color.BLACK);
+                arrowPaint.setStyle(Paint.Style.FILL);
+                break;
+            case Inheritance:
                 arrowHeight = 50;
                 arrowWidth = 30;
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.STROKE);
                 break;
-            case "Agregation":
-                arrowHeight = 30;
-                arrowWidth = 50;
+            case Dependance:
+                //no arrows
+                break;
+            case Bidirectional:
+                arrowHeight = 50;
+                arrowWidth = 30;
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.STROKE);
-                break;
-            case "Composition":
-                arrowHeight = 30;
-                arrowWidth = 50;
-                arrowPaint.setColor(Color.BLACK);
-                arrowPaint.setStyle(Paint.Style.FILL);
                 break;
         }
     }
@@ -229,36 +239,60 @@ public class ConnectionForm extends GenericShape {
         ConnectionFormVertex currentVertex = firstVertex;
         float angle = 0;
         while (currentVertex.getNext() != null){
-            path.addCircle(currentVertex.x(),currentVertex.y(),5, Path.Direction.CW);
+            if (!(currentVertex == first && type == ImageEditingFragment.ConnectionFormType.Bidirectional))
+                path.addCircle(currentVertex.x(),currentVertex.y(),5, Path.Direction.CW);
             path.lineTo(currentVertex.getNext().x(),currentVertex.getNext().y());
             angle = getAngle(currentVertex.getNext().getPoint(), currentVertex.getPoint());
             currentVertex = currentVertex.getNext();
         }
-
+        last = currentVertex;
         canvas.drawPath(path, linePaint);
-        drawArrow(currentVertex, angle, canvas);
+        drawArrow(angle, canvas);
        // canvas.drawPath(arrow, arrowPaint);
     }
 
-    private void drawArrow(ConnectionFormVertex lastVertex, float angle, Canvas canvas){
+    private void drawArrow(float angle, Canvas canvas){
         arrow = new Path();
+        frontArrow = new Path();
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.rotate(angle,lastVertex.x(),lastVertex.y());
         switch (type){
-            case "Inheritance":
-                arrow.moveTo(lastVertex.x() + arrowWidth/2, lastVertex.y()); // Top
-                arrow.lineTo(lastVertex.x() - arrowWidth/2, lastVertex.y() - arrowHeight/2); // Bottom left
-                arrow.lineTo(lastVertex.x() - arrowWidth/2, lastVertex.y() + arrowHeight/2); // Bottom right
-                arrow.lineTo(lastVertex.x() + arrowWidth/2, lastVertex.y()); // Back to Top
+            case Inheritance:
+                canvas.rotate(angle,last.x(),last.y());
+                arrow.moveTo(last.x() + arrowWidth/2, last.y()); // Top
+                arrow.lineTo(last.x() - arrowWidth/2, last.y() - arrowHeight/2); // Bottom left
+                arrow.lineTo(last.x() - arrowWidth/2, last.y() + arrowHeight/2); // Bottom right
+                arrow.lineTo(last.x() + arrowWidth/2, last.y()); // Back to Top
                 arrow.close();
                 break;
-
+            case Bidirectional:
+                //front
+                canvas.rotate(getAngle(first.getPoint(),first.getNext().getPoint()),first.x(),first.y());
+                frontArrow.moveTo(first.x() + arrowWidth/2, first.y()); // Top
+                frontArrow.lineTo(first.x() - arrowWidth/2, first.y() - arrowHeight/2); // Bottom left
+                frontArrow.lineTo(first.x() - arrowWidth/2, first.y() + arrowHeight/2); // Bottom right
+                frontArrow.lineTo(first.x() + arrowWidth/2, first.y()); // Back to Top
+                frontArrow.close();
+                canvas.drawPath(frontArrow,arrowPaint);
+                //end
+                canvas.restore();
+                canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                canvas.rotate(angle, last.x(), last.y());
+                arrow.moveTo(last.x() + arrowWidth/2, last.y()); // Top
+                arrow.lineTo(last.x() - arrowWidth/2, last.y() - arrowHeight/2); // Bottom left
+                arrow.lineTo(last.x() - arrowWidth/2, last.y() + arrowHeight/2); // Bottom right
+                arrow.lineTo(last.x() + arrowWidth/2, last.y()); // Back to Top
+                arrow.close();
+                break;
+            case Dependance:
+                //no arrows
+                break;
             default: //composition et aggregation
-                arrow.moveTo(lastVertex.x(), lastVertex.y() + arrowHeight/2); // Top
-                arrow.lineTo(lastVertex.x() - arrowWidth/2, lastVertex.y()); // Left
-                arrow.lineTo(lastVertex.x(), lastVertex.y() - arrowHeight/2); // Bottom
-                arrow.lineTo(lastVertex.x() + arrowWidth/2, lastVertex.y()); // Right
-                arrow.lineTo(lastVertex.x(), lastVertex.y() + arrowHeight/2); // Back to Top
+                canvas.rotate(angle,last.x(),last.y());
+                arrow.moveTo(last.x(), last.y() + arrowHeight/2); // Top
+                arrow.lineTo(last.x() - arrowWidth/2, last.y()); // Left
+                arrow.lineTo(last.x(), last.y() - arrowHeight/2); // Bottom
+                arrow.lineTo(last.x() + arrowWidth/2, last.y()); // Right
+                arrow.lineTo(last.x(), last.y() + arrowHeight/2); // Back to Top
                 arrow.close();
                 break;
         }

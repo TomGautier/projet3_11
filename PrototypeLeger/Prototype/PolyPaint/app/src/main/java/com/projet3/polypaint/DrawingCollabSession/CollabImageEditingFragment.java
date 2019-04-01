@@ -3,6 +3,7 @@ package com.projet3.polypaint.DrawingCollabSession;
 import android.annotation.SuppressLint;
 import android.graphics.Rect;
 import android.graphics.Region;
+import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
@@ -222,11 +224,25 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
 
     }
-
+    private String findGenShapeType(Class genClass){
+        if (genClass.equals(UMLClass.class))
+            return ShapeType.UmlClass.toString();
+        else if (genClass.equals(UMLActivity.class))
+            return ShapeType.Activity.toString();
+        else if (genClass.equals(UMLRole.class))
+            return ShapeType.Role.toString();
+        else if (genClass.equals(UMLArtefact.class))
+            return ShapeType.Artefact.toString();
+        else if (genClass.equals(TextBox.class))
+            return ShapeType.text_box.toString();
+        else if (genClass.equals(ConnectionForm.class))
+            return ShapeType.ConnectionForm.toString();
+        return null;
+    }
 
     private CollabShape createCollabShape(GenericShape shape){
         String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
+        CollabShapeProperties properties = new CollabShapeProperties(findGenShapeType(shape.getClass()), hexColor,
                 "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
         CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
         return collabShape;
@@ -235,8 +251,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         id = client.getName() + Integer.toString(idCpt++);
         String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
         CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
-                "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString())
-                ,GenericShape.getDefaultWidth(currentShapeType.toString()),0);
+                "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType)
+                ,GenericShape.getDefaultWidth(currentShapeType),0);
         return new CollabShape(id,drawingSessionId, client.getName(),properties);
     }
     @Override
@@ -610,25 +626,26 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
 
     }
-    private void removeSelectedShape(GenericShape shape_){
+    private void removeSelectedShape(String id){
         for (Player player : players){
-            if (player.getSelectedShapes().contains(shape_)){
-                player.removeSelectedShape(shape_);
-                return;
+            for (GenericShape shape : player.getSelectedShapes()){
+                if (shape.getId().equals(id)){
+                    player.removeSelectedShape(shape);
+                    return;
+                }
             }
         }
     }
     @Override
     public void onStackElement(String id, String author) {
-        //Player player = findPlayer(author);
-        //player = (player == null) ? client : player;
+
         GenericShape shape = findGenShapeById(id);
+        if (client.getName().equals(author))
+            client.removeSelectedShape(shape);
+        else
+            removeSelectedShape(shape.getId());
         shapes.remove(shape);
-        //player.removeSelectedShape(shape);
-        removeSelectedShape(shape);
-        //if (player.getSelectedShapes().contains(shape)){
-          //  player.removeSelectedShape(shape);
-        //}
+
         if (client.getName().equals(author)){
             stack.push(shape);
         }

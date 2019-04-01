@@ -58,6 +58,8 @@
     <string name="connectionFormAgregation">Agrégation</string>
     <string name="connectionFormComposition">Composition</string>
     <string name="connectionFormInheritance">Héritage</string>
+    <string name="connectionFormBidirectional">Bidirectionnelle</string>
+    <string name="connectionFormDependance">Dépendance</string>
 
 
 

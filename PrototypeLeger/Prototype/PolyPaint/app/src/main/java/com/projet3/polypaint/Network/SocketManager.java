@@ -59,7 +59,7 @@ public class SocketManager  {
 
 
     //Properties
-    private final String ELEMENTS_ID_TAG ="id";
+    private final String ELEMENT_ID_TAG ="id";
     private final String ELEMENTS_IDS_TAG ="ids";
     private final String IMAGE_TAG = "image";
     private final String VISIBILITY_TAG = "visibility";
@@ -291,7 +291,7 @@ public class SocketManager  {
                 public void call(Object... args) {
                     try {
                         JSONObject obj = (JSONObject) args[0];
-                        String id = obj.getString(ELEMENTS_ID_TAG);
+                        String id = obj.getString(ELEMENT_ID_TAG);
                         String author = obj.getString(USERNAME_TAG);
                         drawingCollabSessionListener.onStackElement(id, author);
                     } catch (JSONException e) {
@@ -547,7 +547,7 @@ public class SocketManager  {
         try {
             json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId)
                     .put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
-                    .put(ELEMENTS_ID_TAG, id);
+                    .put(ELEMENT_ID_TAG, id);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -54,9 +54,9 @@ public class HomeActivity extends AppCompatActivity {
 			createUsersListFragment();
 			createChatFragment();
 			createImageEditingFragment();
-			//toggleImageEditingVisibility();
-			//createCollabImageEditingFragment();
-			//toggleCollabImageEditingVisibility();
+			createCollabImageEditingFragment();
+			toggleImageEditingVisibility();
+			toggleCollabImageEditingVisibility();
 		}
 		//CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",new int[] {1,2},200,300,0);
 		//CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);

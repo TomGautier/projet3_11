@@ -63,8 +63,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ImageButton buttonBack;
 
     protected enum Mode{selection, lasso, creation, move, resize}
-    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
-    protected enum ConnectionFormType{Agregation, Composition, Inheritance}
+    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
+    public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional, Dependance}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
@@ -180,9 +180,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonConnectionForm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.ConnectionForm);
                 PopupMenu dropDownMenu = new PopupMenu(getActivity(), buttonConnectionForm);
                 dropDownMenu.getMenuInflater().inflate(R.menu.connection_forms_menu, dropDownMenu.getMenu());
+                setShapeType(ShapeType.ConnectionForm);
                 dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {
@@ -193,9 +193,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                             case R.id.connectionFormInheritance:
                                 setConnectionFormType(ConnectionFormType.Inheritance);
                                 break;
+                            case R.id.connectionFormBidirectional:
+                                setConnectionFormType(ConnectionFormType.Bidirectional);
+                                break;
+                            case R.id.connectionFormDependance:
+                                setConnectionFormType(ConnectionFormType.Dependance);
+                                break;
                             case R.id.connectionFormComposition:
                                 setConnectionFormType(ConnectionFormType.Composition);
-                                break;
                         }
                         return true;
                     }
@@ -360,7 +365,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 else switch (currentMode) {
                     case selection:
                         if (canResize() && selections.get(0).canResize(posX,posY)){
-                            drawAnchorPoints();
                             resizeShape(event);
                             continueListening = true;
                         }
@@ -482,28 +486,28 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         id = FetchManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
             case UmlClass :
-                nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
                 break;
             case Activity :
-                nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
                 break;
             case Artefact :
-                nShape = new UMLArtefact(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLArtefact(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
                 break;
             case Role :
-                nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
                 break;
             case text_box :
                 nShape = new TextBox(id, posX, posY, defaultStyle);
                 ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
             case ConnectionForm:
-                nShape = new ConnectionForm(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle, currentConnectionFormType.toString());
+                nShape = new ConnectionForm(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, currentConnectionFormType);
         }
         if (nShape != null) {
             shapes.add(nShape);
@@ -581,6 +585,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 lastTouchPosX = posX;
                 break;
             case MotionEvent.ACTION_MOVE:
+                drawAnchorPoints();
                 connectionForm.relativeVertexMove(posX - lastTouchPosX,posY - lastTouchPosY, 0);
                 lastTouchPosX = posX;
                 lastTouchPosY = posY;

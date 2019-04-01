@@ -9,6 +9,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 
+import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+
 import java.util.ArrayList;
 
 public abstract class GenericShape {
@@ -145,32 +147,32 @@ public abstract class GenericShape {
     public  int getWidth() {
         return width;
     }
-    public final static int getDefaultHeight(String currentShapeType){
+    public final static int getDefaultHeight(ImageEditingFragment.ShapeType currentShapeType){
         switch (currentShapeType){
-            case "Activity" :
+            case Activity:
                 return UMLActivity.DEFAULT_HEIGHT;
-            case "UmlClass":
+            case UmlClass:
                 return UMLClass.DEFAULT_HEIGHT;
-            case "Artefact":
+            case Artefact:
                 return UMLArtefact.DEFAULT_HEIGHT;
-            case "Role":
+            case Role:
                 return UMLRole.DEFAULT_HEIGHT;
-            case "ConnectionForm":
+            case ConnectionForm:
                 return ConnectionForm.DEFAULT_HEIGHT;
         }
         return 0;
     }
-    public final static int getDefaultWidth(String currentShapeType){
+    public final static int getDefaultWidth(ImageEditingFragment.ShapeType currentShapeType){
         switch (currentShapeType){
-            case "Activity" :
+            case Activity:
                 return UMLActivity.DEFAULT_WIDTH;
-            case "UmlClass":
+            case UmlClass:
                 return UMLClass.DEFAULT_WIDTH;
-            case "Artefact":
+            case Artefact:
                 return UMLArtefact.DEFAULT_WIDTH;
-            case "Role":
+            case Role:
                 return UMLRole.DEFAULT_WIDTH;
-            case "ConnectionForm":
+            case ConnectionForm:
                 return ConnectionForm.DEFAULT_WIDTH;
         }
         return 0;
