@@ -28,7 +28,7 @@ public class UMLPhase extends GenericTextShape {
 
         Path p = new Path();
 
-        p.addRect(posX - w2, posY - h2, posX + w2, posY - h2 + FONT_SIZE + PADDING, Path.Direction.CW);
+        p.addRect(posX - w2, posY - h2, posX + w2, posY - h2 + FONT_SIZE + 2*PADDING, Path.Direction.CW);
 
         canvas.drawPath(p, style.getBackgroundPaint());
         //canvas.drawPath(p, style.getBorderPaint());
@@ -36,9 +36,9 @@ public class UMLPhase extends GenericTextShape {
         traceStyledLine(posX + w2, posY - h2, posX + w2, posY + h2, canvas);
         traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
-        traceStyledLine(posX - w2, posY - h2 + FONT_SIZE + PADDING, posX + w2, posY - h2 + FONT_SIZE + PADDING, canvas);
+        traceStyledLine(posX - w2, posY - h2 + FONT_SIZE + 2*PADDING, posX + w2, posY - h2 + FONT_SIZE + 2*PADDING, canvas);
 
-        canvas.drawText(text, posX, posY - h2 + FONT_SIZE, style.getTextPaint());
+        canvas.drawText(text, posX, posY - h2 + FONT_SIZE + PADDING, style.getTextPaint());
     }
 
     public UMLPhase clone() {

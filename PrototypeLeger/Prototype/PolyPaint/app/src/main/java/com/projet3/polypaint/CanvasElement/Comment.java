@@ -10,11 +10,11 @@ public class Comment extends GenericTextShape {
 
     public Comment(String id, int x, int y, PaintStyle style) {
         super(id, x, y, style);
-        height += PADDING;
+        height += 2*PADDING;
     }
     private Comment(String id, int x, int y, PaintStyle style, String contents) {
         super(id, x, y, style, contents);
-        height += PADDING;
+        height += 2*PADDING;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class Comment extends GenericTextShape {
         traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
 
-        canvas.drawText(text, posX, posY + FONT_SIZE / 2, style.getTextPaint());
+        canvas.drawText(text, posX, posY + FONT_SIZE/2, style.getTextPaint());
     }
 
     @Override
@@ -49,6 +49,6 @@ public class Comment extends GenericTextShape {
     @Override
     protected void adjustWidthToText() {
         super.adjustWidthToText();
-        width += PADDING;
+        width += 2*PADDING;
     }
 }

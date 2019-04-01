@@ -703,4 +703,15 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
+
+    // ClassEditingDialog
+    @Override
+    public void onClassDialogPositiveResponse(String name, String attributes, String methods) {
+        ((UMLClass)selections.get(0)).setText(name);
+        ((UMLClass)selections.get(0)).setAttributes(attributes);
+        ((UMLClass)selections.get(0)).setMethods(methods);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
 }

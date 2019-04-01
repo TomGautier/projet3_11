@@ -2,7 +2,7 @@ package com.projet3.polypaint.CanvasElement;
 
 public abstract class GenericTextShape extends GenericShape {
     public static final int FONT_SIZE = 25;
-    protected final int PADDING = 18;
+    protected final int PADDING = 8;
     protected String text = "";
 
     public GenericTextShape(String id, int x, int y, PaintStyle style) {

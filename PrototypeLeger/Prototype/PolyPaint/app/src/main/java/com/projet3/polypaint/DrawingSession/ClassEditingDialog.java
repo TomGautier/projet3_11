@@ -30,7 +30,9 @@ public class ClassEditingDialog extends DialogFragment {
     private SeekBar blueSliderFG;
     private ImageView borderPreview;
 
-    private String contents = "";
+    private String name = "";
+    private String attributes = "";
+    private String methods = "";
 
     private PaintStyle style;
     private int backgroundColor;
@@ -48,15 +50,19 @@ public class ClassEditingDialog extends DialogFragment {
         initializeStyle();
         setSliderListeners();
 
-        titleEdit.setText(contents);
+        titleEdit.setText(name);
+        attributesEdit.setText(attributes);
+        methodsEdit.setText(methods);
 
         builder.setView(rootView)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String contents = titleEdit.getText().toString();
+                        name = titleEdit.getText().toString();
+                        attributes = attributesEdit.getText().toString();
+                        methods = methodsEdit.getText().toString();
                         modifyCurrentStyle();
-                        ImageEditingDialogManager.getInstance().onDialogPositiveClick(style, contents);
+                        ImageEditingDialogManager.getInstance().onClassDialogPositiveClick(style, name, attributes, methods);
 
                     }
                 })
@@ -181,8 +187,10 @@ public class ClassEditingDialog extends DialogFragment {
         });
     }
 
-    public void setContents(String contents) {
-        this.contents = contents;
+    public void setContents(String name, String attributes, String methods) {
+        this.name = name;
+        this.attributes = attributes;
+        this.methods = methods;
     }
     public void setStyle(PaintStyle style) {
         this.style = new PaintStyle(style);

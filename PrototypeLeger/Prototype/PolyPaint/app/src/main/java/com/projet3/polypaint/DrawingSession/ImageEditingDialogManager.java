@@ -12,6 +12,7 @@ public class ImageEditingDialogManager {
         void onTextDialogNegativeResponse();
         void onStyleDialogPositiveResponse(PaintStyle style);
         void onStyleDialogNegativeResponse();
+        void onClassDialogPositiveResponse(String name, String attributes, String methods);
     }
 
     private static ImageEditingDialogManager instance = null;
@@ -59,10 +60,10 @@ public class ImageEditingDialogManager {
         dialog.show(fragmentManager, "text and style editing");
     }
 
-    public void showClassEditingDialog(FragmentManager fragmentManager, PaintStyle style, String contents) {
+    public void showClassEditingDialog(FragmentManager fragmentManager, PaintStyle style, String name, String attributes, String methods) {
         ClassEditingDialog dialog = new ClassEditingDialog();
         dialog.setStyle(style);
-        dialog.setContents(contents);
+        dialog.setContents(name, attributes, methods);
         dialog.show(fragmentManager, "class editing");
     }
 
@@ -73,6 +74,14 @@ public class ImageEditingDialogManager {
                 s.onStyleDialogPositiveResponse(style);
             if (contents != null && !contents.isEmpty())
                 s.onTextDialogPositiveResponse(contents);
+        }
+    }
+    void onClassDialogPositiveClick(PaintStyle style, String name, String attributes, String methods) {
+        for (ImageEditingDialogSubscriber s : subscribers) {
+            if (style != null)
+                s.onStyleDialogPositiveResponse(style);
+            if (name != null && !name.isEmpty())
+                s.onClassDialogPositiveResponse(name, attributes, methods);
         }
     }
     void onStyleDialogNegativeClick() {
