@@ -62,7 +62,7 @@ namespace PolyPaint.Utilitaires
 
 
 
-            this.StylusPoints = pts;
+            this.StylusPoints = pts;  
         }
         private void updatePoints()
         {        
