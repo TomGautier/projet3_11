@@ -4,6 +4,8 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
+
 public class UMLRole extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 90;
@@ -12,8 +14,6 @@ public class UMLRole extends GenericShape {
 
     public UMLRole(String id,int x, int y, int width, int height, PaintStyle style) {
         super(id, x, y, width,height, style);
-        //width = DEFAULT_WIDTH;
-        //height = DEFAULT_HEIGHT;
     }
     public UMLRole clone() {
         return new UMLRole(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
@@ -36,12 +36,17 @@ public class UMLRole extends GenericShape {
         p.addCircle(posX, posY - h4, h4, Path.Direction.CW);
 
         canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
+
+        traceStyledLine(posX - w4, posY, posX + w4, posY, canvas);
+        traceStyledLine(posX + w4, posY, posX + w2, posY + h2, canvas);
+        traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w4, posY, canvas);
+        traceStyledCircle(posX, posY - h4, h4, canvas);
+        //canvas.drawPath(p, style.getBorderPaint());
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
-        /* Do nothing for now*/
-        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
+        ImageEditingDialogManager.getInstance().showStyleDialog(fragmentManager, style);
     }
 
     public String getType() { return TYPE; }

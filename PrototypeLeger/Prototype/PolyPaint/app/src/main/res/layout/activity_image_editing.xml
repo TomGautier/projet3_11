@@ -14,7 +14,8 @@
 
         <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:scrollbarStyle="insideOverlay">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -25,78 +26,93 @@
 
                 <Button
                     android:id="@+id/buttonSelection"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonSelection"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonSelection" />
 
                 <Button
                     android:id="@+id/buttonLasso"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonLasso"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonLasso" />
 
                 <Button
                     android:id="@+id/buttonMove"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonMove"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonMove" />
 
-                <View style="@style/Divider"/>
+                <View style="@style/Divider" />
 
                 <Button
                     android:id="@+id/buttonClass"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonClass"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonClass" />
 
                 <Button
                     android:id="@+id/buttonActivity"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonActivity"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonActivity" />
 
                 <Button
                     android:id="@+id/buttonArtefact"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonArtefact"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonArtefact" />
 
                 <Button
                     android:id="@+id/buttonRole"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonRole"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonRole" />
+
+                <Button
+                    android:id="@+id/buttonPhase"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonPhase" />
+
+                <Button
+                    android:id="@+id/buttonComment"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonComment" />
 
                 <Button
                     android:id="@+id/buttonTextBox"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonTextBox"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonTextBox" />
 
-                <View style="@style/Divider"
-                    android:layout_width="120dp"/>
+                <View
+                    style="@style/Divider"
+                    android:layout_width="120dp" />
 
                 <Button
                     android:id="@+id/buttonDelete"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonDelete"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonDelete" />
 
                 <Button
                     android:id="@+id/buttonCut"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonCut"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonCut" />
 
                 <Button
                     android:id="@+id/buttonDuplicate"
@@ -119,10 +135,10 @@
 
                 <Button
                     android:id="@+id/buttonReset"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/buttonReset"
-                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                    android:text="@string/buttonReset" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
