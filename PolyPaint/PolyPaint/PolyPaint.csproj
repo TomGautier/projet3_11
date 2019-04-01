@@ -87,6 +87,7 @@
     </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -130,7 +131,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
-
     <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Managers\FormConnectorManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />
@@ -156,7 +156,6 @@
     <Compile Include="Vues\DrawControl.xaml.cs">
       <DependentUpon>DrawControl.xaml</DependentUpon>
     </Compile>
-    
     <Compile Include="Vues\GenericSetter.xaml.cs">
       <DependentUpon>GenericSetter.xaml</DependentUpon>
     </Compile>
@@ -169,7 +168,6 @@
     <Compile Include="Vues\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
     </Compile>
@@ -209,7 +207,6 @@
     <Compile Include="Vues\FenetreDessin.xaml.cs">
       <DependentUpon>FenetreDessin.xaml</DependentUpon>
     </Compile>
-
     <Page Include="Vues\GenericSetter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -226,7 +223,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-
     <Page Include="Vues\UmlClassSetter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

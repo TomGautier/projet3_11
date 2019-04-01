@@ -11,6 +11,7 @@ using PolyPaint.Managers;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 //using System.Drawing;
 
@@ -28,6 +29,7 @@ namespace PolyPaint.Modeles
         public StrokeCollection traits = new StrokeCollection();
         public StrokeCollection selectedStrokes = new StrokeCollection();
         private StrokeCollection traitsRetires = new StrokeCollection();
+        public StrokeCollection LastCut = new StrokeCollection();
 
         public string ConnectorLabel { get; set; }
         public string ConnectorType { get; set; }
@@ -71,8 +73,7 @@ namespace PolyPaint.Modeles
                 outilSelectionne = value;
                 ProprieteModifiee();
             }
-        }
-        public StrokeCollection LastCut { get; set; }
+        }      
         // Forme de la pointe du crayon
         private string pointeSelectionnee = "ronde";
         public string PointeSelectionnee
@@ -181,6 +182,18 @@ namespace PolyPaint.Modeles
                 }
             }
             return true;
+        }
+        public void LoadLocally(string json)
+        {
+            this.traits.Clear();
+            this.traitsRetires.Clear();
+            this.selectedStrokes.Clear();
+            this.LastCut.Clear();
+            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            foreach (Shape shape in datalist)
+            {
+                this.AddForm(shape,false);
+            }
         }
         public void HandleChangeSelection(StrokeCollection strokes)
         {
@@ -511,7 +524,7 @@ namespace PolyPaint.Modeles
             }
             
         }
-        public void AddForm(Shape shape)
+        public void AddForm(Shape shape, bool setSelection)
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]));
@@ -525,7 +538,7 @@ namespace PolyPaint.Modeles
 
                     break;
                 case "Artefact":
-                    Artefact artefact = new Artefact(pts);                
+                    Artefact artefact = new Artefact(pts);
                     artefact.SetToShape(shape);
                     traits.Add(artefact);
                     break;
@@ -556,19 +569,22 @@ namespace PolyPaint.Modeles
                     comment.SetToShape(shape);
                     traits.Add(comment);
                     break;
-                    
+
             }
-            if (shape.author == this.SocketManager.UserName)
+            if (setSelection)
             {
-                this.OutilSelectionne = "lasso";
-                ProprieteModifiee("OutilSelectionne");
-                this.selectedStrokes = new StrokeCollection { traits.Last() }; //select the new shape created               
-                ProprieteModifiee("Selection");
-                
-            }
-            else
-            {
-                (traits.Last() as Form).IsSelectedByOther = true;
+                if (shape.author == this.SocketManager.UserName)
+                {
+                    this.OutilSelectionne = "lasso";
+                    ProprieteModifiee("OutilSelectionne");
+                    this.selectedStrokes = new StrokeCollection { traits.Last() }; //select the new shape created               
+                    ProprieteModifiee("Selection");
+
+                }
+                else
+                {
+                    (traits.Last() as Form).IsSelectedByOther = true;
+                }
             }
         }
         private void deleteElements(string[] list)
@@ -665,7 +681,7 @@ namespace PolyPaint.Modeles
                     //Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
                     Application.Current.Dispatcher.Invoke(() =>
                      {
-                         this.AddForm(shape);
+                         this.AddForm(shape,true);
                          // Code causing the exception or requires UI thread access
                      });
 
@@ -761,7 +777,7 @@ namespace PolyPaint.Modeles
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    this.AddForm(shape);
+                    this.AddForm(shape,true);
 
                     if (this.SocketManager.UserName == username)
                     {

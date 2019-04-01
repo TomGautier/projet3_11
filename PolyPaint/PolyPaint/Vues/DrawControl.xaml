@@ -217,15 +217,46 @@
 
 
       </StackPanel>
+     
 
     </Border>
-    <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000"/>
+        <Border DockPanel.Dock ="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000" >
+            <StackPanel  Orientation="Vertical" Width="100">
+                <StackPanel.Background>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0.01">
+                        <GradientStop Color="Gray"/>
+                        <GradientStop Color="#FFFFFFFF"/>
+                        <GradientStop Color="#FFE0E0E0" Offset="1"/>
+                    </LinearGradientBrush>
+                </StackPanel.Background>
+                <StackPanel>
+                    <Button x:Name="Save" Width="100" Height="50" Margin="0"
+                  HorizontalContentAlignment="Center"
+                  BorderBrush="Transparent"
+                  Background="Transparent"
+                  Click="SaveLocally">
+                        SAVE
+                    </Button>
+                </StackPanel>
+                <StackPanel>
+                    <Button x:Name="Load" Width="100" Height="50" Margin="0"
+                  HorizontalContentAlignment="Center"
+                  BorderBrush="Transparent"
+                  Background="Transparent"
+                  Click="LoadLocally">
+                        LOAD
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+            
+         </Border>
 
-    <Border DockPanel.Dock="Bottom" Height="25" BorderThickness="0,0.75,0,0.75" BorderBrush="#77000000">
+                <Border DockPanel.Dock="Right" BorderThickness="0,0,0,0.5" BorderBrush="#77000000"/>
+      <Border DockPanel.Dock="Bottom" Height="25" BorderThickness="0,0.75,0,0.75" BorderBrush="#77000000">
       <StackPanel Orientation="Horizontal" Background="#FFF0F0F0">
         <Image Source="/Resources/position.png" Margin="5,5,5,5" VerticalAlignment="Center"/>
-        <TextBlock Name="textBlockPosition" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-      </StackPanel>
+                <TextBlock Name="textBlockPosition" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            </StackPanel>
     </Border>
 
     <Grid DockPanel.Dock="Left" Margin="0,1,0,0" Width="794">
@@ -271,6 +302,6 @@
           <DropShadowEffect Opacity="0.3" BlurRadius="10"/>
         </Border.Effect>
       </Border>
-    </Grid>
+        </Grid>
   </DockPanel>
 </UserControl>

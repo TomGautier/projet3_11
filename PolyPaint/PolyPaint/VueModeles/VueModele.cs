@@ -13,6 +13,8 @@ using PolyPaint.Vues;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 
 namespace PolyPaint.VueModeles
 {
@@ -401,6 +403,25 @@ namespace PolyPaint.VueModeles
         {
             editeur.Depiler(null);
         }
+        public string ConvertCanvasToString()
+        {
+            List<Shape> shapes_ = new List<Shape>();
+            foreach (Stroke s in Traits)
+            {
+                shapes_.Add((s as Form).ConvertToShape(this.SocketManager.SessionID));
+            }
+            /* string parameters = new JavaScriptSerializer().Serialize(new
+             {            
+                 shapes = shapes_
+             });*/
+            var serializer = new JavaScriptSerializer();
+            string parameters = serializer.Serialize(shapes_);
+            return parameters;
+        }
+        public void LoadLocally(string json) {
+            this.editeur.LoadLocally(json);
+        }
+
         public void HandleMouseDown(Point mousePos)
         {
             
