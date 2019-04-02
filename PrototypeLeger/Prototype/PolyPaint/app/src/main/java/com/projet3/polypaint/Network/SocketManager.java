@@ -59,8 +59,8 @@ public class SocketManager  {
 
 
     //Properties
-    private final String ELEMENT_ID_TAG ="id";
-    private final String ELEMENTS_IDS_TAG ="ids";
+    private final String ELEMENT_ID_TAG ="elementId";
+    private final String ELEMENTS_IDS_TAG ="elementIds";
     private final String IMAGE_TAG = "image";
     private final String VISIBILITY_TAG = "visibility";
     private final String NAME_TAG = "name";

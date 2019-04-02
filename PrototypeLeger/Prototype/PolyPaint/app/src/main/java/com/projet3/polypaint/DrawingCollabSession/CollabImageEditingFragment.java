@@ -161,21 +161,22 @@ public class CollabImageEditingFragment extends ImageEditingFragment
 
     @Override
     protected void drawAllShapes() {
-        for (GenericShape shape : shapes)
-            shape.drawOnCanvas(canvas);
+        for (int i = 0; i < shapes.size(); i++){
+            shapes.get(i).drawOnCanvas(canvas);
+        }
+        for (int j = 0; j < client.getSelectedShapes().size(); j++){
+            client.getSelectedShapes().get(j).drawSelectionBox(canvas, client.getSelectionPaint());
+        }
 
         //if (selections.size() > 0) {
             /*for (GenericShape shape : selections) {
                 shape.drawSelectionBox(canvas, findPlayer(shape).getSelectionPaint());
             }*/
-        for (GenericShape shape : client.getSelectedShapes())
-            shape.drawSelectionBox(canvas, client.getSelectionPaint());
-
-        for (Player player : players) {
-            for (GenericShape shape : player.getSelectedShapes())
-                shape.drawSelectionBox(canvas, player.getSelectionPaint());
+        for (int w = 0; w < players.size(); w++){
+            for (int z = 0; z < players.get(w).getSelectedShapes().size(); z++){
+                players.get(w).getSelectedShapes().get(z).drawSelectionBox(canvas,players.get(w).getSelectionPaint());
+            }
         }
-        // }
     }
     protected GenericShape addShape(int posX, int posY) {
         CollabShape shape = createCollabShape(posX,posY);
@@ -248,7 +249,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         return collabShape;
     }
     private CollabShape createCollabShape(int posX, int posY){
-        id = client.getName() + Integer.toString(idCpt++);
+        id = client.getName() + "_" + Integer.toString(idCpt++);
         String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
         CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
                 "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType)
@@ -627,28 +628,32 @@ public class CollabImageEditingFragment extends ImageEditingFragment
 
     }
     private void removeSelectedShape(String id){
+        for (GenericShape shape : client.getSelectedShapes()){
+            if (shape.getId().equals(id)){
+                client.removeSelectedShape(shape);
+                break;
+            }
+        }
         for (Player player : players){
             for (GenericShape shape : player.getSelectedShapes()){
                 if (shape.getId().equals(id)){
                     player.removeSelectedShape(shape);
-                    return;
+                    break;
                 }
             }
         }
+
     }
     @Override
     public void onStackElement(String id, String author) {
 
-        GenericShape shape = findGenShapeById(id);
-        if (client.getName().equals(author))
-            client.removeSelectedShape(shape);
-        else
-            removeSelectedShape(shape.getId());
-        shapes.remove(shape);
 
-        if (client.getName().equals(author)){
+        GenericShape shape = findGenShapeById(id);
+        removeSelectedShape(id);
+        shapes.remove(shape);
+        if (client.getName().equals(author))
             stack.push(shape);
-        }
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -744,142 +749,5 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         //cutShapes.addAll(selections);
         //deleteSelection();
     }
-    /*
-    public void duplicateSelection() {
-        ArrayList<GenericShape> duplicatedShapes;
-        // Check whether to duplicate selected shapes or clipboard (or nothing)
-        if (!selections.isEmpty())
-            duplicatedShapes = selections;
-        else if (!cutShapes.isEmpty())
-            duplicatedShapes = cutShapes;
-        else return;
 
-        // Same operation in either case
-        ArrayList<GenericShape> stackElems = new ArrayList<>();
-        for (GenericShape shape : duplicatedShapes){
-            GenericShape nShape = shape.clone();
-            shapes.add(nShape);
-            stackElems.add(nShape);
-        }
-
-        if (selections.isEmpty()) {
-            cutShapes = stackElems;
-        }
-        selections.clear();
-        selections.addAll(stackElems);
-
-        addToStack(stackElems, ADD_ACTION);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
-    }
-    public void reset() {
-
-        if (shapes != null && shapes.size() > 0){
-            addToStack(new ArrayList(shapes),REMOVE_ACTION);
-            shapes.clear();
-        }
-        selections.clear();
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
-    }
-
-    public void backCanevas() {
-        if (addStack != null && !addStack.empty()){
-            Pair pair = addStack.pop();
-            selections.clear();
-            for (GenericShape shape : (ArrayList<GenericShape>)pair.first){
-                if (pair.second.equals(ADD_ACTION)){
-                        shapes.remove(shape);
-                }
-                else if(pair.second.equals(REMOVE_ACTION)){
-                    shapes.add(shape);
-
-                }
-
-            }
-            removeStack.push(pair);
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
-        }
-
-
-    }
-    public void forthCanevas() {
-        if (removeStack != null && !removeStack.empty()){
-            Pair pair = removeStack.pop();
-            selections.clear();
-            for (GenericShape shape : (ArrayList<GenericShape>)pair.first){
-                if (pair.second.equals(ADD_ACTION)){
-                    shapes.add(shape);
-                    selections.add(shape);
-                }
-                else if(pair.second.equals(REMOVE_ACTION)){
-                    shapes.remove(shape);
-
-                }
-
-            }
-            addStack.push(pair);
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
-        }
-
-    }
-
-    public boolean checkCanvasResizeHandle(int x, int y) {
-        final int cornerTolerance = 10;
-        
-        return x > canvas.getWidth() - cornerTolerance &&
-                x < canvas.getWidth() + cornerTolerance &&
-                y > canvas.getHeight() - cornerTolerance &&
-                y < canvas.getHeight() + cornerTolerance;
-    }
-    public boolean resizeCanvas(MotionEvent event) {
-        int posX = (int)event.getX(0);
-        int posY = (int)event.getY(0);
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                isResizingCanvas = true;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                ViewGroup.LayoutParams params = iView.getLayoutParams();
-                params.height = posY;
-                params.width = posX;
-                iView.setLayoutParams(params);
-                break;
-            case MotionEvent.ACTION_UP:
-                isResizingCanvas = false;
-                break;
-        }
-
-        updateCanvas();
-        drawAllShapes();
-
-        return isResizingCanvas;
-    }
-
-    // ------------------------- Dialogs -------------------------
-    // TextEditingDialog
-    @Override
-    public void onTextEditingDialogPositiveClick(String contents) {
-        ((TextBox)selections.get(0)).setText(contents);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
-    }
-    @Override
-    public void onTextEditingDialogNegativeClick() {
-        if (((TextBox)selections.get(0)).getText().equals("")) {
-            shapes.removeAll(selections);
-            selections.clear();
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
-        }
-    }*/
 }

@@ -100,13 +100,7 @@ public class AnchorPoint {
         return vertexBox.contains(centerPoint.x,centerPoint.y);
        // return Rect.intersects(box,vertexBox);
     }
-    public boolean contains(int x, int y){
-        Path temp = new Path();
-        temp.addCircle(x,y,1, Path.Direction.CW);
-        temp.op(path, Path.Op.INTERSECT);
-        return !temp.isEmpty();
-        //return box.contains(x,y);
-    }
+
     public void drawOnCanvas(Canvas canvas){
         //canvas.drawRect(box,paint);
         canvas.drawPath(path,paint);

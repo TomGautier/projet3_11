@@ -52,7 +52,7 @@ export class DrawingSessionManager {
         var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
         console.log("USERS: ",users)
         if (users !== undefined){
-            if (users.indexOf(doc.username) == -1){
+            if (doc.username != null && users.indexOf(doc.username) == -1){
                 users.push(doc.username);
                 console.log("AJOUTE LE USER ", doc.username);
             }
