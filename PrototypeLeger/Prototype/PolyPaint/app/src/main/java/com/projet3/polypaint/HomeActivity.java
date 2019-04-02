@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +44,7 @@ public class HomeActivity extends AppCompatActivity {
 	private FrameLayout usersListFragmentLayout;
 
 	private CollabImageEditingFragment collabImageEditingFragment;
+	private GalleryFragment galleryFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,6 @@ public class HomeActivity extends AppCompatActivity {
 			createChatFragment();
 			createImageEditingFragment();
 			toggleImageEditingVisibility();
-			createCollabImageEditingFragment();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
 		}
@@ -95,11 +96,12 @@ public class HomeActivity extends AppCompatActivity {
         transaction.addToBackStack(null);
         transaction.commit();
 	}
-	private void createCollabImageEditingFragment(){
+	private void createCollabImageEditingFragment(String imageId){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		collabImageEditingFragment = new CollabImageEditingFragment();
-		transaction.add(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
+
+		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId);
+		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -175,23 +177,30 @@ public class HomeActivity extends AppCompatActivity {
 		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			collabImageEditingFragmentLayout.setVisibility(View.GONE);
 		else {
+			createCollabImageEditingFragment(null);
 			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
-			collabImageEditingFragment.joinNewDrawingSession();
 		}
+	}
+	public void joinCollabEditingSession(String imageId) {
+		createCollabImageEditingFragment(imageId);
+		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
 	private void createGalleryFragment(){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.galleryFragment,new GalleryFragment(),GALLERY_TAG);
+		galleryFragment = new GalleryFragment();
+		transaction.add(R.id.galleryFragment, galleryFragment, GALLERY_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
-	private void toggleGalleryVisibility(){
+	public void toggleGalleryVisibility(){
 		if (galleryFragmentLayout.getVisibility() == View.VISIBLE)
 			galleryFragmentLayout.setVisibility(View.GONE);
-		else
+		else {
 			galleryFragmentLayout.setVisibility(View.VISIBLE);
+			galleryFragment.refresh();
+		}
 	}
 
 	/*private void toggleChatVisibility(){

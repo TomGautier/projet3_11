@@ -1,6 +1,7 @@
 package com.projet3.polypaint.DrawingCollabSession;
 
 import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -39,6 +40,16 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private Player client;
     private int selectedColorCpt;
 
+    private static final String IMAGE_ID_TAG = "IMAGE_ID";
+
+    public static CollabImageEditingFragment newInstance(String sessionId){
+        CollabImageEditingFragment fragment = new CollabImageEditingFragment();
+        Bundle args = new Bundle();
+        args.putString(IMAGE_ID_TAG, sessionId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public CollabImageEditingFragment()  {}
 
     @SuppressLint("ClickableViewAccessibility")
@@ -49,14 +60,17 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         players = new ArrayList<>();
         selectedColorCpt = 0;
         client = new Player(FetchManager.currentInstance.getUserUsername(), selectedColorCpt);
-        //selectedColorCpt++;
-        //SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
-        //SocketManager.currentInstance.joinCollabSession("50ca30f0-4773-11e9-8a89-39fc00e9f709");
+
+        String imageId = getArguments().getString(IMAGE_ID_TAG);
+        if (imageId == null || imageId.equals("")) joinNewDrawingSession();
+        else joinDrawingSession(imageId);
+
         return rootView;
     }
-    public void joinDrawingSession(String sessionId) {
+
+    public void joinDrawingSession(String imageId) {
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
-        SocketManager.currentInstance.joinCollabSession(sessionId);
+        SocketManager.currentInstance.joinCollabSession(imageId);
     }
     public void joinNewDrawingSession() {
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);

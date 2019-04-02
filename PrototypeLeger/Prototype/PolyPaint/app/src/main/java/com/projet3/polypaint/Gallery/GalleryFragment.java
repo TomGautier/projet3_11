@@ -12,6 +12,8 @@ import android.widget.Switch;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.Network.RequestManager;
 
@@ -55,6 +57,8 @@ public class GalleryFragment extends Fragment {
             }
         });
     }
+
+    public void refresh() { populateGrid(); }
 
     private void populateGrid() {
         ArrayList<JSONObject> images;
@@ -101,7 +105,7 @@ public class GalleryFragment extends Fragment {
         transaction.commit();
     }
 
-    private JSONObject createNewImage() {
+    /*private JSONObject createNewImage() {
         JSONObject image = new JSONObject();
 
         try {
@@ -125,9 +129,9 @@ public class GalleryFragment extends Fragment {
         }
 
         return image;
-    }
+    }*/
 
-    private JSONObject generateShapeProperties() {
+    /*private JSONObject generateShapeProperties() {
         JSONObject testProperties = new JSONObject();
 
         try {
@@ -146,7 +150,7 @@ public class GalleryFragment extends Fragment {
         }
 
         return testProperties;
-    }
+    }*/
 
 
 }

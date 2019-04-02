@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.projet3.polypaint.HomeActivity;
 import com.projet3.polypaint.R;
 
 import org.json.JSONException;
@@ -26,6 +27,13 @@ public class GalleryThumbnailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         rootView=inflater.inflate(R.layout.gallery_thumbnail, container, false);
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((HomeActivity)getActivity()).joinCollabEditingSession(v.getContentDescription().toString());
+                ((HomeActivity)getActivity()).toggleGalleryVisibility();
+            }
+        });
 
         if (image != null) updateView();
 
@@ -49,7 +57,6 @@ public class GalleryThumbnailFragment extends Fragment {
         try {
             tv.setText(image.getString("author"));
             if (image.has("thumbnail")) {
-                System.out.println("Recieved thumbnail for image id " + image.getString("id"));
                 byte[] decoded = Base64.decode(image.getString("thumbnail"), Base64.DEFAULT);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
 
@@ -58,6 +65,8 @@ public class GalleryThumbnailFragment extends Fragment {
                     iv.invalidate();
                 }
             }
+
+            rootView.setContentDescription(image.getString("id"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
