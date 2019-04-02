@@ -29,6 +29,7 @@ import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.ConnectionFormVertex;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
+import com.projet3.polypaint.CanvasElement.RotationGestureDetector;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
@@ -40,7 +41,7 @@ import com.projet3.polypaint.Network.FetchManager;
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber {
+public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber, RotationGestureDetector.OnRotationGestureListener {
 
 
     protected Button buttonClass;
@@ -51,6 +52,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonConnectionForm;
     protected Button buttonCanvas;
     protected Button buttonMove;
+    protected Button buttonRotate;
     protected Button buttonSelection;
     protected Button buttonLasso;
     protected Button buttonReset;
@@ -62,7 +64,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
 
-    protected enum Mode{selection, lasso, creation, move, resize}
+
+    protected enum Mode{selection, lasso, creation, move, rotate}
     public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
     public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
@@ -100,6 +103,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected boolean isLongPressed = false;
     protected int idCpt;
     protected String id;
+    protected RotationGestureDetector rotationDetector;
 
 
     public ImageEditingFragment() {}
@@ -113,6 +117,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         shapes = new ArrayList<>();
         selections = new ArrayList<>();
         cutShapes = new ArrayList<>();
+        rotationDetector = new RotationGestureDetector(this);
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
@@ -141,6 +146,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.Activity);
+            }
+        });
+
+        buttonRotate = (Button)rootView.findViewById(R.id.buttonRotate);
+        buttonRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMode(Mode.rotate);
             }
         });
 
@@ -344,6 +357,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected boolean canResize(){
         return selections.size() == 1 && selections.get(0).getClass().equals(ConnectionForm.class);
     }
+    protected boolean canRotate(){
+        return selections.size() == 1;
+    }
     @SuppressLint("ClickableViewAccessibility")
     protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
@@ -370,8 +386,11 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         }
                         else
                             checkSelection(posX,posY);
-                        //checkSelection(posX, posY);
                         break;
+                        case rotate:
+                            rotationDetector.onTouchEvent(event, posX, posY);
+                            continueListening = true;
+                            break;
                     case lasso:
                         doLassoSelection(event);
                         continueListening = true;
@@ -412,6 +431,15 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected void drawAnchorPoints(){
         for (GenericShape shape : shapes){
             shape.drawAnchorPoints(canvas);
+        }
+    }
+    @Override
+    public void OnRotation(RotationGestureDetector rotationDetector, int posX, int posY) {
+        for (GenericShape shape : selections) {
+            if (shape.canRotate(posX, posY)) {
+                shape.rotate(-rotationDetector.getAngle());
+                return;
+            }
         }
     }
     protected void stack(){

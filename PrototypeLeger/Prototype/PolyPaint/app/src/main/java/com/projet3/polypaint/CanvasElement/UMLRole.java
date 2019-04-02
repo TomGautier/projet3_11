@@ -22,9 +22,11 @@ public class UMLRole extends GenericShape {
     @Override
     public void drawOnCanvas(Canvas canvas) {
         Path p = getSelectionPath();
-
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
         canvas.drawPath(p, style.getBorderPaint());
+        canvas.restore();
     }
 
     @Override

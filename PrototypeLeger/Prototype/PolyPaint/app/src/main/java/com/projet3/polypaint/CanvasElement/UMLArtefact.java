@@ -4,6 +4,8 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import java.util.regex.Matcher;
+
 public class UMLArtefact extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 80;
@@ -27,7 +29,8 @@ public class UMLArtefact extends GenericShape {
         int h4 = height/4;
 
         Path p = getSelectionPath();
-
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
         p.moveTo(posX + w2, posY - h4);
@@ -35,6 +38,7 @@ public class UMLArtefact extends GenericShape {
         p.lineTo(posX + w4, posY - h2);
 
         canvas.drawPath(p, style.getBorderPaint());
+        canvas.restore();
     }
 
     @Override

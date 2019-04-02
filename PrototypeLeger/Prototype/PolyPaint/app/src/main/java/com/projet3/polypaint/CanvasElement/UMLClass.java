@@ -32,9 +32,11 @@ public class UMLClass extends GenericShape {
 
         //for (AnchorPoint anchorPoint : anchorPoints)
           //  anchorPoint.drawOnCanvas(canvas);
-
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
         canvas.drawPath(p, style.getBorderPaint());
+        canvas.restore();
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

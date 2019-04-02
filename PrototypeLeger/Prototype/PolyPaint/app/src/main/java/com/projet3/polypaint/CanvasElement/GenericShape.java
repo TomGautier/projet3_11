@@ -8,6 +8,8 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
+import android.opengl.Matrix;
+import android.renderscript.Matrix2f;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 
@@ -18,15 +20,18 @@ public abstract class GenericShape {
     protected final int SELECTION_GAP = 4;
     private final int EDIT_BUTTON_SIZE = 30;
     protected final int CLONE_OFFSET = 30;
+    protected final int ROTATION_BOX_OFFSET = 40;
 
     protected int posX;
     protected int posY;
     protected int width;
     protected int height;
+    protected float angle;
     protected PaintStyle style;
     protected String id;
     protected ArrayList<AnchorPoint> anchorPoints;
     protected ArrayList<ConnectionForm> connections;
+    protected Path rotationPath;
 
 
     public GenericShape(String id, int x, int y, int width, int height, PaintStyle style) {
@@ -36,9 +41,14 @@ public abstract class GenericShape {
         this.width = width;
         this.height = height;
         this.style = style;
+        this.angle = 0;
         anchorPoints = new ArrayList<>();
         connections = new ArrayList<>();
         setAnchorPoints();
+    }
+    public void setRotationBox(){
+        rotationPath = new Path();
+        rotationPath.addCircle(posX,posY,(float)(Math.sqrt(Math.pow(width,2) + Math.pow(height,2)) + ROTATION_BOX_OFFSET), Path.Direction.CW);
     }
 
     public void setAnchorPoints(){
@@ -59,9 +69,10 @@ public abstract class GenericShape {
         Path p = new Path();
 
         p.addRect(posX - w2, posY - h2, posX + w2, posY + h2, Path.Direction.CW);
-
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle, posX,posY);
         canvas.drawPath(p, paint);
-
+        canvas.restore();
         drawEditButton(canvas);
     }
     private void drawEditButton(Canvas canvas) {
@@ -123,6 +134,13 @@ public abstract class GenericShape {
     public boolean canResize(int x, int y){
         return false;
     }
+    public boolean canRotate(int x, int y){
+        setRotationBox();
+        Path temp = new Path();
+        temp.addCircle(x,y,5, Path.Direction.CW);
+        temp.op(rotationPath, Path.Op.INTERSECT);
+        return !temp.isEmpty();
+    }
     public Rect getEditButton() {
         int w2 = width/2;
         int h2 = height/2;
@@ -134,6 +152,9 @@ public abstract class GenericShape {
         for (AnchorPoint anchor : anchorPoints){
             anchor.drawOnCanvas(canvas);
         }
+    }
+    public void rotate(float angle){
+        this.angle += angle;
     }
     public void relativeMove(int x, int y) {
         posX += x;

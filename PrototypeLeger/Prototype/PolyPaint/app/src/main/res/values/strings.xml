@@ -30,6 +30,7 @@
     <string name="buttonCut">Couper</string>
     <string name="buttonStack">Empiler</string>
     <string name="buttonUnstack">Dépiler</string>
+    <string name="buttonRotate">Tourner</string>
 
     <!-- MAIN TOOLBAR -->
     <string name="mainToolbarGalleryTag">Gallerie</string>
