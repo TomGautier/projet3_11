@@ -29,15 +29,17 @@ namespace PolyPaint.Vues
     /// </summary>
     public partial class DrawControl : UserControl
     {
+        public string LastDrag { get; set; }
         public DrawControl()
         {
             InitializeComponent();
             DataContext = new VueModele();
-            (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+            
             this.surfaceDessin.AllowSelection = false;
             this.surfaceDessin.IsDraging = false;
             this.surfaceDessin.LastSelection = new MemoryStream();
             this.AllowDrop = true;
+            (DataContext as VueModele).SendCanvas(this.surfaceDessin);
 
         }
 
@@ -45,12 +47,16 @@ namespace PolyPaint.Vues
         private void GlisserCommence(object sender, DragStartedEventArgs e)
         {
             //this.surfaceDessin.IsDraging = true;
+            
             (sender as Thumb).Background = Brushes.Black;
         }
         private void GlisserTermine(object sender, DragCompletedEventArgs e)
         {
             //this.surfaceDessin.IsDraging = false;
             (sender as Thumb).Background = Brushes.White;
+            (DataContext as VueModele).HandleCanvasResize();
+            //this.surfaceDessin.Height = 5;
+            
         }
 
         void surfaceDessin_SelectionMoving(object sender, InkCanvasSelectionEditingEventArgs e)
@@ -59,10 +65,15 @@ namespace PolyPaint.Vues
         }
         private void GlisserMouvementRecu(object sender, DragDeltaEventArgs e)
         {
-            String nom = (sender as Thumb).Name;
-            if (nom == "horizontal" || nom == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.HorizontalChange));
-            if (nom == "vertical" || nom == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.VerticalChange));
+            //String nom = (sender as Thumb).Name;
+            //LastDrag = (sender as Thumb).Name;
+            LastDrag = "diagonal";            //if (nom == "horizontal" || nom == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.HorizontalChange));
+            //if (nom == "vertical" || nom == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.VerticalChange));
+            this.surfaceDessin.Width += e.HorizontalChange;
+            this.surfaceDessin.Height += e.VerticalChange;
+            
         }
+        
 
         // Pour la gestion de l'affichage de position du pointeur.
         private void surfaceDessin_MouseLeave(object sender, MouseEventArgs e) => textBlockPosition.Text = "";
@@ -79,6 +90,22 @@ namespace PolyPaint.Vues
                 e.Cancel = true;
             }
 
+        }
+        private void surfaceDessin_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // if (LastDrag == "horizontal" || LastDrag == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.NewSize.Width - e.PreviousSize.Width));
+            if (!(e.PreviousSize.Height == 0 && e.PreviousSize.Width == 0))
+            {
+                colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.NewSize.Width - e.PreviousSize.Width));
+                // if (LastDrag == "vertical" || LastDrag == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.NewSize.Height - e.PreviousSize.Height
+                ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.NewSize.Height - e.PreviousSize.Height));
+            }
+    
+
+            this.surfaceDessin.Width = e.NewSize.Width;
+            this.surfaceDessin.Height = e.NewSize.Height;
+            
+           // (DataContext as VueModele).HandleCanvasResize(e.NewSize);
         }
 
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)

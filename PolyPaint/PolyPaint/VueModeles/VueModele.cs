@@ -258,6 +258,10 @@ namespace PolyPaint.VueModeles
         {
             this.Canvas = canvas;
         }
+        public void HandleCanvasResize()//double width, double height)
+        {
+            this.SocketManager.ResizeCanvas(this.Canvas.Width , this.Canvas.Height);
+        }
 
         /// <summary>
         /// Appelee lorsqu'une propriété de VueModele est modifiée.
@@ -283,6 +287,11 @@ namespace PolyPaint.VueModeles
             if (e.PropertyName == "CouleurSelectionnee")
             {
                 ProprieteModifiee(e.PropertyName);
+            }
+            else if (e.PropertyName == "CanvasSize")
+            {
+                this.Canvas.Height = editeur.CanvasHeight;
+                this.Canvas.Width = editeur.CanvasWidth;
             }
             else if (e.PropertyName == "RemplissageSelectionne")
             {

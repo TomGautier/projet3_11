@@ -36,6 +36,8 @@ namespace PolyPaint.Modeles
         public int ConnectorSize { get; set; }
         public string ConnectorColor { get; set; }
         public string ConnectorBorderStyle { get; set; }
+        public double CanvasWidth { get; set; }
+        public double CanvasHeight { get; set; }
 
         private bool showEncrage = false;
         public bool ShowEncrage
@@ -185,10 +187,7 @@ namespace PolyPaint.Modeles
         }
         public void LoadLocally(string json)
         {
-            this.traits.Clear();
-            this.traitsRetires.Clear();
-            this.selectedStrokes.Clear();
-            this.LastCut.Clear();
+            this.ResetCanvas();
             List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
             foreach (Shape shape in datalist)
             {
@@ -639,7 +638,17 @@ namespace PolyPaint.Modeles
         public void ChoisirOutil(string outil) => OutilSelectionne = outil;
 
         // On vide la surface de dessin de tous ses traits.
-        public void Reinitialiser(object o) => traits.Clear();
+        public void Reinitialiser(object o)
+        {
+            this.SocketManager.Reinitialiser();
+        }
+        private void ResetCanvas()
+        {
+            this.traits.Clear();
+            this.traitsRetires.Clear();
+            this.selectedStrokes.Clear();
+            this.LastCut.Clear();
+        }
 
         public void HandleDuplicate(object o)
         {
@@ -670,7 +679,28 @@ namespace PolyPaint.Modeles
 
         public void initializeSocketEvents()
         {
+            this.SocketManager.Socket.On("CanvasReset", (data) =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    this.ResetCanvas();
+                });
+            });
+            this.SocketManager.Socket.On("ResizedCanvas", (data) =>
+            {
+                JObject result = (data as JObject);
+                double[] dimensions = new double[2];
+                dimensions = result["newCanvasDimensions"].ToObject<double[]>();
 
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    this.CanvasWidth = dimensions[0];
+                    this.CanvasHeight = dimensions[1];
+                    ProprieteModifiee("CanvasSize");
+                    
+                });
+                
+            });
             this.SocketManager.Socket.On("AddedElement", (data) =>
                 {
 
@@ -814,6 +844,8 @@ namespace PolyPaint.Modeles
                 
                      
             });
+            
+
 
             //drawingSessionId = this.SessionID,
            // username = this.UserName,

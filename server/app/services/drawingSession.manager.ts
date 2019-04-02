@@ -34,10 +34,10 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.UnstackElement, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
 
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
-        this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
-        
+        //this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
+        this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.resizeCanvas(JSON.parse(args[1][0])));
 
-        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
+        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.resetCanvas(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
     }
 
     public joinSession(socketId: string, doc : any) {

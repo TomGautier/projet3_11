@@ -65,6 +65,26 @@ namespace PolyPaint.Managers
             });
             this.Socket.Emit("StackElement",parameters);
         }
+        public void Reinitialiser()
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+            });
+            this.Socket.Emit("ResetCanvas", parameters);
+        }
+        public void ResizeCanvas(double width, double height)
+        {
+            double[] size = new double[2] { width, height };
+
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                username = this.UserName,
+                drawingSessionId = this.SessionID,
+                newCanvasDimensions = size
+            });
+            this.Socket.Emit("ResizeCanvas", parameters);
+        }
         public void Select(String[] oldSelection, String[] newSelection)
         {
             string parameters = new JavaScriptSerializer().Serialize(new
