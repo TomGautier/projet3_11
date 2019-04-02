@@ -443,7 +443,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
-                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Activity :
                 nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
@@ -461,7 +460,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
-                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Comment :
                 nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
@@ -470,7 +468,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             case text_box :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
-                //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
         }
         if (nShape != null) {

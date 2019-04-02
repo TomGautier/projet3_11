@@ -1,5 +1,8 @@
 package com.projet3.polypaint.Network;
 
+import android.graphics.Bitmap;
+import android.util.Base64;
+
 import com.projet3.polypaint.Chat.Conversation;
 import com.projet3.polypaint.UserList.User;
 import com.projet3.polypaint.UserLogin.UserInformation;
@@ -8,7 +11,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -213,6 +218,39 @@ public class RequestManager {
         }
     }
 
+    public void postThumbnail(Bitmap bitmap) {
+        url = formatUrl(Request.Thumbnail,null);
+        UserJsonPostTask task = new UserJsonPostTask();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
+        byte[] bytes = os.toByteArray();
+        String encoded = Base64.encodeToString(bytes, Base64.DEFAULT);
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("timestamp", (new Date()).getTime());
+            body.put("bitmap", encoded);
+            task.setData(body);
+            task.execute(url);
+        } catch (JSONException e) { e.printStackTrace(); }
+
+        try {
+            boolean response = task.get(TIMEOUT_DELAY, TimeUnit.SECONDS) != null;
+
+            if (response)
+                System.out.println("Successfully posted thumbnail");
+            else
+                System.out.println("Couldn't successfully post thumbnail");
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
     private ArrayList<User> configureFetchUsersResponse(JSONArray jsons) {
         ArrayList<User> users = new ArrayList<>();
         if (jsons == null || jsons.length() == 0)
@@ -256,7 +294,7 @@ final class Request {
     public static final String Conversations = "/api/chat/";
     public static final String Images = "/api/images/";
     public static final String ImagesCommon = "/api/images/common/";
+    public static final String Thumbnail = "/api/images/thumbnail/";
     public static final String Users_Fetch ="/api/user/";
-
 
 }
