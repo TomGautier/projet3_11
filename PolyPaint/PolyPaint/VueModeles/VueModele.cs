@@ -249,6 +249,8 @@ namespace PolyPaint.VueModeles
 
             foreach (var user in users)
             {
+                if (user.Username == Username)
+                    continue;
                 userItems.Add(new ChatControl.UserItem() { Username = user.Username, ConnectionStatus = user.ConnectionStatus ? 1 : 0 });
             }
 

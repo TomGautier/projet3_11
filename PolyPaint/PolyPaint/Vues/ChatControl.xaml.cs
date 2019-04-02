@@ -32,7 +32,8 @@ namespace PolyPaint.Vues
                 textBox.ScrollToEnd();
             };
             chatWindow = null;
-            //UpdateUserList(); TODO : FIND WHY DATA CONTEXT IS NULL
+
+            this.Loaded += new RoutedEventHandler((s, e) => { UpdateUserList(); });
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
