@@ -30,7 +30,7 @@ export class ImageService implements ImageServiceInterface {
             
         return await this.databaseService.create(Image, image)
             .catch(err => {
-                Logger.warn('ImageService', `Couldn't create image : ${imageId}`);
+                Logger.warn('ImageService', `Couldn't create image : ${id}`);
                 throw err;
            });
     }
