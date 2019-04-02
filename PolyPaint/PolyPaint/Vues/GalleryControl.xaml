@@ -17,10 +17,10 @@
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="100"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6"/>
+        <Button Grid.Column="0" Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
         <Button Grid.Column="2" Name="PublicBtn" Content="Galerie publique" Height="23" Padding="2" Margin="6"/>
         <Button Grid.Column="3" Name="PrivateBtn" Content="Galerie privée" Height="23" Padding="2" Margin="6"/>
-        <ItemsControl Name="Gallery" Grid.Row="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch">
+        <ItemsControl Name="Gallery" Grid.Row="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GalleryItems}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
@@ -28,11 +28,20 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Image/>
-                        <Label Content="{Binding Author}"/>
-                        <Button Content="Joindre"/>
-                        <!--Command="JOINDRE"-->
+                    <Grid Width="100" Height="125" Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="30"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="25"/>
+                        </Grid.RowDefinitions>
+                        <Image Grid.ColumnSpan="3" Grid.Row="0"/>
+                        <Label Grid.Column="0" Grid.Row="1" Content="{Binding Author}"/>
+                        <Button Grid.Column="2" Grid.Row="1" Content="Joindre" Name="JoinDrawSession" Click="JoinDrawSession_Click"/>
+                        <Label Name="SessionID" Content="{Binding SessionID}" Visibility="Collapsed"/>
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

@@ -161,6 +161,9 @@
     <Compile Include="Vues\GenericSetter.xaml.cs">
       <DependentUpon>GenericSetter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Vues\HubControl.xaml.cs">
+      <DependentUpon>HubControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Vues\LoginControl.xaml.cs">
       <DependentUpon>LoginControl.xaml</DependentUpon>
     </Compile>
@@ -215,6 +218,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\GenericSetter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vues\HubControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -27,6 +27,18 @@
             </DockPanel>
         </DataTemplate>
 
+        <DataTemplate x:Key="HubView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:HubControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GalleryView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:GalleryControl/>
+            </DockPanel>
+        </DataTemplate>
+
         <DataTemplate x:Key="DrawView" DataType="{x:Type VueModels:VueModele}">
             <DockPanel>
                 <Vues:ChatControl/>
@@ -56,6 +68,14 @@
                             <Setter Property="MaxWidth" Value="300"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding SwitchView}" Value="3">
+                            <Setter Property="ContentTemplate" Value="{StaticResource HubView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="4">
+                            <Setter Property="ContentTemplate" Value="{StaticResource GalleryView}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="5">
                             <Setter Property="ContentTemplate" Value="{StaticResource DrawView}" />
                         </DataTrigger>
                     </Style.Triggers>

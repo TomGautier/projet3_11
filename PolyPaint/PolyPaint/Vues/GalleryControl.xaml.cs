@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PolyPaint.VueModeles;
 
 namespace PolyPaint.Vues
 {
@@ -23,6 +24,19 @@ namespace PolyPaint.Vues
         public GalleryControl()
         {
             InitializeComponent();
+        }
+
+        private void JoinDrawSession_Click(object sender, RoutedEventArgs e)
+        {
+            string sessionID = ((Grid)((Button)sender).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
+            ((VueModele)DataContext).JoinDrawSession(sessionID);
+        }
+
+        public class GalleryItem
+        {
+            public string Author { get; set; }
+            public string SessionID { get; set; }
+            //Image ???
         }
     }
 }
