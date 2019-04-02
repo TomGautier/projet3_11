@@ -38,7 +38,7 @@ namespace PolyPaint.Managers
             this.SessionID = sessionID;
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,              
             });
             Socket.Emit("JoinDrawingSession", parameters);
@@ -60,7 +60,7 @@ namespace PolyPaint.Managers
             {
                 sessionId = this.SessionID,
                 username = this.UserName,
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 elementId = id_
             });
             this.Socket.Emit("StackElement",parameters);
@@ -69,7 +69,7 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,
                 oldElementIds = oldSelection,
                 newElementIds = newSelection
@@ -89,7 +89,7 @@ namespace PolyPaint.Managers
               /*  shape = new
                 {
                     id = this.UserName + "_" + this.Compteur.ToString(),
-                    drawingSessionId = this.SessionID,
+                    imageId = this.SessionID,
                     author = this.UserName,
                     properties = new
                     {
@@ -116,7 +116,7 @@ namespace PolyPaint.Managers
 
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 elementIds = idList,
                 username = this.UserName
             });
@@ -128,7 +128,7 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 elementIds = idList,
                 username = this.UserName
             });
@@ -139,7 +139,7 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,
                 shapes = shapes_
             });
