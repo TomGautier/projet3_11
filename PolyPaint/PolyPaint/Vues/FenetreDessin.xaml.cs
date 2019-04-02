@@ -15,20 +15,36 @@ namespace PolyPaint
 {
     /// <summary>
     /// Logique d'interaction pour FenetreDessin.xaml
-    /// </summary>
+    /// </summary
+    
+   
     public partial class FenetreDessin : Window
     {
+        
         public FenetreDessin()
         {
             InitializeComponent();
             DataContext = new VueModele();
             (DataContext as VueModele).SendCanvas(this.surfaceDessin);
             this.surfaceDessin.AllowSelection = false;
+            this.surfaceDessin.IsDraging = false;
         }
-        
+
         // Pour gérer les points de contrôles.
-        private void GlisserCommence(object sender, DragStartedEventArgs e) => (sender as Thumb).Background = Brushes.Black;
-        private void GlisserTermine(object sender, DragCompletedEventArgs e) => (sender as Thumb).Background = Brushes.White;
+        private void GlisserCommence(object sender, DragStartedEventArgs e) {
+             //this.surfaceDessin.IsDraging = true;
+             (sender as Thumb).Background = Brushes.Black;
+        }
+        private void GlisserTermine(object sender, DragCompletedEventArgs e)
+        {
+            //this.surfaceDessin.IsDraging = false;
+            (sender as Thumb).Background = Brushes.White;
+        }
+
+        void surfaceDessin_SelectionMoving(object sender, InkCanvasSelectionEditingEventArgs e)
+        {
+            this.surfaceDessin.IsDraging = true;
+        }
         private void GlisserMouvementRecu(object sender, DragDeltaEventArgs e)
         {
             String nom = (sender as Thumb).Name;
@@ -96,12 +112,13 @@ namespace PolyPaint
         {
             string label = (sender as ConnectorSetter).txtLabel.Text;
             string type = (sender as ConnectorSetter).typeList.Text;
+            string border = (sender as ConnectorSetter).borderList.Text;
             int size = Convert.ToInt32((sender as ConnectorSetter).sizeList.SelectedItem.ToString().Trim(new char[] { 'p', 'x' }));
             string color = (sender as ConnectorSetter).selecteurCouleur.SelectedColor.ToString();
             Console.WriteLine(type);
             surfaceDessin.Visibility = Visibility.Visible;
 
-            (DataContext as VueModele).SetConnectorSettings(label, type, size, color);
+            (DataContext as VueModele).SetConnectorSettings(label, type, border, size, color);
         }
 
         private void surfaceDessin_SetSelectionText(object sender, RoutedEventArgs e)
@@ -116,11 +133,12 @@ namespace PolyPaint
             }
             else if ((surfaceDessin.GetSelectedStrokes()[0] as Form).Type == "UmlClass")
             {
-                string name= (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Label;
+                string name = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Label;
+                string border = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).BorderStyle;
                 List<string> methods = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Methods;
                 List<string> attributes = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Attributes;
 
-                UmlClassSetter menu = new UmlClassSetter(name,methods,attributes);
+                UmlClassSetter menu = new UmlClassSetter(name,border,methods,attributes);
                 surfaceDessin.Visibility = Visibility.Hidden;
                 menu.Show();
                 menu.Closing+= new CancelEventHandler(UMLSetterClosingHandler);
@@ -128,7 +146,9 @@ namespace PolyPaint
             }
             else
             {
-                GenericSetter menu = new GenericSetter((surfaceDessin.GetSelectedStrokes()[0] as Form).Label);
+                string label = (surfaceDessin.GetSelectedStrokes()[0] as Form).Label;
+                string border = (surfaceDessin.GetSelectedStrokes()[0] as Form).BorderStyle;
+                GenericSetter menu = new GenericSetter(label,border);
                 surfaceDessin.Visibility = Visibility.Hidden;
                 menu.Show();
                 menu.Closing += new CancelEventHandler(GenericSetterClosingHandler);
@@ -140,15 +160,18 @@ namespace PolyPaint
         {
             surfaceDessin.Visibility = Visibility.Visible;
             string name = (sender as UmlClassSetter).Name;
+            string border = (sender as UmlClassSetter).borderList.Text;
             List<string> methods = (sender as UmlClassSetter).Methods;
             List<string> attributes = (sender as UmlClassSetter).Attributes;
             
-            (DataContext as VueModele).HandleUmlTextChange(name, methods, attributes);
+            (DataContext as VueModele).HandleUmlTextChange(name,border,methods, attributes);
         }
         private void GenericSetterClosingHandler(object sender, CancelEventArgs e)
         {
             surfaceDessin.Visibility = Visibility.Visible;
-            (DataContext as VueModele).HandleLabelChange((sender as GenericSetter).Label);
+            string label = (sender as GenericSetter).Label;
+            string border = (sender as GenericSetter).borderList.Text;
+            (DataContext as VueModele).HandleLabelChange(label,border);
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e)
@@ -176,6 +199,7 @@ namespace PolyPaint
         }
         private void surfaceDessin_StrokeErasing(object sender, InkCanvasStrokeErasingEventArgs e)
         {
+            (DataContext as VueModele).HandleErasing(e.Stroke);
             e.Cancel = true; //Prevent deletion
         }
         void surfaceDessin_HandleKey(object sender, KeyEventArgs e)
@@ -190,6 +214,7 @@ namespace PolyPaint
 
         private void surfaceDessin_SelectionMoved(object sender, EventArgs e)
         {
+            this.surfaceDessin.IsDraging = false;
             (DataContext as VueModele).HandleDrag();
         }
     }

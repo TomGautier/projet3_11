@@ -4,15 +4,16 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
+
 public class UMLActivity extends GenericShape {
     protected final static int DEFAULT_WIDTH = 90;
     protected final static int DEFAULT_HEIGHT = 60;
 
+    public static final String TYPE = "UmlActivity";
 
     public UMLActivity(String id, int x, int y, int width, int height, PaintStyle style) {
         super(id, x, y, width, height, style);
-        //width = DEFAULT_WIDTH;
-        //height = DEFAULT_HEIGHT;
     }
 
     public UMLActivity clone() {
@@ -34,11 +35,18 @@ public class UMLActivity extends GenericShape {
         p.lineTo(posX - w2, posY - h2);
 
         canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
+
+        traceStyledLine(posX - w2, posY - h2, posX + w2 - h2, posY - h2, canvas);
+        traceStyledLine(posX + w2 - h2, posY - h2, posX + w2, posY, canvas);
+        traceStyledLine(posX + w2, posY, posX + w2 - h2, posY + h2, canvas);
+        traceStyledLine(posX + w2 - h2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
+        //canvas.drawPath(p, style.getBorderPaint());
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
-        /* Do nothing for now*/
-        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
+        ImageEditingDialogManager.getInstance().showStyleDialog(fragmentManager, style);
     }
+
+    public String getType() { return TYPE; }
 }

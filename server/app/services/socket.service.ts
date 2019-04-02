@@ -23,20 +23,20 @@ export class SocketService {
 
     public constructor(
         @inject(TYPES.EventEmitter) private eventEmitter: UnsaucedEventEmitter
-    ) { }
+    ) {
+    }
     
     public init(server: SocketIO.Server): void {
         this.server = server;
 
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
-            console.log("Socket id" + socket.id + " connected.");
+            console.log("Socket id", socket.id, "connected.");
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
-            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, GENERAL_ROOM.id, socket.id, args));
-            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, GENERAL_ROOM.id, args));
+            socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
+            socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
-            socket.on(SocketEvents.CreateConversation, args => this.handleEvent(SocketEvents.CreateConversation, socket.id, args));
-            
+
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
 
             socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
@@ -57,7 +57,6 @@ export class SocketService {
         });
 
         this.server.on("disconnect", (socket: SocketIO.Socket) => {
-            console.log('in the disconnect!', socket.id);
             Logger.debug("SocketService", `Socket ${socket.id} left.`);
             socket.disconnect();
             this.handleEvent(SocketEvents.UserLeft, socket.id);
@@ -75,7 +74,6 @@ export class SocketService {
         const socket = this.sockets.get(socketId);
         if (socket) {
             socket.join(roomId);
-            console.log(socketId + " JOINED ROOM " + roomId);
         }
         else {
             Logger.debug('SocketService', `This socket doesn't exist : ${socketId}`);

@@ -3,7 +3,12 @@ import { IConversationModel } from '../models/conversation';
 import mongoose = require('mongoose');
 
 export let conversationSchema: Schema = new Schema({
-    name: {type: String, required: true, unique: true},
+    name: {
+        type: String, 
+        index: true,
+        required: true, 
+        unique: true
+    },
     participants: [{ type: String, ref: 'User'}]
 });
 

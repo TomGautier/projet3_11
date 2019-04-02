@@ -189,22 +189,23 @@ namespace PolyPaint.Managers
             socket.Emit("UserJoinedConversation", JsonConvert.SerializeObject(joinFormat));
             // TEST ONLY
             History = "Bienvenue dans la conversation " + RoomID + "!";
-
-            socket.On("UserJoinedConversation", (data) => {
-                var _roomIDformat = new
-                {
-                    conversationId = ""
-                };
-                var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
-                RoomID = _roomID.conversationId;
-                History = "Bienvenue dans la conversation " + RoomID + "!";
-            });
-            socket.On("ChannelAlreadyJoined", (data) => {
-                Console.WriteLine("ChannelAlreadyJoined : " + data);
-            });
-            socket.On("ChannelCouldntBeJoined", (data) => {
-                Console.WriteLine("ChannelCouldntBeJoined : " + data);
-            });
+            
+            //l'event est mis en commentaire dans le serveur
+            //socket.On("UserJoinedConversation", (data) => {
+            //    var _roomIDformat = new
+            //    {
+            //        conversationId = ""
+            //    };
+            //    var _roomID = JsonConvert.DeserializeAnonymousType(data.ToString(), _roomIDformat);
+            //    RoomID = _roomID.conversationId;
+            //    History = "Bienvenue dans la conversation " + RoomID + "!";
+            //});
+            //socket.On("ChannelAlreadyJoined", (data) => {
+            //    Console.WriteLine("ChannelAlreadyJoined : " + data);
+            //});
+            //socket.On("ChannelCouldntBeJoined", (data) => {
+            //    Console.WriteLine("ChannelCouldntBeJoined : " + data);
+            //});
         }
 
         public void Connect()

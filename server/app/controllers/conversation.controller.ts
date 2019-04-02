@@ -38,8 +38,7 @@ export class ConversationController implements ConversationControllerInterface {
                     if (err.name === 'MongoError' && err.code === 11000) {
                         // Duplicate conv name
                         res.json(409);
-                    }    
-                    throw err;
+                    }
                 });
             });
             

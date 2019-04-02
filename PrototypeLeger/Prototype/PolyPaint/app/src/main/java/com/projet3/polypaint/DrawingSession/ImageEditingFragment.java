@@ -21,26 +21,30 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.projet3.polypaint.CanvasElement.Comment;
 import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.GenericTextShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
+import com.projet3.polypaint.CanvasElement.UMLPhase;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
+import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
 public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber {
 
-
     protected Button buttonClass;
     protected Button buttonRole;
     protected Button buttonActivity;
     protected Button buttonArtefact;
+    protected Button buttonPhase;
+    protected Button buttonComment;
     protected Button buttonText;
     protected Button buttonCanvas;
     protected Button buttonMove;
@@ -50,13 +54,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonCut;
     protected Button buttonDuplicate;
     protected Button buttonDelete;
+    protected Button buttonStack;
+    protected Button buttonUnstack;
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
 
     protected enum Mode{selection, lasso, creation, move}
-    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box}
+    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, Phase, Comment, text_box}
 
-    protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
     protected final String REMOVE_ACTION = "REMOVE";
@@ -70,6 +75,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected ArrayList<GenericShape> cutShapes;
     protected Stack<Pair<ArrayList<GenericShape>, String>> addStack;
     protected Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
+    protected Stack<GenericShape> stack;
 
     protected Mode currentMode = Mode.creation;
     protected ShapeType currentShapeType = ShapeType.UmlClass;
@@ -103,8 +109,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
+        stack = new Stack<>();
         idCpt = 0;
-        id = UserManager.currentInstance.getUserUsername() + idCpt;
+        id = FetchManager.currentInstance.getUserUsername() + idCpt;
 
         initializeButtons();
         initializePaint();
@@ -154,6 +161,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             }
         });
 
+        buttonPhase = (Button)rootView.findViewById(R.id.buttonPhase);
+        buttonPhase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.Phase);
+            }
+        });
+
+        buttonComment = (Button)rootView.findViewById(R.id.buttonComment);
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.Comment);
+            }
+        });
+
         buttonText = (Button)rootView.findViewById(R.id.buttonTextBox);
         buttonText.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +210,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 duplicateSelection();
             }
         });
+
+        buttonStack = (Button)rootView.findViewById(R.id.buttonStack);
+        buttonStack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stack();
+            }
+        });
+        buttonUnstack = (Button)rootView.findViewById(R.id.buttonUnstack);
+        buttonUnstack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                unStack();
+            }
+        });
+
 
         buttonReset = (Button)rootView.findViewById(R.id.buttonReset);
         buttonReset.setOnClickListener(new View.OnClickListener() {
@@ -245,28 +284,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();
         borderPaint.setColor(borderColor);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(DEFAULT_STROKE_WIDTH);
-        borderPaint.setStrokeCap(Paint.Cap.ROUND);
-        borderPaint.setAntiAlias(true);
 
         // Background paint
-        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
+        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFill, null);
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
-        backgroundPaint.setStyle(Paint.Style.FILL);
 
         // Text paint
         Paint textPaint = new Paint();
         textPaint.setColor(borderColor);
-        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        textPaint.setTextSize(TextBox.FONT_SIZE);
-        textPaint.setTypeface(Typeface.MONOSPACE);
-        textPaint.setAntiAlias(true);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setFakeBoldText(true);
 
-        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint);
+        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint, PaintStyle.StrokeType.full);
 
         // Selection paint
         int selectionColor = ResourcesCompat.getColor(getResources(), R.color.shapeSelection, null);
@@ -339,7 +367,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
 
+    protected void stack(){
 
+    }
+    protected void unStack(){
+
+    }
     protected void checkSelection(int x, int y) {
         selections.clear();
 
@@ -404,11 +437,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected GenericShape addShape(int posX, int posY) {
         selections.clear();
         GenericShape nShape = null;
-        id = UserManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
+        id = FetchManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Activity :
                 nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
@@ -422,9 +457,20 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
                         GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 break;
+            case Phase :
+                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
+                break;
+            case Comment :
+                nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape.showEditingDialog(getFragmentManager());
+                break;
             case text_box :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
         }
         if (nShape != null) {
@@ -637,20 +683,47 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     // ------------------------- Dialogs -------------------------
     // TextEditingDialog
     @Override
-    public void onTextEditingDialogPositiveClick(String contents) {
-        ((TextBox)selections.get(0)).setText(contents);
+    public void onTextDialogPositiveResponse(String contents) {
+        ((GenericTextShape)selections.get(0)).setText(contents);
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
     @Override
-    public void onTextEditingDialogNegativeClick() {
-        if (((TextBox)selections.get(0)).getText().equals("")) {
+    public void onTextDialogNegativeResponse() {
+        if (((GenericTextShape)selections.get(0)).getText().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
             updateCanvas();
             drawAllShapes();
             iView.invalidate();
         }
+    }
+
+    // StyleEditingDialog
+    @Override
+    public void onStyleDialogPositiveResponse(PaintStyle style) {
+        selections.get(0).setStyle(style);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
+    @Override
+    public void onStyleDialogNegativeResponse() {
+        selections.get(0).setStyle(defaultStyle);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
+
+    // ClassEditingDialog
+    @Override
+    public void onClassDialogPositiveResponse(String name, String attributes, String methods) {
+        ((UMLClass)selections.get(0)).setText(name);
+        ((UMLClass)selections.get(0)).setAttributes(attributes);
+        ((UMLClass)selections.get(0)).setMethods(methods);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
     }
 }

@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { IShapeModel } from '../models/Shape';
+import { IShapeModel } from '../models/shape';
 import mongoose = require('mongoose');
 
 export let shapeSchema: Schema = new Schema({

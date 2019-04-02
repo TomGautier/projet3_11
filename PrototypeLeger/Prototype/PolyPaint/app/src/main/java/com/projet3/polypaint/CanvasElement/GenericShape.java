@@ -7,16 +7,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.support.v4.content.res.ResourcesCompat;
-
-import com.projet3.polypaint.R;
-import com.projet3.polypaint.UserLogin.UserManager;
 
 public abstract class GenericShape {
 
     private final int SELECTION_GAP = 4;
     private final int EDIT_BUTTON_SIZE = 30;
     protected final int CLONE_OFFSET = 30;
+    private final double DOT_SPACING = 7.5;
 
     protected int posX;
     protected int posY;
@@ -82,6 +79,16 @@ public abstract class GenericShape {
         canvas.drawPath(p, paint);
     }
 
+    public void relativeMove(int x, int y) {
+        posX += x;
+        posY += y;
+    }
+
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public Rect getBoundingBox() {
         int w2 = width/2;
         int h2 = height/2;
@@ -94,11 +101,13 @@ public abstract class GenericShape {
 
         return new Rect(posX + w2, posY - h2 - EDIT_BUTTON_SIZE, posX + w2 + EDIT_BUTTON_SIZE, posY - h2);
     }
-
-    public void relativeMove(int x, int y) {
-        posX += x;
-        posY += y;
+    public String getBorderColorString() {
+        return Integer.toHexString(style.getBorderPaint().getColor()).substring(2);
     }
+    public String getBackgroundColorString() {
+        return Integer.toHexString(style.getBackgroundPaint().getColor()).substring(2);
+    }
+    public abstract String getType();
     public int getHeight(){
         return height;
     }
@@ -115,6 +124,8 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_HEIGHT;
             case "Role":
                 return UMLRole.DEFAULT_HEIGHT;
+            case "Phase":
+                return UMLPhase.DEFAULT_HEIGHT;
         }
         return 0;
     }
@@ -128,6 +139,8 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_WIDTH;
             case "Role":
                 return UMLRole.DEFAULT_WIDTH;
+            case "Phase":
+                return UMLPhase.DEFAULT_WIDTH;
         }
         return 0;
     }
@@ -138,7 +151,96 @@ public abstract class GenericShape {
         return new int[] {posX,posY};
     }
 
-
-
     public abstract void showEditingDialog(FragmentManager fragmentManager);
+
+    protected void traceStyledLine(int x1, int y1, int x2, int y2, Canvas canvas) {
+        switch (style.getStrokeType()) {
+            case full :
+                canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
+                break;
+            case dotted :
+                traceDottedLine(x1, y1, x2, y2, canvas);
+                break;
+            case dashed :
+                traceDashedLine(x1, y1, x2, y2, canvas);
+                break;
+        }
+    }
+
+    private void traceDottedLine(int x1, int y1, int x2, int y2, Canvas canvas) {
+        double lineLength = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+        double attainedLength = 0;
+
+        float currentX;
+        float currentY;
+
+        while (attainedLength < lineLength) {
+            currentX = x1 + (float)((x2 - x1) * (attainedLength / lineLength));
+            currentY = y1 + (float)((y2 - y1) * (attainedLength / lineLength));
+            canvas.drawLine(currentX, currentY, currentX, currentY, style.getBorderPaint());
+            attainedLength += DOT_SPACING;
+        }
+    }
+
+    private void traceDashedLine(int x1, int y1, int x2, int y2, Canvas canvas) {
+        double lineLength = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+        double attainedLength = 0;
+
+        float currentX1;
+        float currentY1;
+        float currentX2;
+        float currentY2;
+
+        while (attainedLength + DOT_SPACING < lineLength) {
+            currentX1 = x1 + (float)((x2 - x1) * attainedLength / lineLength);
+            currentY1 = y1 + (float)((y2 - y1) * attainedLength / lineLength);
+            currentX2 = x1 + (float)((x2 - x1) * (attainedLength + DOT_SPACING) / lineLength);
+            currentY2 = y1 + (float)((y2 - y1) * (attainedLength + DOT_SPACING) / lineLength);
+            canvas.drawLine(currentX1, currentY1, currentX2, currentY2, style.getBorderPaint());
+            attainedLength += 2 * DOT_SPACING;
+        }
+
+        if (attainedLength < lineLength) {
+            currentX1 = x1 + (float) ((x2 - x1) * attainedLength / lineLength);
+            currentY1 = y1 + (float) ((y2 - y1) * attainedLength / lineLength);
+            canvas.drawLine(currentX1, currentY1, x2, y2, style.getBorderPaint());
+        }
+    }
+
+    protected void traceStyledCircle(int x, int y, int radius, Canvas canvas) {
+        switch (style.getStrokeType()) {
+            case full :
+                canvas.drawCircle(x, y, radius, style.getBorderPaint());
+                break;
+            case dotted :
+                traceDottedCircle(x, y, radius, canvas);
+                break;
+            case dashed :
+                traceDashedCircle(x, y, radius, canvas);
+                break;
+        }
+    }
+
+    private void traceDottedCircle(int x, int y, int radius, Canvas canvas) {
+        float currentAngle = 0;
+        float sweepAngle = (float)(Math.toDegrees(DOT_SPACING / radius));
+
+        while (currentAngle < 360) {
+            canvas.drawArc(x - radius, y - radius, x + radius, y + radius, currentAngle, 0.1f, false, style.getBorderPaint());
+            currentAngle += sweepAngle;
+        }
+    }
+
+    private void traceDashedCircle(int x, int y, int radius, Canvas canvas) {
+        float currentAngle = 0;
+        float sweepAngle = (float)(Math.toDegrees(DOT_SPACING / radius));
+
+        while (currentAngle < 360) {
+            canvas.drawArc(x - radius, y - radius, x + radius, y + radius, currentAngle, sweepAngle, false, style.getBorderPaint());
+            currentAngle += 2 * sweepAngle;
+        }
+    }
+
+    public PaintStyle getStyle() { return style; }
+    public void setStyle(PaintStyle style) { this.style = style; }
 }

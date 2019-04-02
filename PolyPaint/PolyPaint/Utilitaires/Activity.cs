@@ -34,11 +34,15 @@ namespace PolyPaint.Utilitaires
             this.Remplissage = Colors.White;
             this.Type = TYPE;
             this.updatePoints();
-           /* this.HeightDirection = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint());
-            this.HeightDirection.Normalize();
-            this.WidthDirection = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint());
-            this.WidthDirection.Normalize();*/
+            
+            //this.StrokeDashArray = new DoubleCollection() { 2 };
+
+            /* this.HeightDirection = Point.Subtract(this.StylusPoints[4].ToPoint(), this.StylusPoints[0].ToPoint());
+             this.HeightDirection.Normalize();
+             this.WidthDirection = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint());
+             this.WidthDirection.Normalize();*/
         }
+ 
         protected override void  MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
@@ -49,6 +53,7 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height));
             pts.Add(new StylusPoint(pts[0].X + 0.23*this.Width, pts[0].Y + 0.5*this.Height));
             pts.Add(new StylusPoint(pts[0].X , pts[0].Y));
+
             this.StylusPoints = pts;
         }
         private void updatePoints()
@@ -93,7 +98,8 @@ namespace PolyPaint.Utilitaires
         {
             Fill(drawingContext);
             SetSelection(drawingContext);
-            base.DrawCore(drawingContext, drawingAttributes);
+            OnDrawCore(drawingContext, drawingAttributes);
+           // base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
             DrawName(drawingContext);
             DrawEncrage(drawingContext);
@@ -101,9 +107,12 @@ namespace PolyPaint.Utilitaires
         private void DrawName(DrawingContext drawingContext)
         {
             Point origin = new Point(this.Center.X, this.Center.Y + this.Height /2 + 20);
-            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
             Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
-            drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+            FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush);
+            origin.X -= text.Width / 2;
+            drawingContext.DrawText(text, origin);
+         
         }
     }
 }

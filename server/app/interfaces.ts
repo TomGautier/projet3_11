@@ -24,6 +24,14 @@ export interface ConnectionControllerInterface {
     router: Router;
 }
 
+export interface ImageServiceInterface {
+
+}
+
+export interface ImageControllerInterface {
+    router: Router;
+}
+
 export interface UserServiceInterface {
 
 }

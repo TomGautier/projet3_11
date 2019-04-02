@@ -19,17 +19,20 @@ export class ConversationManager {
     }
 
     public onMessageSent(socketId: string, args: any) {
-        const messageJson = {date: 'date actuelle', username: args.username, message: args.message};
-        console.log(args.conversationId);
+        const d = Date.now();
+        const date = (new Date(Date.now())).toLocaleTimeString();
+        
+        const messageJson = {date: date, username: args.username, message: args.message};
         this.socketService.emit(args.conversationId, SocketEvents.MessageSent, messageJson);
     }
 
     public joinConversation(socketId: string, args: any) {
-        console.log('Joined conversation : ' + args.conversationId);
         this.socketService.joinRoom(args.conversationId, socketId);
+        this.socketService.emit(args.conversationId, SocketEvents.UserJoinedConversation, args.username);
     }
 
     public leaveConversation(socketId: string, args: any) {
         this.socketService.leaveRoom(args.conversationId, socketId);
+        this.socketService.emit(args.conversationId, SocketEvents.UserLeftConversation, args.username);
     }
 }
