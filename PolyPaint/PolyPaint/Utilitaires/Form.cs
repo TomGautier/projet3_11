@@ -95,7 +95,7 @@ namespace PolyPaint.Utilitaires
             // this.CurrentRotation += angleInc;
 
         }
-        protected virtual void MakeShape() { }
+        public virtual void MakeShape() { }
         public void SetRotation(int degrees)
         {
             

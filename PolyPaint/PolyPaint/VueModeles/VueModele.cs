@@ -397,6 +397,19 @@ namespace PolyPaint.VueModeles
         public void HandleDrag()
         {
             // TODO : Send socket -> selection has moved
+            foreach (Stroke s in this.SelectedStrokes)
+            {
+               /* if ((s as Form).Center.X > this.Canvas.Width || (s as Form).Center.X < 0)
+                {
+                    (s as Form).Center = new Point(this.Canvas.Width / 2, (s as Form).Center.Y);
+                    (s as Form).MakeShape();
+                }
+                if ((s as Form).Center.Y > this.Canvas.Height || (s as Form).Center.Y < 0)
+                {
+                    (s as Form).Center = new Point((s as Form).Center.X, this.Canvas.Height / 2);
+                    (s as Form).MakeShape();
+                }*/
+            }
             editeur.HandleSelectionModification();
         }
         public void HandleResize()
@@ -441,6 +454,7 @@ namespace PolyPaint.VueModeles
         }
         public void HandlePreviewMouseDown(Point mousePos)
         {
+            
             Rect selectionZone = this.Canvas.GetSelectionBounds();
             if (selectionZone.Size != Size.Empty)
             {
