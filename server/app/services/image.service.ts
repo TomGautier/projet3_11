@@ -67,4 +67,20 @@ export class ImageService implements ImageServiceInterface {
                 throw err;
             });
     }
+
+    public async updateThumbnail(imageId: string, thumbnail: any, thumbnailTimestamp: number) {
+        const image = new Image(await this.getById(imageId));
+        
+        if(image.thumbnailTimestamp <= thumbnailTimestamp) {
+                image.thumbnail = thumbnail;
+                image.thumbnailTimestamp = thumbnailTimestamp;
+                return await this.databaseService.update(Image, this.ID_CRITERIA, imageId, image)
+                    .catch(err => {
+                        Logger.warn('ImageService', `This image ${imageId} couldn't be updated.`);
+                        throw err;
+                    });
+        }
+
+        return image;
+    }
 }

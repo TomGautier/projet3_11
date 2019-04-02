@@ -23,6 +23,9 @@ export let imageSchema: Schema = new Schema({
     thumbnail: {
         type: String
     },
+    thumbnailTimestamp: {
+        type: Number
+    },
     shapes: [{
         type: String,
         ref: 'Shape'
