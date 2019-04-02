@@ -49,7 +49,7 @@ public class ConnectionForm extends GenericShape {
 
 
     public ConnectionForm(String id, int x, int y, int width, int height, PaintStyle style, ImageEditingFragment.ConnectionFormType type) {
-        super(id, x, y, width, height, style);
+        super(id, x, y, width, height, style, 0);
         initializeType(type);
         initializePaints();
         initializeVertices();

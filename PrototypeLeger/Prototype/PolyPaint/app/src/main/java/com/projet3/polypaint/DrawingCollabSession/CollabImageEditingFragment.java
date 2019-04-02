@@ -708,26 +708,26 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             case "UmlClass":
                 genShape = new UMLClass(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
-                        collabShape.getProperties().getHeight(), defaultStyle);
+                        collabShape.getProperties().getHeight(), defaultStyle, collabShape.getProperties().getRotation());
                 break;
             case "Artefact":
                 genShape = new UMLArtefact(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
-                        collabShape.getProperties().getHeight(), defaultStyle);
+                        collabShape.getProperties().getHeight(), defaultStyle, collabShape.getProperties().getRotation());
                 break;
             case "Activity":
                 genShape = new UMLActivity(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
-                        collabShape.getProperties().getHeight(), defaultStyle);
+                        collabShape.getProperties().getHeight(), defaultStyle, collabShape.getProperties().getRotation());
                 break;
             case "Role":
                 genShape = new UMLRole(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
-                        collabShape.getProperties().getHeight(), defaultStyle);
+                        collabShape.getProperties().getHeight(), defaultStyle,collabShape.getProperties().getRotation());
                 break;
             case "text_box":
                 genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
-                        collabShape.getProperties().getMiddlePointCoord()[1],defaultStyle);
+                        collabShape.getProperties().getMiddlePointCoord()[1],defaultStyle, collabShape.getProperties().getRotation());
                 break;
         }
         return genShape;

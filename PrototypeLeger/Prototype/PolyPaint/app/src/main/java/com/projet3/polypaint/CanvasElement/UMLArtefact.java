@@ -10,15 +10,15 @@ public class UMLArtefact extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 80;
 
-    public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id,x, y, width, height, style);
+    public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id,x, y, width, height, style, angle);
         //width = DEFAULT_WIDTH;
         //height = DEFAULT_HEIGHT;
     }
 
 
     public UMLArtefact clone() {
-        return new UMLArtefact(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style);
+        return new UMLArtefact(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style, angle);
     }
 
     @Override

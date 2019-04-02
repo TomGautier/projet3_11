@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
@@ -34,14 +35,14 @@ public abstract class GenericShape {
     protected Path rotationPath;
 
 
-    public GenericShape(String id, int x, int y, int width, int height, PaintStyle style) {
+    public GenericShape(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         this.id = id;
         this.posX = x;
         this.posY = y;
         this.width = width;
         this.height = height;
         this.style = style;
-        this.angle = 0;
+        this.angle = angle;
         anchorPoints = new ArrayList<>();
         connections = new ArrayList<>();
         setAnchorPoints();
@@ -153,14 +154,22 @@ public abstract class GenericShape {
             anchor.drawOnCanvas(canvas);
         }
     }
-    public void rotate(float angle){
+    public void rotate(float angle) {
         this.angle += angle;
+        rotateAnchorPoints();
+        //rotateAnchorPoints(this.angle);
+    }
+
+    public void rotateAnchorPoints(){
+        for (AnchorPoint anchorPoint : anchorPoints){
+            anchorPoint.setPath();
+        }
     }
     public void relativeMove(int x, int y) {
         posX += x;
         posY += y;
         for (AnchorPoint anchorPoint : anchorPoints)
-            anchorPoint.relativeMove(x,y);
+            anchorPoint.setPath();
     }
     public int getHeight(){
         return height;

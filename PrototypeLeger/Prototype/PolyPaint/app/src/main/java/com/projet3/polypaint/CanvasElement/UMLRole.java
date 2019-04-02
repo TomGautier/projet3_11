@@ -8,15 +8,15 @@ public class UMLRole extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 90;
 
-    public UMLRole(String id,int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y, width,height, style);
+    public UMLRole(String id,int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id, x, y, width,height, style, angle);
         //width = DEFAULT_WIDTH;
         //height = DEFAULT_HEIGHT;
     }
 
 
     public UMLRole clone() {
-        return new UMLRole(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
+        return new UMLRole(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, this.angle);
     }
 
     @Override

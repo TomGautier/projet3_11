@@ -9,15 +9,15 @@ public class UMLActivity extends GenericShape {
     protected final static int DEFAULT_HEIGHT = 60;
 
 
-    public UMLActivity(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y, width, height, style);
+    public UMLActivity(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id, x, y, width, height, style, angle);
         //width = DEFAULT_WIDTH;
         //height = DEFAULT_HEIGHT;
     }
 
 
     public UMLActivity clone() {
-        return new UMLActivity(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style);
+        return new UMLActivity(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, this.angle);
     }
 
     @Override

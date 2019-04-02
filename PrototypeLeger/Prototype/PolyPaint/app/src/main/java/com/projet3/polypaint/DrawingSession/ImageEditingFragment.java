@@ -105,7 +105,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected String id;
     protected RotationGestureDetector rotationDetector;
 
-
     public ImageEditingFragment() {}
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -515,22 +514,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         switch (currentShapeType) {
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Activity :
                 nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Artefact :
                 nShape = new UMLArtefact(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Role :
                 nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case text_box :
-                nShape = new TextBox(id, posX, posY, defaultStyle);
+                nShape = new TextBox(id, posX, posY, defaultStyle, 0);
                 ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
             case ConnectionForm:
