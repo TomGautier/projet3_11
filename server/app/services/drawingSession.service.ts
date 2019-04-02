@@ -12,11 +12,10 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async addElement(id:string, drawingSessionId: string, username: string, properties: any): Promise<{}> {
-        const shapeId = id//uuid.v1();
+    public async addElement(id:string, imageId: string, username: string, properties: any): Promise<{}> {
         const shape = new Shape({
-            id: shapeId,
-            drawingSessionId: drawingSessionId,
+            id: id,
+            imageId: imageId,
             author: username,
             properties: {
                 type: properties.type,
@@ -31,7 +30,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     
         return await this.databaseService.create(Shape, shape)
             .catch(err => {
-                Logger.warn('ConversationService', `Couldn't create shape : ${shapeId}`);
+                Logger.warn('ConversationService', `Couldn't create shape : ${id}`);
                 throw err;
         });
     }
