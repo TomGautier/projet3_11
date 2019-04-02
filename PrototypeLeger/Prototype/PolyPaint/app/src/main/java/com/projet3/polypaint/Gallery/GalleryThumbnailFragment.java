@@ -1,10 +1,14 @@
 package com.projet3.polypaint.Gallery;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projet3.polypaint.R;
@@ -41,8 +45,19 @@ public class GalleryThumbnailFragment extends Fragment {
 
     private void updateView() {
         TextView tv = (TextView) rootView.findViewById(R.id.title);
+        ImageView iv = (ImageView) rootView.findViewById(R.id.image);
         try {
             tv.setText(image.getString("author"));
+            if (image.has("thumbnail")) {
+                System.out.println("Recieved thumbnail for image id " + image.getString("id"));
+                byte[] decoded = Base64.decode(image.getString("thumbnail"), Base64.DEFAULT);
+                Bitmap bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+
+                if (bitmap != null) {
+                    iv.setImageBitmap(bitmap);
+                    iv.invalidate();
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

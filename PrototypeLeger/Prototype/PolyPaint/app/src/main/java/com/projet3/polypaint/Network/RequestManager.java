@@ -196,11 +196,20 @@ public class RequestManager {
         }
     }
 
-    public void postImage(JSONObject image) {
-        url = formatUrl(Request.Images,null);
+    public void postImage(String id, String visibility, String protection, String author) {
+        url = formatUrl(Request.Images, null);
         UserJsonPostTask task = new UserJsonPostTask();
+
+        JSONObject image = new JSONObject();
+        try {
+        image.put("id", id)
+                .put("visibility", visibility)
+                .put("protection", protection)
+                .put("author", author);
         task.setData(image);
         task.execute(url);
+        } catch (JSONException e) {e. printStackTrace(); }
+
         try {
             boolean response = task.get(TIMEOUT_DELAY, TimeUnit.SECONDS) != null;
 
@@ -218,8 +227,8 @@ public class RequestManager {
         }
     }
 
-    public void postThumbnail(Bitmap bitmap) {
-        url = formatUrl(Request.Thumbnail,null);
+    public void postThumbnail(Bitmap bitmap, String imageID) {
+        url = formatUrl(Request.Thumbnail, imageID);
         UserJsonPostTask task = new UserJsonPostTask();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
@@ -228,8 +237,8 @@ public class RequestManager {
 
         JSONObject body = new JSONObject();
         try {
-            body.put("timestamp", (new Date()).getTime());
-            body.put("bitmap", encoded);
+            body.put("thumbnailTimestamp", (new Date()).getTime());
+            body.put("thumbnail", encoded);
             task.setData(body);
             task.execute(url);
         } catch (JSONException e) { e.printStackTrace(); }

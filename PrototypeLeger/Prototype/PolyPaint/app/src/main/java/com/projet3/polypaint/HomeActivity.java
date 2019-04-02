@@ -42,6 +42,8 @@ public class HomeActivity extends AppCompatActivity {
 	private FrameLayout collabImageEditingFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
+	private CollabImageEditingFragment collabImageEditingFragment;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,17 +86,6 @@ public class HomeActivity extends AppCompatActivity {
 		transaction.add(R.id.usersTableFragment, new UsersListFragment(),USER_TABLE_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();
-		//ArrayList<String> users = new ArrayList<>();
-		/*users.add("Marcel");
-		users.add("Marcel2");
-		users.add("Marcel3");
-		users.add("Marcel4");
-		users.add("Marcel5");
-		users.add("Marcel6");
-		users.add("Marcel7");
-		users.add("Marcel8");
-		users.add("Marcel9");*/
-
 	}
 
 	private void createImageEditingFragment(){
@@ -107,7 +98,8 @@ public class HomeActivity extends AppCompatActivity {
 	private void createCollabImageEditingFragment(){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.collabImageEditingFragment, new CollabImageEditingFragment(),COLLAB_EDITING_TAG);
+		collabImageEditingFragment = new CollabImageEditingFragment();
+		transaction.add(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -175,14 +167,17 @@ public class HomeActivity extends AppCompatActivity {
 	private void toggleImageEditingVisibility(){
 		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			imageEditingFragmentLayout.setVisibility(View.GONE);
-		else
+		else {
 			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
 	}
 	private void toggleCollabImageEditingVisibility(){
 		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			collabImageEditingFragmentLayout.setVisibility(View.GONE);
-		else
+		else {
 			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+			collabImageEditingFragment.joinNewDrawingSession();
+		}
 	}
 
 	private void createGalleryFragment(){

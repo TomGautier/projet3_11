@@ -1,6 +1,7 @@
 package com.projet3.polypaint.DrawingCollabSession;
 
 import android.annotation.SuppressLint;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.os.Bundle;
@@ -19,16 +20,21 @@ import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.Network.FetchManager;
+import com.projet3.polypaint.UserLogin.UserInformation;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CollabImageEditingFragment extends ImageEditingFragment
         implements ImageEditingDialogManager.ImageEditingDialogSubscriber, DrawingCollabSessionListener {
 
     private View rootView;
-    private String drawingSessionId;
+    private String imageID;
     private ArrayList<Player> players;
     private Player client;
     private int selectedColorCpt;
@@ -44,9 +50,19 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         selectedColorCpt = 0;
         client = new Player(FetchManager.currentInstance.getUserUsername(), selectedColorCpt);
         //selectedColorCpt++;
-        SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
-        SocketManager.currentInstance.joinCollabSession("MockSessionID");
+        //SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
+        //SocketManager.currentInstance.joinCollabSession("50ca30f0-4773-11e9-8a89-39fc00e9f709");
         return rootView;
+    }
+    public void joinDrawingSession(String sessionId) {
+        SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
+        SocketManager.currentInstance.joinCollabSession(sessionId);
+    }
+    public void joinNewDrawingSession() {
+        SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
+        String id = FetchManager.currentInstance.getUserUsername() + "_" + (new Date()).getTime();
+        RequestManager.currentInstance.postImage(id, "public", "protected", FetchManager.currentInstance.getUserUsername());
+        SocketManager.currentInstance.joinCollabSession(id);
     }
     @Override
     @SuppressLint("ClickableViewAccessibility")
@@ -175,6 +191,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 shape.drawSelectionBox(canvas, player.getSelectionPaint());
         }
         // }
+
+        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
     }
     protected GenericShape addShape(int posX, int posY) {
         CollabShape shape = createCollabShape(posX,posY);
@@ -229,7 +247,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
         CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
                 "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
-        CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
+        CollabShape collabShape = new CollabShape(shape.getId(), imageID, client.getName(),properties);
         return collabShape;
     }
     private CollabShape createCollabShape(int posX, int posY){
@@ -238,7 +256,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
                 "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString())
                 ,GenericShape.getDefaultWidth(currentShapeType.toString()),0);
-        return new CollabShape(id,drawingSessionId, client.getName(),properties);
+        return new CollabShape(id, imageID, client.getName(),properties);
     }
     @Override
     protected void reset() {
@@ -388,7 +406,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     //EVENT SERVER
     @Override
     public void onJoinedSession(String drawingSessionId_) {
-        drawingSessionId = drawingSessionId_;
+        imageID = drawingSessionId_;
         //  Toast.makeText(getContext(),"CONNECTE A UNE SESSION", Toast.LENGTH_LONG).show();
     }
     @Override
