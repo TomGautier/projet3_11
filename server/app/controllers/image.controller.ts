@@ -56,9 +56,9 @@ export class ImageController implements ImageControllerInterface {
                     { res.json(403); return; }
                 
                 this.imageService.create(req.body.author,
+                                        req.body.imageId,
                                         req.body.visibility,
-                                        req.body.protection,
-                                        req.body.shapes)
+                                        req.body.protection)
                     .then(image => {
                         res.json(image);
                     });
