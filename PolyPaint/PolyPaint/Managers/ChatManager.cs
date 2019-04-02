@@ -23,7 +23,7 @@ namespace PolyPaint.Managers
         #endregion
 
         #region Parameters
-        private string roomID = "generalRoom";
+        private string roomID = "";
         public string RoomID
         {
             get
@@ -130,7 +130,6 @@ namespace PolyPaint.Managers
         {
             RoomsID = new ObservableCollection<string>();
             RoomsID.Add("generalRoom"); // TODO : Load from server
-            History = "Bienvenue dans la conversation " + RoomID + "!";
         }
         #endregion
 

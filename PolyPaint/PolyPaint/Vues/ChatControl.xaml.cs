@@ -32,7 +32,7 @@ namespace PolyPaint.Vues
                 textBox.ScrollToEnd();
             };
             chatWindow = null;
-            //UpdateUserList();
+            //UpdateUserList(); TODO : FIND WHY DATA CONTEXT IS NULL
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
@@ -86,15 +86,21 @@ namespace PolyPaint.Vues
             ((StackPanel)FindName("AddChannelForm")).Visibility = Visibility.Hidden;
         }
 
-        private void UpdateUserList()
+        private async void UpdateUserList()
         {
-            UsersList.ItemsSource = ((VueModele)DataContext).LoadUsers();
+            UsersList.ItemsSource = await ((VueModele)DataContext).LoadUsersAsync();
         }
         
         public class UserItem
         {
             public string Username { get; set; }
             public int ConnectionStatus { get; set; }
+        }
+
+        public class UserItemTemplate
+        {
+            public string Username { get; set; }
+            public bool ConnectionStatus { get; set; }
         }
 
         private void UpdateUsersList_Click(object sender, RoutedEventArgs e)

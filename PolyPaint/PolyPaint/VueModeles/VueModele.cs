@@ -233,17 +233,18 @@ namespace PolyPaint.VueModeles
             // NOTE : CALL DURING NAVIGATE_TO_GALLERY
         }
 
-        public List<ChatControl.UserItem> LoadUsers()
+        public async System.Threading.Tasks.Task<List<ChatControl.UserItem>> LoadUsersAsync()
         {
-            string userList = networkManager.LoadUsersAsync(Username, SessionId).Result;
+            string userList = await networkManager.LoadUsersAsync(Username, SessionId);
 
             List<ChatControl.UserItem> userItems = new List<ChatControl.UserItem>();
 
-            var users = JsonConvert.DeserializeObject<Dictionary<string,bool>>(userList);
+            
+            var users = JsonConvert.DeserializeObject<List<ChatControl.UserItemTemplate>>(userList);
 
             foreach (var user in users)
             {
-                userItems.Add(new ChatControl.UserItem() { Username = user.Key, ConnectionStatus = user.Value ? 1 : 0 });
+                userItems.Add(new ChatControl.UserItem() { Username = user.Username, ConnectionStatus = user.ConnectionStatus ? 1 : 0 });
             }
 
             return userItems.OrderByDescending(x => x.ConnectionStatus).ToList(); ;
