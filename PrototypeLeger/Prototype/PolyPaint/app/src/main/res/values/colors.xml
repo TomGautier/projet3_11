@@ -9,4 +9,5 @@
         <color name="canvasBackground">#FFFFFF</color>
         <color name="mainBackground">#FFFFFF</color>
         <color name="imageEditingBackgroundColor">#E2E2E2</color>
+        <color name="DefaultConnectionFormColor">#56585b</color>
 </resources>

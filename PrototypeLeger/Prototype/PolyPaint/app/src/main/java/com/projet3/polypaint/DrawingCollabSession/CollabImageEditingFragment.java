@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
@@ -72,6 +73,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                         case selection:
                             checkSelection(posX, posY);
                             break;
+                            case rotate:
+                                rotationDetector.onTouchEvent(event,posX,posY);
+                                break;
+
                         case lasso:
                             doLassoSelection(event);
                             continueListening = true;
@@ -242,35 +247,48 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
 
     private CollabShape createCollabShape(GenericShape shape){
-        String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(findGenShapeType(shape.getClass()), hexColor,
-                "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
-        CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
+        String type = findGenShapeType(shape.getClass());
+        CollabShape collabShape;
+        CollabShapeProperties properties;
+        if (type.equals(ShapeType.ConnectionForm.toString())){
+            ConnectionForm connection  = (ConnectionForm)shape;
+            properties = new CollabConnectionProperties(connection.getVerticesPos(0),connection.getType(),connection.getFillingColor());
+        }
+        else {
+            String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
+            properties = new CollabShapeProperties(type, hexColor,
+                    "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
+        }
+
+        collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
         return collabShape;
     }
     private CollabShape createCollabShape(int posX, int posY){
+        CollabShapeProperties properties;
         id = client.getName() + "_" + Integer.toString(idCpt++);
         String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
-                "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType)
-                ,GenericShape.getDefaultWidth(currentShapeType),0);
+
+        if(currentShapeType.toString().equals(ShapeType.ConnectionForm.toString()))
+            properties = new CollabConnectionProperties(ConnectionForm.generateDefaultPoints(posX,posY)
+                    ,currentConnectionFormType.toString(),hexColor);
+        else
+            properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
+                "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType),
+                    GenericShape.getDefaultWidth(currentShapeType),0);
+
         return new CollabShape(id,drawingSessionId, client.getName(),properties);
     }
     @Override
     protected void reset() {
-
-        /*if (shapes != null && shapes.size() > 0){
-            addToStack(new ArrayList(shapes),REMOVE_ACTION);
-            shapes.clear();
-        }
-        selections.clear();
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();*/
         ArrayList<String> ids = new ArrayList<>();
         for (GenericShape shape : shapes)
             ids.add(shape.getId());
         SocketManager.currentInstance.deleteElements(ids.toArray(new String[ids.size()]));
+    }
+    @Override
+    public void onEndRotation() {
+        SocketManager.currentInstance.modifyElements(new CollabShape[]{createCollabShape(rotatingShape)});
+        super.onEndRotation();
     }
 
     @Override
@@ -730,6 +748,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle,collabShape.getProperties().getRotation());
                 break;
+            case "ConnectionForm":
+                CollabConnectionProperties properties = ((CollabConnectionProperties)collabShape.getProperties());
+                genShape = new ConnectionForm(collabShape.getId(),properties.getType(),properties.getFillingColor(),properties.getVertices());
+                break;
             case "text_box":
                 genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1],defaultStyle, collabShape.getProperties().getRotation());
@@ -749,5 +771,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         //cutShapes.addAll(selections);
         //deleteSelection();
     }
+
 
 }

@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+
+import com.projet3.polypaint.DrawingCollabSession.Player;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
@@ -14,6 +16,8 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.opengl.Matrix;
 import android.util.Pair;
+import android.widget.ProgressBar;
+
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -28,9 +32,10 @@ import java.util.Vector;
 public class ConnectionForm extends GenericShape {
     protected final static int DEFAULT_WIDTH = 250;
     protected final static int DEFAULT_HEIGHT = 30;
-    private ImageEditingFragment.ConnectionFormType type;
+    private String type;
     private int arrowHeight;
     private int arrowWidth;
+
     private ConnectionFormVertex first;
     private ConnectionFormVertex last;
     private ConnectionFormVertex selectedVertex;
@@ -42,45 +47,52 @@ public class ConnectionForm extends GenericShape {
 
     private Paint linePaint;
     private Paint arrowPaint;
-    private Paint selectPaint;
-    private Paint modifyPaint;
     private boolean isResizing;
     //private Pair<GenericShape,GenericShape> connectedShapes;
 
 
-    public ConnectionForm(String id, int x, int y, int width, int height, PaintStyle style, ImageEditingFragment.ConnectionFormType type) {
-        super(id, x, y, width, height, style, 0);
-        initializeType(type);
-        initializePaints();
-        initializeVertices();
+    public ConnectionForm(String id, String type, String fillingColor, int[][] vertices){
+        this.id = id;
+        initialize(vertices,type,fillingColor);
     }
-    public ConnectionForm clone() {
-        return new ConnectionForm(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, type);
+    private void initialize(int[][] vertices, String type, String fillingColor){
+        initializeProperties(type, fillingColor);
+        initializeVertices(vertices);
     }
-    private void initializeType(ImageEditingFragment.ConnectionFormType type){
+    private void initializeProperties(String type, String fillingColor){
         this.type = type;
+        path = new Path();
+        selectedVertex = null;
+        isResizing = false;
+
+        linePaint = new Paint();
+        linePaint.setAntiAlias(true);
+        linePaint.setColor(Color.parseColor(fillingColor));
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setStrokeWidth(6.0f);
         arrowPaint = new Paint();
         arrowPaint.setAntiAlias(true);
+        arrowPaint.setStrokeWidth(1.0f);
         switch(type) {
-            case Agregation:
+            case "Agregation":
                 arrowHeight = 30;
                 arrowWidth = 50;
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.STROKE);
                 break;
-            case Composition:
+            case "Composition":
                 arrowHeight = 30;
                 arrowWidth = 50;
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.FILL);
                 break;
-            case Inheritance:
+            case "Inheritance":
                 arrowHeight = 50;
                 arrowWidth = 30;
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.STROKE);
                 break;
-            case Bidirectional:
+            case "Bidirectional":
                 arrowHeight = 50;
                 arrowWidth = 30;
                 arrowPaint.setColor(Color.BLACK);
@@ -88,58 +100,25 @@ public class ConnectionForm extends GenericShape {
                 break;
         }
     }
-    private void initializeVertices() {
-        //connectedShapes = new Pair(null,null);
-        //vertices = new ArrayList<>();
-        path = new Path();
-        selectedVertex = null;
-        isResizing = false;
-        //int wLine = width - ARROW_WIDTH;
-        Point origin = new Point(posX - width/2, posY);
-        Point middle1 = new Point(origin.x + width/3, posY);
-        Point middle2 = new Point(middle1.x + width/3, posY);
-        Point end = new Point(posX + width/2,posY);
-        last = new ConnectionFormVertex(end, null);
-        ConnectionFormVertex middleVertex2  = new ConnectionFormVertex(middle2,last);
-        ConnectionFormVertex middleVertex1 = new ConnectionFormVertex(middle1,middleVertex2);
-        first = new ConnectionFormVertex(origin,middleVertex1);
-        //vertices.add(first);
-        //vertices.add(last);
-        //originVertex.setNext(endVertex);
-        //vertexs.add(originVertex);
-        //vertexs.add(endVertex);
-        //vertexs.add(endVertex);
+
+    private void initializeVertices(int[][] values){
+        ArrayList<Point> points = new ArrayList();
+        for (int i = 0; i < values.length; i ++){
+            points.add(new Point(values[i][0],values[i][1]));
+        }
+        ConnectionFormVertex vertex1;
+        ConnectionFormVertex vertex2 = new ConnectionFormVertex(points.get(points.size()-1),null);
+        last = vertex2;
+        for (int j = points.size() - 2; j > 0; j--) {
+            vertex1 = new ConnectionFormVertex(points.get(j),vertex2);
+            vertex2 = new ConnectionFormVertex(points.get(j-1),vertex1);
+        }
+        first = vertex2;
     }
-    private void initializePaints(){
-        linePaint = new Paint();
-        // smooths
-        linePaint.setAntiAlias(true);
-        linePaint.setColor(Color.DKGRAY);
-        linePaint.setStyle(Paint.Style.STROKE);
-        linePaint.setStrokeWidth(6.0f);
-
-
-        //arrowPaint.setStrokeWidth(2.0f);
-
-        modifyPaint = new Paint();
-        // smooths
-        modifyPaint.setAntiAlias(true);
-        modifyPaint.setColor(Color.YELLOW);
-        modifyPaint.setStyle(Paint.Style.STROKE);
-        modifyPaint.setStrokeWidth(4.5f);
-
-        selectPaint = new Paint();
-        // smooths
-        selectPaint.setAntiAlias(true);
-        selectPaint.setColor(Color.RED);
-        selectPaint.setStyle(Paint.Style.STROKE);
-        selectPaint.setStrokeWidth(1.0f);
-
+    public ConnectionForm clone() {
+        return new ConnectionForm(id + "clone", this.type, getFillingColor(), getVerticesPos(CLONE_OFFSET));
     }
 
-   /* public boolean isVertexTouched(){
-        return vertexTouched;
-    }*/
 
     public void finishResize(){
         isResizing = false;
@@ -148,7 +127,7 @@ public class ConnectionForm extends GenericShape {
 
     @Override
     public void relativeMove(int x, int y) {
-        super.relativeMove(x,y);
+        //super.relativeMove(x,y);
         ConnectionFormVertex current = first;
         while (current != null){
             current.relativeMove(x,y);
@@ -177,27 +156,27 @@ public class ConnectionForm extends GenericShape {
 
         return null;
     }
-    /*public void updateVertex(int x, int y){
-        ConnectionFormVertex nVertex = null;
-        if (selectedVertex != null) {
-            if (selectedVertex == first) {
-                first = new ConnectionFormVertex(new Point(x, y), selectedVertex);
-            } else if (selectedVertex.getNext() == null) {
-                nVertex = new ConnectionFormVertex(new Point(x, y), null);
-                selectedVertex.setNext(nVertex);
-            } else {
-                nVertex = new ConnectionFormVertex(new Point(x, y), selectedVertex.getNext().clone());
-                selectedVertex.setNext(nVertex);
-            }
-        }
-    }*/
 
     @Override
     public Path getSelectionPath() {
-        /*Path p = new Path();
-        p.moveTo()*/
         return path;
     }
+    public String getType(){
+        return type;
+    }
+    public String getFillingColor(){
+        return String.format("#%06X", (0xFFFFFF & linePaint.getColor()));
+    }
+
+    public int[][] getVerticesPos(int offset){
+        ArrayList<int[]> list = new ArrayList<>();
+        ConnectionFormVertex current = first;
+        while (current.getNext() != null){
+            list.add(new int[] {current.x() + offset,current.y() + offset});
+        }
+        return list.toArray(new int[list.size()][2]);
+    }
+
 
     @Override
     public boolean contains(int x, int y){
@@ -227,6 +206,14 @@ public class ConnectionForm extends GenericShape {
     public void setAnchorPoints() {
         //no anchor points for connectionForms
     }
+    @Override
+    public void drawAnchorPoints(Canvas canvas){
+        //no anchor points
+    }
+    @Override
+    public void rotateAnchorPoints(){
+        //no anchor points
+    }
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
@@ -236,7 +223,7 @@ public class ConnectionForm extends GenericShape {
         ConnectionFormVertex currentVertex = firstVertex;
         float angle = 0;
         while (currentVertex.getNext() != null){
-            if (!(currentVertex == first && type == ImageEditingFragment.ConnectionFormType.Bidirectional))
+            if (!(currentVertex == first && type == ImageEditingFragment.ConnectionFormType.Bidirectional.toString()))
                 path.addCircle(currentVertex.x(),currentVertex.y(),5, Path.Direction.CW);
             path.lineTo(currentVertex.getNext().x(),currentVertex.getNext().y());
             angle = getAngle(currentVertex.getNext().getPoint(), currentVertex.getPoint());
@@ -247,13 +234,22 @@ public class ConnectionForm extends GenericShape {
         drawArrow(angle, canvas);
        // canvas.drawPath(arrow, arrowPaint);
     }
+    public static int[][] generateDefaultPoints(int x, int y){
+        int[][] array = new int[4][2];
+        int width = GenericShape.getDefaultWidth(ImageEditingFragment.ShapeType.ConnectionForm);
+        for (int i =0; i < array.length; i++){
+            array[i][0] = (x - width/2) + (width/3)*i;
+            array[i][1] = y;
+        }
+        return array;
+    }
+
 
     private void drawArrow(float angle, Canvas canvas){
         arrow = new Path();
-        frontArrow = new Path();
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
         switch (type){
-            case Inheritance:
+            case "Inheritance":
                 canvas.rotate(angle,last.x(),last.y());
                 arrow.moveTo(last.x() + arrowWidth/2, last.y()); // Top
                 arrow.lineTo(last.x() - arrowWidth/2, last.y() - arrowHeight/2); // Bottom left
@@ -261,8 +257,9 @@ public class ConnectionForm extends GenericShape {
                 arrow.lineTo(last.x() + arrowWidth/2, last.y()); // Back to Top
                 arrow.close();
                 break;
-            case Bidirectional:
+            case "Bidirectional":
                 //front
+                frontArrow = new Path();
                 canvas.rotate(getAngle(first.getPoint(),first.getNext().getPoint()),first.x(),first.y());
                 frontArrow.moveTo(first.x() + arrowWidth/2, first.y()); // Top
                 frontArrow.lineTo(first.x() - arrowWidth/2, first.y() - arrowHeight/2); // Bottom left
@@ -309,7 +306,7 @@ public class ConnectionForm extends GenericShape {
             verticesPath.addCircle(current.x(),current.y(),20, Path.Direction.CW);
             current = current.getNext();
         }
-        canvas.drawPath(verticesPath,modifyPaint);
+        canvas.drawPath(verticesPath, paint);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

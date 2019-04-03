@@ -21,7 +21,7 @@ public class CollabShapeProperties {
     private int height;
     private int width;
     private int rotation;
-
+    public CollabShapeProperties() {}
     public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, int[] middlePointCoord_,
                                  int height_, int width_, int rotation_){
         type = type_;

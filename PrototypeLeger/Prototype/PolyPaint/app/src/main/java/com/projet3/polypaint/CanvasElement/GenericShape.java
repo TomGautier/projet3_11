@@ -34,7 +34,7 @@ public abstract class GenericShape {
     protected ArrayList<ConnectionForm> connections;
     protected Path rotationPath;
 
-
+    public GenericShape() {}
     public GenericShape(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         this.id = id;
         this.posX = x;
@@ -168,8 +168,10 @@ public abstract class GenericShape {
     public void relativeMove(int x, int y) {
         posX += x;
         posY += y;
-        for (AnchorPoint anchorPoint : anchorPoints)
-            anchorPoint.setPath();
+        if (anchorPoints != null && anchorPoints.size() > 0){
+            for (AnchorPoint anchorPoint : anchorPoints)
+                anchorPoint.setPath();
+        }
     }
     public int getHeight(){
         return height;
@@ -209,6 +211,9 @@ public abstract class GenericShape {
     }
     public String getId() {
         return id;
+    }
+    public float getAngle(){
+        return angle;
     }
     public int[] getCenterCoord(){
         return new int[] {posX,posY};

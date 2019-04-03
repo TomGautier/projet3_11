@@ -111,5 +111,6 @@ public class RotationGestureDetector {
 
     public static interface OnRotationGestureListener {
         public void OnRotation(RotationGestureDetector rotationDetector, int posX, int posY);
+        public void onEndRotation();
     }
 }

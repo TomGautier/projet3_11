@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -11,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.shapes.Shape;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.util.Pair;
@@ -104,6 +106,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected int idCpt;
     protected String id;
     protected RotationGestureDetector rotationDetector;
+    protected GenericShape rotatingShape = null;
 
     public ImageEditingFragment() {}
     @Override
@@ -434,13 +437,24 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     @Override
     public void OnRotation(RotationGestureDetector rotationDetector, int posX, int posY) {
-        for (GenericShape shape : selections) {
-            if (shape.canRotate(posX, posY)) {
-                shape.rotate(-rotationDetector.getAngle());
-                return;
+        if (rotatingShape != null)
+            rotatingShape.rotate(-rotationDetector.getAngle());
+        else{
+            for (GenericShape shape : selections) {
+                if (shape.canRotate(posX, posY)) {
+                    shape.rotate(-rotationDetector.getAngle());
+                    rotatingShape = shape;
+                    return;
+                }
             }
         }
     }
+
+    @Override
+    public void onEndRotation() {
+        rotatingShape = null;
+    }
+
     protected void stack(){
 
     }
@@ -533,17 +547,16 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
                 break;
             case ConnectionForm:
-                nShape = new ConnectionForm(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, currentConnectionFormType);
+                nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
+                        String.format("#%06x", ContextCompat.getColor(getActivity(),
+                                R.color.DefaultConnectionFormColor)), ConnectionForm.generateDefaultPoints(posX,posY));
         }
         if (nShape != null) {
             shapes.add(nShape);
             selections.clear();
             selections.add(nShape);
         }
-
         return nShape;
-
     }
 
     protected void addToStack(ArrayList<GenericShape> nShapes, String action){
