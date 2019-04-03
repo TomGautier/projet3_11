@@ -42,6 +42,7 @@ public class SocketManager  {
     public final String SELECT_FORM_TAG = "SelectElements";
     public final String SELECTED_FORM_TAG = "SelectedElements";
     public final String REZIZE_CANVAS_TAG = "ResizeCanvas";
+    public final String REZIZED_CANVAS_TAG = "ResizedCanvas";
     public final String CUT_FORMS_TAG = "CutElements";
     public final String CUTED_FORMS_TAG = "CutedElements";
     public final String DUPLICATE_FORMS_TAG = "DuplicateElements";
@@ -629,9 +630,9 @@ public class SocketManager  {
             socket.emit(UNSTACK_FORM_TAG, json.toString());
 
     }
-    /*public void resizeCanvas(){
-        socket.emit(REZIZE_CANVAS_TAG, );
-    }*/
+    public void resizeCanvas(int width, int height){
+        socket.emit(REZIZE_CANVAS_TAG, width , height);
+    }
 
 
 

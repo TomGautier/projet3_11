@@ -26,6 +26,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.ConnectionFormVertex;
@@ -37,6 +38,8 @@ import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLRole;
+import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.Network.FetchManager;
 
@@ -64,8 +67,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonUnstack;
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
-
-
+    protected final int DEFAULT_CANVAS_WIDTH = 1500;
+    protected final int DEFAULT_CANVAS_HEIGHT = 1000;
+    protected final int CANVAS_BACKGROUND_PADDING = 75;
     protected enum Mode{selection, lasso, creation, move, rotate}
     public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
     public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
@@ -97,6 +101,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Path resizeConnectionFormPath = new Path();
     protected int lastTouchPosX;
     protected int lastTouchPosY;
+    protected int lastBGTouchPosX;
+    protected int lastBGTouchPosY;
 
     protected View rootView;
 
@@ -131,6 +137,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         ImageEditingDialogManager.getInstance().subscribe(this);
 
         setTouchListener();
+        initializeCanvas();
         return rootView;
     }
 
@@ -368,7 +375,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 // Check if canvas is being resized
                 else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
                     return resizeCanvas(event);
-                else switch (currentMode) {
+                 switch (currentMode) {
                     case selection:
                         if (canResize() && selections.get(0).canResize(posX,posY)){
                             resizeShape(event);
@@ -560,9 +567,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             for (GenericShape shape : selections)
                 shape.drawSelectionBox(canvas, selectionPaint);
     }
-
+    //width = 1808, height = 1264
     protected void updateCanvas() {
-        bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap(iView.getLayoutParams().width, iView.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        iView.setImageBitmap(bitmap);
+        canvas = new Canvas(bitmap);
+
+    }
+    protected void initializeCanvas(){
+        bitmap = Bitmap.createBitmap(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, Bitmap.Config.ARGB_8888);
+        ViewGroup.LayoutParams params = iView.getLayoutParams();
+        params.width = DEFAULT_CANVAS_WIDTH;
+        params.height = DEFAULT_CANVAS_HEIGHT;
+        iView.setLayoutParams(params);
         iView.setImageBitmap(bitmap);
         canvas = new Canvas(bitmap);
     }
@@ -745,13 +762,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
     public boolean checkCanvasResizeHandle(int x, int y) {
-        final int cornerTolerance = 10;
-        
+        final int cornerTolerance = 30;
+        //return !canvas.getClipBounds().contains(x,y);
         return x > canvas.getWidth() - cornerTolerance &&
                 x < canvas.getWidth() + cornerTolerance &&
                 y > canvas.getHeight() - cornerTolerance &&
                 y < canvas.getHeight() + cornerTolerance;
+
     }
+
+    public boolean checkCanvasWidth(int posX){
+        return posX <= canvasBGLayout.getMeasuredWidth() - CANVAS_BACKGROUND_PADDING;
+    }
+    public boolean checkCanvasHeight(int posY){
+        return posY <= canvasBGLayout.getMeasuredHeight() - CANVAS_BACKGROUND_PADDING;
+    }
+
     public boolean resizeCanvas(MotionEvent event) {
         int posX = (int)event.getX(0);
         int posY = (int)event.getY(0);
@@ -761,13 +787,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 isResizingCanvas = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                ViewGroup.LayoutParams params = iView.getLayoutParams();
-                params.height = posY;
-                params.width = posX;
-                iView.setLayoutParams(params);
+                    ViewGroup.LayoutParams params = iView.getLayoutParams();
+                    if (checkCanvasWidth(posX))
+                        params.width = posX;
+                    if (checkCanvasHeight(posY))
+                        params.height = posY;
+                    iView.setLayoutParams(params);
                 break;
             case MotionEvent.ACTION_UP:
                 isResizingCanvas = false;
+                if (this.getClass().equals(CollabImageEditingFragment.class))
+                    SocketManager.currentInstance.resizeCanvas(iView.getLayoutParams().width,iView.getLayoutParams().height);
                 break;
         }
 

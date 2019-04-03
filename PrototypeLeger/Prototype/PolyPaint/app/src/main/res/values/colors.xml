@@ -6,7 +6,7 @@
         <color name="shapeFillTest">#6666CC</color>
         <color name="shapeSelection">#FF0000</color>
         <color name="mainToolbarBackground">#fbfff9</color>
-        <color name="canvasBackground">#FFFFFF</color>
+        <color name="canvasBackground">#d7d9dd</color>
         <color name="mainBackground">#FFFFFF</color>
         <color name="imageEditingBackgroundColor">#E2E2E2</color>
         <color name="DefaultConnectionFormColor">#56585b</color>
