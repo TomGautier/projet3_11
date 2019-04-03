@@ -132,6 +132,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
+    <Compile Include="Managers\Player.cs" />
+    <Compile Include="Managers\PlayerManager.cs" />
     <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Managers\FormConnectorManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />

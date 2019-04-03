@@ -39,6 +39,7 @@ namespace PolyPaint.Modeles
         public double CanvasWidth { get; set; }
         public double CanvasHeight { get; set; }
 
+
         private bool showEncrage = false;
         public bool ShowEncrage
         {
@@ -53,6 +54,7 @@ namespace PolyPaint.Modeles
         }
 
         public SocketManager SocketManager { get; set; }
+        public PlayerManager PlayerManager { get; set; }
         public FormConnectorManager FormConnectorManager { get; set; }
         // Outil actif dans l'éditeur
         private string outilSelectionne = "lasso";
@@ -99,7 +101,7 @@ namespace PolyPaint.Modeles
             {
                 couleurSelectionnee = value;
                 
-                if (selectedStrokes != null)
+                if (selectedStrokes.Count > 0)
                 {
                     Shape[] shapes = new Shape[selectedStrokes.Count];
 
@@ -122,7 +124,7 @@ namespace PolyPaint.Modeles
             {
                 remplissageSelectionne = value;
 
-                if (selectedStrokes != null)
+                if (selectedStrokes.Count >0)
                 {
                     Shape[] shapes = new Shape[selectedStrokes.Count];
 
@@ -155,14 +157,14 @@ namespace PolyPaint.Modeles
         {         
             if (strokes.Count > 0)
             {
-                selectedStrokes = strokes;
+                //selectedStrokes = strokes;
                 CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
                 RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
                // ProprieteModifiee("TEST");
             }
             else
             {
-                selectedStrokes = null;
+                //selectedStrokes.Clear(); //= null;
                 CouleurSelectionnee = "Black";
                 RemplissageSelectionne = "White";
             }
@@ -220,6 +222,7 @@ namespace PolyPaint.Modeles
                     {
                         oldSelection[i] = (selectedStrokes[i] as Form).Id;
                     }
+                   
                     this.SocketManager.Select(oldSelection, toBeSelected);
                     //this.SocketManager
                 
@@ -582,6 +585,7 @@ namespace PolyPaint.Modeles
                 }
                 else
                 {
+                    (traits.Last() as Form).SelectionColor = this.PlayerManager.GetPlayer(shape.author).Color;
                     (traits.Last() as Form).IsSelectedByOther = true;
                 }
             }
@@ -623,10 +627,13 @@ namespace PolyPaint.Modeles
                     }
                     else
                     {
+                        (s as Form).SelectionColor = this.PlayerManager.GetPlayer(username).Color;
                         (s as Form).IsSelectedByOther = true;
+                        
                     }
                 }
             }
+            this.ChangeSelection(selectedStrokes);
             ProprieteModifiee("Selection");
         }
       
@@ -685,6 +692,20 @@ namespace PolyPaint.Modeles
                 {
                     this.ResetCanvas();
                 });
+            });
+            this.SocketManager.Socket.On("NewUserJoined", (data) =>
+            {
+                //JObject result = (data as JObject);
+                String[] users = new string[(data as JArray).Count];
+                for (int i = 0; i <users.Length; i++)
+                {
+                    users[i] = (data as JArray)[i].ToObject<String>();
+                    if (!this.PlayerManager.Contain(users[i]))
+                    { 
+                        this.PlayerManager.AddPlayer(users[i]);
+                    }
+                    
+                }
             });
             this.SocketManager.Socket.On("ResizedCanvas", (data) =>
             {

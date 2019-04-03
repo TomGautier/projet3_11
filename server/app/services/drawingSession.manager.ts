@@ -19,7 +19,7 @@ export class DrawingSessionManager {
                { 
         // args[0] contains the socket id, args[1][0] the drawing session id.
         this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], JSON.parse(args[1][0])));
-        this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], args[1][0]));
+        this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], JSON.parse(args[1][0])));
         // args[0] contains the socket id, args[1] is a json with the session id, username and properties of the object.
         this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
@@ -38,6 +38,7 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.resizeCanvas(JSON.parse(args[1][0])));
 
         this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.resetCanvas(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
+        
     }
 
     public joinSession(socketId: string, doc : any) {
@@ -59,13 +60,24 @@ export class DrawingSessionManager {
         } 
     }
 
-    public leaveSession(socketId: string, sessionId: string) {
+    public leaveSession(socketId: string, doc: any) {
         this.selectedObjects.forEach((value: String, key: String, map) =>
         {
             // TODO: Delete every user's selected objects when he leaves a session.
             console.log(value, key);
         });
-        this.socketService.leaveRoom(sessionId, socketId);
+        this.socketService.leaveRoom(doc.sessionId, socketId);
+        var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
+        for (let i = 0; i< users.length; i++)
+        {
+            if (users[i] == doc.username){
+                delete users[i];
+            }
+        }
+        this.connectedUsers.set(doc.drawingSessionId,users);
+
+        
+        this.socketService.emit(doc.sessionId, SocketEvents.LeftDrawingSession);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts

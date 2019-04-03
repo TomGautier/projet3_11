@@ -86,13 +86,18 @@ namespace PolyPaint.VueModeles
             get { return editeur.SocketManager; }
             set { editeur.SocketManager = value; }
         }
+        public PlayerManager PlayerManager
+        {
+            get { return editeur.PlayerManager; }
+            set { editeur.PlayerManager = value; }
+        }
         public FormConnectorManager FormConnectorManager
         {
             get { return editeur.FormConnectorManager; }
             set { editeur.FormConnectorManager = value; }
         }
 
-        private string username;
+        private string username = RandomString(5);
         public string Username
         {
             get { return username; }
@@ -216,14 +221,18 @@ namespace PolyPaint.VueModeles
         public VueModele()
         {
             this.Canvas = new CustomInkCanvas();
+
             FormConnectorManager = new FormConnectorManager();
             SocketManager = new SocketManager();
+            PlayerManager = new PlayerManager();
             
             //SocketManager.JoinDrawingSession("MockSessionID");
             ChatManager.socket = SocketManager.Socket;
             //SocketManager.UserName = "Olivier";
-            SocketManager.JoinDrawingSession("MockSessionId");
+            SocketManager.UserName = this.Username;
+            
             editeur.initializeSocketEvents();
+            SocketManager.JoinDrawingSession("MockSessionID");
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -529,6 +538,13 @@ namespace PolyPaint.VueModeles
             AttributsDessin.StylusTip = (editeur.PointeSelectionnee == "ronde") ? StylusTip.Ellipse : StylusTip.Rectangle;
             AttributsDessin.Width = (editeur.PointeSelectionnee == "verticale") ? 1 : editeur.TailleTrait;
             AttributsDessin.Height = (editeur.PointeSelectionnee == "horizontale") ? 1 : editeur.TailleTrait;
+        }
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
 }
