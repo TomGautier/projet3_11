@@ -42,7 +42,8 @@ export class DrawingSessionManager {
 
     public joinSession(socketId: string, doc : any) {
         this.socketService.joinRoom(doc.imageId, socketId);
-        this.newUserJoined(doc);     
+        this.newUserJoined(doc);    
+        this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession); 
     }
     public newUserJoined(doc : any) {
         if (this.connectedUsers.get(doc.imageId) == undefined){
@@ -64,6 +65,7 @@ export class DrawingSessionManager {
             console.log(value, key);
         });
         this.socketService.leaveRoom(sessionId, socketId);
+        this.socketService.emit(socketId, SocketEvents.LeftDrawingSession);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
