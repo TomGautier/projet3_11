@@ -123,12 +123,14 @@ public abstract class GenericShape {
         ConnectionFormVertex vertex = connection.getDockingVertex();
         if (vertex == null)
             return;
-        for (AnchorPoint anchorPoint : anchorPoints){
-            if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
-                anchorPoint.setConnection(vertex);
-            }
-            else if (anchorPoint.isConnected() && !anchorPoint.stillConnected()){
-                anchorPoint.setConnection(null);
+        if (anchorPoints != null && anchorPoints.size() > 0){
+            for (AnchorPoint anchorPoint : anchorPoints){
+                if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
+                    anchorPoint.setConnection(vertex);
+                }
+                else if (anchorPoint.isConnected() && !anchorPoint.stillConnected()){
+                    anchorPoint.setConnection(null);
+                }
             }
         }
     }

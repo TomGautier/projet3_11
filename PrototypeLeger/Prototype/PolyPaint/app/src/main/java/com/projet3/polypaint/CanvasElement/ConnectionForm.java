@@ -103,17 +103,18 @@ public class ConnectionForm extends GenericShape {
 
     private void initializeVertices(int[][] values){
         ArrayList<Point> points = new ArrayList();
+        ArrayList<ConnectionFormVertex> vertex;
         for (int i = 0; i < values.length; i ++){
             points.add(new Point(values[i][0],values[i][1]));
         }
+        last = new ConnectionFormVertex(points.get(points.size()-1),null);
         ConnectionFormVertex vertex1;
-        ConnectionFormVertex vertex2 = new ConnectionFormVertex(points.get(points.size()-1),null);
-        last = vertex2;
-        for (int j = points.size() - 2; j > 0; j--) {
+        ConnectionFormVertex vertex2 = last;
+        for (int j = points.size() - 2; j > 1; j--) {
             vertex1 = new ConnectionFormVertex(points.get(j),vertex2);
             vertex2 = new ConnectionFormVertex(points.get(j-1),vertex1);
         }
-        first = vertex2;
+        first = new ConnectionFormVertex(points.get(0),vertex2);
     }
     public ConnectionForm clone() {
         return new ConnectionForm(id + "clone", this.type, getFillingColor(), getVerticesPos(CLONE_OFFSET));
@@ -218,9 +219,8 @@ public class ConnectionForm extends GenericShape {
     @Override
     public void drawOnCanvas(Canvas canvas) {
         path.reset();
-        ConnectionFormVertex firstVertex = first;
-        path.moveTo(firstVertex.x(), firstVertex.y());
-        ConnectionFormVertex currentVertex = firstVertex;
+        path.moveTo(first.x(), first.y());
+        ConnectionFormVertex currentVertex = first;
         float angle = 0;
         while (currentVertex.getNext() != null){
             if (!(currentVertex == first && type == ImageEditingFragment.ConnectionFormType.Bidirectional.toString()))
