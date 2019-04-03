@@ -45,7 +45,6 @@ import java.util.Stack;
 
 public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber, RotationGestureDetector.OnRotationGestureListener {
 
-
     protected Button buttonClass;
     protected Button buttonRole;
     protected Button buttonActivity;
@@ -123,7 +122,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
-        stack = new Stack();
+        stack = new Stack<>();
         idCpt = 0;
         id = FetchManager.currentInstance.getUserUsername() + idCpt;
 
@@ -323,26 +322,15 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
         Paint borderPaint = new Paint();
         borderPaint.setColor(borderColor);
-        borderPaint.setStyle(Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(DEFAULT_STROKE_WIDTH);
-        borderPaint.setStrokeCap(Paint.Cap.ROUND);
-        borderPaint.setAntiAlias(true);
 
         // Background paint
         int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
-        backgroundPaint.setStyle(Paint.Style.FILL);
 
         // Text paint
         Paint textPaint = new Paint();
         textPaint.setColor(borderColor);
-        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        textPaint.setTextSize(TextBox.FONT_SIZE);
-        textPaint.setTypeface(Typeface.MONOSPACE);
-        textPaint.setAntiAlias(true);
-        textPaint.setTextAlign(Paint.Align.CENTER);
-        textPaint.setFakeBoldText(true);
 
         defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint);
 

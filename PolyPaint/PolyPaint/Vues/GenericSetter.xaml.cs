@@ -20,10 +20,11 @@ namespace PolyPaint.Vues
     public partial class GenericSetter : Window
     {
         public string Label { get; set; }
-        public GenericSetter(string label)
+        public GenericSetter(string label,string border)
         {
             this.Label = label;
             InitializeComponent();
+            borderList.Text = border;
             txtLabel.Text = this.Label;
         }
         private void genericSetter_LabelChanged(object sender, TextChangedEventArgs args)

@@ -8,6 +8,7 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class TextBox extends GenericShape {
     public static final int FONT_SIZE = 25;
+    public static final String TYPE = "text_box";
     private String text = "";
 
     public TextBox(String id, int x, int y, PaintStyle style, float angle) {
@@ -55,4 +56,6 @@ public class TextBox extends GenericShape {
     public void showEditingDialog(FragmentManager fragmentManager) {
         ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, text);
     }
+
+    public String getType() { return TYPE; }
 }

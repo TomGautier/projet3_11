@@ -14,14 +14,15 @@ public class CollabShapeProperties {
     public static String WIDTH_TAG = "width";
     public static String ROTATION_TAG = "rotation";
 
-    private String type;
-    private String fillingColor;
+    protected String type;
+    protected String fillingColor;
     private String borderColor;
     private int[] middlePointCoord;
     private int height;
     private int width;
     private int rotation;
     public CollabShapeProperties() {}
+    public CollabShapeProperties(String type_, String fillingColor_) {type = type_;fillingColor = fillingColor_; }
     public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, int[] middlePointCoord_,
                                  int height_, int width_, int rotation_){
         type = type_;

@@ -23,9 +23,21 @@ namespace PolyPaint.Utilitaires
         public int CurrentRotation { get; set; }
         public Point Center { get; set; }
         public Arrow Arrow { get; set; }
+        public System.Drawing.Color SelectionColor { get; set; }
         public Point[] EncPoints { get; set; }
         protected Vector WidthDirection { get; set; }
         protected Vector HeightDirection { get; set; }
+
+        private string borderStyle;
+        public string BorderStyle
+        {
+            get { return borderStyle; }
+            set
+            {
+                borderStyle = value;
+                this.update();
+            }
+        }
 
         private bool showEncrage;
         public bool ShowEncrage
@@ -56,6 +68,13 @@ namespace PolyPaint.Utilitaires
             {
                 label = value;
                 this.update();
+                if (this.Type != "Arrow") {
+
+                    this.MakeShape();                       
+                    int rotation = this.CurrentRotation;
+                    this.CurrentRotation = 0;
+                    this.SetRotation(rotation);
+                }
             }
         }
 
@@ -77,16 +96,18 @@ namespace PolyPaint.Utilitaires
             // this.CurrentRotation += angleInc;
 
         }
-        protected virtual void MakeShape() { }
+        public virtual void MakeShape() { }
         public void SetRotation(int degrees)
         {
-            Matrix rotatingMatrix = new Matrix();
-            rotatingMatrix.RotateAt(360 - this.CurrentRotation, Center.X, Center.Y); //reset angle
-            rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
-            this.CurrentRotation = degrees;
-            Stroke copy = this.Clone();
-            copy.Transform(rotatingMatrix, false);
-            this.StylusPoints = copy.StylusPoints;
+            
+                Matrix rotatingMatrix = new Matrix();
+                rotatingMatrix.RotateAt(360 - this.CurrentRotation, Center.X, Center.Y); //reset angle
+                rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
+                this.CurrentRotation = degrees;
+                Stroke copy = this.Clone();
+                copy.Transform(rotatingMatrix, false);
+                this.StylusPoints = copy.StylusPoints;
+            
 
 
         }
@@ -100,6 +121,7 @@ namespace PolyPaint.Utilitaires
 
             this.MakeShape();
             this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
             this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
             //this.CurrentRotation = shape.properties.rotation;
             //this.SetRotation(this.CurrentRotation);
@@ -113,6 +135,50 @@ namespace PolyPaint.Utilitaires
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
                 (int)this.Height, (int)this.Width, this.CurrentRotation);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
+        }
+        protected Pen GetPen()
+        {
+            var pen = new Pen(new SolidColorBrush(this.DrawingAttributes.Color), 2.5);
+            pen.Thickness = this.DrawingAttributes.Width;
+            //pen.Thickness = 3;
+           switch (this.BorderStyle)
+            {
+                case "Dash":
+                    pen.DashStyle = DashStyles.Dash;
+                    break;
+
+                case "Dot":
+                    pen.DashStyle = DashStyles.Dot;
+                    break;
+
+                case "DashDot":
+                    pen.DashStyle = DashStyles.DashDot;
+                    break;
+
+                case "DashDotDot":
+                    pen.DashStyle = DashStyles.DashDotDot;
+                    break;
+
+                default:
+                    pen.DashStyle = DashStyles.Solid;
+                    break;
+            }
+            return pen;
+        }
+        protected void OnDrawCore(DrawingContext drawingContext,DrawingAttributes drawingAttributes)
+        {
+            if (this.BorderStyle == "Solid")
+            {
+                base.DrawCore(drawingContext, drawingAttributes);
+            }
+            else
+            {
+                Pen pen = this.GetPen();
+                for (int i = 0; i < this.StylusPoints.Count - 1; i++)
+                {
+                    drawingContext.DrawLine(pen, this.StylusPoints[i].ToPoint(), this.StylusPoints[i + 1].ToPoint());
+                }
+            }
         }
         protected void DrawEncrage(DrawingContext drawingContext)
         {
@@ -162,17 +228,26 @@ namespace PolyPaint.Utilitaires
         {
             if (this.IsSelectedByOther)
             {
-                LineSegment[] segments = new LineSegment[4];
-                
-                segments[0] = new LineSegment(new Point(this.Center.X+5, this.Center.Y-5), true);
-                segments[1] = new LineSegment(new Point(this.Center.X+5, this.Center.Y+5), true);
-                segments[2] = new LineSegment(new Point(this.Center.X-5, this.Center.Y +5), true);
-                segments[3] = new LineSegment(new Point(this.Center.X -5, this.Center.Y-5), true);
-                var figure = new PathFigure(new Point(this.Center.X -5, this.Center.Y -5), segments, true);
-                var geo = new PathGeometry(new[] { figure });
+                //    LineSegment[] segments = new LineSegment[4];
+                Rect bounds = this.GetBounds();
 
-                SolidColorBrush brush = new SolidColorBrush(Colors.Green);
-                drawingContext.DrawGeometry(brush, null, geo);
+                //   segments[0] = new LineSegment(new Point(this.Center.X+5, this.Center.Y-5), true);
+                //   segments[1] = new LineSegment(new Point(this.Center.X+5, this.Center.Y+5), true);
+                //   segments[2] = new LineSegment(new Point(this.Center.X-5, this.Center.Y +5), true);
+                //   segments[3] = new LineSegment(new Point(this.Center.X -5, this.Center.Y-5), true);
+                //   var figure = new PathFigure(new Point(this.Center.X -5, this.Center.Y -5), segments, true);
+                //   var geo = new PathGeometry(new[] { figure });
+                bounds.Inflate(new Size(10,10));
+                SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(this.SelectionColor.R,this.SelectionColor.G,this.SelectionColor.B));
+                Pen pen = new Pen(brush, 2);
+                pen.DashStyle = DashStyles.Dash;
+    
+                drawingContext.DrawLine(pen,bounds.TopLeft,bounds.TopRight);
+                drawingContext.DrawLine(pen,bounds.TopRight,bounds.BottomRight);
+                drawingContext.DrawLine(pen, bounds.BottomRight, bounds.BottomLeft);
+                drawingContext.DrawLine(pen, bounds.BottomLeft, bounds.TopLeft);
+                //drawingContext.DrawGeometry(brush, null, geo);
+
             }
         }
         public void update()
@@ -194,6 +269,7 @@ namespace PolyPaint.Utilitaires
             this.EncPoints = new Point[4];
             this.Label = "";
             this.showEncrage = false;
+            this.BorderStyle = "Solid";
         }   
         
     }

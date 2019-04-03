@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -87,6 +88,7 @@
     </Reference>
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
@@ -130,15 +132,20 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Convertisseurs\Convertisseurs.cs" />
+    <Compile Include="Managers\Player.cs" />
+    <Compile Include="Managers\PlayerManager.cs" />
+    <Compile Include="Managers\ChatManager.cs" />
     <Compile Include="Managers\FormConnectorManager.cs" />
-    <Compile Include="Utilitaires\ChatManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />
     <Compile Include="Modeles\Editeur.cs" />
     <Compile Include="Utilitaires\NetworkManager.cs" />
     <Compile Include="Utilitaires\Activity.cs" />
     <Compile Include="Utilitaires\Arrow.cs" />
     <Compile Include="Utilitaires\Artefact.cs" />
+    <Compile Include="Utilitaires\Comment.cs" />
+    <Compile Include="Utilitaires\FloatingText.cs" />
     <Compile Include="Utilitaires\Form.cs" />
+    <Compile Include="Utilitaires\Phase.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
     <Compile Include="Utilitaires\Role.cs" />
     <Compile Include="Utilitaires\Shape.cs" />
@@ -164,11 +171,11 @@
     <Compile Include="Vues\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Vues\SignupControl.xaml.cs">
-      <DependentUpon>SignupControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vues\SignupControl.xaml.cs">
+      <DependentUpon>SignupControl.xaml</DependentUpon>
     </Compile>
     <Page Include="Vues\ChatControl.xaml">
       <SubType>Designer</SubType>
@@ -204,6 +211,7 @@
       <DependentUpon>FenetreDessin.xaml</DependentUpon>
     </Compile>
     <Page Include="Vues\GenericSetter.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\HomeControl.xaml">
@@ -218,11 +226,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Vues\SignupControl.xaml">
+    <Page Include="Vues\UmlClassSetter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Vues\UmlClassSetter.xaml">
+    <Page Include="Vues\SignupControl.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

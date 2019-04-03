@@ -8,7 +8,7 @@ import android.graphics.Rect;
 public class UMLClass extends GenericShape {
     protected final static int DEFAULT_WIDTH = 180;
     protected final static int DEFAULT_HEIGHT = 150;
-
+    public static final String TYPE = "UmlClass";
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height, style,angle);
         //width = DEFAULT_WIDTH;
@@ -43,4 +43,6 @@ public class UMLClass extends GenericShape {
         /* Do nothing for now*/
         // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
     }
+
+    public String getType() { return TYPE; }
 }

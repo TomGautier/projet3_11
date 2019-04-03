@@ -106,7 +106,16 @@ public abstract class GenericShape {
         canvas.drawPath(p, paint);
     }
 
-    private Rect getBoundingBox() {
+
+
+    public void setSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    public abstract void showEditingDialog(FragmentManager fragmentManager);
+
+    public Rect getBoundingBox() {
         int w2 = width/2;
         int h2 = height/2;
         return new Rect(posX - w2, posY - h2, posX + w2, posY + h2);
@@ -175,6 +184,10 @@ public abstract class GenericShape {
                 anchorPoint.setPath();
         }
     }
+    public String getBackgroundColorString() {
+        return Integer.toHexString(style.getBackgroundPaint().getColor()).substring(2);
+    }
+    public abstract String getType();
     public int getHeight(){
         return height;
     }
@@ -224,7 +237,4 @@ public abstract class GenericShape {
         return anchorPoints;
     }
 
-
-
-    public abstract void showEditingDialog(FragmentManager fragmentManager);
 }

@@ -223,8 +223,9 @@ public class ConnectionForm extends GenericShape {
         ConnectionFormVertex currentVertex = first;
         float angle = 0;
         while (currentVertex.getNext() != null){
-            if (!(currentVertex == first && type == ImageEditingFragment.ConnectionFormType.Bidirectional.toString()))
-                path.addCircle(currentVertex.x(),currentVertex.y(),5, Path.Direction.CW);
+            if (!(currentVertex == first && type.equals(ImageEditingFragment.ConnectionFormType.Bidirectional.toString()))){
+                path.addCircle(currentVertex.x(), currentVertex.y(), 5, Path.Direction.CW);
+            }
             path.lineTo(currentVertex.getNext().x(),currentVertex.getNext().y());
             angle = getAngle(currentVertex.getNext().getPoint(), currentVertex.getPoint());
             currentVertex = currentVertex.getNext();

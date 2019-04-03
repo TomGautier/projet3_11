@@ -23,6 +23,8 @@ import { DateServiceInterface,
          ConnectionControllerInterface,
          ConnectionServiceInterface,
          DrawingSessionServiceInterface,
+         ImageControllerInterface,
+         ImageServiceInterface,
          UserServiceInterface,
 UserControllerInterface} from "./interfaces";
 import { SocketService } from "./services/socket.service";
@@ -35,9 +37,12 @@ import { ConversationController } from "./controllers/conversation.controller";
 import { ConversationService } from "./services/conversation.service";
 import { ConnectionController } from "./controllers/connection.controller";
 import { DrawingSessionService } from "./services/drawingSession.service";
+import { ImageController } from "./controllers/image.controller";
+import { ImageService } from "./services/image.service";
 import { DrawingSessionManager} from "./services/drawingSession.manager";
 import { UserController } from "./controllers/user.controller";
 import { UserManager } from "./services/user.manager";
+
 
 const container: Container = new Container();
 
@@ -47,6 +52,8 @@ container.bind<ConversationControllerInterface>(TYPES.ConversationControllerInte
 container.bind<ConversationServiceInterface>(TYPES.ConversationServiceInterface).to(ConversationService);
 container.bind<ConnectionControllerInterface>(TYPES.ConnectionControllerInterface).to(ConnectionController);
 container.bind<ConnectionServiceInterface>(TYPES.ConnectionServiceInterface).to(ConnectionService);
+container.bind<ImageControllerInterface>(TYPES.ImageControllerInterface).to(ImageController);
+container.bind<ImageServiceInterface>(TYPES.ImageServiceInterface).to(ImageService);
 container.bind<UserControllerInterface>(TYPES.UserControllerInterface).to(UserController);
 container.bind<UserServiceInterface>(TYPES.UserServiceInterface).to(UserService);
 container.bind<DrawingSessionServiceInterface>(TYPES.DrawingSessionServiceInterface).to(DrawingSessionService);

@@ -43,7 +43,7 @@ namespace PolyPaint.Utilitaires
         
 
         }
-        protected override void MakeShape()
+        public override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));
@@ -107,9 +107,11 @@ namespace PolyPaint.Utilitaires
          
         {       
             Fill(drawingContext);
-            base.DrawCore(drawingContext, drawingAttributes);
+            
                       
             SetSelection(drawingContext);
+
+            OnDrawCore(drawingContext, drawingAttributes);
             updatePoints();
             /*RotateTransform RT = new RotateTransform();
             RT.Angle = this.CurrentRotation;

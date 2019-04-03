@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.shapes.Shape;
 import android.os.Bundle;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.Network.FetchManager;
+import com.projet3.polypaint.R;
 
 import java.util.ArrayList;
 
@@ -64,35 +66,35 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 int posY = (int)event.getY(0);
 
                 // Check if an showEditingDialog button was clicked
-               // if (event.getAction() != MotionEvent.ACTION_MOVE &&
-                        //!selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
+                // if (event.getAction() != MotionEvent.ACTION_MOVE &&
+                //!selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
                 // Check if canvas is being resized
-               // else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
-                    //return resizeCanvas(event);
+                // else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
+                //return resizeCanvas(event);
                 /*else*/ switch (currentMode) {
-                        case selection:
-                            checkSelection(posX, posY);
-                            break;
-                            case rotate:
-                                rotationDetector.onTouchEvent(event,posX,posY);
-                                break;
+                    case selection:
+                        checkSelection(posX, posY);
+                        break;
+                    case rotate:
+                        rotationDetector.onTouchEvent(event,posX,posY);
+                        break;
 
-                        case lasso:
-                            doLassoSelection(event);
-                            continueListening = true;
-                            break;
-                        case creation:
-                            //ArrayList stackElems = new ArrayList();
-                            //stackElems.add(addShape(posX, posY));
-                            //addToStack(stackElems, ADD_ACTION);
-                            addShape(posX,posY);
-                           // SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
-                            break;
-                        case move:
-                            moveSelectedShape(event);
-                            continueListening = true;
-                            break;
-                    }
+                    case lasso:
+                        doLassoSelection(event);
+                        continueListening = true;
+                        break;
+                    case creation:
+                        //ArrayList stackElems = new ArrayList();
+                        //stackElems.add(addShape(posX, posY));
+                        //addToStack(stackElems, ADD_ACTION);
+                        addShape(posX,posY);
+                        // SocketManager.currentInstance.addElement(createCollabShape(posX,posY));
+                        break;
+                    case move:
+                        moveSelectedShape(event);
+                        continueListening = true;
+                        break;
+                }
 
                 drawAllShapes();
                 view.invalidate();
@@ -252,7 +254,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         CollabShapeProperties properties;
         if (type.equals(ShapeType.ConnectionForm.toString())){
             ConnectionForm connection  = (ConnectionForm)shape;
-            properties = new CollabConnectionProperties(connection.getVerticesPos(0),connection.getType(),connection.getFillingColor());
+            properties = new CollabConnectionProperties(connection.getVerticesPos(0),connection.getType(),connection.getType(),
+                    connection.getFillingColor());
         }
         else {
             String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
@@ -266,15 +269,19 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private CollabShape createCollabShape(int posX, int posY){
         CollabShapeProperties properties;
         id = client.getName() + "_" + Integer.toString(idCpt++);
-        String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
-
-        if(currentShapeType.toString().equals(ShapeType.ConnectionForm.toString()))
+        String hexColor;
+        if(currentShapeType.toString().equals(ShapeType.ConnectionForm.toString())){
+            int color = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormColor,null);
+            hexColor = String.format("#%06X", (0xFFFFFF & color));
             properties = new CollabConnectionProperties(ConnectionForm.generateDefaultPoints(posX,posY)
-                    ,currentConnectionFormType.toString(),hexColor);
-        else
+                    ,currentShapeType.toString(), currentConnectionFormType.toString(),hexColor);
+        }
+        else{
+            hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
             properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
-                "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType),
+                    "#000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType),
                     GenericShape.getDefaultWidth(currentShapeType),0);
+        }
 
         return new CollabShape(id,drawingSessionId, client.getName(),properties);
     }
@@ -337,14 +344,14 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         //ArrayList<CollabShape> collabShapes = new ArrayList<>();
 
 
-       // if (selections.isEmpty()) {
-           // cutShapes = stackElems;
+        // if (selections.isEmpty()) {
+        // cutShapes = stackElems;
         //}
         //selections.clear();
-       // selections.addAll(stackElems);
+        // selections.addAll(stackElems);
 
         //addToStack(stackElems, ADD_ACTION);
-       // updateCanvas();
+        // updateCanvas();
         //drawAllShapes();
         //iView.invalidate();
     }
@@ -371,7 +378,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (isMovingSelection) {
-                   // ArrayList<CollabShape> shapes = new ArrayList<>();
+                    // ArrayList<CollabShape> shapes = new ArrayList<>();
                     for (GenericShape shape : client.getSelectedShapes()){
                         shape.relativeMove(posX - lastTouchPosX, posY - lastTouchPosY);
                         //CollabShape collShape = createCollabShape(shape);
@@ -750,7 +757,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 break;
             case "ConnectionForm":
                 CollabConnectionProperties properties = ((CollabConnectionProperties)collabShape.getProperties());
-                genShape = new ConnectionForm(collabShape.getId(),properties.getType(),properties.getFillingColor(),properties.getVertices());
+                genShape = new ConnectionForm(collabShape.getId(),properties.getConnectionType(),properties.getFillingColor(),properties.getVertices());
                 break;
             case "text_box":
                 genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],

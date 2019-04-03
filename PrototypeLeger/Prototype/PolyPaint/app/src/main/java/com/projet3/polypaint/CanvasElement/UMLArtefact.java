@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 public class UMLArtefact extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 80;
-
+    public static final String TYPE = "UmlArtefact";
     public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id,x, y, width, height, style, angle);
         //width = DEFAULT_WIDTH;
@@ -64,4 +64,6 @@ public class UMLArtefact extends GenericShape {
         /* Do nothing for now*/
         // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
     }
+
+    public String getType() { return TYPE; }
 }

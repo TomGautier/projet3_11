@@ -21,6 +21,7 @@ namespace PolyPaint.Managers
 
         private string Label { get; set; }
         private string Type { get; set; }
+        private string BorderStyle { get; set; }
         private int Size { get; set; }
         private string Color { get; set; }
         public bool IsDrawingArrow { get; set; }
@@ -38,10 +39,11 @@ namespace PolyPaint.Managers
             this.Arrows = new List<Arrow>();
             IsDrawingArrow = false;
         }
-        public void SetParameters(string label, string type, int size, string color)
+        public void SetParameters(string label, string type,string border, int size, string color)
         {
             this.Label = label;
             this.Type = type;
+            this.BorderStyle = border;
             this.Size = size;
             this.Color = color;
         }
@@ -59,10 +61,11 @@ namespace PolyPaint.Managers
                 this.Index1 = index;
                 this.Arrows.Add(new Arrow(new StylusPointCollection { p }));
                 this.Arrows[this.Arrows.Count - 1].Label = this.Label;
+                this.Arrows[this.Arrows.Count - 1].BorderStyle = this.BorderStyle;
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Color = (Color)ColorConverter.ConvertFromString(this.Color);
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Width = this.Size;
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Height = this.Size;
-                this.Arrows[this.Arrows.Count - 1].Type = this.Type;
+                this.Arrows[this.Arrows.Count - 1].Category = this.Type;
                 this.IsDrawingArrow = true;
                 return true;
             }
