@@ -472,7 +472,7 @@ public class SocketManager  {
                 if (shapeJson != null && shapePropertiesJson != null)
                     array.put(shapeJson);
             }
-            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
+            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG,drawingSessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
                     .put("shapes", array);
         }catch (JSONException e) {
             e.printStackTrace();

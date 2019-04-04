@@ -97,7 +97,6 @@ export class DrawingSessionManager {
         for (const shape of doc.shapes){
             this.drawingSessionService.modifyElement(shape);
         }
-        
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement, doc);
     }
     public selectElements(doc : any) {

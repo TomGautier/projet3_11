@@ -38,6 +38,8 @@ public class UMLArtefact extends GenericShape {
         p.lineTo(posX - w2, posY + h2);
         p.lineTo(posX - w2, posY - h2);
 
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
         traceStyledLine(posX - w2, posY - h2, posX + w4, posY - h2, canvas);
@@ -47,7 +49,7 @@ public class UMLArtefact extends GenericShape {
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
         traceStyledLine(posX + w2, posY - h4, posX + w4, posY - h4, canvas);
         traceStyledLine(posX + w4, posY - h4, posX + w4, posY - h2, canvas);
-
+        canvas.restore();
     }
 
     @Override
