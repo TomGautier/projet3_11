@@ -6,11 +6,14 @@
         xmlns:Vues="clr-namespace:PolyPaint.Vues"
         xmlns:VueModels="clr-namespace:PolyPaint.VueModeles"
         mc:Ignorable="d"
-        Title="Poly Paint - Chat" Background="#CBD4E4" Height="450" Width="314" ResizeMode="NoResize">
+        ScrollViewer.VerticalScrollBarVisibility="Auto"
+        Title="Poly Paint - Chat" Background="#CBD4E4" Height="450" Width="322" ResizeMode="NoResize">
     <Window.DataContext>
         <VueModels:VueModele/>
     </Window.DataContext>
-    <DockPanel>
-        <Vues:ChatControl VerticalAlignment="Stretch" Width="300" DockPanel.Dock="Left" Margin="0,0,0,0" />
-    </DockPanel>
+    <ScrollViewer>
+        <DockPanel>
+           <Vues:ChatControl VerticalAlignment="Stretch" Width="300" DockPanel.Dock="Left" Margin="0,0,0,0" />
+        </DockPanel>
+    </ScrollViewer>
 </Window>
