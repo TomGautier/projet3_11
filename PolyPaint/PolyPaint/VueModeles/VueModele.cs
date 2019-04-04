@@ -135,6 +135,17 @@ namespace PolyPaint.VueModeles
             get { return editeur.ConnectorLabel; }
             set { editeur.ConnectorLabel = value; }
         }
+        public string ConnectorQ1
+        {
+            get { return editeur.ConnectorQ1; }
+            set { editeur.ConnectorQ1 = value; }
+        }
+        public string ConnectorQ2
+        {
+            get { return editeur.ConnectorQ2; }
+            set { editeur.ConnectorQ2 = value; }
+        }
+
         public string ConnectorType
         {
             get { return editeur.ConnectorType; }
@@ -385,14 +396,15 @@ namespace PolyPaint.VueModeles
             }
             //TODO : Send socket -> selection was changed
         }
-        public void SetConnectorSettings(string label, string type, string border, int size,string color)
+        public void SetConnectorSettings(string label, string type, string border, int size,string color, string q1, string q2)
         {
             this.ConnectorLabel = label;
             this.ConnectorType = type;
             this.ConnectorBorderStyle = border;
             this.ConnectorSize = size;
             this.ConnectorColor = color;
-            //TODO BORDER
+            this.ConnectorQ1 = q1;
+            this.ConnectorQ2 = q2; 
         }
         public void HandleLabelChange(string label, string border)
         {
@@ -401,6 +413,7 @@ namespace PolyPaint.VueModeles
         public void HandleUmlTextChange(string name, string border, List<string> methods, List<string> attributes)
         {
             editeur.HandleUmlTextChange(name,border,methods,attributes);
+            editeur.HandleSelectionModification();
         }
         public void HandleSelectionSuppression()
         {
@@ -464,6 +477,13 @@ namespace PolyPaint.VueModeles
                 editeur.HandleMouseDown(mousePos);
             }*/
         }
+        public void HandleMouseMove(Point mousePos)
+        {
+            if (this.StrokeBeingDragged != null)
+            {
+                this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+            }
+        }
         public void HandlePreviewMouseDown(Point mousePos)
         {
             
@@ -496,7 +516,7 @@ namespace PolyPaint.VueModeles
                 StrokeCollection selection = new StrokeCollection();
                 for (int i = Traits.Count -1; i >= 0; i--)
                 {
-                    if (Traits[i].GetBounds().Contains(mousePos) && selection.Count == 0)
+                    if (Traits[i].GetBounds().Contains(mousePos) && selection.Count == 0 && (Traits[i] as Form).Type != "Arrow")
                     {
                         selection.Add(Traits[i]);
                     }

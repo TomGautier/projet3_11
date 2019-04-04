@@ -116,11 +116,50 @@ namespace PolyPaint.Utilitaires
             /*RotateTransform RT = new RotateTransform();
             RT.Angle = this.CurrentRotation;
             drawingContext.PushTransform(RT);*/
-            DrawName(drawingContext);
+            if (this.Label != null)
+            {
+                DrawName(drawingContext);
+            }
             DrawMethods(drawingContext);
             DrawAttributes(drawingContext);
             DrawEncrage(drawingContext);
             //drawingContext.Pop();
+
+        }
+        public override Shape ConvertToShape(string drawingSessionID)
+        {
+            int[] middlePoint = new int[2] { (int)this.Center.X, (int)this.Center.Y };
+            ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
+                (int)this.Height, (int)this.Width, this.CurrentRotation, this.BorderStyle, this.Label, this.Methods.ToArray(), this.Attributes.ToArray(), null, null, -1, -1, null, null, null, null);
+            return new Shape(this.Id, drawingSessionID, this.Author, properties);
+        }
+        public override void SetToShape(Shape shape)
+        {
+            if (shape.properties.attributes != null)
+            {
+                this.Attributes = shape.properties.attributes.ToList();
+            }
+            if (shape.properties.methods != null)
+            {
+                this.Methods = shape.properties.methods.ToList();
+            }
+            base.SetToShape(shape);
+        
+            
+           /* this.Id = shape.id;
+            this.Author = shape.author;
+            this.Width = shape.properties.width;
+            this.Height = shape.properties.height;
+            this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
+
+            this.MakeShape();
+            this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
+            //this.CurrentRotation = shape.properties.rotation;
+            //this.SetRotation(this.CurrentRotation);
+            this.CurrentRotation = 0;
+            this.SetRotation(shape.properties.rotation);*/
 
         }
         private void DrawName(DrawingContext drawingContext)
@@ -134,10 +173,6 @@ namespace PolyPaint.Utilitaires
             Point origin = new Point(this.StylusPoints[0].ToPoint().X + 2 * widthDirection.X, this.StylusPoints[0].ToPoint().Y + 4 * widthDirection.Y);
             RotateTransform RT = new RotateTransform(this.CurrentRotation,origin.X  ,origin.Y );
             drawingContext.PushTransform(RT);
-
-            
-            
-
             drawingContext.DrawText(text, origin);//new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 10, brush), origin);
 
             drawingContext.Pop();

@@ -34,6 +34,8 @@ namespace PolyPaint.Modeles
         public StrokeCollection LastCut = new StrokeCollection();
 
         public string ConnectorLabel { get; set; }
+        public string ConnectorQ1 { get; set; }
+        public string ConnectorQ2 { get; set; }
         public string ConnectorType { get; set; }
         public int ConnectorSize { get; set; }
         public string ConnectorColor { get; set; }
@@ -378,7 +380,7 @@ namespace PolyPaint.Modeles
                 {
                     if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
                     {
-                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType,this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor);
+                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType,this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor,this.ConnectorQ1,this.ConnectorQ2);
                         newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);
                         
                         isOnEncrage = true;
@@ -388,12 +390,13 @@ namespace PolyPaint.Modeles
             }
             if (!isOnEncrage)
             {
-                if (!this.FormConnectorManager.IsDrawingArrow) { this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor); }
+                if (!this.FormConnectorManager.IsDrawingArrow) { this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor,this.ConnectorQ1,this.ConnectorQ2); }
                 newArrowCreated = this.FormConnectorManager.update(new StylusPoint(p.X, p.Y), false, null, 0);
             }
             if (newArrowCreated)
             {
                 this.traits.Add(this.FormConnectorManager.Arrows.Last());
+                this.SocketManager.AddElement(this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID));
             }
         }
                /* if (Math.Abs(Point.Subtract(form.Center,p).Length) < 20)
@@ -532,6 +535,15 @@ namespace PolyPaint.Modeles
         public void AddForm(Shape shape, bool setSelection)
         {
             StylusPointCollection pts = new StylusPointCollection();
+          /*  FormProperties properties = new FormProperties();
+            if (shape.properties.type == "Arrow")
+            {
+                 properties = (shape.properties as ArrowProperties);
+            }
+            else
+            {
+                 properties = (shape.properties as ShapeProperties);
+            }*/
             pts.Add(new StylusPoint(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]));
             switch (shape.properties.type)
             {
@@ -573,6 +585,11 @@ namespace PolyPaint.Modeles
                     Comment comment = new Comment(pts);
                     comment.SetToShape(shape);
                     traits.Add(comment);
+                    break;
+                case "Arrow":
+                    Arrow arrow = new Arrow(pts);
+                    arrow.SetToShape(shape);
+                    traits.Add(arrow);
                     break;
 
             }

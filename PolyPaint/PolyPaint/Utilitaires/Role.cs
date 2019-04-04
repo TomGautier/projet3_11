@@ -126,7 +126,10 @@ namespace PolyPaint.Utilitaires
             OnDrawCore(drawingContext, drawingAttributes);
 
             updatePoints();
-            DrawName(drawingContext);
+            if (this.Label != null)
+            {
+                DrawName(drawingContext);
+            }
             DrawEncrage(drawingContext);
         }
         private void DrawName(DrawingContext drawingContext)

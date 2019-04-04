@@ -25,7 +25,19 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
                 middlePointCoord: properties.middlePointCoord,
                 height: properties.height,
                 width: properties.width,
-                rotation: properties.rotation
+                rotation: properties.rotation,
+                borderType:properties.borderType,
+                label:properties.label,
+                methods:properties.methods,
+                attributes:properties.attributes,
+                idShape1:properties.idShape1,
+                idShapee2:properties.idShape2,
+                index1:properties.index1,
+                index2:properties.index2,
+                q1:properties.q1,
+                q2:properties.q2,
+                points:properties.points,
+                category:properties.category
             }
         });
     

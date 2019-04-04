@@ -81,6 +81,7 @@ namespace PolyPaint.Vues
         {
             Point p = e.GetPosition(surfaceDessin);
             textBlockPosition.Text = Math.Round(p.X) + ", " + Math.Round(p.Y) + "px";
+            (DataContext as VueModele).HandleMouseMove(e.GetPosition(surfaceDessin));
         }
         private void surfaceDessin_SelectionChanging(object sender, InkCanvasSelectionChangingEventArgs e)
         {
@@ -209,10 +210,12 @@ namespace PolyPaint.Vues
             string border = (sender as ConnectorSetter).borderList.Text;
             int size = Convert.ToInt32((sender as ConnectorSetter).sizeList.SelectedItem.ToString().Trim(new char[] { 'p', 'x' }));
             string color = (sender as ConnectorSetter).selecteurCouleur.SelectedColor.ToString();
-            Console.WriteLine(type);
+            string q1 = (sender as ConnectorSetter).Quantification1List.Text;
+            string q2 = (sender as ConnectorSetter).Quantification2List.Text;
+            //Console.WriteLine(type);
             surfaceDessin.Visibility = Visibility.Visible;
 
-            (DataContext as VueModele).SetConnectorSettings(label, type, border, size, color);
+            (DataContext as VueModele).SetConnectorSettings(label, type, border, size, color,q1,q2);
         }
 
         private void surfaceDessin_SetSelectionText(object sender, RoutedEventArgs e)

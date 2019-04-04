@@ -24,6 +24,8 @@ namespace PolyPaint.Managers
         private string BorderStyle { get; set; }
         private int Size { get; set; }
         private string Color { get; set; }
+        private string Q1 { get; set; }
+        private string Q2 { get; set; }
         public bool IsDrawingArrow { get; set; }
 
         public FormConnectorManager(StylusPointCollection pts, Form shape1, Form shape2)
@@ -39,13 +41,15 @@ namespace PolyPaint.Managers
             this.Arrows = new List<Arrow>();
             IsDrawingArrow = false;
         }
-        public void SetParameters(string label, string type,string border, int size, string color)
+        public void SetParameters(string label, string type,string border, int size, string color,string q1, string q2)
         {
             this.Label = label;
             this.Type = type;
             this.BorderStyle = border;
             this.Size = size;
             this.Color = color;
+            this.Q1 = q1;
+            this.Q2 = q2;
         }
         public void reset()
         {
@@ -70,6 +74,8 @@ namespace PolyPaint.Managers
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Width = this.Size;
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Height = this.Size;
                 this.Arrows[this.Arrows.Count - 1].Category = this.Type;
+                this.Arrows[this.Arrows.Count - 1].Q1 = this.Q1;
+                this.Arrows[this.Arrows.Count - 1].Q2 = this.Q2;
                 this.IsDrawingArrow = true;
                 return true;
             }
@@ -87,6 +93,7 @@ namespace PolyPaint.Managers
                     this.Arrows[this.Arrows.Count - 1].Shape2 = this.Shape2;
                     this.Arrows[this.Arrows.Count - 1].Index1 = this.Index1;
                     this.Arrows[this.Arrows.Count - 1].Index2 = this.Index2;
+                    this.Arrows[this.Arrows.Count - 1].update();
                     this.IsDrawingArrow = false; //reset
                 }             
 

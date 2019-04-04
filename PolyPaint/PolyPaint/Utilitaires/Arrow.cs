@@ -11,8 +11,8 @@ using System.Windows.Media;
 
 namespace PolyPaint.Utilitaires
 {
-    
-    class Arrow: Form
+
+    class Arrow : Form
     {
         public const string TYPE = "Arrow";
         public string Category { get; set; }
@@ -20,19 +20,21 @@ namespace PolyPaint.Utilitaires
         public int Index1;
         public int Index2;
         public Form Shape2;
+        public string Q1 { get; set; }
+        public string Q2 { get; set; }
         public Arrow(StylusPointCollection pts)
-            :base(pts)
+            : base(pts)
         {
             this.DrawingAttributes.Color = Colors.Red;
             this.Type = TYPE;
- 
+
 
         }
         public void ShapeMoved(string shapeID)
         {
             if (Shape1 != null && shapeID == Shape1.Id)
             {
-                this.StylusPoints[0] = new StylusPoint(this.Shape1.EncPoints[Index1].X,this.Shape1.EncPoints[Index1].Y);
+                this.StylusPoints[0] = new StylusPoint(this.Shape1.EncPoints[Index1].X, this.Shape1.EncPoints[Index1].Y);
             }
             else
             {
@@ -41,12 +43,65 @@ namespace PolyPaint.Utilitaires
         }
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
         {
-            OnDrawCore(drawingContext, drawingAttributes);            
+            OnDrawCore(drawingContext, drawingAttributes);
             DrawLabel(drawingContext);
             if (this.StylusPoints.Count > 1)
             {
                 DrawCategory(drawingContext);
+
             }
+            if (this.Shape1 != null && this.Shape2 != null)
+            {
+
+                DrawQuantity(drawingContext);
+            }
+
+        }
+        private void DrawQuantity(DrawingContext dc)
+        {
+            Vector dir1 = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint());
+            dir1.Normalize();
+            Point origin1 = this.StylusPoints[0].ToPoint() + dir1*30;
+            origin1 += (new Vector(-dir1.Y, dir1.X) * 15);
+
+            Vector dir2 = Point.Subtract(this.StylusPoints[this.StylusPoints.Count-1].ToPoint(), this.StylusPoints[this.StylusPoints.Count-2].ToPoint());
+            dir2.Normalize();
+            Point origin2 = this.StylusPoints[this.StylusPoints.Count-1].ToPoint() - dir2 * 30;
+            origin2 += (new Vector(-dir2.Y, dir2.X) * 15);
+            //origin.Y += this.DrawingAttributes.Width;
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
+            Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+            if (this.Q1 != null)
+            {
+                dc.DrawText(new FormattedText(this.Q1, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin1);
+            }
+            if (this.Q2 != null)
+            {
+                dc.DrawText(new FormattedText(this.Q2, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin2);
+            }
+
+        }
+
+        public override Shape ConvertToShape(string drawingSessionID)
+        {
+            string id1 = null;
+            string id2 = null;
+            if (this.Shape1 != null)
+            {
+                id1 = this.Shape1.Id;
+            }
+            if (this.Shape2 != null)
+            {
+                id2 = this.Shape2.Id;
+            }
+            Point[] pts = new Point[this.StylusPoints.Count - 1];
+            for (int i = 0; i < pts.Length; i++)
+            {
+                pts[i] = this.StylusPoints[i].ToPoint();
+            }
+            ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), null,
+                -1, -1, -1, this.BorderStyle, this.Label, null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, pts, this.Category);
+            return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         private  void DrawCategory(DrawingContext drawingContext)
         {
