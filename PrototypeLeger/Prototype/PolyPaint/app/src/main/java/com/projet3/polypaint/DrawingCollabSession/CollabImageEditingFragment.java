@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -456,6 +457,24 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 this.players.add(new Player(players[i],++selectedColorCpt));
         }
     }
+
+    @Override
+    public void onResizeCanvas(final int width, final int height) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ViewGroup.LayoutParams params = iView.getLayoutParams();
+                params.width = width;
+                params.height = height;
+                iView.setLayoutParams(params);
+                updateCanvas();
+                drawAllShapes();
+                rootView.invalidate();
+
+            }
+        });
+    }
+
     @Override
     public void onAddElement(CollabShape shape, String author) {
         Player player = findPlayer(author);

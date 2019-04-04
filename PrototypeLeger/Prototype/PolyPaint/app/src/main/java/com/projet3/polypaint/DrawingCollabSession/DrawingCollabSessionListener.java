@@ -14,5 +14,6 @@ public interface DrawingCollabSessionListener {
     void onStackElement(String id, String author);
     void onUnstackElement(CollabShape shape, String author);
     void onNewUserJoined(String[] players);
+    void onResizeCanvas(int width, int height);
 
 }

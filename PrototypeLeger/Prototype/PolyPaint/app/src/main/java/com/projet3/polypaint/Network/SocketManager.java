@@ -1,6 +1,7 @@
 package com.projet3.polypaint.Network;
 
 
+import com.google.gson.JsonObject;
 import com.projet3.polypaint.Chat.NewMessageListener;
 import com.projet3.polypaint.DrawingCollabSession.CollabConnectionProperties;
 import com.projet3.polypaint.DrawingCollabSession.CollabShape;
@@ -61,6 +62,7 @@ public class SocketManager  {
 
 
     //Properties
+    private final String NEW_CANVAS_DIMENSIONS = "newCanvasDimensions";
     private final String ELEMENT_ID_TAG ="elementId";
     private final String ELEMENTS_IDS_TAG ="elementIds";
     private final String IMAGE_TAG = "image";
@@ -312,6 +314,24 @@ public class SocketManager  {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+            });
+            socket.on(REZIZED_CANVAS_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject json = (JSONObject)args[0];
+                    JSONObject dimensions;
+                    int x = 0;
+                    int y = 0;
+                    try{
+                        dimensions = json.getJSONObject(NEW_CANVAS_DIMENSIONS);
+                        x = Integer.parseInt(dimensions.getString("x"));
+                        y = Integer.parseInt(dimensions.getString("y"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    drawingCollabSessionListener.onResizeCanvas(x,y);
+
                 }
             });
 
@@ -631,7 +651,17 @@ public class SocketManager  {
 
     }
     public void resizeCanvas(int width, int height){
-        socket.emit(REZIZE_CANVAS_TAG, width , height);
+        JSONObject json = null;
+        JSONObject dimensionsJson;
+        try{
+            dimensionsJson = new JSONObject().put("x",width).put("y",height);
+            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG,drawingSessionId).put(USERNAME_TAG,FetchManager.currentInstance.getUserUsername())
+                    .put(NEW_CANVAS_DIMENSIONS, dimensionsJson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json != null)
+            socket.emit(REZIZE_CANVAS_TAG, json.toString());
     }
 
 
