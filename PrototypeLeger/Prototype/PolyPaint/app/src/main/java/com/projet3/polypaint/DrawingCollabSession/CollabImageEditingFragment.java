@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
+import com.projet3.polypaint.CanvasElement.RotationGestureDetector;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
@@ -52,6 +53,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         //selectedColorCpt++;
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         SocketManager.currentInstance.joinCollabSession("MockSessionID");
+       // rotationDetector = new RotationGestureDetector(this);
         return rootView;
     }
     @Override
@@ -79,6 +81,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                         break;
                     case rotate:
                         rotationDetector.onTouchEvent(event,posX,posY);
+                        continueListening = true;
                         break;
 
                     case lasso:
@@ -297,8 +300,24 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     @Override
     public void onEndRotation() {
-        SocketManager.currentInstance.modifyElements(new CollabShape[]{createCollabShape(rotatingShape)});
-        super.onEndRotation();
+        if (rotatingShape != null){
+            SocketManager.currentInstance.modifyElements(new CollabShape[]{createCollabShape(rotatingShape)});
+            super.onEndRotation();
+        }
+    }
+    @Override
+    public void OnRotation(RotationGestureDetector rotationDetector, int posX, int posY) {
+        if (rotatingShape != null)
+            rotatingShape.rotate(-rotationDetector.getAngle());
+        else{
+            for (GenericShape shape : client.getSelectedShapes()) {
+                if (shape.canRotate(posX, posY)) {
+                    shape.rotate(-rotationDetector.getAngle());
+                    rotatingShape = shape;
+                    return;
+                }
+            }
+        }
     }
 
     @Override

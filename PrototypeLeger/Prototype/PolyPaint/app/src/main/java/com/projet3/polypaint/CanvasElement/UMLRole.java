@@ -37,6 +37,8 @@ public class UMLRole extends GenericShape {
         p.lineTo(posX - w4, posY);
         p.addCircle(posX, posY - h4, h4, Path.Direction.CW);
 
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
         traceStyledLine(posX - w4, posY, posX + w4, posY, canvas);
@@ -44,6 +46,7 @@ public class UMLRole extends GenericShape {
         traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
         traceStyledLine(posX - w2, posY + h2, posX - w4, posY, canvas);
         traceStyledCircle(posX, posY - h4, h4, canvas);
+        canvas.restore();
         //canvas.drawPath(p, style.getBorderPaint());
     }
 

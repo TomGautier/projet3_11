@@ -450,7 +450,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             shape.drawAnchorPoints(canvas);
         }
     }
-    @Override
+
     public void OnRotation(RotationGestureDetector rotationDetector, int posX, int posY) {
         if (rotatingShape != null)
             rotatingShape.rotate(-rotationDetector.getAngle());
@@ -561,7 +561,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case Phase :
                 nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;

@@ -71,7 +71,6 @@ public class UMLClass extends GenericTextShape {
         canvas.drawPath(p, style.getBackgroundPaint());
 
         canvas.drawPath(p, style.getBorderPaint());
-        canvas.restore();
 
         //canvas.drawPath(p, style.getBorderPaint());
         traceStyledLine(posX - w2, posY - h2, posX + w2, posY - h2, canvas);
@@ -92,6 +91,7 @@ public class UMLClass extends GenericTextShape {
         for (int i = 0; i < methods.size(); i++) {
             canvas.drawText(methods.get(i), posX - w2 + PADDING, posY - h2 + (2 + i + attributes.size()) * FONT_SIZE + 5*PADDING, leftAlignedText);
         }
+        canvas.restore();
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

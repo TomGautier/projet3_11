@@ -66,6 +66,7 @@ public class RotationGestureDetector {
                 break;
             case MotionEvent.ACTION_UP:
                 ptrID1 = INVALID_POINTER_ID;
+                mListener.onEndRotation();
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 ptrID2 = INVALID_POINTER_ID;

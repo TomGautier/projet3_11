@@ -37,6 +37,8 @@ public class UMLActivity extends GenericShape {
         p.lineTo(posX - w2, posY + h2);
         p.lineTo(posX - w2, posY - h2);
 
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
         traceStyledLine(posX - w2, posY - h2, posX + w2 - h2, posY - h2, canvas);
@@ -44,6 +46,7 @@ public class UMLActivity extends GenericShape {
         traceStyledLine(posX + w2, posY, posX + w2 - h2, posY + h2, canvas);
         traceStyledLine(posX + w2 - h2, posY + h2, posX - w2, posY + h2, canvas);
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
+        canvas.restore();
     }
 
     @Override
