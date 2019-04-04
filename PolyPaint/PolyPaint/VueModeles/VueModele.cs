@@ -26,6 +26,9 @@ namespace PolyPaint.VueModeles
     /// </summary>
     class VueModele : INotifyPropertyChanged
     {
+      
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();

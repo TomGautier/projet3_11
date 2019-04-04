@@ -24,7 +24,9 @@ namespace PolyPaint.Modeles
     /// </summary>
     class Editeur : INotifyPropertyChanged
     {
-        
+        public const double HEIGHT_PROPORTION = 1.00d;
+        public const double WIDTH_PROPORTION = 1.00d;
+
         public event PropertyChangedEventHandler PropertyChanged;
         public StrokeCollection traits = new StrokeCollection();
         public StrokeCollection selectedStrokes = new StrokeCollection();
@@ -66,7 +68,7 @@ namespace PolyPaint.Modeles
                 if (outilSelectionne == "connexion" && value != outilSelectionne)
                 {
                     this.ShowEncrage = false;
-                    if (this.FormConnectorManager.IsDrawingArrow)
+                    if (this.FormConnectorManager.IsDrawingArrow && this.FormConnectorManager.Arrows.Last().StylusPoints.Count <2)
                     {
                         this.traits.Remove(this.FormConnectorManager.Arrows.Last());
                         this.FormConnectorManager.reset();
@@ -386,6 +388,7 @@ namespace PolyPaint.Modeles
             }
             if (!isOnEncrage)
             {
+                if (!this.FormConnectorManager.IsDrawingArrow) { this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor); }
                 newArrowCreated = this.FormConnectorManager.update(new StylusPoint(p.X, p.Y), false, null, 0);
             }
             if (newArrowCreated)
