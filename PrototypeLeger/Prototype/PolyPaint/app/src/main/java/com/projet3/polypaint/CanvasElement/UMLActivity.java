@@ -4,6 +4,8 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
+
 public class UMLActivity extends GenericShape {
     protected final static int DEFAULT_WIDTH = 90;
     protected final static int DEFAULT_HEIGHT = 60;
@@ -23,12 +25,25 @@ public class UMLActivity extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        Path p = getSelectionPath();
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.rotate(angle,posX,posY);
+        int w2 = width/2;
+        int h2 = height/2;
+
+        Path p = new Path();
+
+        p.moveTo(posX - w2, posY - h2);
+        p.lineTo(posX + w2 - h2, posY - h2);
+        p.lineTo(posX + w2, posY);
+        p.lineTo(posX + w2 - h2, posY + h2);
+        p.lineTo(posX - w2, posY + h2);
+        p.lineTo(posX - w2, posY - h2);
+
         canvas.drawPath(p, style.getBackgroundPaint());
-        canvas.drawPath(p, style.getBorderPaint());
-        canvas.restore();
+
+        traceStyledLine(posX - w2, posY - h2, posX + w2 - h2, posY - h2, canvas);
+        traceStyledLine(posX + w2 - h2, posY - h2, posX + w2, posY, canvas);
+        traceStyledLine(posX + w2, posY, posX + w2 - h2, posY + h2, canvas);
+        traceStyledLine(posX + w2 - h2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
     }
 
     @Override
@@ -49,8 +64,7 @@ public class UMLActivity extends GenericShape {
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
-        /* Do nothing for now*/
-        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
+        ImageEditingDialogManager.getInstance().showStyleDialog(fragmentManager, style);
     }
 
     public String getType() { return TYPE; }

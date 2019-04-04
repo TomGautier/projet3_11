@@ -50,11 +50,9 @@ export class DrawingSessionManager {
             this.connectedUsers.set(doc.drawingSessionId, new Array<String>());
         }
         var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
-        console.log("USERS: ",users)
         if (users !== undefined){
             if (doc.username != null && users.indexOf(doc.username) == -1){
                 users.push(doc.username);
-                console.log("AJOUTE LE USER ", doc.username);
             }
             this.socketService.emit(doc.drawingSessionId,SocketEvents.NewUserJoined, users);
         } 

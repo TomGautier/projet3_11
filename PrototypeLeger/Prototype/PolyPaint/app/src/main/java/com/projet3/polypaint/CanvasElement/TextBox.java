@@ -6,21 +6,15 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
-public class TextBox extends GenericShape {
-    public static final int FONT_SIZE = 25;
-    public static final String TYPE = "text_box";
-    private String text = "";
+public class TextBox extends GenericTextShape {
+
+    public static final String TYPE = "Text";
 
     public TextBox(String id, int x, int y, PaintStyle style, float angle) {
-        super(id, x, y, 0, FONT_SIZE, style, angle);
-        text = "";
-        adjustWidthToText();
+        super(id, x, y, style,angle);
     }
-
     private TextBox(String id, int x, int y, PaintStyle style, String contents, float angle) {
-        super(id, x, y, 0, FONT_SIZE, style, angle);
-        text = contents;
-        adjustWidthToText();
+        super(id, x, y, style, contents, angle);
     }
 
     @Override
@@ -36,25 +30,8 @@ public class TextBox extends GenericShape {
         return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text, angle);
     }
 
-    private void adjustWidthToText() {
-        if (text.length() != 0) {
-            // Font is monospace, all characters are same width
-            float[] charWidth = new float[1];
-            style.getTextPaint().getTextWidths(text, 0, 1, charWidth);
-            width = (int) charWidth[0] * text.length();
-        }
-    }
-
-    public void setText(String text) {
-        this.text = text;
-        adjustWidthToText();
-    }
-    public String getText() {
-        return text;
-    }
-
     public void showEditingDialog(FragmentManager fragmentManager) {
-        ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, text);
+        ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, style, text);
     }
 
     public String getType() { return TYPE; }

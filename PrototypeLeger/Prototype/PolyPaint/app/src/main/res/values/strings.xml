@@ -22,6 +22,8 @@
     <string name="buttonArtefact">Artéfact</string>
     <string name="buttonConnectionForm">Connection</string>
     <string name="buttonSelection">Sélection</string>
+    <string name="buttonPhase">Phase</string>
+    <string name="buttonComment">Commentaire</string>
     <string name="buttonLasso">Lasso</string>
     <string name="buttonDelete">Effacer</string>
     <string name="buttonDuplicate">Dupliquer</string>
@@ -33,11 +35,11 @@
     <string name="buttonRotate">Tourner</string>
 
     <!-- MAIN TOOLBAR -->
-    <string name="mainToolbarGalleryTag">Gallerie</string>
+    <string name="mainToolbarGalleryTag">Galerie</string>
     <string name="mainToolbarImageEditionTag">Édition d\'image</string>
     <string name="mainToolbarCollabImageEditionTag">Édition d\'image collaborative</string>
     <string name="buttonTextBox">Texte</string>
-    <string name="textEditing">Insertion de texte flottant</string>
+    <string name="textEditing">Texte</string>
 
     <!-- CHAT TOOLBAR -->
     <string name="chatToolbarAddConversation">Ajouter une conversation</string>
@@ -65,6 +67,23 @@
 
 
 
+    <string name="styleFull">Plein</string>
+    <string name="styleDotted">Pointillé</string>
+    <string name="styleDashed">Tirets</string>
+    <string name="revertDefault">Style par défaut</string>
+    <string name="backgroundColor">Couleur de remplissage</string>
+    <string name="borderColor">Couleur de trait</string>
+    <string name="lineStyle">Style de trait</string>
+
+    <!-- COLOR SLIDERS -->
+    <string name="sliderRed">R</string>
+    <string name="sliderGreen">G</string>
+    <string name="sliderBlue">B</string>
+    <string name="textColor">Couleur du texte</string>
+    <string name="borderAndTextColor">Couleur de trait / texte</string>
+    <string name="classTitle">Nom de classe</string>
+    <string name="classAttributes">Attributs</string>
+    <string name="classMethods">Méthodes</string>
     <string name="publicGallery">Galerie publique</string>
     <string name="privateGallery">Galerie privée</string>
 

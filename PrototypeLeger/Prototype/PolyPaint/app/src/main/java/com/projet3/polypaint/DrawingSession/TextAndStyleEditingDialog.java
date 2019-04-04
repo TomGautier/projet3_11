@@ -15,9 +15,17 @@ import android.widget.SeekBar;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.R;
 
-public class TextEditingDialog extends DialogFragment {
+public class TextAndStyleEditingDialog extends DialogFragment {
     private View rootView;
     private EditText editText;
+
+    private RadioGroup radioGroup;
+
+    private SeekBar redSliderBG;
+    private SeekBar greenSliderBG;
+    private SeekBar blueSliderBG;
+    private ImageView backgroundPreview;
+
     private SeekBar redSliderFG;
     private SeekBar greenSliderFG;
     private SeekBar blueSliderFG;
@@ -26,9 +34,10 @@ public class TextEditingDialog extends DialogFragment {
     private String contents = "";
 
     private PaintStyle style;
+    private int backgroundColor;
     private int borderColor;
 
-    public TextEditingDialog() {
+    public TextAndStyleEditingDialog() {
         super();
     }
 
@@ -56,14 +65,28 @@ public class TextEditingDialog extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         ImageEditingDialogManager.getInstance().onTextDialogNegativeClick();
                     }
+                })
+                .setNeutralButton(R.string.revertDefault, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        ImageEditingDialogManager.getInstance().onDialogPositiveClick(style, contents);
+                        ImageEditingDialogManager.getInstance().onStyleDialogNegativeClick();
+                    }
                 });
         return builder.create();
     }
 
     private void initializeViews() {
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        rootView = inflater.inflate(R.layout.dialog_text_editing, null);
+        rootView = inflater.inflate(R.layout.dialog_style_and_text, null);
+
         editText = (EditText) rootView.findViewById(R.id.contentEdit);
+
+        radioGroup = (RadioGroup) rootView.findViewById(R.id.lineStyle);
+
+        redSliderBG = (SeekBar) rootView.findViewById(R.id.redSliderBG);
+        greenSliderBG = (SeekBar) rootView.findViewById(R.id.greenSliderBG);
+        blueSliderBG = (SeekBar) rootView.findViewById(R.id.blueSliderBG);
+        backgroundPreview = (ImageView) rootView.findViewById(R.id.colorPreviewBG);
 
         redSliderFG = (SeekBar) rootView.findViewById(R.id.redSliderFG);
         greenSliderFG = (SeekBar) rootView.findViewById(R.id.greenSliderFG);
@@ -71,7 +94,25 @@ public class TextEditingDialog extends DialogFragment {
         borderPreview = (ImageView) rootView.findViewById(R.id.colorPreviewFG);
     }
     private void initializeStyle() {
+        switch (style.getStrokeType()) {
+            case full:
+                radioGroup.check(R.id.radioFull);
+                break;
+            case dotted:
+                radioGroup.check(R.id.radioDotted);
+                break;
+            case dashed:
+                radioGroup.check(R.id.radioDashed);
+                break;
+        }
+
+        backgroundColor = style.getBackgroundPaint().getColor();
         borderColor = style.getBorderPaint().getColor();
+
+        redSliderBG.setProgress((backgroundColor & (0xff0000)) / (0x10000));
+        greenSliderBG.setProgress((backgroundColor & (0xff00)) / (0x100));
+        blueSliderBG.setProgress(backgroundColor & (0xff));
+        backgroundPreview.setBackgroundColor(backgroundColor);
 
         redSliderFG.setProgress((borderColor & (0xff0000)) / (0x10000));
         greenSliderFG.setProgress((borderColor & (0xff00)) / (0x100));
@@ -80,6 +121,45 @@ public class TextEditingDialog extends DialogFragment {
     }
 
     private void setSliderListeners() {
+        redSliderBG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                backgroundColor = (backgroundColor & (0xff00ffff)) + (progress * (0x010000));
+                backgroundPreview.setBackgroundColor(backgroundColor);
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+        });
+
+        greenSliderBG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                backgroundColor = (backgroundColor & (0xffff00ff)) + (progress * (0x0100));
+                backgroundPreview.setBackgroundColor(backgroundColor);
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+        });
+
+        blueSliderBG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                backgroundColor = (backgroundColor & (0xffffff00)) + (progress);
+                backgroundPreview.setBackgroundColor(backgroundColor);
+            }
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+        });
+
         redSliderFG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 borderColor = (borderColor & (0xff00ffff)) + (progress * (0x010000));
@@ -128,6 +208,19 @@ public class TextEditingDialog extends DialogFragment {
     }
 
     private void modifyCurrentStyle() {
+        switch (radioGroup.getCheckedRadioButtonId()) {
+            case R.id.radioFull :
+                style.setStrokeType(PaintStyle.StrokeType.full);
+                break;
+            case R.id.radioDotted :
+                style.setStrokeType(PaintStyle.StrokeType.dotted);
+                break;
+            case R.id.radioDashed :
+                style.setStrokeType(PaintStyle.StrokeType.dashed);
+                break;
+        }
+
+        style.setBackgroundColor(backgroundColor);
         style.setBorderColor(borderColor);
     }
 }

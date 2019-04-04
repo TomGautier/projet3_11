@@ -28,15 +28,17 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
+import com.projet3.polypaint.CanvasElement.Comment;
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
-import com.projet3.polypaint.CanvasElement.ConnectionFormVertex;
 import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.GenericTextShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.RotationGestureDetector;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
+import com.projet3.polypaint.CanvasElement.UMLPhase;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.Network.SocketManager;
@@ -52,6 +54,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonRole;
     protected Button buttonActivity;
     protected Button buttonArtefact;
+    protected Button buttonPhase;
+    protected Button buttonComment;
     protected Button buttonText;
     protected Button buttonConnectionForm;
     protected Button buttonCanvas;
@@ -71,7 +75,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected final int DEFAULT_CANVAS_HEIGHT = 1000;
     protected final int CANVAS_BACKGROUND_PADDING = 75;
     protected enum Mode{selection, lasso, creation, move, rotate}
-    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm}
+    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm, Phase, Comment}
     public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
@@ -186,6 +190,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.Role);
+            }
+        });
+
+        buttonPhase = (Button)rootView.findViewById(R.id.buttonPhase);
+        buttonPhase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.Phase);
+            }
+        });
+
+        buttonComment = (Button)rootView.findViewById(R.id.buttonComment);
+        buttonComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setShapeType(ShapeType.Comment);
             }
         });
 
@@ -331,7 +351,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         borderPaint.setColor(borderColor);
 
         // Background paint
-        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFillTest, null);
+        int backgroundColor = ResourcesCompat.getColor(getResources(), R.color.shapeFill, null);
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(backgroundColor);
 
@@ -339,7 +359,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         Paint textPaint = new Paint();
         textPaint.setColor(borderColor);
 
-        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint);
+        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint, PaintStyle.StrokeType.full);
 
         // Selection paint
         int selectionColor = ResourcesCompat.getColor(getResources(), R.color.shapeSelection, null);
@@ -523,7 +543,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         switch (currentShapeType) {
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Activity :
                 nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
@@ -537,9 +559,20 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
+            case Phase :
+                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle);
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
+                break;
+            case Comment :
+                nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape.showEditingDialog(getFragmentManager());
+                break;
             case text_box :
-                nShape = new TextBox(id, posX, posY, defaultStyle, 0);
-                ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
+                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle,0);
+                nShape.showEditingDialog(getFragmentManager());
+                //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case ConnectionForm:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
@@ -612,7 +645,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
-    protected void tryToAnchor(ConnectionForm connection,int x, int y){
+    protected void tryToAnchor(ConnectionForm connection, int x, int y){
         for (GenericShape shape : shapes) {
             if (shape != connection) {
                 shape.updateAnchor(connection);
@@ -810,20 +843,47 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     // ------------------------- Dialogs -------------------------
     // TextEditingDialog
     @Override
-    public void onTextEditingDialogPositiveClick(String contents) {
-        ((TextBox)selections.get(0)).setText(contents);
+    public void onTextDialogPositiveResponse(String contents) {
+        ((GenericTextShape)selections.get(0)).setText(contents);
         updateCanvas();
         drawAllShapes();
         iView.invalidate();
     }
     @Override
-    public void onTextEditingDialogNegativeClick() {
-        if (((TextBox)selections.get(0)).getText().equals("")) {
+    public void onTextDialogNegativeResponse() {
+        if (((GenericTextShape)selections.get(0)).getText().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
             updateCanvas();
             drawAllShapes();
             iView.invalidate();
         }
+    }
+
+    // StyleEditingDialog
+    @Override
+    public void onStyleDialogPositiveResponse(PaintStyle style) {
+        selections.get(0).setStyle(style);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
+    @Override
+    public void onStyleDialogNegativeResponse() {
+        selections.get(0).setStyle(defaultStyle);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
+    }
+
+    // ClassEditingDialog
+    @Override
+    public void onClassDialogPositiveResponse(String name, String attributes, String methods) {
+        ((UMLClass)selections.get(0)).setText(name);
+        ((UMLClass)selections.get(0)).setAttributes(attributes);
+        ((UMLClass)selections.get(0)).setMethods(methods);
+        updateCanvas();
+        drawAllShapes();
+        iView.invalidate();
     }
 }

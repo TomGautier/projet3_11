@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Path;
 
 import java.util.regex.Matcher;
+import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLArtefact extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
@@ -28,17 +29,25 @@ public class UMLArtefact extends GenericShape {
         int w4 = width/4;
         int h4 = height/4;
 
-        Path p = getSelectionPath();
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.rotate(angle,posX,posY);
+        Path p = new Path();
+
+        p.moveTo(posX - w2, posY - h2);
+        p.lineTo(posX + w4, posY - h2);
+        p.lineTo(posX + w2, posY - h4);
+        p.lineTo(posX + w2, posY + h2);
+        p.lineTo(posX - w2, posY + h2);
+        p.lineTo(posX - w2, posY - h2);
+
         canvas.drawPath(p, style.getBackgroundPaint());
 
-        p.moveTo(posX + w2, posY - h4);
-        p.lineTo(posX + w4, posY - h4);
-        p.lineTo(posX + w4, posY - h2);
+        traceStyledLine(posX - w2, posY - h2, posX + w4, posY - h2, canvas);
+        traceStyledLine(posX + w4, posY - h2, posX + w2, posY - h4, canvas);
+        traceStyledLine(posX + w2, posY - h4, posX + w2, posY + h2, canvas);
+        traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
+        traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
+        traceStyledLine(posX + w2, posY - h4, posX + w4, posY - h4, canvas);
+        traceStyledLine(posX + w4, posY - h4, posX + w4, posY - h2, canvas);
 
-        canvas.drawPath(p, style.getBorderPaint());
-        canvas.restore();
     }
 
     @Override
@@ -58,11 +67,11 @@ public class UMLArtefact extends GenericShape {
         p.lineTo(posX - w2, posY - h2);
 
         return p;
+
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
-        /* Do nothing for now*/
-        // ImageEditingDialogManager.getInstance().showXYZDialog(fragmentManager);
+        ImageEditingDialogManager.getInstance().showStyleDialog(fragmentManager, style);
     }
 
     public String getType() { return TYPE; }

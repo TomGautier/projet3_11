@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
         <color name="chat">#E2E2E2</color>
         <color name="chatToolbar">#cecccc</color>
         <color name="shape">#000000</color>
-        <color name="shapeFillTest">#6666CC</color>
         <color name="shapeSelection">#FF0000</color>
         <color name="mainToolbarBackground">#fbfff9</color>
         <color name="canvasBackground">#d7d9dd</color>
         <color name="mainBackground">#FFFFFF</color>
         <color name="imageEditingBackgroundColor">#E2E2E2</color>
         <color name="DefaultConnectionFormColor">#56585b</color>
+        <color name="shapeFill" tools:ignore="MissingDefaultResource">#FFFFFF</color>
 </resources>

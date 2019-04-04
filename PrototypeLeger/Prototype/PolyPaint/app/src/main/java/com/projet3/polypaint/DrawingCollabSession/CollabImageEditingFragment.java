@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
+import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
@@ -188,9 +189,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     protected GenericShape addShape(int posX, int posY) {
         CollabShape shape = createCollabShape(posX,posY);
-        if (shape.getClass().equals(TextBox.class)){
+        // TODO: Show editing dialog if needed.
+        /*if (shape.getClass().equals(TextBox.class)){
             ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
-        }
+        }*/
         SocketManager.currentInstance.addElement(shape);
 
         return null;
@@ -424,23 +426,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             case MotionEvent.ACTION_UP:
                 isMovingSelection = false;
                 break;
-        }*/
-    }
-    @Override
-    public void onTextEditingDialogPositiveClick(String contents) {
-        /*((TextBox)client.getSelectedShapes().get(0)).setText(contents);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();*/
-    }
-    @Override
-    public void onTextEditingDialogNegativeClick() {
-       /* if (((TextBox)selections.get(0)).getText().equals("")) {
-            shapes.removeAll(selections);
-            selections.clear();
-            updateCanvas();
-            drawAllShapes();
-            iView.invalidate();
         }*/
     }
 
@@ -797,6 +782,15 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         //cutShapes.addAll(selections);
         //deleteSelection();
     }
-
+@Override
+    public void onTextDialogPositiveResponse(String contents){}
+    @Override
+    public void onTextDialogNegativeResponse(){}
+    @Override
+    public void onStyleDialogPositiveResponse(PaintStyle style){}
+    @Override
+    public void onStyleDialogNegativeResponse(){}
+    @Override
+    public void onClassDialogPositiveResponse(String name, String attributes, String methods){}
 
 }
