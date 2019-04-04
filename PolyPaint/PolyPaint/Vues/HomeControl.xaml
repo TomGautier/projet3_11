@@ -6,17 +6,11 @@
              xmlns:local="clr-namespace:PolyPaint.Vues"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <DockPanel Margin="0,64,-0.4,320.4">
-            <Label FontFamily="Arial" FontSize="40" HorizontalAlignment="Center" Content="Bienvenu à Poly Paint"/>
+    <StackPanel>
+        <DockPanel Margin="0,40,0,40">
+            <Label FontFamily="Arial" FontSize="20" HorizontalAlignment="Center" Content="Bienvenu à Poly Paint"/>
         </DockPanel>
-        <DockPanel Margin="0,350,-0.4,0.4">
-            <TextBox DockPanel.Dock="Top" Background="Coral"></TextBox>
-            <TextBox DockPanel.Dock="Left">Nouveauté</TextBox>
-            <Border BorderThickness="5,5,5,5" BorderBrush="Coral"></Border>
-            <TextBox Background="Bisque"></TextBox>
-        </DockPanel>
-        <Button Name="Login" Height="25" Padding="3" Margin="414,197,400.6,448.4" RenderTransformOrigin="0.33,-11.667" Content="Login" Command="{Binding NavigateLogin}"/>
-        <Button Name="SignUp" Height="25" Width="Auto" Margin="414,252,400.6,393.4" RenderTransformOrigin="2.075,2.992" Content="Sign up" Command="{Binding NavigateSignup}"/>
-    </Grid>
+        <Button Name="Login" Height="25" Width="60" Margin="10" Content="Login" Command="{Binding NavigateLogin}"/>
+        <Button Name="SignUp" Height="25" Width="60" Content="Sign up" Command="{Binding NavigateSignup}"/>
+    </StackPanel>
 </UserControl>

@@ -26,5 +26,12 @@ namespace PolyPaint.Utilitaires
 
             return await response.Content.ReadAsStringAsync();
         }
+
+        public async Task<string> LoadUsersAsync(string username, string sessionId)
+        {
+            var response = await client.GetAsync("http://127.0.0.1:3000/api/user/" + sessionId + "/" + username);
+
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }

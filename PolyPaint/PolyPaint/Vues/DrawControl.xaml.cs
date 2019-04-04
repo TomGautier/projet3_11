@@ -35,12 +35,18 @@ namespace PolyPaint.Vues
             InitializeComponent();
             DataContext = new VueModele();
             
-            this.surfaceDessin.AllowSelection = false;
-            this.surfaceDessin.IsDraging = false;
+            //this.surfaceDessin.AllowSelection = false;
+            //this.surfaceDessin.IsDraging = false;
             this.surfaceDessin.LastSelection = new MemoryStream();
             this.AllowDrop = true;
-            (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+           // (DataContext as VueModele).SendCanvas(this.surfaceDessin);
 
+            this.Loaded += new RoutedEventHandler((s, e) =>
+            {
+                (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+                this.surfaceDessin.AllowSelection = false;
+                this.surfaceDessin.IsDraging = false;
+            });
         }
 
         // Pour gérer les points de contrôles.
