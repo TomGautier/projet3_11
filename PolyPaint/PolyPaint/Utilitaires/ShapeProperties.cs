@@ -27,11 +27,12 @@ namespace PolyPaint.Utilitaires
         public int index2 { get; set; }
         public string q1 { get; set; }
         public string q2 { get; set; }
-        public Point[] points { get; set; }
+        public int[] pointsX { get; set; }
+        public int[] pointsY { get; set; }
         public string category { get; set; }
 
         public ShapeProperties(string type, string fillingColor, string borderColor, int[] middlePointCoord, int height, int width, int rotation,string borderType, string label, 
-            String[] methods, String[] attributes, string idShape1, string idShape2, int index1, int index2, string q1, string q2, Point[] points,string category)
+            String[] methods, String[] attributes, string idShape1, string idShape2, int index1, int index2, string q1, string q2, int[] pointsX,int[] pointsY,string category)
         {
             this.type = type;
             this.fillingColor = fillingColor;
@@ -50,7 +51,8 @@ namespace PolyPaint.Utilitaires
             this.index2 = index2;
             this.q1 = q1;
             this.q2 = q2;
-            this.points = points;
+            this.pointsX = pointsX;
+            this.pointsY = pointsY;
             this.category = category;
             
         }

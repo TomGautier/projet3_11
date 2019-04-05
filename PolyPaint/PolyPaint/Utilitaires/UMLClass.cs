@@ -130,7 +130,7 @@ namespace PolyPaint.Utilitaires
         {
             int[] middlePoint = new int[2] { (int)this.Center.X, (int)this.Center.Y };
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
-                (int)this.Height, (int)this.Width, this.CurrentRotation, this.BorderStyle, this.Label, this.Methods.ToArray(), this.Attributes.ToArray(), null, null, -1, -1, null, null, null, null);
+                (int)this.Height, (int)this.Width, this.CurrentRotation, this.BorderStyle, this.Label, this.Methods.ToArray(), this.Attributes.ToArray(), null, null, -1, -1, null, null, null, null,null);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         public override void SetToShape(Shape shape)

@@ -114,17 +114,17 @@ namespace PolyPaint.Utilitaires
         public virtual void SetToShape(Shape shape)
         {
             this.Id = shape.id;
-            this.Author = shape.author;
+            this.Author = shape.author;           
             this.Width = shape.properties.width;
             this.Height = shape.properties.height;
             this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
-            this.BorderStyle = shape.properties.borderType;
-
             this.MakeShape();
+
             this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
             this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
             this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
             this.Label = shape.properties.label;
+            this.BorderStyle = shape.properties.borderType;
             //this.CurrentRotation = shape.properties.rotation;
             //this.SetRotation(this.CurrentRotation);
             this.CurrentRotation = 0;
@@ -135,7 +135,7 @@ namespace PolyPaint.Utilitaires
         {
             int[] middlePoint = new int[2] { (int)this.Center.X, (int)this.Center.Y };
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
-                (int)this.Height, (int)this.Width, this.CurrentRotation, this.BorderStyle, this.Label, null, null, null, null, -1, -1, null, null, null, null);
+                (int)this.Height, (int)this.Width, this.CurrentRotation, this.BorderStyle, this.Label, null, null, null, null, -1, -1, null, null, null, null, null);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         protected Pen GetPen()

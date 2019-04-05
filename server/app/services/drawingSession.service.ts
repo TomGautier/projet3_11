@@ -31,7 +31,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
                 methods:properties.methods,
                 attributes:properties.attributes,
                 idShape1:properties.idShape1,
-                idShapee2:properties.idShape2,
+                idShape2:properties.idShape2,
                 index1:properties.index1,
                 index2:properties.index2,
                 q1:properties.q1,

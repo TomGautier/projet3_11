@@ -97,7 +97,7 @@ export class DrawingSessionManager {
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public modifyElement(doc: any) {
         for (const shape of doc.shapes){
-            this.drawingSessionService.modifyElement(shape);
+           // this.drawingSessionService.modifyElement(shape);
         }
         
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement, doc);

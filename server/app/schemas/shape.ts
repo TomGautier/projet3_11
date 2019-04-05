@@ -19,7 +19,7 @@ export let shapeSchema: Schema = new Schema({
         type: { type: String, required: true },
         fillingColor: { type: String, required: true },
         borderColor: { type: String, required: true },
-        middlePointCoord: { type: [Number], required: true },
+        middlePointCoord: { type: [Number], required: false },
         height: { type: Number, required: true },
         width: { type: Number, required: true },
         rotation: { type: Number },
@@ -33,7 +33,8 @@ export let shapeSchema: Schema = new Schema({
         index2: {type: Number, required:false},
         q1: {type: String, required:false},
         q2: {type: String, required:false},
-        points: {type: [Number], required:false},
+        pointsX: {type: [Number], required:false},
+        pointsY: {type: [Number], required:false},
         category: {type: String, required:false},
     },
 

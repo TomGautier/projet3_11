@@ -47,12 +47,12 @@ namespace PolyPaint.Modeles
         private bool showEncrage = false;
         public bool ShowEncrage
         {
-            get{ return showEncrage; }
+            get { return showEncrage; }
             set
             {
-                showEncrage = value;                             
+                showEncrage = value;
                 foreach (Form form in this.traits) { form.ShowEncrage = showEncrage; }
-                
+
             }
 
         }
@@ -67,21 +67,23 @@ namespace PolyPaint.Modeles
             get { return outilSelectionne; }
             set
             {
+                this.FormConnectorManager.IsDrawingArrow = false;
                 if (outilSelectionne == "connexion" && value != outilSelectionne)
                 {
                     this.ShowEncrage = false;
-                    if (this.FormConnectorManager.IsDrawingArrow && this.FormConnectorManager.Arrows.Last().StylusPoints.Count <2)
+                    
+                    if (this.FormConnectorManager.IsDrawingArrow && this.FormConnectorManager.Arrows.Last().StylusPoints.Count < 2)
                     {
                         this.traits.Remove(this.FormConnectorManager.Arrows.Last());
                         this.FormConnectorManager.reset();
-                        
+
                     }
                 }
                 else if (value == "connexion") { this.ShowEncrage = true; }
                 outilSelectionne = value;
                 ProprieteModifiee();
             }
-        }      
+        }
         // Forme de la pointe du crayon
         private string pointeSelectionnee = "ronde";
         public string PointeSelectionnee
@@ -89,7 +91,7 @@ namespace PolyPaint.Modeles
             get { return pointeSelectionnee; }
             set
             {
-                pointeSelectionnee = value;                                
+                pointeSelectionnee = value;
                 ProprieteModifiee();
             }
         }
@@ -104,7 +106,7 @@ namespace PolyPaint.Modeles
             set
             {
                 couleurSelectionnee = value;
-                
+
                 if (selectedStrokes.Count > 0)
                 {
                     Shape[] shapes = new Shape[selectedStrokes.Count];
@@ -116,7 +118,7 @@ namespace PolyPaint.Modeles
                     }
                     this.SocketManager.HandleModification(shapes);
                 }
-                ProprieteModifiee();                   
+                ProprieteModifiee();
             }
         }
         private string remplissageSelectionne = "White";
@@ -128,12 +130,12 @@ namespace PolyPaint.Modeles
             {
                 remplissageSelectionne = value;
 
-                if (selectedStrokes.Count >0)
+                if (selectedStrokes.Count > 0)
                 {
                     Shape[] shapes = new Shape[selectedStrokes.Count];
 
-                    for (int i = 0; i< selectedStrokes.Count; i++)
-                    {                      
+                    for (int i = 0; i < selectedStrokes.Count; i++)
+                    {
                         (selectedStrokes[i] as Form).Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(remplissageSelectionne);
                         shapes[i] = (selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
                     }
@@ -158,13 +160,13 @@ namespace PolyPaint.Modeles
             }
         }
         public void ChangeSelection(StrokeCollection strokes)
-        {         
+        {
             if (strokes.Count > 0)
             {
                 //selectedStrokes = strokes;
                 CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
                 RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
-               // ProprieteModifiee("TEST");
+                // ProprieteModifiee("TEST");
             }
             else
             {
@@ -172,7 +174,7 @@ namespace PolyPaint.Modeles
                 CouleurSelectionnee = "Black";
                 RemplissageSelectionne = "White";
             }
-           
+
         }
         private bool SameCollection(StrokeCollection a, StrokeCollection b)
         {
@@ -197,7 +199,7 @@ namespace PolyPaint.Modeles
             List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
             foreach (Shape shape in datalist)
             {
-                this.AddForm(shape,false);
+                this.AddForm(shape, false);
             }
         }
         public void HandleChangeSelection(StrokeCollection strokes)
@@ -220,16 +222,16 @@ namespace PolyPaint.Modeles
                 {
                     toBeSelected[i] = (strokes[i] as Form).Id;
                 }
-                
-                    String[] oldSelection = new string[selectedStrokes.Count];
-                    for (int i = 0; i < oldSelection.Length; i++)
-                    {
-                        oldSelection[i] = (selectedStrokes[i] as Form).Id;
-                    }
-                   
-                    this.SocketManager.Select(oldSelection, toBeSelected);
-                    //this.SocketManager
-                
+
+                String[] oldSelection = new string[selectedStrokes.Count];
+                for (int i = 0; i < oldSelection.Length; i++)
+                {
+                    oldSelection[i] = (selectedStrokes[i] as Form).Id;
+                }
+
+                this.SocketManager.Select(oldSelection, toBeSelected);
+                //this.SocketManager
+
             }
         }
         public void HandleDeleteSelection()
@@ -241,34 +243,34 @@ namespace PolyPaint.Modeles
                 {
                     idList[i] = (this.selectedStrokes[i] as Form).Id;
                 }
-               /* Shape[] shapes = new Shape[this.selectedStrokes.Count];
-                for (int i = 0; i < shapes.Length; i++)
-                {
-                    shapes[i] = (this.selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
-                  
-                }
-                this.SocketManager.DeleteElement(shapes);*/
-              this.SocketManager.CutElements(idList);
+                /* Shape[] shapes = new Shape[this.selectedStrokes.Count];
+                 for (int i = 0; i < shapes.Length; i++)
+                 {
+                     shapes[i] = (this.selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
+
+                 }
+                 this.SocketManager.DeleteElement(shapes);*/
+                this.SocketManager.CutElements(idList);
             }
-           
+
         }
         public void HandleSelectionModification()
         {
             Shape[] modifiedShapes = new Shape[this.selectedStrokes.Count];
 
-            for (int i = 0; i< modifiedShapes.Length; i++)
+            for (int i = 0; i < modifiedShapes.Length; i++)
             {
                 modifiedShapes[i] = (this.selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
             }
             this.SocketManager.HandleModification(modifiedShapes);
         }
-        public void HandleLabelChange(string label,string border)
+        public void HandleLabelChange(string label, string border)
         {
             (this.selectedStrokes[0] as Form).Label = label;
             (this.selectedStrokes[0] as Form).BorderStyle = border;
 
         }
-        public void HandleUmlTextChange(string name,string border, List<string> methods, List<string> attributes)
+        public void HandleUmlTextChange(string name, string border, List<string> methods, List<string> attributes)
         {
             (this.selectedStrokes[0] as UMLClass).Label = name;
             (this.selectedStrokes[0] as UMLClass).Methods = methods;
@@ -290,7 +292,7 @@ namespace PolyPaint.Modeles
         }
 
         // S'il y a au moins 1 trait sur la surface, il est possible d'exécuter Empiler.
-        public bool PeutEmpiler(object o) => (traits.Count > 0); 
+        public bool PeutEmpiler(object o) => (traits.Count > 0);
         // On retire le trait le plus récent de la surface de dessin et on le place sur une pile.
         public void Empiler(object o)
         {
@@ -301,9 +303,9 @@ namespace PolyPaint.Modeles
                     Stroke toEmpile = traits.Where(x => (x as Form).Type != "Arrow").Last();
                     SocketManager.StackElement((toEmpile as Form).Id);
                 }
-              /*  Stroke trait = traits.Last();
-                traitsRetires.Add(trait);
-                traits.Remove(trait);   */            
+                /*  Stroke trait = traits.Last();
+                  traitsRetires.Add(trait);
+                  traits.Remove(trait);   */
             }
             catch { }
 
@@ -317,10 +319,10 @@ namespace PolyPaint.Modeles
                 {
                     if (Math.Abs(Point.Subtract(form.EncPoints[i], pts).Length) < 20)
                     {
-                        
+
                         if (index == 0)
                         {
-                            if (form != (arrow as Arrow).Shape1)
+                            if (form != (arrow as Arrow).Shape2)
                             {
                                 isOnEncrage = true;
                                 form.Arrow = (arrow as Arrow);
@@ -334,7 +336,7 @@ namespace PolyPaint.Modeles
                                 arrow.StylusPoints[index] = new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y);
                             }
                         }
-                        else
+                        else if (index == (arrow as Arrow).StylusPoints.Count-1)
                         {
                             if (form != (arrow as Arrow).Shape1)
                             {
@@ -380,45 +382,61 @@ namespace PolyPaint.Modeles
                 {
                     if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
                     {
-                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType,this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor,this.ConnectorQ1,this.ConnectorQ2);
+                        this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor, this.ConnectorQ1, this.ConnectorQ2);
                         newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);
-                        
+
                         isOnEncrage = true;
                     }
-                    
+
                 }
             }
             if (!isOnEncrage)
             {
-                if (!this.FormConnectorManager.IsDrawingArrow) { this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor,this.ConnectorQ1,this.ConnectorQ2); }
+                if (!this.FormConnectorManager.IsDrawingArrow) { this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor, this.ConnectorQ1, this.ConnectorQ2); }
                 newArrowCreated = this.FormConnectorManager.update(new StylusPoint(p.X, p.Y), false, null, 0);
             }
             if (newArrowCreated)
             {
-                this.traits.Add(this.FormConnectorManager.Arrows.Last());
-                this.SocketManager.AddElement(this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID));
+                //this.traits.Add(this.FormConnectorManager.Arrows.Last());
+                //this.SocketManager.AddElement(this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID));
+            }
+            else
+            {
+                if (this.FormConnectorManager.Arrows.Last().StylusPoints.Count == 2)
+                {
+                    this.SocketManager.AddElement(this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID));
+                }
+                else
+                {
+                    //this.traits[this.traits.Count - 1].StylusPoints = this.FormConnectorManager.Arrows.Last().StylusPoints;
+                  //  this.FormConnectorManager.Arrows.Last().Id = (this.traits[this.traits.Count - 1] as Form).Id;
+                  //  this.FormConnectorManager.Arrows.Last().Author = (this.traits[this.traits.Count - 1] as Form).Author;
+                    Shape[] shapes = new Shape[1];
+                    shapes[0] = (this.FormConnectorManager.Arrows.Last()).ConvertToShape(this.SocketManager.SessionID);//this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID);
+                    this.SocketManager.HandleModification(shapes);
+                }
             }
         }
-               /* if (Math.Abs(Point.Subtract(form.Center,p).Length) < 20)
-                {
-                    newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.Center.X,form.Center.Y), true, form);
-                    isOnEncrage = true;
-                }*/
-      
+        /* if (Math.Abs(Point.Subtract(form.Center,p).Length) < 20)
+         {
+             newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.Center.X,form.Center.Y), true, form);
+             isOnEncrage = true;
+         }*/
+
         public void HandleMouseDown(Point p)
         {
             if (OutilSelectionne == "connexion")
             {
                 HandleConnector(p);
             }
-            
+
             if (OutilSelectionne.Contains("form"))
             {
                 //Point center = new Point((int)position.X, (int)position.Y);
                 StylusPointCollection pts = new StylusPointCollection();
                 pts.Add(new StylusPoint(p.X, p.Y));
                 Form form = new Form(pts);
-       
+
                 switch (outilSelectionne)
                 {
                     case "form_UmlClass":
@@ -428,7 +446,7 @@ namespace PolyPaint.Modeles
                         //type = UMLClass.TYPE;
                         break;
                     case "form_Artefact":
-                        form = new Artefact(pts);                     
+                        form = new Artefact(pts);
                         //height = Artefact.DEFAULT_HEIGHT;
                         //width = Artefact.DEFAULT_WIDTH;
                         //type = Artefact.TYPE;
@@ -472,23 +490,23 @@ namespace PolyPaint.Modeles
         {
             try
             {
-               /* Stroke trait = traitsRetires.Last();
-                traits.Add(trait);
-                traitsRetires.Remove(trait);*/
+                /* Stroke trait = traitsRetires.Last();
+                 traits.Add(trait);
+                 traitsRetires.Remove(trait);*/
                 if (traitsRetires.Count > 0)
                 {
                     Stroke toUnstack = traitsRetires.Last();
                     SocketManager.UnStackElement((toUnstack as Form).ConvertToShape(this.SocketManager.SessionID));
                 }
             }
-            catch { }         
+            catch { }
         }
         public void RotateForm(object sender)
         {
             if (selectedStrokes != null)
             {
                 Shape[] shapes = new Shape[selectedStrokes.Count];
-                for (int i = 0; i< selectedStrokes.Count; i++)
+                for (int i = 0; i < selectedStrokes.Count; i++)
                 {
                     (selectedStrokes[i] as Form).rotate();
                     shapes[i] = (selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID);
@@ -498,21 +516,21 @@ namespace PolyPaint.Modeles
         }
         public void AddForm(Point p, string forme)
         {
-            StylusPointCollection pts = new StylusPointCollection();                   
+            StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(p.X, p.Y));
 
             switch (forme)
             {
-                case "form_UmlClass":                       
+                case "form_UmlClass":
                     UMLClass umlClass = new UMLClass(pts);
                     umlClass.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
                     umlClass.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
                     traits.Add(umlClass);
-                   
+
 
                     break;
                 case "form_Artefact":
-                    Artefact artefact = new Artefact(pts);                  
+                    Artefact artefact = new Artefact(pts);
                     artefact.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(CouleurSelectionnee);
                     artefact.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(RemplissageSelectionne);
                     traits.Add(artefact);
@@ -530,21 +548,24 @@ namespace PolyPaint.Modeles
                     traits.Add(role);
                     break;
             }
-            
+
         }
         public void AddForm(Shape shape, bool setSelection)
         {
             StylusPointCollection pts = new StylusPointCollection();
-          /*  FormProperties properties = new FormProperties();
-            if (shape.properties.type == "Arrow")
+            /*  FormProperties properties = new FormProperties();
+              if (shape.properties.type == "Arrow")
+              {
+                   properties = (shape.properties as ArrowProperties);
+              }
+              else
+              {
+                   properties = (shape.properties as ShapeProperties);
+              }*/
+            if (shape.properties.type != "Arrow")
             {
-                 properties = (shape.properties as ArrowProperties);
+                pts.Add(new StylusPoint(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]));
             }
-            else
-            {
-                 properties = (shape.properties as ShapeProperties);
-            }*/
-            pts.Add(new StylusPoint(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]));
             switch (shape.properties.type)
             {
                 case "UmlClass":
@@ -587,8 +608,10 @@ namespace PolyPaint.Modeles
                     traits.Add(comment);
                     break;
                 case "Arrow":
+                    pts.Add(new StylusPoint(100, 100));
                     Arrow arrow = new Arrow(pts);
                     arrow.SetToShape(shape);
+                    ManageShapeToArrow(shape, arrow);
                     traits.Add(arrow);
                     break;
 
@@ -597,10 +620,13 @@ namespace PolyPaint.Modeles
             {
                 if (shape.author == this.SocketManager.UserName)
                 {
-                    this.OutilSelectionne = "lasso";
-                    ProprieteModifiee("OutilSelectionne");
-                    this.selectedStrokes = new StrokeCollection { traits.Last() }; //select the new shape created               
-                    ProprieteModifiee("Selection");
+                    if (shape.properties.type != "Arrow")
+                    {
+                        this.OutilSelectionne = "lasso";
+                        ProprieteModifiee("OutilSelectionne");
+                        this.selectedStrokes = new StrokeCollection { traits.Last() }; //select the new shape created               
+                        ProprieteModifiee("Selection");
+                    }
 
                 }
                 else
@@ -649,15 +675,15 @@ namespace PolyPaint.Modeles
                     {
                         (s as Form).SelectionColor = this.PlayerManager.GetPlayer(username).Color;
                         (s as Form).IsSelectedByOther = true;
-                        
+
                     }
                 }
             }
             this.ChangeSelection(selectedStrokes);
             ProprieteModifiee("Selection");
         }
-      
-        
+
+
         // On assigne une nouvelle forme de pointe passée en paramètre.
         public void ChoisirPointe(string pointe) => PointeSelectionnee = pointe;
 
@@ -681,13 +707,13 @@ namespace PolyPaint.Modeles
         {
             if (this.selectedStrokes.Count > 0)
             {
-                
+
             }
         }
         public void HandleErasing(Stroke stroke)
-        {           
-                String[] idList = new string[1];
-                idList[0] = (stroke as Form).Id;
+        {
+            String[] idList = new string[1];
+            idList[0] = (stroke as Form).Id;
 
             /* Shape[] shapes = new Shape[this.selectedStrokes.Count];
              for (int i = 0; i < shapes.Length; i++)
@@ -700,10 +726,52 @@ namespace PolyPaint.Modeles
             {
                 this.SocketManager.DeleteElement(idList);
             }
+
+        }
+        private void ManageShapeToArrow(Shape shape, Stroke s)
+        {
+            if (shape.properties.type == "Arrow")
+            {
+
+                foreach (Stroke stk in traits)
+                {
+                    if ((stk as Form).Id == shape.properties.idShape1)
+                    {
+                        (stk as Form).Arrow = (s as Arrow);
+                        (s as Arrow).Shape1 = (stk as Form);
+                        (s as Arrow).Index1 = shape.properties.index1;
+                        (s as Arrow).StylusPoints[0] = new StylusPoint((stk as Form).EncPoints[(s as Arrow).Index1].X, (stk as Form).EncPoints[(s as Arrow).Index1].Y);
+                    }
+                    if ((stk as Form).Id == shape.properties.idShape2)
+                    {
+                        (stk as Form).Arrow = (s as Arrow);
+                        (s as Arrow).Shape2 = (stk as Form);
+                        (s as Arrow).Index2 = shape.properties.index2;
+                        (s as Arrow).StylusPoints[(s as Arrow).StylusPoints.Count - 1] = new StylusPoint((stk as Form).EncPoints[(s as Arrow).Index2].X, (stk as Form).EncPoints[(s as Arrow).Index2].Y);
+                    }
+                }
+                if (shape.properties.idShape1 == null)
+                {
+                    if ((s as Arrow).Shape1 != null)
+                    {
+                        (s as Arrow).Shape1.Arrow = null;
+                        (s as Arrow).Shape1 = null;
+                    }
+
+                }
+                if (shape.properties.idShape2 == null)
+                {
+                    if ((s as Arrow).Shape2 != null)
+                    {
+                        (s as Arrow).Shape2.Arrow = null;
+                        (s as Arrow).Shape2 = null;
+                    }
+                }
+
+            }
             
         }
-
-
+ 
         public void initializeSocketEvents()
         {
             this.SocketManager.Socket.On("CanvasReset", (data) =>
@@ -753,6 +821,10 @@ namespace PolyPaint.Modeles
                     Application.Current.Dispatcher.Invoke(() =>
                      {
                          this.AddForm(shape,true);
+                         if (this.FormConnectorManager.IsDrawingArrow && shape.author == this.SocketManager.UserName && shape.properties.type == "Arrow")
+                         {
+                             this.FormConnectorManager.Arrows[this.FormConnectorManager.Arrows.Count - 1] = (this.traits.Last() as Arrow);
+                         }
                          // Code causing the exception or requires UI thread access
                      });
 
@@ -845,6 +917,7 @@ namespace PolyPaint.Modeles
                 pts.Add(new StylusPoint(0, 0));
                 Form toUnstack = new Form(pts);
                 toUnstack.SetToShape(shape);
+                ManageShapeToArrow(shape,toUnstack);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -875,12 +948,14 @@ namespace PolyPaint.Modeles
                                 if ((traits[i] as Form).Id == s.id)
                                 {
                                     (traits[i] as Form).SetToShape(s);
+                                    ManageShapeToArrow(s,traits[i]);
                                 }
                             }
                             //StrokeCollection toBeModified = new StrokeCollection(traits.Where(t => (t as Form).Id == s.id));
                             //(toBeModified[0] as Form).SetToShape(s);
                         }
                     }
+                    
                 });
                 
                      

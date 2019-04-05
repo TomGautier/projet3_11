@@ -81,6 +81,33 @@ namespace PolyPaint.Utilitaires
             }
 
         }
+        public override void SetToShape(Shape shape)
+        {
+            this.Id = shape.id;
+            this.Author = shape.author;
+            this.DrawingAttributes.Width = shape.properties.width;
+            this.DrawingAttributes.Height = shape.properties.width;
+            StylusPointCollection points = new StylusPointCollection();
+            for (int i = 0; i < shape.properties.pointsX.Length; i++)
+            {
+                
+                points.Add(new StylusPoint(shape.properties.pointsX[i], shape.properties.pointsY[i]));
+            }
+            this.StylusPoints = points;
+            //this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
+           // this.MakeShape();
+
+            this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
+            //  this.Index1 = shape.properties.index1;
+            //  this.Index2 = shape.properties.index2;
+            this.Q1 = shape.properties.q1;
+            this.Q2 = shape.properties.q2;
+            this.Category = shape.properties.category;
+            this.Label = shape.properties.label;
+            this.BorderStyle = shape.properties.borderType;
+        }
 
         public override Shape ConvertToShape(string drawingSessionID)
         {
@@ -94,13 +121,16 @@ namespace PolyPaint.Utilitaires
             {
                 id2 = this.Shape2.Id;
             }
-            Point[] pts = new Point[this.StylusPoints.Count - 1];
-            for (int i = 0; i < pts.Length; i++)
+            int[] ptsX = new int[this.StylusPoints.Count];
+            int[] ptsY = new int[this.StylusPoints.Count];
+            for (int i = 0; i < this.StylusPoints.Count; i++)
             {
-                pts[i] = this.StylusPoints[i].ToPoint();
+                ptsX[i] = (int)this.StylusPoints[i].X;
+                ptsY[i] = (int)this.StylusPoints[i].Y;
+                // pts[i] = this.StylusPoints[i].ToPoint();
             }
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), null,
-                -1, -1, -1, this.BorderStyle, this.Label, null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, pts, this.Category);
+                (int)this.DrawingAttributes.Width, (int)this.DrawingAttributes.Width, -1, this.BorderStyle, this.Label, null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, ptsX,ptsY, this.Category);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         private  void DrawCategory(DrawingContext drawingContext)

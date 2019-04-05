@@ -421,10 +421,11 @@ namespace PolyPaint.VueModeles
         }
         public void HandleDrag()
         {
+            editeur.HandleSelectionModification();
             // TODO : Send socket -> selection has moved
-            foreach (Stroke s in this.SelectedStrokes)
+           /* foreach (Stroke s in this.SelectedStrokes)
             {
-               /* if ((s as Form).Center.X > this.Canvas.Width || (s as Form).Center.X < 0)
+                if ((s as Form).Center.X > this.Canvas.Width || (s as Form).Center.X < 0)
                 {
                     (s as Form).Center = new Point(this.Canvas.Width / 2, (s as Form).Center.Y);
                     (s as Form).MakeShape();
@@ -433,9 +434,9 @@ namespace PolyPaint.VueModeles
                 {
                     (s as Form).Center = new Point((s as Form).Center.X, this.Canvas.Height / 2);
                     (s as Form).MakeShape();
-                }*/
-            }
-            editeur.HandleSelectionModification();
+                }
+            }*/
+           
         }
         public void HandleResize()
         {
@@ -539,6 +540,9 @@ namespace PolyPaint.VueModeles
                 this.Canvas.EditingMode = InkCanvasEditingMode.Select;
                 editeur.UpdateArrow(this.StrokeBeingDragged, this.IndexBeingDragged,mousePos);
                 this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+                Shape[] shapes = new Shape[1];
+                shapes[0] = (this.StrokeBeingDragged as Form).ConvertToShape(this.SocketManager.SessionID);
+                this.SocketManager.HandleModification(shapes);
                 this.StrokeBeingDragged = null;
                 this.IndexBeingDragged = -1;
             }
