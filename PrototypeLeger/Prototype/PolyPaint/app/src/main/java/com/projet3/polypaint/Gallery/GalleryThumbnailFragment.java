@@ -20,6 +20,7 @@ import org.json.JSONObject;
 public class GalleryThumbnailFragment extends Fragment {
     private View rootView = null;
     private JSONObject image = null;
+    Bitmap bitmap;
 
     public GalleryThumbnailFragment() {}
     @Override
@@ -58,17 +59,21 @@ public class GalleryThumbnailFragment extends Fragment {
             tv.setText(image.getString("author"));
             if (image.has("thumbnail")) {
                 byte[] decoded = Base64.decode(image.getString("thumbnail"), Base64.DEFAULT);
-                Bitmap bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+                bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
 
                 if (bitmap != null) {
                     iv.setImageBitmap(bitmap);
                     iv.invalidate();
                 }
+                else System.out.println("Bitmap is null");
             }
+            else System.out.println("Image has no thumbnail");
 
             rootView.setContentDescription(image.getString("id"));
         } catch (JSONException e) {
             e.printStackTrace();
+        } catch (OutOfMemoryError e) {
+            System.out.println("Out of memory, thumbnail couldn't be loaded");
         }
     }
 }
