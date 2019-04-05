@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
@@ -21,8 +22,8 @@ public class UMLClass extends GenericTextShape {
 
     public static final String TYPE = "UmlClass";
 
-    public UMLClass(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y, style);
+    public UMLClass(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id, x, y, style,angle);
 
         attributes = new ArrayList<>();
         methods = new ArrayList<>();
@@ -32,8 +33,8 @@ public class UMLClass extends GenericTextShape {
 
         initializePaint();
     }
-    public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style) {
-        super(id, x, y, style, name);
+    public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style, float angle) {
+        super(id, x, y, style, name,angle);
 
         setAttributes(attributes);
         setMethods(methods);
@@ -51,7 +52,7 @@ public class UMLClass extends GenericTextShape {
 
     public UMLClass clone() {
         return new UMLClass(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,
-                width, height, text, concatenateList(attributes), concatenateList(methods), this.style);
+                width, height, text, concatenateList(attributes), concatenateList(methods), this.style, angle);
     }
 
     @Override
@@ -63,7 +64,14 @@ public class UMLClass extends GenericTextShape {
 
         p.addRect(posX - w2, posY - h2, posX + w2, posY + h2, Path.Direction.CW);
 
+        //for (AnchorPoint anchorPoint : anchorPoints)
+          //  anchorPoint.drawOnCanvas(canvas);
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
+
+        canvas.drawPath(p, style.getBorderPaint());
+
         //canvas.drawPath(p, style.getBorderPaint());
         traceStyledLine(posX - w2, posY - h2, posX + w2, posY - h2, canvas);
         traceStyledLine(posX + w2, posY - h2, posX + w2, posY + h2, canvas);
@@ -83,6 +91,7 @@ public class UMLClass extends GenericTextShape {
         for (int i = 0; i < methods.size(); i++) {
             canvas.drawText(methods.get(i), posX - w2 + PADDING, posY - h2 + (2 + i + attributes.size()) * FONT_SIZE + 5*PADDING, leftAlignedText);
         }
+        canvas.restore();
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

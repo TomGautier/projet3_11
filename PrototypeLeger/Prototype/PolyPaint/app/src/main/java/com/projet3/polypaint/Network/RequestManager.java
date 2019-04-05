@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException;
 import com.projet3.polypaint.USER.UserJsonPostTask;
 
 public class RequestManager {
-    private final int TIMEOUT_DELAY = 20;
+    private final int TIMEOUT_DELAY = 5;
     private final String PORT =":3000";
 
     private String url;
@@ -60,7 +60,8 @@ public class RequestManager {
     }
     private boolean configureLoginResponse(String response_){
         sessionID = response_;
-        return !response_.isEmpty();
+
+        return (response_ == null || response_.isEmpty()) ? false : true;
     }
 
     public ArrayList<Conversation> fetchUserConversations() {

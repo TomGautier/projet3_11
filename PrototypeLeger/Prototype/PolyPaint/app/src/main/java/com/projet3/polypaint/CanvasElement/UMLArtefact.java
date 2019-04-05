@@ -4,19 +4,22 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import java.util.regex.Matcher;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLArtefact extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 80;
-
     public static final String TYPE = "UmlArtefact";
-
-    public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id,x, y, width, height, style);
+    public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id,x, y, width, height, style, angle);
+        //width = DEFAULT_WIDTH;
+        //height = DEFAULT_HEIGHT;
     }
+
+
     public UMLArtefact clone() {
-        return new UMLArtefact(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style);
+        return new UMLArtefact(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style, angle);
     }
 
     @Override
@@ -35,6 +38,8 @@ public class UMLArtefact extends GenericShape {
         p.lineTo(posX - w2, posY + h2);
         p.lineTo(posX - w2, posY - h2);
 
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
         traceStyledLine(posX - w2, posY - h2, posX + w4, posY - h2, canvas);
@@ -44,12 +49,27 @@ public class UMLArtefact extends GenericShape {
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
         traceStyledLine(posX + w2, posY - h4, posX + w4, posY - h4, canvas);
         traceStyledLine(posX + w4, posY - h4, posX + w4, posY - h2, canvas);
+        canvas.restore();
+    }
 
-        /*p.moveTo(posX + w2, posY - h4);
-        p.lineTo(posX + w4, posY - h4);
-        p.lineTo(posX + w4, posY - h2);*/
+    @Override
+    public Path getSelectionPath() {
+        int w2 = width/2;
+        int h2 = height/2;
+        int w4 = width/4;
+        int h4 = height/4;
 
-        //canvas.drawPath(p, style.getBorderPaint());
+        Path p = new Path();
+
+        p.moveTo(posX - w2, posY - h2);
+        p.lineTo(posX + w4, posY - h2);
+        p.lineTo(posX + w2, posY - h4);
+        p.lineTo(posX + w2, posY + h2);
+        p.lineTo(posX - w2, posY + h2);
+        p.lineTo(posX - w2, posY - h2);
+
+        return p;
+
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

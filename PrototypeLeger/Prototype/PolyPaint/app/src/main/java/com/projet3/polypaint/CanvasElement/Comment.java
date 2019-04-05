@@ -10,11 +10,11 @@ public class Comment extends GenericTextShape {
     public static final String TYPE = "Comment";
 
     public Comment(String id, int x, int y, PaintStyle style) {
-        super(id, x, y, style);
+        super(id, x, y, style, 0);
         height += 2*PADDING;
     }
     private Comment(String id, int x, int y, PaintStyle style, String contents) {
-        super(id, x, y, style, contents);
+        super(id, x, y, style, contents, 0);
         height += 2*PADDING;
     }
 

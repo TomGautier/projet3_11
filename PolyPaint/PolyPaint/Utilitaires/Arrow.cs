@@ -15,6 +15,7 @@ namespace PolyPaint.Utilitaires
     class Arrow: Form
     {
         public const string TYPE = "Arrow";
+        public string Category { get; set; }
         public Form Shape1;
         public int Index1;
         public int Index2;
@@ -23,13 +24,13 @@ namespace PolyPaint.Utilitaires
             :base(pts)
         {
             this.DrawingAttributes.Color = Colors.Red;
-            
+            this.Type = TYPE;
  
 
         }
         public void ShapeMoved(string shapeID)
         {
-            if (shapeID == Shape1.Id)
+            if (Shape1 != null && shapeID == Shape1.Id)
             {
                 this.StylusPoints[0] = new StylusPoint(this.Shape1.EncPoints[Index1].X,this.Shape1.EncPoints[Index1].Y);
             }
@@ -42,6 +43,151 @@ namespace PolyPaint.Utilitaires
         {
             OnDrawCore(drawingContext, drawingAttributes);            
             DrawLabel(drawingContext);
+            if (this.StylusPoints.Count > 1)
+            {
+                DrawCategory(drawingContext);
+            }
+        }
+        private  void DrawCategory(DrawingContext drawingContext)
+        {
+            switch (this.Category)
+            {
+                case "One Way":
+                    DrawOneWay(drawingContext);
+                    break;
+                case "Two Ways":
+                    DrawTwoWays(drawingContext);
+                    break;
+                case "Inheritance":
+                    DrawInheritance(drawingContext);
+                    break;
+                case "Aggregation":
+                    DrawAggregation(drawingContext);
+                    break;
+                case "Composition":
+                    DrawComposition(drawingContext);
+                    break;
+            }
+        }
+        private void DrawOneWay(DrawingContext dc)
+        {
+            Vector direction = Point.Subtract(this.StylusPoints[this.StylusPoints.Count - 2].ToPoint(), this.StylusPoints[this.StylusPoints.Count - 1].ToPoint());
+            direction.Normalize();
+            Vector heightDirection = new Vector(-direction.Y, direction.X);
+            heightDirection.Normalize();
+            int width = (int)this.DrawingAttributes.Width * 3;
+            LineSegment[] segments = new LineSegment[3];
+
+            Point end = this.StylusPoints[this.StylusPoints.Count - 1].ToPoint();
+
+            //segments[0] = new LineSegment(end,true);
+            segments[0] = new LineSegment(end + width * direction + width*heightDirection,true);
+            segments[1] = new LineSegment(end + width * direction - width * heightDirection, true);
+            segments[2] = new LineSegment(end -5 * direction, true);
+
+            var figure = new PathFigure(end -5 * direction, segments, true);
+            var geo = new PathGeometry(new[] { figure });
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
+            dc.DrawGeometry(brush, null, geo);
+        }
+        private void DrawTwoWays(DrawingContext dc)
+        {
+            DrawOneWay(dc);
+
+            Vector direction = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint());
+            direction.Normalize();
+            Vector heightDirection = new Vector(-direction.Y, direction.X);
+            heightDirection.Normalize();
+            int width = (int)this.DrawingAttributes.Width * 3;
+            LineSegment[] segments = new LineSegment[3];
+
+            Point end = this.StylusPoints[0].ToPoint();
+
+            //segments[0] = new LineSegment(end,true);
+            segments[0] = new LineSegment(end + width * direction + width * heightDirection, true);
+            segments[1] = new LineSegment(end + width * direction - width * heightDirection, true);
+            segments[2] = new LineSegment(end - 5 * direction, true);
+
+            var figure = new PathFigure(end - 5 * direction, segments, true);
+            var geo = new PathGeometry(new[] { figure });
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
+            dc.DrawGeometry(brush, null, geo);
+        }
+        private void DrawInheritance(DrawingContext dc)
+        {
+            Vector direction = Point.Subtract(this.StylusPoints[this.StylusPoints.Count - 2].ToPoint(), this.StylusPoints[this.StylusPoints.Count - 1].ToPoint());
+            direction.Normalize();
+            Vector heightDirection = new Vector(-direction.Y, direction.X);
+            heightDirection.Normalize();
+            int width = (int)this.DrawingAttributes.Width * 3;
+            LineSegment[] segments = new LineSegment[3];
+
+            Point end = this.StylusPoints[this.StylusPoints.Count - 1].ToPoint();
+
+            //segments[0] = new LineSegment(end,true);
+            segments[0] = new LineSegment(end + width * direction + width * heightDirection, true);
+            segments[1] = new LineSegment(end + width * direction - width * heightDirection, true);
+            segments[2] = new LineSegment(end - 5 * direction, true);
+
+            var figure = new PathFigure(end - 5 * direction, segments, true);
+            var geo = new PathGeometry(new[] { figure });
+            SolidColorBrush brush = new SolidColorBrush(Colors.White);
+            dc.DrawGeometry(brush, null, geo);
+            SolidColorBrush brushBorder = new SolidColorBrush(Colors.Black);
+            dc.DrawLine(new Pen(brushBorder, 1), end,segments[0].Point);
+            dc.DrawLine(new Pen(brushBorder, 1), end, segments[1].Point);
+            dc.DrawLine(new Pen(brushBorder, 1), segments[0].Point, segments[1].Point);
+        }
+        private void DrawAggregation(DrawingContext dc)
+        {
+            Vector direction = Point.Subtract(this.StylusPoints[this.StylusPoints.Count - 2].ToPoint(), this.StylusPoints[this.StylusPoints.Count - 1].ToPoint());
+            direction.Normalize();
+            Vector heightDirection = new Vector(-direction.Y, direction.X);
+            heightDirection.Normalize();
+            int width = (int)this.DrawingAttributes.Width * 3;
+            LineSegment[] segments = new LineSegment[4];
+
+            Point end = this.StylusPoints[this.StylusPoints.Count - 1].ToPoint();
+
+            //segments[0] = new LineSegment(end,true);
+            segments[0] = new LineSegment(end + width * direction + width * heightDirection, true);
+            segments[1] = new LineSegment(end + (2*width + 5) * direction, true);
+            segments[2] = new LineSegment(end + width * direction - width * heightDirection, true);
+            segments[3] = new LineSegment(end - 5 * direction, true);
+
+
+            var figure = new PathFigure(end - 5 * direction, segments, true);
+            var geo = new PathGeometry(new[] { figure });
+            SolidColorBrush brush = new SolidColorBrush(Colors.White);
+            dc.DrawGeometry(brush, null, geo);
+            SolidColorBrush brushBorder = new SolidColorBrush(Colors.Black);
+            dc.DrawLine(new Pen(brushBorder, 1), end -5*direction, segments[0].Point);
+            dc.DrawLine(new Pen(brushBorder, 1), end-5*direction, segments[2].Point);
+            dc.DrawLine(new Pen(brushBorder, 1), segments[1].Point, segments[0].Point);
+            dc.DrawLine(new Pen(brushBorder, 1), segments[1].Point, segments[2].Point);
+        }
+        private void DrawComposition(DrawingContext dc)
+        {
+            Vector direction = Point.Subtract(this.StylusPoints[this.StylusPoints.Count - 2].ToPoint(), this.StylusPoints[this.StylusPoints.Count - 1].ToPoint());
+            direction.Normalize();
+            Vector heightDirection = new Vector(-direction.Y, direction.X);
+            heightDirection.Normalize();
+            int width = (int)this.DrawingAttributes.Width * 3;
+            LineSegment[] segments = new LineSegment[4];
+
+            Point end = this.StylusPoints[this.StylusPoints.Count - 1].ToPoint();
+
+            //segments[0] = new LineSegment(end,true);
+            segments[0] = new LineSegment(end + width * direction + width * heightDirection, true);
+            segments[1] = new LineSegment(end + (2 * width + 5) * direction, true);
+            segments[2] = new LineSegment(end + width * direction - width * heightDirection, true);
+            segments[3] = new LineSegment(end - 5 * direction, true);
+
+
+            var figure = new PathFigure(end - 5 * direction, segments, true);
+            var geo = new PathGeometry(new[] { figure });
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
+            dc.DrawGeometry(brush, null, geo);
         }
         private Point GetCenter()
         {

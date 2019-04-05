@@ -34,10 +34,11 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.UnstackElement, args =>this.unstackElements(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
 
         this.socketService.subscribe(SocketEvents.SelectElements, args => this.selectElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.selectElements));
-        this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
-        
+        //this.socketService.subscribe(SocketEvents.NewUserJoined, args => this.verifyAndAct(args[0], args[1][0], this.resizeCanvas));
+        this.socketService.subscribe(SocketEvents.ResizeCanvas, args => this.resizeCanvas(JSON.parse(args[1][0])));
 
-        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
+        this.socketService.subscribe(SocketEvents.ResetCanvas, args => this.resetCanvas(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.resetCanvas));
+        
     }
 
     public joinSession(socketId: string, doc : any) {
@@ -50,20 +51,31 @@ export class DrawingSessionManager {
         }
         var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
         if (users !== undefined){
-            if (users.indexOf(doc.username) == -1){
+            if (doc.username != null && users.indexOf(doc.username) == -1){
                 users.push(doc.username);
             }
             this.socketService.emit(doc.drawingSessionId,SocketEvents.NewUserJoined, users);
         } 
     }
 
-    public leaveSession(socketId: string, sessionId: string) {
+    public leaveSession(socketId: string, doc: any) {
         this.selectedObjects.forEach((value: String, key: String, map) =>
         {
             // TODO: Delete every user's selected objects when he leaves a session.
             console.log(value, key);
         });
-        this.socketService.leaveRoom(sessionId, socketId);
+        this.socketService.leaveRoom(doc.sessionId, socketId);
+        var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
+        for (let i = 0; i< users.length; i++)
+        {
+            if (users[i] == doc.username){
+                delete users[i];
+            }
+        }
+        this.connectedUsers.set(doc.drawingSessionId,users);
+
+        
+        this.socketService.emit(doc.sessionId, SocketEvents.LeftDrawingSession);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
@@ -85,7 +97,6 @@ export class DrawingSessionManager {
         for (const shape of doc.shapes){
             this.drawingSessionService.modifyElement(shape);
         }
-        
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement, doc);
     }
     public selectElements(doc : any) {

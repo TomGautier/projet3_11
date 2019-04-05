@@ -60,8 +60,8 @@ public class HomeActivity extends AppCompatActivity {
 			createUsersListFragment();
 			createChatFragment();
 			createImageEditingFragment();
-			toggleImageEditingVisibility();
 			createCollabImageEditingFragment();
+			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
 		}

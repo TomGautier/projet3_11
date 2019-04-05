@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class Player {
     protected final float SELECTION_STROKE_WIDTH = 4f;
-    private static int[] colors = new int[] {Color.RED, Color.BLUE};
+    private static int[] colors = new int[] {Color.RED, Color.BLUE, Color.YELLOW, Color.GREEN, Color.MAGENTA};
     private String name;
     private Paint selectionPaint;
     private ArrayList<GenericShape> selectedShapes;
@@ -37,27 +37,15 @@ public class Player {
     public final ArrayList<GenericShape> getSelectedShapes(){
         return selectedShapes;
     }
+
     public void addSelectedShape(GenericShape shape){
         selectedShapes.add(shape);
     }
     public void removeSelectedShape(GenericShape shape){
         selectedShapes.remove(shape);
     }
-    public void setSelectedShape(GenericShape shape) {
-        for (int i = 0; i < selectedShapes.size(); i++){
-            if (selectedShapes.get(i).getId().equals(shape.getId())){
-                selectedShapes.set(i,shape);
-            }
-        }
-    }
+
     public void clearSelectedShape(){selectedShapes.clear();}
-    /*public int findSelectedShapeIndex(String id){
-        for (int i = 0; i< selectedShapes.size(); i++){
-            if (selectedShapes.get(i).getId().equals(id))
-                return i;
-        }
-        return -1;
-    }*/
 
     @SuppressLint("ResourceAsColor")
     private void initializePaint(int selectionColor) {

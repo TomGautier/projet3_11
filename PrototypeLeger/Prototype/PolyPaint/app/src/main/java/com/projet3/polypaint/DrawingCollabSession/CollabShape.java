@@ -1,4 +1,6 @@
 package com.projet3.polypaint.DrawingCollabSession;
+import com.projet3.polypaint.CanvasElement.ConnectionForm;
+import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +27,10 @@ public class CollabShape {
             id = obj.getString(ID_TAG);
             drawingSessionId = obj.getString(DRAWING_SESSION_TAG);
             author = obj.getString(AUTHOR_TAG);
-            properties = new CollabShapeProperties(obj.getJSONObject(PROPERTIES_TAG));
+            if (obj.getJSONObject(PROPERTIES_TAG).getString(CollabShapeProperties.TYPE_TAG).equals(ImageEditingFragment.ShapeType.ConnectionForm.toString()))
+                properties = new CollabConnectionProperties(obj.getJSONObject(PROPERTIES_TAG));
+            else
+                properties = new CollabShapeProperties(obj.getJSONObject(PROPERTIES_TAG));
 
         } catch (JSONException e) {
             e.printStackTrace();
