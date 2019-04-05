@@ -11,6 +11,7 @@ using PolyPaint.Managers;
 using System.Windows.Input;
 using PolyPaint.Vues;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace PolyPaint.VueModeles
 {
@@ -168,6 +169,7 @@ namespace PolyPaint.VueModeles
 
         public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
         public ICommand NavigateSignup { get { return new RelayCommand(OnNavigateSignup, () => { return true; }); } }
+        public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
 
         private void OnNavigateLogin()
         {
@@ -177,6 +179,29 @@ namespace PolyPaint.VueModeles
         private void OnNavigateSignup()
         {
             SwitchView = 2;
+        }
+
+        private void OnNavigateNewSession()
+        {
+            string newDrawingId = Username + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+
+            networkManager.PostImage(Username, SessionId, newDrawingId, "public", "");
+
+            //TODO : Extract following in fct JoinDrawSession when dev pulled
+            var format = new
+            {
+                sessionId = SessionId,
+                username = Username,
+                imageId = newDrawingId
+            };
+
+            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
+
+            SocketManager.Socket.On("JoinedDrawingSession", () => {
+                //TODO : Load canvas from server 
+
+                SwitchView = 5;
+            });
         }
 
         public async void Login(string password)
