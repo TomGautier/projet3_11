@@ -118,6 +118,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         ImageEditingDialogManager.getInstance().subscribe(this);
 
         setTouchListener();
+        drawAllShapes();
         return rootView;
     }
 
@@ -282,6 +283,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected void initializePaint() {
         // Border paint
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
+        System.out.println("Default shape color : " + borderColor);
         Paint borderPaint = new Paint();
         borderPaint.setColor(borderColor);
 
