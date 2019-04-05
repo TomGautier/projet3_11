@@ -43,7 +43,7 @@ namespace PolyPaint.Utilitaires
             this.WidthDirection = Point.Subtract(this.StylusPoints[3].ToPoint(), this.StylusPoints[2].ToPoint());
             this.WidthDirection.Normalize();*/
         }
-        protected override void MakeShape()
+        public override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X, this.Center.Y - 0.4*Height));

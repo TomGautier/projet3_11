@@ -28,17 +28,11 @@ namespace PolyPaint.Utilitaires
             return await response.Content.ReadAsStringAsync();
         }
 
-        internal void PostImage(string username, string sessionId, string imageId, string visibility, string protection)
+        public async Task<string> LoadUsersAsync(string username, string sessionId)
         {
-            var bodyTemplate = new
-            {
-                id = imageId,
-                visibility = visibility,
-                protection = protection,
-                author = username
-            };
-            var body = new StringContent(JsonConvert.SerializeObject(bodyTemplate), Encoding.UTF8, "application/json");
-            var response =  client.PostAsync("http://127.0.0.1:3000/api/images/" + sessionId + "/" + username, body);
+            var response = await client.GetAsync("http://127.0.0.1:3000/api/user/" + sessionId + "/" + username);
+
+            return await response.Content.ReadAsStringAsync();
         }
     }
 }

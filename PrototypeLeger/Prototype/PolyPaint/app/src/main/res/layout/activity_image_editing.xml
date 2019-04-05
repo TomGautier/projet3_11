@@ -44,6 +44,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/buttonMove" />
+                <Button
+                    android:id="@+id/buttonRotate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonRotate"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
 
                 <View style="@style/Divider" />
 
@@ -95,6 +102,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/buttonTextBox" />
+                <Button
+                    android:id="@+id/buttonConnectionForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonConnectionForm"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
 
                 <View
                     style="@style/Divider"
@@ -170,8 +183,8 @@
 
             <ImageView
                 android:id="@+id/canvasView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@android:color/background_light"
                 android:scrollbars="none"
                 app:srcCompat="@android:color/background_light" />

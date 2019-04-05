@@ -12,13 +12,13 @@ public class UMLPhase extends GenericTextShape {
 
     public static final String TYPE = "Phase";
 
-    public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y, style);
+    public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id, x, y, style,angle);
         this.width = width;
         this.height = height;
     }
-    public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents) {
-        super(id, x, y, style, contents);
+    public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
+        super(id, x, y, style, contents,0);
         this.width = width;
         this.height = height;
     }
@@ -32,6 +32,8 @@ public class UMLPhase extends GenericTextShape {
 
         p.addRect(posX - w2, posY - h2, posX + w2, posY - h2 + FONT_SIZE + 2*PADDING, Path.Direction.CW);
 
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawPath(p, style.getBackgroundPaint());
         //canvas.drawPath(p, style.getBorderPaint());
         traceStyledLine(posX - w2, posY - h2, posX + w2, posY - h2, canvas);
@@ -41,10 +43,11 @@ public class UMLPhase extends GenericTextShape {
         traceStyledLine(posX - w2, posY - h2 + FONT_SIZE + 2*PADDING, posX + w2, posY - h2 + FONT_SIZE + 2*PADDING, canvas);
 
         canvas.drawText(text, posX, posY - h2 + FONT_SIZE + PADDING, style.getTextPaint());
+        canvas.restore();
     }
 
     public UMLPhase clone() {
-        return new UMLPhase(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text);
+        return new UMLPhase(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text,angle);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

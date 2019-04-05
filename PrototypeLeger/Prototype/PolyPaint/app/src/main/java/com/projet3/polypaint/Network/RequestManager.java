@@ -32,7 +32,7 @@ import java.util.concurrent.TimeoutException;
 import com.projet3.polypaint.USER.UserJsonPostTask;
 
 public class RequestManager {
-    private final int TIMEOUT_DELAY = 20;
+    private final int TIMEOUT_DELAY = 5;
     private final String PORT =":3000";
 
     private String url;
@@ -76,7 +76,8 @@ public class RequestManager {
     }
     private boolean configureLoginResponse(String response_){
         sessionID = response_;
-        return !response_.isEmpty();
+
+        return (response_ == null || response_.isEmpty()) ? false : true;
     }
 
     public ArrayList<Conversation> fetchUserConversations() {
@@ -313,13 +314,12 @@ public class RequestManager {
         else {
             try {
                 for (int i = 0; i < jsons.length(); i++) {
-                    // TODO : rotation: { type: Number }
                     JSONObject object = jsons.getJSONObject(i);
                     JSONObject properties = object.getJSONObject("properties");
                     JSONArray position = properties.getJSONArray("middlePointCoord");
                     int width = properties.getInt("width");
                     int height = properties.getInt("height");
-                    System.out.println(position);
+                    float rotation = (float) properties.getDouble("rotation");
 
                     String text = "";
                     String attributes = "";
@@ -356,25 +356,25 @@ public class RequestManager {
                     GenericShape nShape = null;
                     switch (properties.getString("type")) {
                         case "Activity" :
-                            nShape = new UMLActivity(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style);
+                            nShape = new UMLActivity(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, rotation);
                             break;
                         case "Artefact" :
-                            nShape = new UMLArtefact(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style);
+                            nShape = new UMLArtefact(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, rotation);
                             break;
                         case "Comment" :
-                            nShape = new Comment(object.getString("id"), position.getInt(0), position.getInt(1), style, text);
+                            nShape = new Comment(object.getString("id"), position.getInt(0), position.getInt(1), style, text, rotation);
                             break;
                         case "Phase" :
-                            nShape = new UMLPhase(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, text);
+                            nShape = new UMLPhase(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, text, rotation);
                             break;
                         case "Role" :
-                            nShape = new UMLRole(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style);
+                            nShape = new UMLRole(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, rotation);
                             break;
                         case "text_box" :
-                            nShape = new TextBox(object.getString("id"), position.getInt(0), position.getInt(1), style, text);
+                            nShape = new TextBox(object.getString("id"), position.getInt(0), position.getInt(1), style, text, rotation);
                             break;
                         case "UmlClass" :
-                            nShape = new UMLClass(object.getString("id"), position.getInt(0), position.getInt(1), width, height, text, attributes, methods, style);
+                            nShape = new UMLClass(object.getString("id"), position.getInt(0), position.getInt(1), width, height, text, attributes, methods, style, rotation);
                             break;
                         default:
                             System.out.println("Unrecognised shape type when loading drawing session : " + properties.getString("type"));

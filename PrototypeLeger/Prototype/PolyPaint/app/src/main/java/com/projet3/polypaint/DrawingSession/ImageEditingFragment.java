@@ -4,15 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
+import android.graphics.drawable.shapes.Shape;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,24 +25,30 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 
 import com.projet3.polypaint.CanvasElement.Comment;
+import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.GenericTextShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
+import com.projet3.polypaint.CanvasElement.RotationGestureDetector;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
 import com.projet3.polypaint.CanvasElement.UMLPhase;
 import com.projet3.polypaint.CanvasElement.UMLRole;
+import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
+import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.R;
 import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
 import java.util.Stack;
 
-public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber {
+public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber, RotationGestureDetector.OnRotationGestureListener {
 
     protected Button buttonClass;
     protected Button buttonRole;
@@ -46,8 +57,10 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonPhase;
     protected Button buttonComment;
     protected Button buttonText;
+    protected Button buttonConnectionForm;
     protected Button buttonCanvas;
     protected Button buttonMove;
+    protected Button buttonRotate;
     protected Button buttonSelection;
     protected Button buttonLasso;
     protected Button buttonReset;
@@ -58,10 +71,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonUnstack;
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
-
-    protected enum Mode{selection, lasso, creation, move}
-    protected enum ShapeType{none, UmlClass, Activity, Artefact, Role, Phase, Comment, text_box}
-
+    protected final int DEFAULT_CANVAS_WIDTH = 1500;
+    protected final int DEFAULT_CANVAS_HEIGHT = 1000;
+    protected final int CANVAS_BACKGROUND_PADDING = 75;
+    protected enum Mode{selection, lasso, creation, move, rotate}
+    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm, Phase, Comment}
+    public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
+    protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
     protected final String REMOVE_ACTION = "REMOVE";
@@ -79,13 +95,18 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
     protected Mode currentMode = Mode.creation;
     protected ShapeType currentShapeType = ShapeType.UmlClass;
+    protected ConnectionFormType currentConnectionFormType = ConnectionFormType.Inheritance;
 
     protected Paint selectionPaint;
     protected ArrayList<GenericShape> selections = null;
     protected Path selectionPath = new Path();
     protected boolean isMovingSelection = false;
+    protected boolean isResizingShape = false;
+    protected Path resizeConnectionFormPath = new Path();
     protected int lastTouchPosX;
     protected int lastTouchPosY;
+    protected int lastBGTouchPosX;
+    protected int lastBGTouchPosY;
 
     protected View rootView;
 
@@ -93,7 +114,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected boolean isLongPressed = false;
     protected int idCpt;
     protected String id;
-
+    protected RotationGestureDetector rotationDetector;
+    protected GenericShape rotatingShape = null;
 
     public ImageEditingFragment() {}
     @Override
@@ -106,6 +128,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         shapes = new ArrayList<>();
         selections = new ArrayList<>();
         cutShapes = new ArrayList<>();
+        rotationDetector = new RotationGestureDetector(this);
 
         addStack = new Stack<>();
         removeStack = new Stack<>();
@@ -118,6 +141,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         ImageEditingDialogManager.getInstance().subscribe(this);
 
         setTouchListener();
+        initializeCanvas();
         drawAllShapes();
         return rootView;
     }
@@ -135,6 +159,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.Activity);
+            }
+        });
+
+        buttonRotate = (Button)rootView.findViewById(R.id.buttonRotate);
+        buttonRotate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setMode(Mode.rotate);
             }
         });
 
@@ -183,6 +215,39 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             @Override
             public void onClick(View v) {
                 setShapeType(ShapeType.text_box);
+            }
+        });
+
+        buttonConnectionForm = (Button)rootView.findViewById(R.id.buttonConnectionForm);
+        buttonConnectionForm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu dropDownMenu = new PopupMenu(getActivity(), buttonConnectionForm);
+                dropDownMenu.getMenuInflater().inflate(R.menu.connection_forms_menu, dropDownMenu.getMenu());
+                dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.connectionFormAgregation:
+                                setConnectionFormType(ConnectionFormType.Agregation);
+                                setShapeType(ShapeType.ConnectionForm);
+                                break;
+                            case R.id.connectionFormInheritance:
+                                setConnectionFormType(ConnectionFormType.Inheritance);
+                                setShapeType(ShapeType.ConnectionForm);
+                                break;
+                            case R.id.connectionFormBidirectional:
+                                setConnectionFormType(ConnectionFormType.Bidirectional);
+                                setShapeType(ShapeType.ConnectionForm);
+                                break;
+                            case R.id.connectionFormComposition:
+                                setConnectionFormType(ConnectionFormType.Composition);
+                                setShapeType(ShapeType.ConnectionForm);
+                        }
+                        return true;
+                    }
+                });
+                dropDownMenu.show();
             }
         });
 
@@ -308,7 +373,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         selectionPaint.setAntiAlias(true);
 
     }
-
+    protected boolean canResize(){
+        return selections.size() == 1 && selections.get(0).getClass().equals(ConnectionForm.class);
+    }
+    protected boolean canRotate(){
+        return selections.size() == 1;
+    }
     @SuppressLint("ClickableViewAccessibility")
     protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
@@ -327,10 +397,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 // Check if canvas is being resized
                 else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
                     return resizeCanvas(event);
-                else switch (currentMode) {
+                 switch (currentMode) {
                     case selection:
-                        checkSelection(posX, posY);
+                        if (canResize() && selections.get(0).canResize(posX,posY)){
+                            resizeShape(event);
+                            continueListening = true;
+                        }
+                        else
+                            checkSelection(posX,posY);
                         break;
+                        case rotate:
+                            rotationDetector.onTouchEvent(event, posX, posY);
+                            continueListening = true;
+                            break;
                     case lasso:
                         doLassoSelection(event);
                         continueListening = true;
@@ -368,6 +447,30 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         });
     }
 
+    protected void drawAnchorPoints(){
+        for (GenericShape shape : shapes){
+            shape.drawAnchorPoints(canvas);
+        }
+    }
+
+    public void OnRotation(RotationGestureDetector rotationDetector, int posX, int posY) {
+        if (rotatingShape != null)
+            rotatingShape.rotate(-rotationDetector.getAngle());
+        else{
+            for (GenericShape shape : selections) {
+                if (shape.canRotate(posX, posY)) {
+                    shape.rotate(-rotationDetector.getAngle());
+                    rotatingShape = shape;
+                    return;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onEndRotation() {
+        rotatingShape = null;
+    }
 
     protected void stack(){
 
@@ -377,9 +480,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     protected void checkSelection(int x, int y) {
         selections.clear();
-
         for (int i = shapes.size() - 1; i >= 0; i--) {
-            if (shapes.get(i).getBoundingBox().contains(x, y)){
+            if (shapes.get(i).contains(x, y)){
                 selections.add(shapes.get(i));
                 return;
             }
@@ -425,15 +527,15 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         selections.clear();
 
         for (GenericShape shape : shapes) {
-            canvas.clipRect(shape.getBoundingBox(), Region.Op.REPLACE);
+            canvas.clipPath(shape.getSelectionPath(), Region.Op.REPLACE);
 
             // Check if entire bounding box is contained in selectionPath
             if (!canvas.clipPath(selectionPath, Region.Op.DIFFERENCE))
                 selections.add(shape);
         }
 
-        // Reset clip to full canvas
         canvas.clipRect(new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), Region.Op.REPLACE);
+        // Reset clip to full canvas
     }
 
     protected GenericShape addShape(int posX, int posY) {
@@ -442,25 +544,25 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         id = FetchManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
         switch (currentShapeType) {
             case UmlClass :
-                nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case Activity :
-                nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Artefact :
-                nShape = new UMLArtefact(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLArtefact(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Role :
-                nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLRole(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Phase :
-                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
-                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
+                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case Comment :
@@ -468,18 +570,20 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case text_box :
-                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
+            case ConnectionForm:
+                nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
+                        String.format("#%06x", ContextCompat.getColor(getActivity(),
+                                R.color.DefaultConnectionFormColor)), ConnectionForm.generateDefaultPoints(posX,posY));
         }
         if (nShape != null) {
             shapes.add(nShape);
             selections.clear();
             selections.add(nShape);
         }
-
         return nShape;
-
     }
 
     protected void addToStack(ArrayList<GenericShape> nShapes, String action){
@@ -495,9 +599,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             for (GenericShape shape : selections)
                 shape.drawSelectionBox(canvas, selectionPaint);
     }
-
+    //width = 1808, height = 1264
     protected void updateCanvas() {
-        bitmap = Bitmap.createBitmap(iView.getWidth(), iView.getHeight(), Bitmap.Config.ARGB_8888);
+        bitmap = Bitmap.createBitmap(iView.getLayoutParams().width, iView.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        iView.setImageBitmap(bitmap);
+        canvas = new Canvas(bitmap);
+
+    }
+    protected void initializeCanvas(){
+        bitmap = Bitmap.createBitmap(DEFAULT_CANVAS_WIDTH, DEFAULT_CANVAS_HEIGHT, Bitmap.Config.ARGB_8888);
+        ViewGroup.LayoutParams params = iView.getLayoutParams();
+        params.width = DEFAULT_CANVAS_WIDTH;
+        params.height = DEFAULT_CANVAS_HEIGHT;
+        iView.setLayoutParams(params);
         iView.setImageBitmap(bitmap);
         canvas = new Canvas(bitmap);
     }
@@ -505,6 +619,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected void setShapeType(ShapeType type) {
         currentShapeType = type;
         currentMode = Mode.creation;
+    }
+    protected void setConnectionFormType(ConnectionFormType type){
+        currentConnectionFormType = type;
     }
 
     protected void setMode(Mode mode) {
@@ -527,6 +644,36 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
+    protected void tryToAnchor(ConnectionForm connection, int x, int y){
+        for (GenericShape shape : shapes) {
+            if (shape != connection) {
+                shape.updateAnchor(connection);
+            }
+        }
+    }
+    protected void resizeShape(MotionEvent event){
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+        ConnectionForm connectionForm =((ConnectionForm) selections.get(0));
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                lastTouchPosY = posY;
+                lastTouchPosX = posX;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                drawAnchorPoints();
+                connectionForm.relativeVertexMove(posX - lastTouchPosX,posY - lastTouchPosY, 0);
+                lastTouchPosX = posX;
+                lastTouchPosY = posY;
+                break;
+            case MotionEvent.ACTION_UP:
+                tryToAnchor(connectionForm,posX, posY);
+                connectionForm.finishResize();
+                break;
+        }
+
+    }
     protected void moveSelectedShape(MotionEvent event) {
         int posX = (int)event.getX(0);
         int posY = (int)event.getY(0);
@@ -534,7 +681,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 for (GenericShape shape : selections) {
-                    if (shape.getBoundingBox().contains(posX, posY)) {
+                    if (shape.contains(posX, posY)) {
                         isMovingSelection = true;
                         lastTouchPosX = posX;
                         lastTouchPosY = posY;
@@ -647,13 +794,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
     public boolean checkCanvasResizeHandle(int x, int y) {
-        final int cornerTolerance = 10;
-        
+        final int cornerTolerance = 30;
+        //return !canvas.getClipBounds().contains(x,y);
         return x > canvas.getWidth() - cornerTolerance &&
                 x < canvas.getWidth() + cornerTolerance &&
                 y > canvas.getHeight() - cornerTolerance &&
                 y < canvas.getHeight() + cornerTolerance;
+
     }
+
+    public boolean checkCanvasWidth(int posX){
+        return posX <= canvasBGLayout.getMeasuredWidth() - CANVAS_BACKGROUND_PADDING;
+    }
+    public boolean checkCanvasHeight(int posY){
+        return posY <= canvasBGLayout.getMeasuredHeight() - CANVAS_BACKGROUND_PADDING;
+    }
+
     public boolean resizeCanvas(MotionEvent event) {
         int posX = (int)event.getX(0);
         int posY = (int)event.getY(0);
@@ -663,13 +819,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 isResizingCanvas = true;
                 break;
             case MotionEvent.ACTION_MOVE:
-                ViewGroup.LayoutParams params = iView.getLayoutParams();
-                params.height = posY;
-                params.width = posX;
-                iView.setLayoutParams(params);
+                    ViewGroup.LayoutParams params = iView.getLayoutParams();
+                    if (checkCanvasWidth(posX))
+                        params.width = posX;
+                    if (checkCanvasHeight(posY))
+                        params.height = posY;
+                    iView.setLayoutParams(params);
                 break;
             case MotionEvent.ACTION_UP:
                 isResizingCanvas = false;
+                if (this.getClass().equals(CollabImageEditingFragment.class))
+                    SocketManager.currentInstance.resizeCanvas(iView.getLayoutParams().width,iView.getLayoutParams().height);
                 break;
         }
 

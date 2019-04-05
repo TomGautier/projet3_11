@@ -1,8 +1,12 @@
-﻿using PolyPaint.Utilitaires;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using PolyPaint.Utilitaires;
 using PolyPaint.VueModeles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Shape = PolyPaint.Utilitaires.Shape;
 
 namespace PolyPaint.Vues
 {
@@ -24,37 +29,57 @@ namespace PolyPaint.Vues
     /// </summary>
     public partial class DrawControl : UserControl
     {
+        public string LastDrag { get; set; }
         public DrawControl()
         {
             InitializeComponent();
             DataContext = new VueModele();
-            (DataContext as VueModele).SendCanvas(this.surfaceDessin);
-            this.surfaceDessin.AllowSelection = false;
-            this.surfaceDessin.IsDraging = false;
+            
+            //this.surfaceDessin.AllowSelection = false;
+            //this.surfaceDessin.IsDraging = false;
+            this.surfaceDessin.LastSelection = new MemoryStream();
+            this.AllowDrop = true;
+           // (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+
+            this.Loaded += new RoutedEventHandler((s, e) =>
+            {
+                (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+                this.surfaceDessin.AllowSelection = false;
+                this.surfaceDessin.IsDraging = false;
+            });
         }
 
         // Pour gérer les points de contrôles.
         private void GlisserCommence(object sender, DragStartedEventArgs e)
         {
             //this.surfaceDessin.IsDraging = true;
+            
             (sender as Thumb).Background = Brushes.Black;
         }
         private void GlisserTermine(object sender, DragCompletedEventArgs e)
         {
             //this.surfaceDessin.IsDraging = false;
             (sender as Thumb).Background = Brushes.White;
+            (DataContext as VueModele).HandleCanvasResize();
+            //this.surfaceDessin.Height = 5;
+            
         }
 
         void surfaceDessin_SelectionMoving(object sender, InkCanvasSelectionEditingEventArgs e)
         {
-           // this.surfaceDessin.IsDraging = true;
+            // this.surfaceDessin.IsDraging = true;
         }
         private void GlisserMouvementRecu(object sender, DragDeltaEventArgs e)
         {
-            String nom = (sender as Thumb).Name;
-            if (nom == "horizontal" || nom == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.HorizontalChange));
-            if (nom == "vertical" || nom == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.VerticalChange));
+            //String nom = (sender as Thumb).Name;
+            //LastDrag = (sender as Thumb).Name;
+            LastDrag = "diagonal";            //if (nom == "horizontal" || nom == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.HorizontalChange));
+            //if (nom == "vertical" || nom == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.VerticalChange));
+            this.surfaceDessin.Width += e.HorizontalChange;
+            this.surfaceDessin.Height += e.VerticalChange;
+            
         }
+        
 
         // Pour la gestion de l'affichage de position du pointeur.
         private void surfaceDessin_MouseLeave(object sender, MouseEventArgs e) => textBlockPosition.Text = "";
@@ -72,10 +97,38 @@ namespace PolyPaint.Vues
             }
 
         }
+        private void surfaceDessin_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            // if (LastDrag == "horizontal" || LastDrag == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.NewSize.Width - e.PreviousSize.Width));
+            if (!(e.PreviousSize.Height == 0 && e.PreviousSize.Width == 0))
+            {
+                colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.NewSize.Width - e.PreviousSize.Width));
+                // if (LastDrag == "vertical" || LastDrag == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.NewSize.Height - e.PreviousSize.Height
+                ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.NewSize.Height - e.PreviousSize.Height));
+            }
+    
+
+            this.surfaceDessin.Width = e.NewSize.Width;
+            this.surfaceDessin.Height = e.NewSize.Height;
+            
+           // (DataContext as VueModele).HandleCanvasResize(e.NewSize);
+        }
+
         private void surfaceDessin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            (DataContext as VueModele).HandlePreviewMouseDown(e.GetPosition(surfaceDessin));
 
+            (DataContext as VueModele).HandlePreviewMouseDown(e.GetPosition(surfaceDessin));
+            this.surfaceDessin.IsDraging = true;
+        }
+        private void surfaceDessin_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            (DataContext as VueModele).HandlePreviewMouseUp(e.GetPosition(surfaceDessin));
+            this.surfaceDessin.IsDraging = false;
+        }
+        private void surfaceDessin_Drop(object sender, DragEventArgs e)
+        {
+
+            // (DataContext as VueModele).HandleDrop(e.GetPosition(surfaceDessin));
         }
         private void surfaceDessin_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -109,6 +162,43 @@ namespace PolyPaint.Vues
             // (DataContext as VueModele).LastCut = surfaceDessin.GetSelectedStrokes();
             // surfaceDessin.CutSelection();        
         }
+        private void SaveLocally(object sender, RoutedEventArgs e)
+        {
+            StreamWriter myStream;
+            SaveFileDialog save = new SaveFileDialog();
+
+            save.Filter = "txt files (*.txt)|*.txt";
+            save.FilterIndex = 2;
+            save.RestoreDirectory = true;
+            Nullable<bool> result = save.ShowDialog();
+            if (result == true)
+            {
+                myStream = new StreamWriter(save.OpenFile());
+                myStream.Write((DataContext as VueModele).ConvertCanvasToString());
+                myStream.Dispose();
+
+                myStream.Close();
+            }
+        }
+        private void LoadLocally(object sender, RoutedEventArgs e)
+        {
+            StreamReader myStream;
+            OpenFileDialog open = new OpenFileDialog();
+
+            open.Filter = "txt files (*.txt)|*.txt";
+            open.FilterIndex = 2;
+            open.RestoreDirectory = true;
+            Nullable<bool> result = open.ShowDialog();
+            if (result == true)
+            {
+                myStream = new StreamReader(open.OpenFile());
+                string json = myStream.ReadToEnd();
+                (DataContext as VueModele).LoadLocally(json);
+                //List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+                // List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            }
+        }
+
         private void surfaceDessin_OpenConnectorSettings(object sender, RoutedEventArgs e)
         {
             ConnectorSetter menu = new ConnectorSetter();

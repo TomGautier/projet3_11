@@ -68,9 +68,9 @@ public class HomeActivity extends AppCompatActivity {
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
 		}
-		int[] position = {1,2};
+		/*int[] position = {1,2};
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
-		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
+		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);*/
         //SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
 	}
 
@@ -134,29 +134,6 @@ public class HomeActivity extends AppCompatActivity {
 			case R.id.galleryAction:
 				toggleGalleryVisibility();
 				break;
-			/*case R.id.chatAction:
-				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
-				dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
-				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-					@Override
-					public boolean onMenuItemClick(MenuItem menuItem) {
-						switch(menuItem.getItemId()){
-							case R.id.addConversationChatAction:
-								createAddConversationPopup();
-								break;
-							case R.id.removeConversationChatAction:
-								createRemoveConversationPopup();
-								break;
-							case R.id.hideShowChatAction:
-								toggleChatVisibility();
-								break;
-						}
-						return true;
-					}
-				});
-				dropDownMenu.show();
-				toggleChatVisibility();
-				break;*/
 			case R.id.imageEditingAction:
 				toggleImageEditingVisibility();
 				break;

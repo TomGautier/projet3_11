@@ -2,6 +2,7 @@ package com.projet3.polypaint.CanvasElement;
 
 import android.app.FragmentManager;
 import android.graphics.Canvas;
+import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
@@ -9,11 +10,15 @@ public class TextBox extends GenericTextShape {
 
     public static final String TYPE = "Text";
 
-    public TextBox(String id, int x, int y, PaintStyle style) {
-        super(id, x, y, style);
+    public TextBox(String id, int x, int y, PaintStyle style, float angle) {
+        super(id, x, y, style,angle);
     }
-    public TextBox(String id, int x, int y, PaintStyle style, String contents) {
-        super(id, x, y, style, contents);
+    public TextBox(String id, int x, int y, PaintStyle style, String contents, float angle) {
+        super(id, x, y, style, contents, angle);
+    }
+
+    @Override
+    public void setAnchorPoints() {
     }
 
     @Override
@@ -22,7 +27,7 @@ public class TextBox extends GenericTextShape {
     }
 
     public TextBox clone() {
-        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
+        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text, angle);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

@@ -23,6 +23,7 @@ namespace PolyPaint.Utilitaires
         public int CurrentRotation { get; set; }
         public Point Center { get; set; }
         public Arrow Arrow { get; set; }
+        public System.Drawing.Color SelectionColor { get; set; }
         public Point[] EncPoints { get; set; }
         protected Vector WidthDirection { get; set; }
         protected Vector HeightDirection { get; set; }
@@ -95,7 +96,7 @@ namespace PolyPaint.Utilitaires
             // this.CurrentRotation += angleInc;
 
         }
-        protected virtual void MakeShape() { }
+        public virtual void MakeShape() { }
         public void SetRotation(int degrees)
         {
             
@@ -227,17 +228,26 @@ namespace PolyPaint.Utilitaires
         {
             if (this.IsSelectedByOther)
             {
-                LineSegment[] segments = new LineSegment[4];
-                
-                segments[0] = new LineSegment(new Point(this.Center.X+5, this.Center.Y-5), true);
-                segments[1] = new LineSegment(new Point(this.Center.X+5, this.Center.Y+5), true);
-                segments[2] = new LineSegment(new Point(this.Center.X-5, this.Center.Y +5), true);
-                segments[3] = new LineSegment(new Point(this.Center.X -5, this.Center.Y-5), true);
-                var figure = new PathFigure(new Point(this.Center.X -5, this.Center.Y -5), segments, true);
-                var geo = new PathGeometry(new[] { figure });
+                //    LineSegment[] segments = new LineSegment[4];
+                Rect bounds = this.GetBounds();
 
-                SolidColorBrush brush = new SolidColorBrush(Colors.Green);
-                drawingContext.DrawGeometry(brush, null, geo);
+                //   segments[0] = new LineSegment(new Point(this.Center.X+5, this.Center.Y-5), true);
+                //   segments[1] = new LineSegment(new Point(this.Center.X+5, this.Center.Y+5), true);
+                //   segments[2] = new LineSegment(new Point(this.Center.X-5, this.Center.Y +5), true);
+                //   segments[3] = new LineSegment(new Point(this.Center.X -5, this.Center.Y-5), true);
+                //   var figure = new PathFigure(new Point(this.Center.X -5, this.Center.Y -5), segments, true);
+                //   var geo = new PathGeometry(new[] { figure });
+                bounds.Inflate(new Size(10,10));
+                SolidColorBrush brush = new SolidColorBrush(Color.FromRgb(this.SelectionColor.R,this.SelectionColor.G,this.SelectionColor.B));
+                Pen pen = new Pen(brush, 2);
+                pen.DashStyle = DashStyles.Dash;
+    
+                drawingContext.DrawLine(pen,bounds.TopLeft,bounds.TopRight);
+                drawingContext.DrawLine(pen,bounds.TopRight,bounds.BottomRight);
+                drawingContext.DrawLine(pen, bounds.BottomRight, bounds.BottomLeft);
+                drawingContext.DrawLine(pen, bounds.BottomLeft, bounds.TopLeft);
+                //drawingContext.DrawGeometry(brush, null, geo);
+
             }
         }
         public void update()

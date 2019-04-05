@@ -43,7 +43,7 @@ namespace PolyPaint.Utilitaires
         
 
         }
-        protected override void MakeShape()
+        public override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
             pts.Add(new StylusPoint(this.Center.X - this.Width / 2, this.Center.Y - this.Height / 2));
