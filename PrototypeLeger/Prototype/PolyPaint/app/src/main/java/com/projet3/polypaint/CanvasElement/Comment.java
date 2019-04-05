@@ -13,7 +13,7 @@ public class Comment extends GenericTextShape {
         super(id, x, y, style);
         height += 2*PADDING;
     }
-    private Comment(String id, int x, int y, PaintStyle style, String contents) {
+    public Comment(String id, int x, int y, PaintStyle style, String contents) {
         super(id, x, y, style, contents);
         height += 2*PADDING;
     }

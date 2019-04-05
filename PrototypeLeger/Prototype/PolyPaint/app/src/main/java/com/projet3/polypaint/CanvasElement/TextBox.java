@@ -12,7 +12,7 @@ public class TextBox extends GenericTextShape {
     public TextBox(String id, int x, int y, PaintStyle style) {
         super(id, x, y, style);
     }
-    private TextBox(String id, int x, int y, PaintStyle style, String contents) {
+    public TextBox(String id, int x, int y, PaintStyle style, String contents) {
         super(id, x, y, style, contents);
     }
 

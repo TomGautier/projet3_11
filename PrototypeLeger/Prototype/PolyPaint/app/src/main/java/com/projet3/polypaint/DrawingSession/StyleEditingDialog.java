@@ -48,7 +48,7 @@ public class StyleEditingDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         modifyCurrentStyle();
-                        ImageEditingDialogManager.getInstance().onDialogPositiveClick(style, null);
+                        ImageEditingDialogManager.getInstance().onStyleDialogPositiveClick(style);
                     }
                 })
                 .setNegativeButton(R.string.revertDefault, new DialogInterface.OnClickListener() {
