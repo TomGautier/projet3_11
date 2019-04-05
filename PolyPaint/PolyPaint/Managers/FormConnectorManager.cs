@@ -53,6 +53,10 @@ namespace PolyPaint.Managers
         }
         public void reset()
         {
+            if (this.Shape1 != null)
+            {
+                this.Shape1.Arrow = null;
+            }
             this.Arrows.RemoveAt(this.Arrows.Count - 1);
             this.IsDrawingArrow = false;
         }
@@ -61,13 +65,20 @@ namespace PolyPaint.Managers
         {
            if (!IsDrawingArrow) //&& isOnEncrage) //Premier point
             {
+                this.Arrows.Add(new Arrow(new StylusPointCollection { p }));
+
                 if (isOnEncrage)
                 {
-                    this.Shape1 = shape;
+                    this.Shape1 = shape;                   
                     this.Index1 = index;
-                    
+
+                    this.Arrows[this.Arrows.Count - 1].Shape1 = this.Shape1;
+                    this.Arrows[this.Arrows.Count - 1].Index1 = this.Index1;
+                    this.Shape1.Arrow = this.Arrows[this.Arrows.Count - 1];
+
+
                 }
-                this.Arrows.Add(new Arrow(new StylusPointCollection { p }));
+                
                 this.Arrows[this.Arrows.Count - 1].Label = this.Label;
                 this.Arrows[this.Arrows.Count - 1].BorderStyle = this.BorderStyle;
                 this.Arrows[this.Arrows.Count - 1].DrawingAttributes.Color = (Color)ColorConverter.ConvertFromString(this.Color);

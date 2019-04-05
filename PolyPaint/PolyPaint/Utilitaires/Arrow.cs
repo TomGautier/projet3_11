@@ -43,7 +43,9 @@ namespace PolyPaint.Utilitaires
         }
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
         {
+            SetSelection(drawingContext);
             OnDrawCore(drawingContext, drawingAttributes);
+            
             DrawLabel(drawingContext);
             if (this.StylusPoints.Count > 1)
             {

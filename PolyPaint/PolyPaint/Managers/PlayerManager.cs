@@ -27,7 +27,7 @@ namespace PolyPaint.Managers
         }
         public void AddPlayer(string username)
         {
-            this.Players.Add(new Player(username, this.Colors[Compteur]));
+            this.Players.Add(new Player(username, this.Colors[Compteur % 10]));
             Compteur++;
         }
         public void RemovePlayer(string username)

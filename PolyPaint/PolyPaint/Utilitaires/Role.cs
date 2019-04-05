@@ -46,17 +46,32 @@ namespace PolyPaint.Utilitaires
         public override void MakeShape()
         {
             StylusPointCollection pts = new StylusPointCollection();
-            pts.Add(new StylusPoint(this.Center.X, this.Center.Y - 0.4*Height));
+            /*   pts.Add(new StylusPoint(this.Center.X, this.Center.Y - 0.1*this.Height));
+               pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.1333 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X - 0.5 * this.Width, pts[0].Y + 0.1333 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X + 0.5 * this.Width, pts[0].Y + 0.1333 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.13333 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.50666 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X - 0.5 * this.Width, pts[0].Y + 0.7 * this.Height));// 0.866*this.Height));
+               pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.50666 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X + 0.5 * this.Width, pts[0].Y + 0.7 * this.Height));//0.866*this.Height));
+               pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.50666 * this.Height));
+               pts.Add(new StylusPoint(pts[0].X, pts[0].Y));*/
+
+
+
+            pts.Add(new StylusPoint(this.Center.X, this.Center.Y - 0.3 * this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.1333 * this.Height));
             pts.Add(new StylusPoint(pts[0].X - 0.5 * this.Width, pts[0].Y + 0.1333 * this.Height));
             pts.Add(new StylusPoint(pts[0].X + 0.5 * this.Width, pts[0].Y + 0.1333 * this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.13333 * this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.50666 * this.Height));
-            pts.Add(new StylusPoint(pts[0].X - 0.5 * this.Width, pts[0].Y + 0.866*this.Height));
+            pts.Add(new StylusPoint(pts[0].X - 0.5 * this.Width, pts[0].Y + 0.8 * this.Height));// 0.866*this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.50666 * this.Height));
-            pts.Add(new StylusPoint(pts[0].X + 0.5 * this.Width, pts[0].Y + 0.866*this.Height));
+            pts.Add(new StylusPoint(pts[0].X + 0.5 * this.Width, pts[0].Y + 0.8 * this.Height));//0.866*this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.50666 * this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
+
             /*pts.Add(new StylusPoint(this.Center.X, this.Center.Y - 0.382 * this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + 0.1333*this.Height));
             pts.Add(new StylusPoint(pts[0].X - 0.5*this.Width, pts[0].Y + 0.1333*this.Height));
@@ -78,6 +93,12 @@ namespace PolyPaint.Utilitaires
                 pts.Add(new StylusPoint(x, y));
             }
             this.StylusPoints = pts;
+            if (this.CurrentRotation != 0)
+            {
+                int rotation = this.CurrentRotation;
+                this.CurrentRotation = 0;
+                this.SetRotation(rotation);
+            }
         }
         private void updatePoints()
         {
@@ -91,9 +112,9 @@ namespace PolyPaint.Utilitaires
             this.WidthDirection /= this.WidthDirection.Length;         
             //this.Height = Point.Subtract(this.StylusPoints[6].ToPoint(),this.StylusPoints[0].ToPoint()).Length + this.Radius; 
             this.Width = Point.Subtract(this.StylusPoints[8].ToPoint(), this.StylusPoints[6].ToPoint()).Length;
-            Point startHeight = Point.Subtract(this.StylusPoints[0].ToPoint(), 2*this.Radius * this.HeightDirection);
+            Point startHeight = Point.Subtract(this.StylusPoints[0].ToPoint(),2*this.Radius * this.HeightDirection);
             Vector widthDistance = Point.Subtract(this.StylusPoints[1].ToPoint(),this.StylusPoints[2].ToPoint());
-            Point endHeight = this.StylusPoints[6].ToPoint() - widthDistance;
+            Point endHeight = Point.Subtract(this.StylusPoints[6].ToPoint(), -widthDistance);
             this.Height = Point.Subtract(endHeight, startHeight).Length;
             this.Center = startHeight + (this.Height / 2) * this.HeightDirection;
             // this.Center = startHeight + Point.Subtract(endHeight, startHeight) / 2;
@@ -131,6 +152,7 @@ namespace PolyPaint.Utilitaires
                 DrawName(drawingContext);
             }
             DrawEncrage(drawingContext);
+            DrawRotator(drawingContext);
         }
         private void DrawName(DrawingContext drawingContext)
         {

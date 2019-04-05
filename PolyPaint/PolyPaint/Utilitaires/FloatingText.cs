@@ -62,7 +62,14 @@ namespace PolyPaint.Utilitaires
 
 
 
-            this.StylusPoints = pts;  
+            this.StylusPoints = pts;
+
+            if (this.CurrentRotation != 0)
+            {
+                int rotation = this.CurrentRotation;
+                this.CurrentRotation = 0;
+                this.SetRotation(rotation);
+            }
         }
         private void updatePoints()
         {        
@@ -122,7 +129,9 @@ namespace PolyPaint.Utilitaires
             {
                 DrawName(drawingContext);
             }
-           // DrawEncrage(drawingContext);
+            this.UpdateEncPoints();
+            DrawRotator(drawingContext);
+            // DrawEncrage(drawingContext);
         }
         private void DrawName(DrawingContext drawingContext)
         {

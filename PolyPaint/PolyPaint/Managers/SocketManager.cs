@@ -19,18 +19,28 @@ namespace PolyPaint.Managers
         private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.18.25";
         private const string SERVER_PORT = "3000";
         public Socket Socket;
-        private int Compteur { get; set; }
+        public int Compteur { get; set; }
 
         public string SessionID { get; set; }
         public string UserName { get; set; }
-        public SocketManager()
+        public bool IsOffline { get; set; }
+        public SocketManager(bool isOffline)
         {
-            IO.Options op = new IO.Options
+            this.IsOffline = isOffline;
+            if (!this.IsOffline)
             {
-                Reconnection = false
-            };
-            Socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
-            //InitializeOns();
+                IO.Options op = new IO.Options
+                {
+                    Reconnection = false
+                };
+                Socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
+                //InitializeOns();
+            }
+            else
+            {
+                this.UserName = "offlinePlayer";
+                this.SessionID = "offline";
+            }
             this.Compteur = 0;
         }
         public void JoinDrawingSession(string sessionID)
@@ -125,7 +135,8 @@ namespace PolyPaint.Managers
             });
             Compteur++;
             //Object[] parameters = new Object[] { this.SessionID, this.UserName, shape_ };
-            this.Socket.Emit("AddElement", parameters);
+                this.Socket.Emit("AddElement", parameters);
+   
 
         }
         public void DeleteElement(String[] idList)
@@ -163,7 +174,28 @@ namespace PolyPaint.Managers
                 username = this.UserName,
                 shapes = shapes_
             });
-            this.Socket.Emit("ModifyElement", parameters);
+            this.Socket.Emit("ModifyElement", parameters); 
+            
+        }
+        public void DuplicateElements(Shape[] shapes_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                username = this.UserName,
+                shapes = shapes_
+            });
+            this.Socket.Emit("DuplicateElements", parameters);
+        }
+        public void DuplicateCutElements(Shape[] shapes_)
+        {
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                drawingSessionId = this.SessionID,
+                username = this.UserName,
+                shapes = shapes_
+            });
+            this.Socket.Emit("DuplicateCutElements", parameters);
         }
     }
 }

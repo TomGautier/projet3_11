@@ -21,12 +21,23 @@ namespace PolyPaint.Utilitaires
         public string Author { get; set; }
         public string Type { get; set; }
         public int CurrentRotation { get; set; }
+        private bool canRotate = false;
+        public bool CanRotate
+        {
+            get { return canRotate; }
+            set
+            {
+                canRotate = value;
+                this.update();
+            }
+        }
         public Point Center { get; set; }
         public Arrow Arrow { get; set; }
         public System.Drawing.Color SelectionColor { get; set; }
         public Point[] EncPoints { get; set; }
-        protected Vector WidthDirection { get; set; }
-        protected Vector HeightDirection { get; set; }
+        public Point RotatePoint { get; set; }
+        public Vector WidthDirection { get; set; }
+        public Vector HeightDirection { get; set; }
 
         private string borderStyle;
         public string BorderStyle
@@ -118,6 +129,7 @@ namespace PolyPaint.Utilitaires
             this.Width = shape.properties.width;
             this.Height = shape.properties.height;
             this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
+            this.CurrentRotation = 0;
             this.MakeShape();
 
             this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
@@ -127,7 +139,7 @@ namespace PolyPaint.Utilitaires
             this.BorderStyle = shape.properties.borderType;
             //this.CurrentRotation = shape.properties.rotation;
             //this.SetRotation(this.CurrentRotation);
-            this.CurrentRotation = 0;
+           
             this.SetRotation(shape.properties.rotation);
 
         }
@@ -216,6 +228,27 @@ namespace PolyPaint.Utilitaires
             SolidColorBrush brush = new SolidColorBrush(Colors.Green);
             drawingContext.DrawGeometry(brush, null, geo);*/
         }
+        protected void DrawRotator(DrawingContext drawingContext)
+        {
+            this.RotatePoint = this.Center - (this.HeightDirection * (this.Height / 2 + 20));
+            //this.UpdateEncPoints();
+            // Point[] encPoints = new Point[4]; 
+            if (this.CanRotate)
+            {           
+                    LineSegment[] segments = new LineSegment[4];
+               // Point = this.Center - (this.HeightDirection * this.Height / 2);
+                    //this.RotatePoint = this.Center - (this.HeightDirection * (this.Height / 2 + 20));
+                    segments[0] = new LineSegment(new Point(this.RotatePoint.X + 5, this.RotatePoint.Y - 5), true);
+                    segments[1] = new LineSegment(new Point(this.RotatePoint.X + 5, this.RotatePoint.Y + 5), true);
+                    segments[2] = new LineSegment(new Point(this.RotatePoint.X - 5, this.RotatePoint.Y + 5), true);
+                    segments[3] = new LineSegment(new Point(this.RotatePoint.X - 5, this.RotatePoint.Y - 5), true);
+                    var figure = new PathFigure(new Point(this.RotatePoint.X - 5, this.RotatePoint.Y - 5), segments, true);
+                    var geo = new PathGeometry(new[] { figure });
+
+                    SolidColorBrush brush = new SolidColorBrush(Colors.LawnGreen);
+                    drawingContext.DrawGeometry(brush, null, geo);      
+            }
+        }
         protected void UpdateEncPoints()
         {
             this.EncPoints[0] = this.Center - (this.HeightDirection * this.Height / 2);
@@ -271,6 +304,7 @@ namespace PolyPaint.Utilitaires
             this.EncPoints = new Point[4];
             this.Label = "";
             this.showEncrage = false;
+            this.CanRotate = false;
             this.BorderStyle = "Solid";
         }   
         
