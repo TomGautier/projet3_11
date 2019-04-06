@@ -31,6 +31,8 @@ public class GalleryFragment extends Fragment {
     private Switch privacySwitch;
     private TableLayout table;
 
+    private ArrayList<GalleryThumbnailFragment> thumbnails;
+
     private boolean isPrivateImages = false;
 
     public GalleryFragment() {}
@@ -40,6 +42,8 @@ public class GalleryFragment extends Fragment {
 
         rootView=inflater.inflate(R.layout.fragment_gallery, container, false);
         table = (TableLayout) rootView.findViewById(R.id.table);
+
+        thumbnails = new ArrayList<>();
 
         setPrivacySwitch();
 
@@ -76,6 +80,9 @@ public class GalleryFragment extends Fragment {
 
     private void addImagesToTable(ArrayList<JSONObject> images) {
         FragmentManager manager = getFragmentManager();
+        for (GalleryThumbnailFragment t : thumbnails)
+            t.clearThumbnail();
+        thumbnails = new ArrayList<>();
         table.removeAllViews();
         FragmentTransaction transaction = manager.beginTransaction();
         TableRow row;
@@ -89,6 +96,7 @@ public class GalleryFragment extends Fragment {
             for (int j = 0; j < MAX_ROW_LENGTH; j++) {
                 GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
                 thumbnail.setImageInfo(images.get(i * MAX_ROW_LENGTH + j));
+                thumbnails.add(thumbnail);
                 transaction.add(row.getId(), thumbnail);
             }
         }
@@ -100,6 +108,7 @@ public class GalleryFragment extends Fragment {
         for (int i = (images.size() / MAX_ROW_LENGTH) * MAX_ROW_LENGTH; i < images.size(); i++) {
             GalleryThumbnailFragment thumbnail = new GalleryThumbnailFragment();
             thumbnail.setImageInfo(images.get(i));
+            thumbnails.add(thumbnail);
             transaction.add(row.getId(), thumbnail);
         }
         transaction.addToBackStack(null);

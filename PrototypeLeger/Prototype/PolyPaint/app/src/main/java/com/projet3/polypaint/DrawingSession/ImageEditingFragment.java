@@ -601,6 +601,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     //width = 1808, height = 1264
     protected void updateCanvas() {
+        bitmap.recycle();
         bitmap = Bitmap.createBitmap(iView.getLayoutParams().width, iView.getLayoutParams().height, Bitmap.Config.ARGB_8888);
         iView.setImageBitmap(bitmap);
         canvas = new Canvas(bitmap);

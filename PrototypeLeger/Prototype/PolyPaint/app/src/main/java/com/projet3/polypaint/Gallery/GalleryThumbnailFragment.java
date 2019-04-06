@@ -41,9 +41,11 @@ public class GalleryThumbnailFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void setArguments(Bundle b){
-
+    public void clearThumbnail() {
+        if (bitmap != null) {
+            ((ImageView) rootView.findViewById(R.id.image)).setImageBitmap(null);
+            bitmap.recycle();
+        }
     }
 
     public void setImageInfo(JSONObject image) {
