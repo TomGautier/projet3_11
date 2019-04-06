@@ -278,6 +278,8 @@ namespace PolyPaint.VueModeles
             {
                 gallery = await networkManager.LoadAllImageAsync(Username, SessionId);
             }
+            if(GalleryItems != null)
+                GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 

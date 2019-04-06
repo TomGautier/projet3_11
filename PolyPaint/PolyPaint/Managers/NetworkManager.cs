@@ -51,14 +51,14 @@ namespace PolyPaint.Utilitaires
 
         public async Task<string> LoadAllImageAsync(string username, string sessionId)
         {
-            var response = await client.GetAsync("http://" + ipAddress + ":3000/common/" + sessionId + "/" + username);
+            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/images/common/" + sessionId + "/" + username);
 
             return await response.Content.ReadAsStringAsync();
         }
 
         public async Task<string> LoadUserImageAsync(string username, string sessionId)
         {
-            var response = await client.GetAsync("http://" + ipAddress + ":3000/" + sessionId + "/" + username);
+            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/images/" + sessionId + "/" + username);
 
             return await response.Content.ReadAsStringAsync();
         }
