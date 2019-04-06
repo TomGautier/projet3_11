@@ -21,7 +21,6 @@ export class ImageService implements ImageServiceInterface {
     }
 
     public async create(imageId: string, author: string, visibility: string, protection: string): Promise<{}> {
-        //const imageId = uuid.v1();
         const image = new Image({
             id: imageId,
             author: author,
