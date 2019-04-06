@@ -20,14 +20,14 @@ export let imageSchema: Schema = new Schema({
         type: String,
         required: true
     },
-    shapes: [{
-        type: String,
-        ref: 'Shape'
-    }],
-    shapeConnections: [{
-        type: String,
-        ref: 'ShapeConnection'
-    }]
+    canvasX: {
+        type: Number,
+        required: false
+    },
+    canvasY: {
+        type: Number,
+        required: false
+    }
 }, {timestamps: true});
 
 export default mongoose.connection.model<IImageModel>('Image', imageSchema);

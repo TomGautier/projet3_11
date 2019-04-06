@@ -4,7 +4,8 @@ import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { UserManager } from "./user.manager";
-import shape from "../schemas/shape";
+import Image from "../schemas/image";
+import { DatabaseService } from "./database.service";
 
 @injectable()
 export class DrawingSessionManager {
@@ -14,6 +15,7 @@ export class DrawingSessionManager {
     private connectedUsers : Map<String, String[]> = new Map();
 
     constructor(@inject(TYPES.SocketService) private socketService: SocketService,
+                @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
                 @inject(TYPES.DrawingSessionServiceInterface) private drawingSessionService: DrawingSessionService,
                 @inject(TYPES.UserManager) private userManager: UserManager)
                { 
@@ -141,10 +143,9 @@ export class DrawingSessionManager {
     }
 
     public unstackElements(doc: any) {
-        
         console.log("UNSTACKING : ");
         console.log(doc);
-        this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
+        this.drawingSessionService.addElement(doc.shape.id, doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
         
         this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.UnstackedElement, doc);
     }
@@ -153,6 +154,7 @@ export class DrawingSessionManager {
 
     public resizeCanvas(doc: any) {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ResizedCanvas, doc);
+        this.databaseService.updateMultiple(Image, doc);
     }
     
     public resetCanvas(doc: any) {
