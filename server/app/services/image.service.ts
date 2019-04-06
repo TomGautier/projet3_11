@@ -36,6 +36,10 @@ export class ImageService implements ImageServiceInterface {
            });
     }
 
+    public async createMultiple(author: string, imageId: string, shapes: any) {
+        
+    }
+
     public async getAllByAuthor(username: string): Promise<{}> {
         return await this.databaseService.getAllByCriteria(Image, this.AUTHOR_CRITERIA, username)
             .catch(err => {
