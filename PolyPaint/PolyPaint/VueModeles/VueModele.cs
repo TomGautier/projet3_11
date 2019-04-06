@@ -186,7 +186,7 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateSignup { get { return new RelayCommand(OnNavigateSignup, () => { return true; }); } }
         public ICommand NavigateBack { get { return new RelayCommand(OnNavigateBack, () => { return true; }); } }
         public ICommand NavigateGallery { get { return new RelayCommand(OnNavigateGallery, () => { return true; }); } }
-        public ICommand NavigateDrawSession { get { return new RelayCommand(OnNavigateDrawSession, () => { return true; }); } }
+        public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
 
         private void OnNavigateLogin()
         {
@@ -200,12 +200,17 @@ namespace PolyPaint.VueModeles
 
         private void OnNavigateGallery()
         {
+            LoadGallery("public");
             SwitchView = 4;
         }
 
-        private void OnNavigateDrawSession()
+        private void OnNavigateNewSession()
         {
-            SwitchView = 5;
+            string newDrawingId = Username + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+
+            networkManager.PostImage(Username, SessionId, newDrawingId, "public", "");
+            
+            JoinDrawSession(newDrawingId);
         }
 
         private void OnNavigateBack()
@@ -238,13 +243,42 @@ namespace PolyPaint.VueModeles
 
         public void JoinDrawSession(string joinningSessionID)
         {
-            //TODO : JOIN
+
+            var format = new
+            {
+                sessionId = SessionId,
+                username = Username,
+                imageId = joinningSessionID
+            };
+
+            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
+
+            SocketManager.Socket.On("JoinedDrawingSession", () => {
+                GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+                if(info != null)
+                {
+                    //TODO : Load canvas from GalleryItems 
+                }
+                else
+                {
+                    //TODO : Load default canvas
+                }
+                SwitchView = 5;
+            });
         }
 
-        public void LoadGallery()
+        public async void LoadGallery(string galleryType)
         {
-            //TODO : LOAD INTO GalleryItems
-            // NOTE : CALL DURING NAVIGATE_TO_GALLERY
+            string gallery;
+            if (galleryType == "private")
+            {
+                gallery = await networkManager.LoadUserImageAsync(Username, SessionId);
+            }
+            else
+            {
+                gallery = await networkManager.LoadAllImageAsync(Username, SessionId);
+            }
+            GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
 
         public async System.Threading.Tasks.Task<List<ChatControl.UserItem>> LoadUsersAsync()
@@ -252,7 +286,6 @@ namespace PolyPaint.VueModeles
             string userList = await networkManager.LoadUsersAsync(Username, SessionId);
 
             List<ChatControl.UserItem> userItems = new List<ChatControl.UserItem>();
-
             
             var users = JsonConvert.DeserializeObject<List<ChatControl.UserItemTemplate>>(userList);
 
