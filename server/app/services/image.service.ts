@@ -20,8 +20,8 @@ export class ImageService implements ImageServiceInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async create(author: string, visibility: string, protection: string): Promise<{}> {
-        const imageId = uuid.v1();
+    public async create(imageId: string, author: string, visibility: string, protection: string): Promise<{}> {
+        //const imageId = uuid.v1();
         const image = new Image({
             id: imageId,
             author: author,

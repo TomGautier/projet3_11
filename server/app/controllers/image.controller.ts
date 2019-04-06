@@ -68,7 +68,8 @@ export class ImageController implements ImageControllerInterface {
                 if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                     { res.json(403); return; }
                 
-                this.imageService.create(req.body.author,
+                this.imageService.create(req.body.imageId, 
+                                        req.body.author,
                                         req.body.visibility,
                                         req.body.protection)
                     .then(image => {
