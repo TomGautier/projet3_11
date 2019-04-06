@@ -52,12 +52,10 @@ export class ImageController implements ImageControllerInterface {
 
         router.post("/offline/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
             
-                this.imageService.createMultiple(req.body.author,
-                                        req.body.imageId,
-                                        req.body.shapes)
+                this.imageService.createMultiple(req.body.shapes)
                     .then(image => {
                         res.json(image);
                     });

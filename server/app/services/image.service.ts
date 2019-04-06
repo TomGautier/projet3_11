@@ -4,6 +4,7 @@ import { DatabaseService } from "./database.service";
 import { ImageServiceInterface } from "../interfaces";
 import { Logger } from "./logger.service";
 import Image from "../schemas/image";
+import Shape from "../schemas/shape";
 
 import * as uuid from 'node-uuid';
 
@@ -36,8 +37,12 @@ export class ImageService implements ImageServiceInterface {
            });
     }
 
-    public async createMultiple(author: string, imageId: string, shapes: any) {
-        
+    public async createMultiple(shapes: any) {
+        return await this.databaseService.create(Shape, shapes)
+            .catch(err => {
+                Logger.warn('ImageService', `Couldn't create shapes : ${shapes}`);
+                throw err;
+           });
     }
 
     public async getAllByAuthor(username: string): Promise<{}> {
