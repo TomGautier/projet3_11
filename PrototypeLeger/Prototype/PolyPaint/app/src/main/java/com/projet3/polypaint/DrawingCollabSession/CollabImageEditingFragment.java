@@ -229,17 +229,19 @@ public class CollabImageEditingFragment extends ImageEditingFragment
 
 
     private CollabShape createCollabShape(GenericShape shape){
-        String hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
-                "#000000", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
+        String backgroundColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBackgroundPaint().getColor()));
+        String borderColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBorderPaint().getColor()));
+        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), backgroundColor,
+                borderColor, shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
         CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
         return collabShape;
     }
     private CollabShape createCollabShape(int posX, int posY){
         id = client.getName() + Integer.toString(idCpt++);
-        String hexColor = Integer.toHexString((0xFFFFFF & selectionPaint.getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
-                "0x000000", new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString())
+        String backgroundColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBackgroundPaint().getColor()));
+        String borderColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBorderPaint().getColor()));
+        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), backgroundColor,
+                borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString())
                 ,GenericShape.getDefaultWidth(currentShapeType.toString()),0);
         return new CollabShape(id,drawingSessionId, client.getName(),properties);
     }
@@ -377,7 +379,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 rootView.invalidate();
-
             }
         });
     }

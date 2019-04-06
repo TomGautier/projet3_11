@@ -188,6 +188,7 @@ public class CollabShapeProperties {
     public PaintStyle getStyle() {
         Paint backgroundPaint = new Paint();
 //        System.out.println("0x" + fillingColor.substring(1));
+        System.out.println("---------------------------------__" + fillingColor + " -- " + borderColor);
         backgroundPaint.setColor(Integer.decode(fillingColor) + 0xff000000);
         Paint borderPaint = new Paint();
         borderPaint.setColor(Integer.decode(borderColor) + 0xff000000);
