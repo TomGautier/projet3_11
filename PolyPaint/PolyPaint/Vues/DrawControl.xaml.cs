@@ -83,6 +83,7 @@ namespace PolyPaint.Vues
             textBlockPosition.Text = Math.Round(p.X) + ", " + Math.Round(p.Y) + "px";
             (DataContext as VueModele).HandleMouseMove(e.GetPosition(surfaceDessin));
         }
+        
         private void surfaceDessin_SelectionChanging(object sender, InkCanvasSelectionChangingEventArgs e)
         {
             if (!this.surfaceDessin.AllowSelection) //if the change is from the view

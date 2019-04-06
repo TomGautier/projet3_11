@@ -32,7 +32,7 @@ namespace PolyPaint.Utilitaires
             }
         }
         public Point Center { get; set; }
-        public Arrow Arrow { get; set; }
+        public List<Arrow> Arrow { get; set; }
         public System.Drawing.Color SelectionColor { get; set; }
         public Point[] EncPoints { get; set; }
         public Point RotatePoint { get; set; }
@@ -306,6 +306,7 @@ namespace PolyPaint.Utilitaires
             this.showEncrage = false;
             this.CanRotate = false;
             this.BorderStyle = "Solid";
+            this.Arrow = new List<Arrow>();
         }   
         
     }

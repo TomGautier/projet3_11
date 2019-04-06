@@ -95,12 +95,12 @@ namespace PolyPaint.Utilitaires
 
             this.Center = this.StylusPoints[0].ToPoint() + this.HeightDirection * this.Height/2;//startWidth + Point.Subtract(this.StylusPoints[2].ToPoint(), startWidth) / 2;
             this.Center += this.WidthDirection * this.Width/2;
-            
-            //this.UpdateEncPoints();
 
-            if (this.Arrow != null)
+            //this.UpdateEncPoints();
+            if (this.Arrow.Count > 0)
             {
-                this.Arrow.ShapeMoved(this.Id);
+                foreach (Arrow a in this.Arrow)
+                    a.ShapeMoved(this.Id);
             }
 
         }

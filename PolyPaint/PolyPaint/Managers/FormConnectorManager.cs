@@ -55,7 +55,7 @@ namespace PolyPaint.Managers
         {
             if (this.Shape1 != null)
             {
-                this.Shape1.Arrow = null;
+                this.Shape1.Arrow.Remove(this.Arrows[this.Arrows.Count - 1]);
             }
             this.Arrows.RemoveAt(this.Arrows.Count - 1);
             this.IsDrawingArrow = false;
@@ -74,7 +74,7 @@ namespace PolyPaint.Managers
 
                     this.Arrows[this.Arrows.Count - 1].Shape1 = this.Shape1;
                     this.Arrows[this.Arrows.Count - 1].Index1 = this.Index1;
-                    this.Shape1.Arrow = this.Arrows[this.Arrows.Count - 1];
+                    this.Shape1.Arrow.Add(this.Arrows[this.Arrows.Count - 1]);
 
 
                 }
@@ -92,14 +92,14 @@ namespace PolyPaint.Managers
             }
            else if(IsDrawingArrow && isOnEncrage) //&& shape.Id != Shape1.Id)
             {
-                if (Shape1 == null || shape.Id != Shape1.Id)
+                if (Shape1 == null || shape.Id != Shape1.Id) //|| Index1 != index)
                 {
                     this.Arrows[this.Arrows.Count - 1].StylusPoints.Add(p);
                     this.Shape2 = shape;
                     this.Index2 = index;
 
-                    this.Shape1.Arrow = this.Arrows[this.Arrows.Count - 1];
-                    this.Shape2.Arrow = this.Arrows[this.Arrows.Count - 1];
+                    this.Shape1.Arrow.Add(this.Arrows[this.Arrows.Count - 1]);
+                    this.Shape2.Arrow.Add(this.Arrows[this.Arrows.Count - 1]);
                     this.Arrows[this.Arrows.Count - 1].Shape1 = this.Shape1;
                     this.Arrows[this.Arrows.Count - 1].Shape2 = this.Shape2;
                     this.Arrows[this.Arrows.Count - 1].Index1 = this.Index1;

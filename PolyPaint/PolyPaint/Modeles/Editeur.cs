@@ -366,12 +366,13 @@ namespace PolyPaint.Modeles
                         {
                             if (form != (arrow as Arrow).Shape2)
                             {
-                                isOnEncrage = true;
-                                form.Arrow = (arrow as Arrow);
                                 if ((arrow as Arrow).Shape1 != null)
                                 {
-                                    (arrow as Arrow).Shape1.Arrow = null;
+                                    (arrow as Arrow).Shape1.Arrow.Remove(arrow as Arrow);//null;
                                 }
+                                isOnEncrage = true;
+                                form.Arrow.Add((arrow as Arrow));
+                                
                                 (arrow as Arrow).Shape1 = form;
                                 (arrow as Arrow).Index1 = i;
 
@@ -383,11 +384,12 @@ namespace PolyPaint.Modeles
                             if (form != (arrow as Arrow).Shape1)
                             {
                                 isOnEncrage = true;
-                                form.Arrow = (arrow as Arrow);
+                                
                                 if ((arrow as Arrow).Shape2 != null)
                                 {
-                                    (arrow as Arrow).Shape2.Arrow = null;
+                                    (arrow as Arrow).Shape2.Arrow.Remove(arrow as Arrow);
                                 }
+                                form.Arrow.Add(arrow as Arrow);
                                 (arrow as Arrow).Shape2 = form;
                                 (arrow as Arrow).Index2 = i;
 
@@ -401,12 +403,12 @@ namespace PolyPaint.Modeles
                     arrow.StylusPoints[index] = new StylusPoint(pts.X, pts.Y);
                     if (index == 0 && (arrow as Arrow).Shape1 != null)
                     {
-                        (arrow as Arrow).Shape1.Arrow = null;
+                        (arrow as Arrow).Shape1.Arrow.Remove(arrow as Arrow);
                         (arrow as Arrow).Shape1 = null;
                     }
                     else if (index == arrow.StylusPoints.Count - 1 && (arrow as Arrow).Shape2 != null)
                     {
-                        (arrow as Arrow).Shape2.Arrow = null;
+                        (arrow as Arrow).Shape2.Arrow.Remove(arrow as Arrow);
                         (arrow as Arrow).Shape2 = null;
                     }
 
@@ -449,7 +451,9 @@ namespace PolyPaint.Modeles
                     if (this.IsOffline) { this.AddedElement(this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID)); }
                     else
                     {
+                        this.FormConnectorManager.Arrows.Last().Id = this.SocketManager.UserName + "_" + this.SocketManager.Compteur.ToString();
                         this.SocketManager.AddElement(this.FormConnectorManager.Arrows.Last().ConvertToShape(this.SocketManager.SessionID));
+                        
                     }
                 }
                 else
@@ -708,9 +712,13 @@ namespace PolyPaint.Modeles
             StrokeCollection toBeDeleted = new StrokeCollection(traits.Where(s => list.Contains((s as Form).Id)));
             foreach (Stroke s in toBeDeleted)
             {
-                if ((s as Form).Arrow != null)
+                if ((s as Form).Arrow.Count >0)
                 {
-                    traits.Remove((s as Form).Arrow);
+                    foreach (Arrow a in (s as Form).Arrow)
+                    {
+                       if (a.Shape1 != null && a.Shape1.Id == (s as Form).Id) { a.Shape1 = null; a.Index1 = -1; }
+                        else { a.Shape2 = null; a.Index2 = -1; }
+                    }
                 }
                 if (selectedStrokes.Contains(s)) { selectedStrokes.Remove(s); }
                 traits.Remove(s);
@@ -773,7 +781,10 @@ namespace PolyPaint.Modeles
             this.traits.Clear();
             this.traitsRetires.Clear();
             this.selectedStrokes.Clear();
-            this.LastCut.Clear();
+            if (this.LastCut != null)
+            {
+                this.LastCut.Clear();
+            }
         }
 
         public void HandleDuplicate(object o)
@@ -866,14 +877,21 @@ namespace PolyPaint.Modeles
                 {
                     if ((stk as Form).Id == shape.properties.idShape1)
                     {
-                        (stk as Form).Arrow = (s as Arrow);
+                        if ((stk as Form).Arrow.Exists(x=> x.Id == shape.id || x.Id == null)){
+                            (stk as Form).Arrow.RemoveAll(x => x.Id == shape.id || x.Id == null);
+                        }
+                        (stk as Form).Arrow.Add(s as Arrow);
                         (s as Arrow).Shape1 = (stk as Form);
                         (s as Arrow).Index1 = shape.properties.index1;
                         (s as Arrow).StylusPoints[0] = new StylusPoint((stk as Form).EncPoints[(s as Arrow).Index1].X, (stk as Form).EncPoints[(s as Arrow).Index1].Y);
                     }
                     if ((stk as Form).Id == shape.properties.idShape2)
                     {
-                        (stk as Form).Arrow = (s as Arrow);
+                        if ((stk as Form).Arrow.Exists(x => x.Id == shape.id || x.Id == null))
+                        {
+                            (stk as Form).Arrow.RemoveAll(x => x.Id == shape.id || x.Id == null);
+                        }
+                        (stk as Form).Arrow.Add(s as Arrow);
                         (s as Arrow).Shape2 = (stk as Form);
                         (s as Arrow).Index2 = shape.properties.index2;
                         (s as Arrow).StylusPoints[(s as Arrow).StylusPoints.Count - 1] = new StylusPoint((stk as Form).EncPoints[(s as Arrow).Index2].X, (stk as Form).EncPoints[(s as Arrow).Index2].Y);
@@ -883,7 +901,7 @@ namespace PolyPaint.Modeles
                 {
                     if ((s as Arrow).Shape1 != null)
                     {
-                        (s as Arrow).Shape1.Arrow = null;
+                        (s as Arrow).Shape1.Arrow.Remove(s as Arrow); //= null;
                         (s as Arrow).Shape1 = null;
                     }
 
@@ -892,7 +910,7 @@ namespace PolyPaint.Modeles
                 {
                     if ((s as Arrow).Shape2 != null)
                     {
-                        (s as Arrow).Shape2.Arrow = null;
+                        (s as Arrow).Shape2.Arrow.Remove(s as Arrow);// = null;
                         (s as Arrow).Shape2 = null;
                     }
                 }
@@ -943,6 +961,17 @@ namespace PolyPaint.Modeles
             if (traits.Count > 0)
             {
                 Stroke toStack = traits.Last();
+                if ((toStack as Form).Type == "Arrow")
+                {
+                    if ((toStack as Arrow).Shape1 != null)
+                    {
+                        (toStack as Arrow).Shape1.Arrow.Remove((toStack as Arrow));
+                    }
+                    if ((toStack as Arrow).Shape2 != null)
+                    {
+                        (toStack as Arrow).Shape2.Arrow.Remove((toStack as Arrow));
+                    }
+                }
                 this.traitsRetires.Add(toStack as Form);
                 this.traits.Remove(toStack);
                 //this.deleteElements(new string[] { (toStack as Form).Id });
@@ -952,6 +981,17 @@ namespace PolyPaint.Modeles
         {
             if (this.traitsRetires.Count > 0)
             {
+                if ((this.traitsRetires.Last() as Form).Type == "Arrow")
+                {
+                    (this.traitsRetires.Last() as Arrow).Shape1 = null;
+                    (this.traitsRetires.Last() as Arrow).Shape2 = null;
+                    (this.traitsRetires.Last() as Arrow).Index1 = -1;
+                    (this.traitsRetires.Last() as Arrow).Index2 = -1;
+                }
+                else
+                {
+                    (this.traitsRetires.Last() as Form).Arrow.Clear();
+                }
                 this.traits.Add(this.traitsRetires.Last());
                 this.traitsRetires.Remove(this.traitsRetires.Last());
             }
@@ -977,13 +1017,28 @@ namespace PolyPaint.Modeles
         {
             foreach (Shape s in shapes)
             {
+                if (s.properties.type == "Arrow")
+                {
+                    s.properties.idShape1 = null;
+                    s.properties.idShape2 = null;
+                    s.properties.index1 = -1;
+                    s.properties.index2 = -1;
+                }
                 this.AddForm(s, true);
             }
         }
         public void DuplicateCutElements(Shape[] shapes)
         {
+
             foreach (Shape s in shapes)
             {
+                if (s.properties.type == "Arrow")
+                {
+                    s.properties.idShape1 = null;
+                    s.properties.idShape2 = null;
+                    s.properties.index1 = -1;
+                    s.properties.index2 = -1;
+                }
                 this.AddForm(s, true);
             }    
                 this.LastCut = null;
@@ -1137,19 +1192,34 @@ namespace PolyPaint.Modeles
                 StylusPointCollection pts = new StylusPointCollection();
                 pts.Add(new StylusPoint(0, 0));
                 Form toUnstack = new Form(pts);
+               
+                if (shape.properties.type == "Arrow")
+                {
+                    toUnstack = new Arrow(pts);
+                    shape.properties.index1 = -1;
+                    shape.properties.index2 = -1;
+                    shape.properties.idShape1 = null;
+                    shape.properties.idShape2 = null;
+                }
                 toUnstack.SetToShape(shape);
                 ManageShapeToArrow(shape,toUnstack);
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    this.AddForm(shape,true);
+                    
 
                     if (this.SocketManager.UserName == username)
                     {
-                      
+                        shape.author = this.SocketManager.UserName;
                         Stroke toRemove = this.traitsRetires.Where(x=> (x as Form).Id == shape.id).Last();
                         this.traitsRetires.Remove(toRemove);
+                        
                     }
+                    else
+                    {
+                        shape.author = username;
+                    }
+                    this.AddForm(shape, true);
                 });
             });
             this.SocketManager.Socket.On("ModifiedElement", (data) =>
@@ -1160,7 +1230,7 @@ namespace PolyPaint.Modeles
                 //int rotation = shapes[0].properties.rotation;
                 Application.Current.Dispatcher.Invoke(() =>
                 {                 
-                    if (username != this.SocketManager.UserName)
+                   // if (username != this.SocketManager.UserName)
                     {
                         foreach (Shape s in shapes)
                         {
@@ -1191,6 +1261,14 @@ namespace PolyPaint.Modeles
                 {                  
                         foreach (Shape s in shapes)
                         {
+                        if (s.properties.type == "Arrow")
+                        {
+                           
+                            s.properties.index1 = -1;
+                            s.properties.index2 = -1;
+                            s.properties.idShape1 = null;
+                            s.properties.idShape2 = null;
+                        }
                         this.AddForm(s, true);
                         }
                     
@@ -1209,6 +1287,13 @@ namespace PolyPaint.Modeles
                 {
                     foreach (Shape s in shapes)
                     {
+                        if (s.properties.type == "Arrow")
+                        {
+                            s.properties.index1 = -1;
+                            s.properties.index2 = -1;
+                            s.properties.idShape1 = null;
+                            s.properties.idShape2 = null;
+                        }
                         this.AddForm(s, true);
                     }
                     if (this.SocketManager.UserName == username)

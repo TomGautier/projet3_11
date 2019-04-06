@@ -43,7 +43,8 @@ export class DrawingSessionManager {
 
     public joinSession(socketId: string, doc : any) {
         this.socketService.joinRoom(doc.drawingSessionId, socketId);
-        this.newUserJoined(doc);     
+        this.newUserJoined(doc); 
+        this.socketService.emit(doc.drawingSessionId,SocketEvents.JoinedDrawingSession,doc);    
     }
     public newUserJoined(doc : any) {
         if (this.connectedUsers.get(doc.drawingSessionId) == undefined){
@@ -97,7 +98,7 @@ export class DrawingSessionManager {
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public modifyElement(doc: any) {
         for (const shape of doc.shapes){
-           // this.drawingSessionService.modifyElement(shape);
+            this.drawingSessionService.modifyElement(shape);
         }
         
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement, doc);
@@ -111,9 +112,9 @@ export class DrawingSessionManager {
         console.log(doc);
         
         // FOR LOOP
-        //for (const shape of doc.shapes){
-         //this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
-        //}
+        for (const shape of doc.shapes){
+         this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+        }
        this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedElements, doc);
     }
 
@@ -124,6 +125,9 @@ export class DrawingSessionManager {
     }
     public duplicateCutElements(doc : any){
         console.log(doc);
+        for (const shape of doc.shapes){
+            this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+           }
         this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedCutElements, doc);
 
     }
@@ -132,7 +136,7 @@ export class DrawingSessionManager {
         // FOR LOOP
         console.log("STACKING : ");
         console.log(doc);
-       //s this.drawingSessionService.deleteElements(doc.elementId);
+        this.drawingSessionService.deleteElements(doc.elementId);
         this.socketService.emit(doc.drawingSessionId, SocketEvents.StackedElement, doc);
     }
 
@@ -140,7 +144,7 @@ export class DrawingSessionManager {
         
         console.log("UNSTACKING : ");
         console.log(doc);
-        //this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
+        this.drawingSessionService.addElement(doc.shape.id,doc.shape.drawingSessionId, doc.shape.author, doc.shape.properties);
         
         this.socketService.emit(doc.shape.drawingSessionId, SocketEvents.UnstackedElement, doc);
     }

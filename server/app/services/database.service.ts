@@ -63,6 +63,15 @@ export class DatabaseService {
         });
     }
 
+    public async createMultiple(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.create(doc, (err: any, document: any) => {
+                if (err) { return reject(err); };
+                resolve(document);
+            });
+        });
+    }
+
     public async getAllByCriteria(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.find({ [criteria]: doc }, (err: any, document: any) => {

@@ -119,6 +119,7 @@ namespace PolyPaint.VueModeles
         }
         public Stroke StrokeBeingDragged { get; set; }
         public Stroke StrokeBeingRotated { get; set; }
+        public bool isDragging { get; set; }
         public int IndexBeingDragged { get; set; }
 
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
@@ -240,7 +241,7 @@ namespace PolyPaint.VueModeles
         /// </summary>
         public VueModele()
         {
-            this.IsOffline = false;
+            this.IsOffline = true;
             
             this.Canvas = new CustomInkCanvas();
 
@@ -408,10 +409,14 @@ namespace PolyPaint.VueModeles
             {
                 editeur.HandleChangeSelection(strokes);
             }
-            else if (strokes.Count == 1)
+            else if (strokes.Count == 1 && this.isDragging)
             {
-                this.HandlePreviewMouseDown((strokes[0] as Form).Center);
+                editeur.HandleChangeSelection(strokes);
+                
+                //this.StrokeBeingLassoed = strokes[0];
+                  //this.HandlePreviewMouseDown((strokes[0] as Form).Center);
             }
+            this.isDragging = false;
             //TODO : Send socket -> selection was changed
         }
         public void SetConnectorSettings(string label, string type, string border, int size, string color, string q1, string q2)
@@ -521,7 +526,7 @@ namespace PolyPaint.VueModeles
         }
         public void HandlePreviewMouseDown(Point mousePos)
         {
-
+            this.isDragging = true;
             Rect selectionZone = this.Canvas.GetSelectionBounds();
             if (selectionZone.Size != Size.Empty)
             {
@@ -538,6 +543,7 @@ namespace PolyPaint.VueModeles
                     {
                         this.Canvas.MoveEnabled = false;
                         this.StrokeBeingRotated = s;
+                        this.isDragging = false;
                         //this.Canvas.EditingMode = InkCanvasEditingMode.None;
                     }
                 }
@@ -553,6 +559,7 @@ namespace PolyPaint.VueModeles
                         {
                             this.StrokeBeingDragged = s;
                             this.IndexBeingDragged = i;
+                            this.isDragging = false;
                             editeur.ShowEncrage = true;
                             //this.Canvas.EditingMode = InkCanvasEditingMode.None;
                         }
@@ -584,20 +591,21 @@ namespace PolyPaint.VueModeles
             }
             else
             {
+                this.isDragging = false;
                 editeur.HandleMouseDown(mousePos);
             }
         }
             
         
-    
         public void HandlePreviewMouseUp(Point mousePos)
         {
+            //this.isDragging = false;
             if (this.StrokeBeingDragged != null)
             {
                 editeur.ShowEncrage = false;
                 this.Canvas.EditingMode = InkCanvasEditingMode.Select;
                 editeur.UpdateArrow(this.StrokeBeingDragged, this.IndexBeingDragged,mousePos);
-                this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+                //this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
                 Shape[] shapes = new Shape[1];
                 shapes[0] = (this.StrokeBeingDragged as Form).ConvertToShape(this.SocketManager.SessionID);
                 if (IsOffline) { this.editeur.ModifiedElements(shapes); }

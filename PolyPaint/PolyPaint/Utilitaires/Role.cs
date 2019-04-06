@@ -119,12 +119,14 @@ namespace PolyPaint.Utilitaires
             this.Center = startHeight + (this.Height / 2) * this.HeightDirection;
             // this.Center = startHeight + Point.Subtract(endHeight, startHeight) / 2;
             this.UpdateEncPoints();
-            if (this.Arrow != null)
+
+            if (this.Arrow.Count > 0)
             {
-                this.Arrow.ShapeMoved(this.Id);
+                foreach (Arrow a in this.Arrow)
+                    a.ShapeMoved(this.Id);
             }
-            
-         }
+
+        }
         private void Fill(DrawingContext drawingContext)
         {
             LineSegment[] segments = new LineSegment[this.StylusPoints.Count-12];

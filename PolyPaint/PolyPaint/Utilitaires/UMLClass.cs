@@ -80,9 +80,10 @@ namespace PolyPaint.Utilitaires
 
             this.UpdateEncPoints();
 
-            if (this.Arrow != null)
+            if (this.Arrow.Count > 0)
             {
-                this.Arrow.ShapeMoved(this.Id);
+                foreach (Arrow a in this.Arrow)
+                    a.ShapeMoved(this.Id);
             }
         }
         private void Fill(DrawingContext drawingContext)

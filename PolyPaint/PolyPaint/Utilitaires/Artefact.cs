@@ -71,9 +71,10 @@ namespace PolyPaint.Utilitaires
             this.Height = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
             this.UpdateEncPoints();
 
-            if (this.Arrow != null)
+            if (this.Arrow.Count > 0)
             {
-                this.Arrow.ShapeMoved(this.Id);
+                foreach( Arrow a in this.Arrow)
+                a.ShapeMoved(this.Id);
             }
         }
         private void Fill(DrawingContext drawingContext)
