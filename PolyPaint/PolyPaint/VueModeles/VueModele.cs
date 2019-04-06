@@ -15,6 +15,8 @@ using System.Linq;
 using System;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.IO;
 
 namespace PolyPaint.VueModeles
 {
@@ -66,8 +68,18 @@ namespace PolyPaint.VueModeles
         }
         public bool IsOffline
         {
-            get { return editeur.IsOffline; }
-            set { editeur.IsOffline = value; }
+            get
+            {
+                return editeur.IsOffline;
+            }
+            set
+            {
+                editeur.IsOffline = value;
+                if (!editeur.IsOffline)
+                {
+                    //SendLocalCanvas();
+                }
+            }
         }
         public StrokeCollection LastCut
         {
@@ -241,7 +253,7 @@ namespace PolyPaint.VueModeles
         /// </summary>
         public VueModele()
         {
-            this.IsOffline = true;
+            this.IsOffline = false;
             
             this.Canvas = new CustomInkCanvas();
 
@@ -255,8 +267,10 @@ namespace PolyPaint.VueModeles
             if (!this.IsOffline)
             {
                 SocketManager.UserName = this.Username;
+                this.SessionId = "MockSessionId";
                 editeur.initializeSocketEvents();
                 SocketManager.JoinDrawingSession("MockSessionID");
+                this.SendLocalCanvas();
             }
             else
             {
@@ -295,6 +309,41 @@ namespace PolyPaint.VueModeles
         public void SendCanvas(CustomInkCanvas canvas)
         {
             this.Canvas = canvas;
+        }
+        public void SendLocalCanvas()
+        {
+            int compteur = 0;
+            foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
+            {
+                string contents = File.ReadAllText(file);
+
+                var parameters = new
+                {
+                    author = this.Username,
+                    imageId = this.Username + "_" + compteur,
+                    visibility = "protected",
+                    protection = "public"
+
+                    
+                };
+                compteur++;
+                this.networkManager.CreateImage(parameters,this.SessionId,this.Username);
+
+                string canvas = new JavaScriptSerializer().Serialize(new
+                {
+                    shapes = contents
+
+                });
+               // this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
+               
+
+            }
+            string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory() + "/Backup");
+            foreach (string filePath in filePaths)
+                File.Delete(filePath);
+
+            //HttpClient client = new HttpClient();
+            //client.PostAsync("http://127.0.0.1:3000/api/images/" +this.SessionId + "/"+ this.Username  , null);
         }
         public void HandleCanvasResize()//double width, double height)
         {
