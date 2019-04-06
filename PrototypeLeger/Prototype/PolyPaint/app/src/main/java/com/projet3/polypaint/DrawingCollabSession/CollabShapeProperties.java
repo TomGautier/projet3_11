@@ -24,15 +24,15 @@ public class CollabShapeProperties {
     private String type;
     private String fillingColor;
     private String borderColor;
-    private PaintStyle.StrokeType strokeType;
+    private PaintStyle.StrokeType strokeType = PaintStyle.StrokeType.full;
     private int[] middlePointCoord;
     private int height;
     private int width;
     private int rotation;
 
-    private String text = null;
-    private ArrayList<String> attributes = null;
-    private ArrayList<String> methods = null;
+    private String text = "";
+    private ArrayList<String> attributes = new ArrayList<>();
+    private ArrayList<String> methods = new ArrayList<>();
 
     public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, int[] middlePointCoord_,
                                  int height_, int width_, int rotation_){
@@ -187,11 +187,16 @@ public class CollabShapeProperties {
     }
     public PaintStyle getStyle() {
         Paint backgroundPaint = new Paint();
+        Paint borderPaint = new Paint();
 //        System.out.println("0x" + fillingColor.substring(1));
         System.out.println("---------------------------------__" + fillingColor + " -- " + borderColor);
-        backgroundPaint.setColor(Integer.decode(fillingColor) + 0xff000000);
-        Paint borderPaint = new Paint();
-        borderPaint.setColor(Integer.decode(borderColor) + 0xff000000);
+        try {
+            backgroundPaint.setColor(Integer.decode(fillingColor) + 0xff000000);
+            borderPaint.setColor(Integer.decode(borderColor) + 0xff000000);
+        } catch (NumberFormatException nfe) {
+            backgroundPaint.setColor(Integer.decode("#" + fillingColor) + 0xff000000);
+            borderPaint.setColor(Integer.decode("#" + borderColor) + 0xff000000);
+        }
         return new PaintStyle(borderPaint, backgroundPaint, new Paint(borderPaint), strokeType);
     }
 }

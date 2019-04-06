@@ -79,6 +79,7 @@ public class CollabShape {
                 ImageEditingDialogManager.getInstance().showTextAndStyleDialog(fragmentManager, style, properties.getText());
                 break;
             case "text_box":
+                ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, style, properties.getText());
                 break;
         }
     }

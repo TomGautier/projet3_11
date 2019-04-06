@@ -233,16 +233,37 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         String borderColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBorderPaint().getColor()));
         CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), backgroundColor,
                 borderColor, shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),0);
-        CollabShape collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
-        return collabShape;
+        return new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
     }
     private CollabShape createCollabShape(int posX, int posY){
         id = client.getName() + Integer.toString(idCpt++);
         String backgroundColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBackgroundPaint().getColor()));
         String borderColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBorderPaint().getColor()));
-        CollabShapeProperties properties = new CollabShapeProperties(currentShapeType.toString(), backgroundColor,
-                borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString())
-                ,GenericShape.getDefaultWidth(currentShapeType.toString()),0);
+        String shapeType = currentShapeType.toString();
+
+        CollabShapeProperties properties = new CollabShapeProperties(shapeType, backgroundColor,
+                borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString()),
+                GenericShape.getDefaultWidth(currentShapeType.toString()),0);
+
+        /*switch (shapeType) {
+            case "UmlClass":
+                properties = new CollabShapeProperties(shapeType, backgroundColor,
+                        borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString()),
+                        GenericShape.getDefaultWidth(currentShapeType.toString()),0);
+                break;
+            case "Artefact":
+                break;
+            case "Activity":
+                break;
+            case "Role":
+                break;
+            case "Phase":
+                break;
+            case "Comment":
+                break;
+            case "text_box":
+                break;
+        }*/
         return new CollabShape(id,drawingSessionId, client.getName(),properties);
     }
     @Override
@@ -638,6 +659,9 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 genShape = new UMLClass(collabShape.getId(),properties.getMiddlePointCoord()[0],
                         properties.getMiddlePointCoord()[1], properties.getWidth(), properties.getHeight(),
                         properties.getText(), properties.getAttributesString(), properties.getMethodsString(), properties.getStyle());
+                /*((UMLClass) genShape).setText(properties.getText());
+                ((UMLClass) genShape).setAttributes(properties.getAttributesString());
+                ((UMLClass) genShape).setMethods(properties.getMethodsString());*/
                 break;
             case "Artefact":
                 genShape = new UMLArtefact(collabShape.getId(), properties.getMiddlePointCoord()[0],
