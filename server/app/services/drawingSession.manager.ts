@@ -71,8 +71,6 @@ export class DrawingSessionManager {
         });
         this.socketService.leaveRoom(doc.imageId, socketId);
 
-        /***/
-
         var users = this.connectedUsers.get(doc.imageId) as String[];
         
         const index = users.indexOf(doc.username, 0);
@@ -82,7 +80,6 @@ export class DrawingSessionManager {
 
         this.connectedUsers.set(doc.imageId, users);
         this.socketService.emit(doc.sessionId, SocketEvents.LeftDrawingSession, users);
-        /***/
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
