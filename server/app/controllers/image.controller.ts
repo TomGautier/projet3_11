@@ -12,7 +12,6 @@ export class ImageController implements ImageControllerInterface {
     
     public constructor(
         @inject(TYPES.ImageServiceInterface) private imageService: ImageService,
-        @inject(TYPES.DrawingSessionManager) private drawingSessionManager: DrawingSessionManager,
         @inject(TYPES.UserManager) private userManager: UserManager
     ) { }
 
@@ -65,8 +64,8 @@ export class ImageController implements ImageControllerInterface {
 
         router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
                 
                 this.imageService.create(req.body.imageId, 
                                         req.body.author,
