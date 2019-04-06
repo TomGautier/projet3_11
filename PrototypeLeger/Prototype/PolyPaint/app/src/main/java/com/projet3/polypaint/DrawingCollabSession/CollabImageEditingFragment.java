@@ -659,9 +659,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 genShape = new UMLClass(collabShape.getId(),properties.getMiddlePointCoord()[0],
                         properties.getMiddlePointCoord()[1], properties.getWidth(), properties.getHeight(),
                         properties.getText(), properties.getAttributesString(), properties.getMethodsString(), properties.getStyle());
-                /*((UMLClass) genShape).setText(properties.getText());
-                ((UMLClass) genShape).setAttributes(properties.getAttributesString());
-                ((UMLClass) genShape).setMethods(properties.getMethodsString());*/
                 break;
             case "Artefact":
                 genShape = new UMLArtefact(collabShape.getId(), properties.getMiddlePointCoord()[0],

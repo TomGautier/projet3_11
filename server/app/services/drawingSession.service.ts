@@ -22,10 +22,14 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
                 type: properties.type,
                 fillingColor: properties.fillingColor,
                 borderColor: properties.borderColor,
+                strokeType: properties.strokeType,
                 middlePointCoord: properties.middlePointCoord,
                 height: properties.height,
                 width: properties.width,
-                rotation: properties.rotation
+                rotation: properties.rotation,
+                label: properties.label,
+                attributes: properties.attributes,
+                methods: properties.methods
             }
         });
     

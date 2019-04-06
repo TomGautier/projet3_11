@@ -16,10 +16,14 @@ public class CollabShapeProperties {
     public static String TYPE_TAG = "type";
     public static String FILLING_COLOR_TAG = "fillingColor";
     public static String BORDER_COLOR_TAG = "borderColor";
+    public static String STROKE_TAG = "strokeType";
     public static String MIDDLE_POINT_TAG = "middlePointCoord";
     public static String HEIGHT_TAG = "height";
     public static String WIDTH_TAG = "width";
     public static String ROTATION_TAG = "rotation";
+    public static String LABEL_TAG = "label";
+    public static String ATTRIBUTE_TAG = "attributes";
+    public static String METHOD_TAG = "methods";
 
     private String type;
     private String fillingColor;
@@ -39,42 +43,12 @@ public class CollabShapeProperties {
         type = type_;
         fillingColor = fillingColor_;
         borderColor = borderColor_;
-        strokeType = PaintStyle.StrokeType.full; // TODO: Add stroke type to passed parameters
+        strokeType = PaintStyle.StrokeType.full; // TODO: Add stroke type to passed parameters?
         middlePointCoord = middlePointCoord_;
 
         height = height_;
         width = width_;
         rotation = rotation_;
-    }
-    public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, int[] middlePointCoord_,
-                                 int height_, int width_, int rotation_, String text_){
-        type = type_;
-        fillingColor = fillingColor_;
-        borderColor = borderColor_;
-        strokeType = PaintStyle.StrokeType.full; // TODO: Add stroke type to passed parameters
-        middlePointCoord = middlePointCoord_;
-
-        height = height_;
-        width = width_;
-        rotation = rotation_;
-
-        text = text_;
-    }
-    public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, int[] middlePointCoord_,
-                                 int height_, int width_, int rotation_, String text_, ArrayList<String> attributes_, ArrayList<String> methods_){
-        type = type_;
-        fillingColor = fillingColor_;
-        borderColor = borderColor_;
-        strokeType = PaintStyle.StrokeType.full; // TODO: Add stroke type to passed parameters
-        middlePointCoord = middlePointCoord_;
-
-        height = height_;
-        width = width_;
-        rotation = rotation_;
-
-        text = text_;
-        attributes = attributes_;
-        methods = methods_;
     }
 
     public CollabShapeProperties(JSONObject obj){
@@ -83,23 +57,24 @@ public class CollabShapeProperties {
             type = obj.getString(TYPE_TAG);
             fillingColor = obj.getString(FILLING_COLOR_TAG);
             borderColor = obj.getString(BORDER_COLOR_TAG);
+            strokeType = PaintStyle.StrokeType.valueOf(obj.getString(STROKE_TAG));
             for (int i = 0; i < 2; i++)
                 middlePointCoord[i] = (int)obj.getJSONArray(MIDDLE_POINT_TAG).get(i);
             height= Integer.parseInt(obj.getString(HEIGHT_TAG));
             width = Integer.parseInt(obj.getString(WIDTH_TAG));
             rotation =Integer.parseInt(obj.getString(ROTATION_TAG));
 
-            if (obj.has("label"))
-                text = obj.getString("label");
-            if (obj.has("attributes")) {
+            if (obj.has(LABEL_TAG))
+                text = obj.getString(LABEL_TAG);
+            if (obj.has(ATTRIBUTE_TAG)) {
                 attributes = new ArrayList<>();
-                JSONArray attr = obj.getJSONArray("attributes");
+                JSONArray attr = obj.getJSONArray(ATTRIBUTE_TAG);
                 for (int i = 0; i < attr.length(); i++)
                     attributes.add(attr.getString(i));
             }
-            if ( obj.has("methods")) {
+            if (obj.has(METHOD_TAG)) {
                 methods = new ArrayList<>();
-                JSONArray met = obj.getJSONArray("methods");
+                JSONArray met = obj.getJSONArray(METHOD_TAG);
                 for (int i = 0; i < met.length(); i++)
                     methods.add(met.getString(i));
             }
@@ -198,6 +173,13 @@ public class CollabShapeProperties {
             borderPaint.setColor(Integer.decode("#" + borderColor) + 0xff000000);
         }
         return new PaintStyle(borderPaint, backgroundPaint, new Paint(borderPaint), strokeType);
+    }
+
+    public JSONArray getAttributesJson() {
+        return new JSONArray(attributes);
+    }
+    public JSONArray getMethodsJson() {
+        return new JSONArray(methods);
     }
 }
 

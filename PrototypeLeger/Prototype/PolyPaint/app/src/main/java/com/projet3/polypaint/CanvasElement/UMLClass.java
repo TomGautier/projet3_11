@@ -35,11 +35,13 @@ public class UMLClass extends GenericTextShape {
     public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style) {
         super(id, x, y, style, name);
 
-        setAttributes(attributes);
-        setMethods(methods);
-
         if (width > this.width) this.width = width;
         this.height = height;
+
+        this.attributes = new ArrayList<>();
+        this.methods = new ArrayList<>();
+        setAttributes(attributes);
+        setMethods(methods);
 
         initializePaint();
     }

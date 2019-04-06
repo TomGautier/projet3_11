@@ -19,10 +19,14 @@ export let shapeSchema: Schema = new Schema({
         type: { type: String, required: true },
         fillingColor: { type: String, required: true },
         borderColor: { type: String, required: true },
+        strokeType: { type: String, required: true },
         middlePointCoord: { type: [Number], required: true },
         height: { type: Number, required: true },
         width: { type: Number, required: true },
-        rotation: { type: Number }
+        rotation: { type: Number },
+        label: { type: String },
+        attributes: { type: [String] },
+        methods: { type: [String] }
     },
 
 }, {timestamps: true});

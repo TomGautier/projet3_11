@@ -390,10 +390,14 @@ public class SocketManager  {
             shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
                     .put(CollabShapeProperties.FILLING_COLOR_TAG, shape.getProperties().getFillingColor())
                     .put(CollabShapeProperties.BORDER_COLOR_TAG, shape.getProperties().getBorderColor())
+                    .put(CollabShapeProperties.STROKE_TAG, shape.getProperties().getStrokeType().toString())
                     .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shape.getProperties().getMiddlePointCoord()))
                     .put(CollabShapeProperties.HEIGHT_TAG, shape.getProperties().getHeight())
                     .put(CollabShapeProperties.WIDTH_TAG, shape.getProperties().getWidth())
-                    .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation());
+                    .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation())
+                    .put(CollabShapeProperties.LABEL_TAG, shape.getProperties().getText())
+                    .put(CollabShapeProperties.ATTRIBUTE_TAG, shape.getProperties().getAttributesJson())
+                    .put(CollabShapeProperties.METHOD_TAG, shape.getProperties().getMethodsJson());
 
             shapeJson = new JSONObject().put(CollabShape.ID_TAG, shape.getId())
                     .put(CollabShape.DRAWING_SESSION_TAG, shape.getDrawingSessionId())
