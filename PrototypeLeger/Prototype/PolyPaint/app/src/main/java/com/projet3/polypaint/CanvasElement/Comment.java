@@ -16,8 +16,8 @@ public class Comment extends GenericTextShape {
         super(id, x, y,width, height,style, 0);
         this.height += 2*PADDING;
     }
-    public Comment(String id, int x, int y,int width, int height, PaintStyle style, String contents, float angle) {
-        super(id, x, y,width,height, style, contents, angle);
+    private Comment(String id, int x, int y,int width, int height, PaintStyle style, String contents) {
+        super(id, x, y,width,height, style, contents, 0);
         this.height += 2*PADDING;
     }
 
@@ -44,7 +44,7 @@ public class Comment extends GenericTextShape {
 
     @Override
     public GenericShape clone() {
-        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width,height, this.style, text, angle);
+        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width,height, this.style, text);
     }
 
     @Override

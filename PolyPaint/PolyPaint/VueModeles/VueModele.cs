@@ -14,6 +14,7 @@ using System.Linq;
 using System;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.IO;
 
@@ -115,7 +116,7 @@ namespace PolyPaint.VueModeles
             set { editeur.FormConnectorManager = value; }
         }
 
-        private string username = RandomString(5);
+        private string username;// =  "AAA";
         public string Username
         {
             get { return username; }
@@ -123,6 +124,7 @@ namespace PolyPaint.VueModeles
             {
                 username = value;
                 ChatManager.Username = value;
+
                 this.SocketManager.UserName = username;
                 ProprieteModifiee();
             }
@@ -246,11 +248,7 @@ namespace PolyPaint.VueModeles
 
         private void OnNavigateNewSession()
         {
-            string newDrawingId = Username + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-
-            networkManager.PostImage(Username, SessionId, newDrawingId, "public", "");
-            
-            JoinDrawSession(newDrawingId);
+            SwitchView = 7;
         }
 
         private void OnNavigateForgotPwd()
@@ -292,76 +290,84 @@ namespace PolyPaint.VueModeles
             SessionId = await networkManager.SignupAsync(Username, password);
             if (SessionId == "")
             {
-                MessageBox.Show("Wrong signup informations", "Error");
+                MessageBox.Show("Username already exists", "Error");
                 return;
             }
             SwitchView = 3;
         }
 
-        public bool JoinDrawSession(string joinningSessionID)
+        public void JoinNewDrawSession(string joinningImageID)
         {
-            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+            SwitchView = 5;
+            var newFormat = new
+            {
+                sessionId = SessionId,
+                username = Username,
+                imageId = joinningImageID
+            };
+
+            SocketManager.JoinDrawingSession(joinningImageID);
+        }
+
+        public async System.Threading.Tasks.Task<bool> JoinDrawSession(string joinningImageID)
+        {
+            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningImageID);
+
             if (info.protection != "")
                 return false;
 
+            SwitchView = 5;
             var format = new
             {
                 sessionId = SessionId,
                 username = Username,
-                imageId = joinningSessionID
+                imageId = joinningImageID
             };
 
-            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
+            SocketManager.JoinDrawingSession(joinningImageID);
 
-            SocketManager.Socket.On("JoinedDrawingSession", () => {
-                if(info != null)
-                {
-                    //TODO : Load canvas from GalleryItems 
-                }
-                else
-                {
-                    //TODO : Load default canvas
-                }
-            });
-            SwitchView = 5;
+            string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
+            this.editeur.LoadFromServer(shapes);
+            //LoadLocally(shapes); // TODO : Verify it works
             return true;
         }
 
-        public void JoinSecuredDrawSession(string joinningSessionID, string pwd)
+        public async void JoinSecuredDrawSession(string joinningImageID, string pwd)
         {
-            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningImageID);
             if (info.protection != pwd)
             {
                 MessageBox.Show("Wrong password", "Error");
                 return;
             }
+            SwitchView = 5;
 
             var format = new
             {
                 sessionId = SessionId,
                 username = Username,
-                imageId = joinningSessionID
+                imageId = joinningImageID
             };
+            
+            SocketManager.JoinDrawingSession(joinningImageID);
 
-            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
+            string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
+            LoadLocally(shapes); // TODO : Verify it works
+        }
 
-            SocketManager.Socket.On("JoinedDrawingSession", () => {
-                    //TODO : Load canvas from GalleryItems 
-            });
-            SwitchView = 5;
+        public void CreateNewSession(string visibility, string protection)
+        {
+            string newDrawingId = Username + "_" + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+
+            networkManager.PostImage(Username, SessionId, newDrawingId, visibility, protection);
+
+            JoinNewDrawSession(newDrawingId);
         }
 
         public async void LoadGallery(string galleryType)
         {
             string gallery;
-            if (galleryType == "private")
-            {
-                gallery = await networkManager.LoadUserImageAsync(Username, SessionId);
-            }
-            else
-            {
-                gallery = await networkManager.LoadAllImageAsync(Username, SessionId);
-            }
+            gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
             if(GalleryItems != null)
                 GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -436,19 +442,26 @@ namespace PolyPaint.VueModeles
 
             //SocketManager.JoinDrawingSession("MockSessionID");
             ChatManager.socket = SocketManager.Socket;
-            //SocketManager.UserName = "Olivier";
-            if (!this.IsOffline)
-            {
-                SocketManager.UserName = this.Username;
-                this.SessionId = "MockSessionId";
+            //SocketManager.UserName = "Olivier";<<<<<<< HEAD
+            // SocketManager.UserName = this.Username;
+
+            //editeur.initializeSocketEvents();
+            //SocketManager.JoinDrawingSession("MockSessionID");
+
+            if (!this.IsOffline) { 
+
+                //this.Username = "Bob";
+                //SocketManager.UserName = this.Username;
+                //this.SessionId = "MockSessionId";
                 editeur.initializeSocketEvents();
-                SocketManager.JoinDrawingSession("MockSessionID");
-                this.SendLocalCanvas();
+                //SocketManager.JoinDrawingSession("MockSessionID");
+               // this.SendLocalCanvas();
             }
             else
             {
                 this.PlayerManager.AddPlayer(this.SocketManager.UserName);
             }
+
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -877,6 +890,31 @@ namespace PolyPaint.VueModeles
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        // Sources
+        //https://stackoverflow.com/questions/20623126/inkcanvas-to-bitmap
+        //https://stackoverflow.com/a/554455
+        public void UpdateThumbnail()
+        {
+            // TODO : Fix align?
+            int margin = (int)Canvas.Margin.Left;
+            int width = (int)Canvas.ActualWidth;
+            int height = (int)Canvas.ActualHeight;
+            //render ink to bitmap
+            System.Windows.Media.Imaging.RenderTargetBitmap renderBitmap =
+            new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
+            renderBitmap.Render(Canvas);
+            
+            using (System.IO.MemoryStream memStream = new System.IO.MemoryStream())
+            {
+                System.Windows.Media.Imaging.JpegBitmapEncoder encoder = new System.Windows.Media.Imaging.JpegBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(renderBitmap));
+                encoder.Save(memStream);
+                string b64 = Convert.ToBase64String(memStream.ToArray());
+
+                networkManager.PostThumbnail(Username, SessionId, SocketManager.SessionID, b64);
+            }
         }
     }
 }

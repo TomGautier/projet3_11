@@ -224,6 +224,16 @@ namespace PolyPaint.Modeles
                 this.AddForm(shape, false);
             }
         }
+        public void LoadFromServer(string json)
+        {
+            this.ResetCanvas();
+            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            foreach (Shape shape in datalist)
+            {
+                ConvertToHC(shape);
+                this.AddForm(shape, false);
+            }
+        }
         public void HandleChangeSelection(StrokeCollection strokes)
         {
             //ProprieteModifiee("Test");

@@ -45,6 +45,7 @@ export class DrawingSessionManager {
     }
 
     public joinSession(socketId: string, doc : any) {
+        console.log("JOINED SESSION : " + doc.imageId);
         this.socketService.joinRoom(doc.imageId, socketId);
         this.newUserJoined(doc);    
         this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession, doc); 
@@ -106,6 +107,7 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
     public selectElements(doc : any) {
+        console.log("SELECT EVENT");
         this.socketService.emit(doc.imageId, SocketEvents.SelectedElements, doc);
     }
 

@@ -43,10 +43,12 @@ export class ConnectionService implements ConnectionServiceInterface {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate username
                 Logger.warn('LoginService', `The username ${username} already exists.`);
-                return false;
+                return '';
             }    
         }
-        return createdUser ? true : false;
+        const sessionId = uuid.v1();
+        this.userManager.addUser(sessionId, username);
+        return sessionId;
     }
 
     public async onForgotPassword(username: string, email: string) {

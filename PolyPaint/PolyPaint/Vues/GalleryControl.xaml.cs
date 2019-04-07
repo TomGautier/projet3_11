@@ -31,56 +31,20 @@ namespace PolyPaint.Vues
             InitializeComponent();
         }
 
-        private void JoinDrawSession_Click(object sender, RoutedEventArgs e)
+        private async void JoinDrawSession_Click(object sender, RoutedEventArgs e)
         {
             string sessionID = ((Grid)((Button)sender).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
-            if (!((VueModele)DataContext).JoinDrawSession(sessionID))
+            if (!await ((VueModele)DataContext).JoinDrawSession(sessionID))
             {
-                ((Grid)((Button)sender).Parent).Children.OfType<Grid>().AsEnumerable().First().Visibility = Visibility.Visible;
+                ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().Last().Visibility = Visibility.Visible;
             }
         }
 
         private void SecuredBtn_Click(object sender, RoutedEventArgs e)
         {
             string password = ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "PwdTextBox").Text;
-            string sessionID = ((Grid)((Grid)((Button)sender).Parent).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
+            string sessionID = ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().First().Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
             ((VueModele)DataContext).JoinSecuredDrawSession(sessionID, password);
-        }
-
-        public class ShapeProperties
-        {
-            public string type { get; set; }
-            public string fillingColor { get; set; }
-            public string borderColor { get; set; }
-            public float[] middlePointCoord { get; set; }
-            public float height { get; set; }
-            public float width { get; set; }
-            public float rotation { get; set; }
-        }
-
-        public class Shape
-        {
-            public string id { get; set; }
-            public string imageId { get; set; }
-            public string author { get; set; }
-            public ShapeProperties properties { get; set; }
-        }
-
-        public class ShapeConnectionsProperties
-        {
-            public string type { get; set; }
-            public string color { get; set; }
-            public float[] points { get; set; }
-            public string shape1id { get; set; }
-            public string shape2id { get; set; }
-        }
-
-        public class ShapeConnections
-        {
-            public string id { get; set; }
-            public string imageId { get; set; }
-            public string author { get; set; }
-            public ShapeConnectionsProperties properties { get; set; }
         }
 
         public class GalleryItem
@@ -91,8 +55,6 @@ namespace PolyPaint.Vues
             public string protection { get; set; }
             public string thumbnail { get; set; }
             public Int64 thumbnailTimestamp { get; set; }
-            public Shape[] shapes { get; set; }
-            public ShapeConnections[] shapeConnections { get; set; }
             public ImageSource image { get; set; }
         }
 

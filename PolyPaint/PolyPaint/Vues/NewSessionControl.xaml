@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="PolyPaint.Vues.NewSessionControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PolyPaint.Vues"
+             mc:Ignorable="d" 
+                     d:DesignHeight="250" d:DesignWidth="300">
+    <StackPanel>
+        <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Visibility : "/>
+            <RadioButton Grid.Column="1" Name="public" VerticalContentAlignment="Center" IsChecked="True">
+                <Label Content="Pubic"/>
+            </RadioButton>
+            <RadioButton Grid.Column="2" Name="private" VerticalContentAlignment="Center">
+                <Label Content="Private"/>
+            </RadioButton>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" Content="Password (optional) : "/>
+            <TextBox Grid.Column="1" Name="protection" VerticalContentAlignment="Center"/>
+        </Grid>
+        <Button Name="Confirm" Margin="9" Content="Confirmer" Click="Confirm_Click"/>
+    </StackPanel>
+</UserControl>
