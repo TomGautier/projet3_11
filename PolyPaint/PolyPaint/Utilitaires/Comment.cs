@@ -14,8 +14,8 @@ namespace PolyPaint.Utilitaires
 {
     class Comment : Form
     {
-        public const int DEFAULT_HEIGHT = 70;
-        public const int DEFAULT_WIDTH = 130;
+        public const int DEFAULT_HEIGHT = 25;// 50;
+        public const int DEFAULT_WIDTH = 50;//100;
         public const string TYPE = "Comment";
 
         public string Name { get; set; }
@@ -26,8 +26,8 @@ namespace PolyPaint.Utilitaires
 
         {
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 50;
-            this.Width = 100;
+            this.Height = 25;
+            this.Width = 50;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
@@ -53,6 +53,13 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
 
             this.StylusPoints = pts;
+
+            if (this.CurrentRotation != 0)
+            {
+                int rotation = this.CurrentRotation;
+                this.CurrentRotation = 0;
+                this.SetRotation(rotation);
+            }
         }
         private void updatePoints()
         {
@@ -75,9 +82,10 @@ namespace PolyPaint.Utilitaires
             
             this.UpdateEncPoints();
 
-            if (this.Arrow != null)
+            if (this.Arrow.Count > 0)
             {
-                this.Arrow.ShapeMoved(this.Id);
+                foreach (Arrow a in this.Arrow)
+                    a.ShapeMoved(this.Id);
             }
 
         }
@@ -101,8 +109,12 @@ namespace PolyPaint.Utilitaires
             OnDrawCore(drawingContext, drawingAttributes);
             // base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
-            DrawName(drawingContext);
+            if (this.Label != null)
+            {
+                DrawName(drawingContext);
+            }
             DrawEncrage(drawingContext);
+            DrawRotator(drawingContext);
         }
         private void DrawName(DrawingContext drawingContext)
         {

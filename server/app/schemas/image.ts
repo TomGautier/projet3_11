@@ -20,6 +20,14 @@ export let imageSchema: Schema = new Schema({
         type: String,
         required: false
     },
+    canvasX: {
+        type: Number,
+        required: false
+    },
+    canvasY: {
+        type: Number,
+        required: false
+    },
     thumbnail: {
         type: String
     },

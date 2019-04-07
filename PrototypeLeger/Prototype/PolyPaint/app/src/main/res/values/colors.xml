@@ -8,6 +8,7 @@
         <color name="canvasBackground">#d7d9dd</color>
         <color name="mainBackground">#FFFFFF</color>
         <color name="imageEditingBackgroundColor">#E2E2E2</color>
-        <color name="DefaultConnectionFormColor">#56585b</color>
+        <color name="DefaultConnectionFormFillingColor">#56585b</color>
+        <color name="DefaultConnectionFormBorderColor">#000000</color>
         <color name="shapeFill" tools:ignore="MissingDefaultResource">#FFFFFF</color>
 </resources>

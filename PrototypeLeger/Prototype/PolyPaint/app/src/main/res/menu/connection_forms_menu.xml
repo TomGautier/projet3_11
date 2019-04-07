@@ -14,4 +14,10 @@
     <item
         android:id="@+id/connectionFormBidirectional"
         android:title="@string/connectionFormBidirectional" />
+    <item
+        android:id="@+id/connectionFormUnidirectional"
+        android:title="@string/connectionFormUnidirectional" />
+    <item
+        android:id="@+id/connectionFormLine"
+        android:title="@string/connectionFormLine" />
 </menu>

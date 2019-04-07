@@ -7,20 +7,18 @@ import android.graphics.Path;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLPhase extends GenericTextShape {
-    protected final static int DEFAULT_WIDTH = 400;
-    protected final static int DEFAULT_HEIGHT = 300;
+    protected final static int DEFAULT_WIDTH = 451;
+    protected final static int DEFAULT_HEIGHT = 350;
 
     public static final String TYPE = "Phase";
 
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
-        super(id, x, y, style,angle);
+        super(id, x, y, width, height, style,angle);
         this.width = width;
         this.height = height;
     }
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
-        super(id, x, y, style, contents,0);
-        this.width = width;
-        this.height = height;
+        super(id, x, y, width, height, style, contents,angle);
     }
 
     @Override
@@ -61,4 +59,16 @@ public class UMLPhase extends GenericTextShape {
 
     @Override
     public String getType() { return TYPE; }
+    @Override
+    public void setAnchorPoints() {
+        //no anchor points for connectionForms
+    }
+    @Override
+    public void drawAnchorPoints(Canvas canvas){
+        //no anchor points
+    }
+    @Override
+    public void rotateAnchorPoints(){
+        //no anchor points
+    }
 }

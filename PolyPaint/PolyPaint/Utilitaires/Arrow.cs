@@ -11,8 +11,8 @@ using System.Windows.Media;
 
 namespace PolyPaint.Utilitaires
 {
-    
-    class Arrow: Form
+
+    class Arrow : Form
     {
         public const string TYPE = "Arrow";
         public string Category { get; set; }
@@ -20,19 +20,21 @@ namespace PolyPaint.Utilitaires
         public int Index1;
         public int Index2;
         public Form Shape2;
+        public string Q1 { get; set; }
+        public string Q2 { get; set; }
         public Arrow(StylusPointCollection pts)
-            :base(pts)
+            : base(pts)
         {
             this.DrawingAttributes.Color = Colors.Red;
             this.Type = TYPE;
- 
+
 
         }
         public void ShapeMoved(string shapeID)
         {
             if (Shape1 != null && shapeID == Shape1.Id)
             {
-                this.StylusPoints[0] = new StylusPoint(this.Shape1.EncPoints[Index1].X,this.Shape1.EncPoints[Index1].Y);
+                this.StylusPoints[0] = new StylusPoint(this.Shape1.EncPoints[Index1].X, this.Shape1.EncPoints[Index1].Y);
             }
             else
             {
@@ -41,12 +43,100 @@ namespace PolyPaint.Utilitaires
         }
         protected override void DrawCore(DrawingContext drawingContext, DrawingAttributes drawingAttributes)
         {
-            OnDrawCore(drawingContext, drawingAttributes);            
+            SetSelection(drawingContext);
+            OnDrawCore(drawingContext, drawingAttributes);
+            
             DrawLabel(drawingContext);
             if (this.StylusPoints.Count > 1)
             {
                 DrawCategory(drawingContext);
+
             }
+            if (this.Shape1 != null && this.Shape2 != null)
+            {
+
+                DrawQuantity(drawingContext);
+            }
+
+        }
+        private void DrawQuantity(DrawingContext dc)
+        {
+            Vector dir1 = Point.Subtract(this.StylusPoints[1].ToPoint(), this.StylusPoints[0].ToPoint());
+            dir1.Normalize();
+            Point origin1 = this.StylusPoints[0].ToPoint() + dir1*30;
+            origin1 += (new Vector(-dir1.Y, dir1.X) * 15);
+
+            Vector dir2 = Point.Subtract(this.StylusPoints[this.StylusPoints.Count-1].ToPoint(), this.StylusPoints[this.StylusPoints.Count-2].ToPoint());
+            dir2.Normalize();
+            Point origin2 = this.StylusPoints[this.StylusPoints.Count-1].ToPoint() - dir2 * 30;
+            origin2 += (new Vector(-dir2.Y, dir2.X) * 15);
+            //origin.Y += this.DrawingAttributes.Width;
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
+            Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+            if (this.Q1 != null)
+            {
+                dc.DrawText(new FormattedText(this.Q1, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin1);
+            }
+            if (this.Q2 != null)
+            {
+                dc.DrawText(new FormattedText(this.Q2, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin2);
+            }
+
+        }
+        public override void SetToShape(Shape shape)
+        {
+            this.Id = shape.id;
+            this.Author = shape.author;
+            if (shape.properties.height > 0)
+            {
+                this.DrawingAttributes.Width = shape.properties.height;//shape.properties.width;
+                this.DrawingAttributes.Height = shape.properties.height;//shape.properties.width;
+            }
+            StylusPointCollection points = new StylusPointCollection();
+            for (int i = 0; i < shape.properties.pointsX.Length; i++)
+            {
+                
+                points.Add(new StylusPoint(shape.properties.pointsX[i], shape.properties.pointsY[i]));
+            }
+            this.StylusPoints = points;
+            //this.Center = new Point(shape.properties.middlePointCoord[0], shape.properties.middlePointCoord[1]);
+           // this.MakeShape();
+
+            this.DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.borderColor);
+            this.Remplissage = (Color)System.Windows.Media.ColorConverter.ConvertFromString(shape.properties.fillingColor);
+            //  this.Index1 = shape.properties.index1;
+            //  this.Index2 = shape.properties.index2;
+            this.Q1 = shape.properties.q1;
+            this.Q2 = shape.properties.q2;
+            this.Category = shape.properties.category;
+            this.Label = shape.properties.label;
+            this.BorderStyle = shape.properties.borderType;
+        }
+
+        public override Shape ConvertToShape(string drawingSessionID)
+        {
+            string id1 = "";//null;
+            string id2 = "";//null;
+            if (this.Shape1 != null)
+            {
+                id1 = this.Shape1.Id;
+            }
+            if (this.Shape2 != null)
+            {
+                id2 = this.Shape2.Id;
+            }
+            int[] ptsX = new int[this.StylusPoints.Count];
+            int[] ptsY = new int[this.StylusPoints.Count];
+            for (int i = 0; i < this.StylusPoints.Count; i++)
+            {
+                ptsX[i] = (int)this.StylusPoints[i].X;
+                ptsY[i] = (int)this.StylusPoints[i].Y;
+                // pts[i] = this.StylusPoints[i].ToPoint();
+            }
+            ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), null,
+                (int)this.DrawingAttributes.Height, (int)this.DrawingAttributes.Height, -1, this.BorderStyle, this.Label,null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, ptsX,ptsY, this.Category);
+            return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         private  void DrawCategory(DrawingContext drawingContext)
         {
@@ -55,7 +145,7 @@ namespace PolyPaint.Utilitaires
                 case "One Way":
                     DrawOneWay(drawingContext);
                     break;
-                case "Two Ways":
+                case "Bidirectional":
                     DrawTwoWays(drawingContext);
                     break;
                 case "Inheritance":
@@ -230,7 +320,10 @@ namespace PolyPaint.Utilitaires
                 //origin.Y += this.DrawingAttributes.Width;
                 SolidColorBrush brush = new SolidColorBrush(Colors.Black);
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
-                drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+                if (this.Label != null)
+                {
+                    drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+                }
             }
         }
     }

@@ -28,6 +28,7 @@ namespace PolyPaint.Vues
             }
             sizeList.SelectedIndex = 1;
             typeList.SelectedIndex = 0;
+            borderList.SelectedIndex = 0;
             selecteurCouleur.SelectedColor = Colors.Black;
 
 

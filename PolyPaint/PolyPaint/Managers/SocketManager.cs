@@ -16,21 +16,32 @@ namespace PolyPaint.Managers
 {
     class SocketManager
     {
-        private const string SERVER_ADDRESS = "127.0.0.1";
+        private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.9.112";//"127.0.0.1";
         private const string SERVER_PORT = "3000";
+        public const double S_PROP = 2.256d;
         public Socket Socket;
-        private int Compteur { get; set; }
+        public int Compteur { get; set; }
 
         public string SessionID { get; set; }
         public string UserName { get; set; }
-        public SocketManager()
+        public bool IsOffline { get; set; }
+        public SocketManager(bool isOffline)
         {
-            IO.Options op = new IO.Options
+            this.IsOffline = isOffline;
+            if (!this.IsOffline)
             {
-                Reconnection = false
-            };
-            Socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
-            //InitializeOns();
+                IO.Options op = new IO.Options
+                {
+                    Reconnection = false
+                };
+                Socket = IO.Socket("http://" + SERVER_ADDRESS + ":" + SERVER_PORT, op);
+                //InitializeOns();
+            }
+            else
+            {
+                this.UserName = "offlinePlayer";
+                this.SessionID = "offline";
+            }
             this.Compteur = 0;
         }
         public void JoinDrawingSession(string sessionID)
@@ -46,6 +57,7 @@ namespace PolyPaint.Managers
         }
         public void UnStackElement(Shape shape_)
         {
+            ConvertToMobile(shape_);
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 sessionId = this.SessionID,
@@ -73,15 +85,17 @@ namespace PolyPaint.Managers
             });
             this.Socket.Emit("ResetCanvas", parameters);
         }
-        public void ResizeCanvas(double width, double height)
+        public void ResizeCanvas(int width, int height)
         {
-            double[] size = new double[2] { width, height };
+            int[] size = new int[2] {(int) (width*S_PROP), (int)(height*S_PROP) };
 
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 username = this.UserName,
                 imageId = this.SessionID,
-                newCanvasDimensions = size
+                x = size[0],
+                y = size[1]
+
             });
             this.Socket.Emit("ResizeCanvas", parameters);
         }
@@ -98,7 +112,8 @@ namespace PolyPaint.Managers
         }
         public void AddElement(Shape shape_)
         {
-            shape_.id = this.UserName + "_" + this.Compteur.ToString();
+            ConvertToMobile(shape_);
+            shape_.id = this.UserName + "_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();//this.Compteur.ToString();
             shape_.author = this.UserName;
 
             string parameters = new JavaScriptSerializer().Serialize(new
@@ -125,7 +140,8 @@ namespace PolyPaint.Managers
             });
             Compteur++;
             //Object[] parameters = new Object[] { this.SessionID, this.UserName, shape_ };
-            this.Socket.Emit("AddElement", parameters);
+                this.Socket.Emit("AddElement", parameters);
+   
 
         }
         public void DeleteElement(String[] idList)
@@ -157,13 +173,58 @@ namespace PolyPaint.Managers
         }
         public void HandleModification(Shape[] shapes_)
         {
+            foreach (Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 imageId = this.SessionID,
                 username = this.UserName,
                 shapes = shapes_
             });
-            this.Socket.Emit("ModifyElement", parameters);
+            this.Socket.Emit("ModifyElement", parameters); 
+            
+        }
+        public void DuplicateElements(Shape[] shapes_)
+        {
+            foreach(Shape s in shapes_) { ConvertToMobile(s); }
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                imageId= this.SessionID,
+                username = this.UserName,
+                shapes = shapes_
+            });
+            this.Socket.Emit("DuplicateElements", parameters);
+        }
+        public void DuplicateCutElements(Shape[] shapes_)
+        {
+            foreach (Shape s in shapes_) { ConvertToMobile(s); }
+            string parameters = new JavaScriptSerializer().Serialize(new
+            {
+                imageId = this.SessionID,
+                username = this.UserName,
+                shapes = shapes_
+            });
+            this.Socket.Emit("DuplicateCutElements", parameters);
+        }
+        public void ConvertToMobile(Shape shape)
+        {
+            if (shape.properties.type == "Arrow")
+            {
+                shape.properties.height = (int)(shape.properties.height * S_PROP);
+                //hape.properties.width = (int)(shape.properties.height * S_PROP);
+                for(int i = 0; i< shape.properties.pointsX.Length; i++)
+                {
+                    shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * S_PROP);
+                    shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * S_PROP);
+                }
+
+            }
+            else
+            {
+                shape.properties.height = (int)(shape.properties.height * S_PROP);
+                shape.properties.width = (int)(shape.properties.width * S_PROP);
+                shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * S_PROP);
+                shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * S_PROP);
+            }
         }
     }
 }

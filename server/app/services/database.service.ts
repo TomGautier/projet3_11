@@ -63,6 +63,15 @@ export class DatabaseService {
         });
     }
 
+    public async createMultiple(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.create(doc, (err: any, document: any) => {
+                if (err) { return reject(err); };
+                resolve(document);
+            });
+        });
+    }
+
     public async getAllByCriteria(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.find({ [criteria]: doc }, (err: any, document: any) => {
@@ -93,7 +102,7 @@ export class DatabaseService {
     public async update(model: any, criteria: string, criteriaValue: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.findOne({ [criteria]: criteriaValue }, (err: any, document: any) => {
-                if (err) { return reject(err) };
+                if (err) { return reject(err); };
                 document.set(doc);
                 document.save();
                 resolve(document);
@@ -101,7 +110,12 @@ export class DatabaseService {
         });
     }
 
-    
+    public async updateMultiple(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.update({id: doc.imageId},{$set:{canvasX: doc.canvasX, canvasY: doc.canvasY}},{multi:true,new:true}
+        )});
+    }
+
     public async updateOne(model: any, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.update({username: doc.username},{$set:{password: doc.password}},{new:true}
@@ -115,7 +129,7 @@ export class DatabaseService {
     public async remove(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.remove({ [criteria]: doc }, (err: any, document: any) => {
-                if (err) { return reject(err);; };
+                if (err) { return reject(err); };
                 resolve(document);
             });
         });

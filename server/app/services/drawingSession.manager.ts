@@ -4,7 +4,8 @@ import { DrawingSessionService } from "./drawingSession.service";
 import { TYPES } from "../types";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { UserManager } from "./user.manager";
-import shape from "../schemas/shape";
+import Image from "../schemas/image";
+import { DatabaseService } from "./database.service";
 
 @injectable()
 export class DrawingSessionManager {
@@ -15,6 +16,7 @@ export class DrawingSessionManager {
     private connectedUsers : Map<String, String[]> = new Map();
     
     constructor(@inject(TYPES.SocketService) private socketService: SocketService,
+                @inject(TYPES.DatabaseService) private databaseService: DatabaseService,
                 @inject(TYPES.DrawingSessionServiceInterface) private drawingSessionService: DrawingSessionService,
                 @inject(TYPES.UserManager) private userManager: UserManager)
                { 
@@ -46,7 +48,7 @@ export class DrawingSessionManager {
         console.log("JOINED SESSION : " + doc.imageId);
         this.socketService.joinRoom(doc.imageId, socketId);
         this.newUserJoined(doc);    
-        this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession); 
+        this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession, doc); 
     }
 
     public newUserJoined(doc : any) {
@@ -105,6 +107,7 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
     public selectElements(doc : any) {
+        console.log("SELECT EVENT");
         this.socketService.emit(doc.imageId, SocketEvents.SelectedElements, doc);
     }
 
@@ -113,9 +116,9 @@ export class DrawingSessionManager {
         console.log(doc);
         
         // FOR LOOP
-        //for (const shape of doc.shapes){
-         //this.drawingSessionService.addElement(shape.id,shape.imageId, shape.author, shape.properties);
-        //}
+        for (const shape of doc.shapes){
+         this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties);
+        }
        this.socketService.emit(doc.shapes[0].imageId, SocketEvents.DuplicatedElements, doc);
     }
 
@@ -125,7 +128,13 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.imageId, SocketEvents.CutedElements, doc);
     }
     public duplicateCutElements(doc : any){
+        for (const shape of doc.shapes){
+            this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties);
+           }
         console.log(doc);
+        for (const shape of doc.shapes){
+            this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties);
+           }
         this.socketService.emit(doc.shapes[0].imageId, SocketEvents.DuplicatedCutElements, doc);
 
     }
@@ -134,15 +143,14 @@ export class DrawingSessionManager {
         // FOR LOOP
         console.log("STACKING : ");
         console.log(doc);
-       //s this.drawingSessionService.deleteElements(doc.elementId);
+        this.drawingSessionService.deleteElements(doc.elementId);
         this.socketService.emit(doc.imageId, SocketEvents.StackedElement, doc);
     }
 
     public unstackElements(doc: any) {
-        
         console.log("UNSTACKING : ");
         console.log(doc);
-        //this.drawingSessionService.addElement(doc.shape.id,doc.shape.imageId, doc.shape.author, doc.shape.properties);
+        this.drawingSessionService.addElement(doc.shape.id, doc.shape.imageId, doc.shape.author, doc.shape.properties);
         
         this.socketService.emit(doc.shape.imageId, SocketEvents.UnstackedElement, doc);
     }
@@ -151,6 +159,7 @@ export class DrawingSessionManager {
 
     public resizeCanvas(doc: any) {
         this.socketService.emit(doc.imageId, SocketEvents.ResizedCanvas, doc);
+        this.databaseService.updateMultiple(Image, doc);
     }
     
     public resetCanvas(doc: any) {

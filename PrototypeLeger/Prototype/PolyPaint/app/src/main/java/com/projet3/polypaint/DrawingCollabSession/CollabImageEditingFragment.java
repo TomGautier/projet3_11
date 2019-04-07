@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import com.projet3.polypaint.CanvasElement.AnchorPoint;
+import com.projet3.polypaint.CanvasElement.Comment;
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
@@ -24,6 +26,7 @@ import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
 import com.projet3.polypaint.CanvasElement.UMLClass;
+import com.projet3.polypaint.CanvasElement.UMLPhase;
 import com.projet3.polypaint.CanvasElement.UMLRole;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
@@ -82,12 +85,44 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         SocketManager.currentInstance.joinCollabSession(id);
     }
     @Override
+    protected boolean canResize(){
+        return client.getSelectedShapes().size() == 1 && client.getSelectedShapes().get(0).getClass().equals(ConnectionForm.class);
+    }
+    @Override
+    protected void resizeShape(MotionEvent event){
+        int posX = (int)event.getX(0);
+        int posY = (int)event.getY(0);
+        ConnectionForm connectionForm =((ConnectionForm) client.getSelectedShapes().get(0));
+
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                lastTouchPosY = posY;
+                lastTouchPosX = posX;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                drawAnchorPoints();
+                connectionForm.relativeVertexMove(posX - lastTouchPosX,posY - lastTouchPosY, 0);
+                lastTouchPosX = posX;
+                lastTouchPosY = posY;
+                break;
+            case MotionEvent.ACTION_UP:
+                tryToAnchor(connectionForm,posX, posY);
+                connectionForm.finishResize();
+                SocketManager.currentInstance.modifyElements(new CollabShape[] {createCollabShape(connectionForm)});
+                break;
+        }
+
+    }
+    @Override
     @SuppressLint("ClickableViewAccessibility")
     protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                updateCanvas();
+                if (refreshCpt++ >= 1){
+                    updateCanvas();
+                    refreshCpt = 0;
+                }
 
                 boolean continueListening = false;
 
@@ -98,11 +133,16 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                  //if (event.getAction() != MotionEvent.ACTION_MOVE &&
                    //!client.getSelectedShapes().isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
                 // Check if canvas is being resized
-                if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
-                    return resizeCanvas(event);
+                //if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
+                  //  return resizeCanvas(event);
                 switch (currentMode) {
                     case selection:
-                        checkSelection(posX, posY);
+                        if (canResize() && client.getSelectedShapes().get(0).canResize(posX,posY)){
+                            resizeShape(event);
+                            continueListening = true;
+                        }
+                        else
+                            checkSelection(posX,posY);
                         break;
                     case rotate:
                         rotationDetector.onTouchEvent(event,posX,posY);
@@ -162,7 +202,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private boolean isFreeToSelect(String id){
         for (GenericShape shape : client.getSelectedShapes()){
             if (shape.getId().equals(id))
-                return false;
+                return true;
         }
         for (Player player : players){
             for (GenericShape shape : player.getSelectedShapes()){
@@ -204,13 +244,18 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             }
     }
     protected GenericShape addShape(int posX, int posY) {
+        /*if (currentShapeType.equals(ShapeType.text_box)){
+            id = client.getName() + "_" + Integer.toString(idCpt++);
+            TextBox textbox = new TextBox(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                    GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
+            textbox.showEditingDialog(getFragmentManager());
+        }*/
         CollabShape shape = createCollabShape(posX,posY);
         // TODO: Show editing dialog if needed.
         /*if (shape.getClass().equals(TextBox.class)){
             ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
         }*/
         SocketManager.currentInstance.addElement(shape);
-        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
 
         return null;
     }
@@ -262,9 +307,13 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         else if (genClass.equals(UMLArtefact.class))
             return ShapeType.Artefact.toString();
         else if (genClass.equals(TextBox.class))
-            return ShapeType.text_box.toString();
+            return ShapeType.Text.toString();
         else if (genClass.equals(ConnectionForm.class))
-            return ShapeType.ConnectionForm.toString();
+            return ShapeType.Arrow.toString();
+        else if (genClass.equals(UMLPhase.class))
+            return ShapeType.Phase.toString();
+        else if (genClass.equals(Comment.class))
+            return ShapeType.Comment.toString();
         return null;
     }
 
@@ -272,16 +321,19 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         String type = findGenShapeType(shape.getClass());
         CollabShape collabShape;
         CollabShapeProperties properties;
-        if (type.equals(ShapeType.ConnectionForm.toString())){
+        if (type.equals(ShapeType.Arrow.toString())){
             ConnectionForm connection  = (ConnectionForm)shape;
-            properties = new CollabConnectionProperties(connection.getVerticesPos(0),connection.getType(),connection.getType(),
-                    connection.getFillingColor());
+            //connection.removeConnection(0);
+            //connection.removeConnection(1);
+            properties = new CollabConnectionProperties(connection.getVerticesXPos(0),connection.getVerticesYPos(0),connection.getThick(),
+                    connection.getType(),connection.getConnectionType(),
+                    connection.getFillingColor(),shape.getBorderColor(),connection.getTailShapeId(),connection.getFrontShapeId()
+                    ,connection.getTailAnchorPointIndex(), connection.getFrontAnchorPointIndex());
         }
         else {
-            String backgroundColor = String.format("#%06X", (0xFFFFFF & shape.getStyle().getBackgroundPaint().getColor()));
-            String borderColor = String.format("#%06X", (0xFFFFFF & shape.getStyle().getBorderPaint().getColor()));
-
-            properties = new CollabShapeProperties(type, backgroundColor, borderColor,
+            //String hexColor = String.format("#%06X", (0xFFFFFF & shape.getFillingColor()));
+            properties = new CollabShapeProperties(type, shape.getFillingColor(),
+                    shape.getBorderColor(),shape.getAttributes(), shape.getMethods(),shape.getLabel(),shape.getBorderType(),
                     shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
         }
 
@@ -290,21 +342,21 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     private CollabShape createCollabShape(int posX, int posY){
         CollabShapeProperties properties;
-        id = client.getName() + "_" + Integer.toString(idCpt++);
+        String id = client.getName() + "_" + (new Date()).getTime();
         String hexColor;
-        if(currentShapeType.toString().equals(ShapeType.ConnectionForm.toString())){
-            int color = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormColor,null);
-            hexColor = String.format("#%06X", (0xFFFFFF & color));
-            properties = new CollabConnectionProperties(ConnectionForm.generateDefaultPoints(posX,posY)
-                    ,currentShapeType.toString(), currentConnectionFormType.toString(),hexColor);
+        if(currentShapeType.toString().equals(ShapeType.Arrow.toString())){
+            int fillingColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormFillingColor,null);
+            int borderColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormBorderColor,null);
+            String hexFillingColor = String.format("#%06X", (0xFFFFFF & fillingColor));
+            String hexBorderColor = String.format("#%06X", (0xFFFFFF & borderColor));
+            properties = new CollabConnectionProperties(ConnectionForm.generateDefaultX(posX), ConnectionForm.generateDefaultY(posY),
+                    ConnectionForm.DEFAULT_THICK,currentShapeType.toString(), currentConnectionFormType.toString(),hexFillingColor,hexBorderColor,"","",-1,-1);
         }
         else{
-            String backgroundColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBackgroundPaint().getColor()));
-            String borderColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBorderPaint().getColor()));
-
-            properties = new CollabShapeProperties(currentShapeType.toString(), backgroundColor,
-                    borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType),
-                    GenericShape.getDefaultWidth(currentShapeType),0);
+            hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
+            properties = new CollabShapeProperties(currentShapeType.toString(), hexColor,
+                    "#000000","","","","",new int[] {posX,posY},
+                    GenericShape.getDefaultHeight(currentShapeType), GenericShape.getDefaultWidth(currentShapeType),0);
         }
 
         return new CollabShape(id,imageID, client.getName(),properties);
@@ -342,14 +394,12 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     protected void stack(){
         if (shapes.size() > 0) {
             SocketManager.currentInstance.stackElement(shapes.get(shapes.size() - 1).getId());
-            RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
         }
     }
     @Override
     protected void unStack(){
         if (!stack.empty()) {
             SocketManager.currentInstance.unstackElement(createCollabShape(stack.peek()));
-            RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
         }
     }
     @Override
@@ -363,7 +413,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             ids.add(shape.getId());
         }
         SocketManager.currentInstance.deleteElements(ids.toArray(new String[ids.size()]));
-        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
     }
     @Override
     public void duplicateSelection() {
@@ -384,7 +433,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         }
         else return;
 
-        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
     }
     @Override
     protected void moveSelectedShape(MotionEvent event) {
@@ -419,16 +467,19 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                     //SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
+                    //updateCanvas();
                 }
                 break;
             case MotionEvent.ACTION_UP:
                 ArrayList<CollabShape> shapes = new ArrayList<>();
                 for (GenericShape shape : client.getSelectedShapes()){
+                    if (shape.getClass().equals(ConnectionForm.class) && client.getSelectedShapes().size() == 1){
+                        removeConnection(shape);
+                    }
                     shapes.add(createCollabShape(shape));
                 }
                 SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                 isMovingSelection = false;
-                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
                 break;
         }
     }
@@ -437,15 +488,17 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     @Override
     public void onJoinedSession(String drawingSessionId_) {
         imageID = drawingSessionId_;
-
-        shapes.addAll(RequestManager.currentInstance.getAllShapes(imageID));
-        //drawAllShapes();
+        ArrayList<GenericShape> newShapes = RequestManager.currentInstance.getAllShapes(imageID);
+        if (newShapes != null) {
+            shapes.addAll(newShapes);
+            drawAllShapes();
+        }
     }
     @Override
     public void onNewUserJoined(String[] players) {
         for (int i =  0; i < players.length; i++){
             if (isNewPlayer(players[i]))
-                this.players.add(new Player(players[i],++selectedColorCpt));
+                this.players.add(new Player(players[i],++selectedColorCpt % 4));
         }
     }
 
@@ -455,12 +508,13 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             @Override
             public void run() {
                 ViewGroup.LayoutParams params = iView.getLayoutParams();
-                params.width = width;
-                params.height = height;
+                params.width = checkCanvasWidth(width) ? width : DEFAULT_CANVAS_WIDTH;
+                params.height = checkCanvasHeight(height) ? height : DEFAULT_CANVAS_HEIGHT;
                 iView.setLayoutParams(params);
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
 
             }
         });
@@ -484,7 +538,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 //iView.invalidate();
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
 
             }
         });
@@ -505,7 +560,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
@@ -527,18 +583,46 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
 
+    private void removeConnection(GenericShape shape){
+        if (shape == null)
+            return;
+        if (shape.getClass().equals(ConnectionForm.class)) {
+            ConnectionForm connection = (ConnectionForm)shape;
+            if (!connection.getTailShapeId().isEmpty()) {
+                GenericShape linkedShape = findGenShapeById(connection.getTailShapeId());
+                linkedShape.removeAnchorConnection(connection.getTailAnchorPointIndex());
+                connection.removeConnection(0);
 
+            }
+            if (!connection.getFrontShapeId().isEmpty()) {
+                GenericShape linkedShape = findGenShapeById(connection.getFrontShapeId());
+                linkedShape.removeAnchorConnection(connection.getFrontAnchorPointIndex());
+                connection.removeConnection(1);
+            }
+        }
+        else{
+            for (int i = 0; i < shape.getAnchorPoints().size(); i ++){
+                AnchorPoint anchor = shape.getAnchorPoints().get(i);
+                if (anchor.isConnected()){
+                    anchor.getConnectionVertex().getOwner().removeConnection(anchor.getConnectionVertex().getIndex());
+                    anchor.removeConnection();
+                }
+            }
+        }
+    }
     @Override
     public void onDeleteElement(String[] ids, String author) {
         Player player = findPlayer(author);
         player = (player == null) ? client : player;
         for (int i = 0; i < ids.length; i++){
             GenericShape shape = findGenShapeById(ids[i]);
+            removeConnection(shape);
             player.removeSelectedShape(shape);
             shapes.remove(shape);
         }
@@ -552,7 +636,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
         //  Toast.makeText(getContext(),"DELETE UN ELEMENT", Toast.LENGTH_LONG).show();
@@ -567,8 +652,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             GenericShape shape = findGenShapeById(ids[i]);
             player.removeSelectedShape(shape);
             shapes.remove(shape);
-            if (client.getName().equals(author))
+            removeConnection(shape);
+            if (client.getName().equals(author)){
                 cutShapes.add(shape);
+            }
         }
 
         getActivity().runOnUiThread(new Runnable() {
@@ -576,9 +663,11 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
+
     }
 
     @Override
@@ -590,6 +679,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             GenericShape newShape = createGenShape(collabShapes[i]);
             GenericShape oldShape = findGenShapeById(newShape.getId());
             if (oldShape != null){
+                if (!newShape.getClass().equals(ConnectionForm.class))
+                    newShape.recuperateConnectionStatus(oldShape);
                 shapes.remove(oldShape);
                 shapes.add(newShape);
                 player.addSelectedShape(newShape);
@@ -600,24 +691,11 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
-        /*Player player = findPlayer(author);
-        player = (player == null) ? client : player;
-        for (int i = 0; i < collabShapes.length; i++){
-            GenericShape shape = createGenShape(collabShapes[i]);
-            player.removeSelectedShape(shape);
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                updateCanvas();
-                drawAllShapes();
-                rootView.invalidate();
-            }
-        });
-        //  Toast.makeText(getContext(),"MODIFIER UN ELEMENT", Toast.LENGTH_LONG).show();*/
+
 
     }
 
@@ -656,7 +734,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
             }
         });
         // Toast.makeText(getContext(),"SELECTIONNER UN ELEMENT", Toast.LENGTH_LONG).show();
@@ -686,15 +764,18 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         GenericShape shape = findGenShapeById(id);
         removeSelectedShape(id);
         shapes.remove(shape);
-        if (client.getName().equals(author))
+        removeConnection(shape);
+        if (client.getName().equals(author)){
             stack.push(shape);
+        }
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
@@ -715,7 +796,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             public void run() {
                 updateCanvas();
                 drawAllShapes();
-                rootView.invalidate();
+                iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
@@ -752,13 +834,34 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle,collabShape.getProperties().getRotation());
                 break;
-            case "ConnectionForm":
+            case "Arrow":
                 CollabConnectionProperties properties = ((CollabConnectionProperties)collabShape.getProperties());
-                genShape = new ConnectionForm(collabShape.getId(),properties.getConnectionType(),properties.getFillingColor(),properties.getVertices());
+                genShape = new ConnectionForm(collabShape.getId(),properties.getConnectionType(),properties.getFillingColor(),
+                        properties.getBorderColor(), properties.getThick(), properties.getVerticesX(), properties.getVerticesY());
+                if (!properties.getIdShape1().isEmpty() && properties.getIndex1() != -1){
+                    GenericShape shape = findGenShapeById(properties.getIdShape1());
+                    shape.linkAnchorPoint(properties.getIndex1(),((ConnectionForm) genShape).getFirst());
+                    ((ConnectionForm) genShape).setConnection(properties.getIndex1(),shape.getId(),0);
+                }
+                if (!properties.getIdShape2().isEmpty() && properties.getIndex2() != -1){
+                    GenericShape shape = findGenShapeById(properties.getIdShape2());
+                    shape.linkAnchorPoint(properties.getIndex2(),((ConnectionForm) genShape).getLast());
+                    ((ConnectionForm) genShape).setConnection(properties.getIndex2(),shape.getId(),1);
+
+                }
                 break;
-            case "text_box":
+            case "Text":
                 genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
-                        collabShape.getProperties().getMiddlePointCoord()[1],defaultStyle, collabShape.getProperties().getRotation());
+                        collabShape.getProperties().getMiddlePointCoord()[1],collabShape.getProperties().getWidth(),collabShape.getProperties().getHeight(),
+                        defaultStyle, collabShape.getProperties().getRotation());
+                break;
+            case "Phase":
+                genShape = new UMLPhase(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],collabShape.getProperties().getMiddlePointCoord()[1]
+                        ,collabShape.getProperties().getWidth(),collabShape.getProperties().getHeight(),defaultStyle,collabShape.getProperties().getRotation());
+                break;
+            case "Comment":
+                genShape = new Comment(collabShape.getId(), collabShape.getProperties().getMiddlePointCoord()[0],collabShape.getProperties().getMiddlePointCoord()[1]
+                        ,collabShape.getProperties().getWidth(), collabShape.getProperties().getHeight(),defaultStyle);
                 break;
         }
         return genShape;
