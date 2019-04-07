@@ -323,13 +323,13 @@ public class SocketManager  {
                 @Override
                 public void call(Object... args) {
                     JSONObject json = (JSONObject)args[0];
-                    JSONObject dimensions;
+                    //JSONObject dimensions;
                     int x = 0;
                     int y = 0;
                     try{
-                        dimensions = json.getJSONObject(NEW_CANVAS_DIMENSIONS);
-                        x = Integer.parseInt(dimensions.getString("x"));
-                        y = Integer.parseInt(dimensions.getString("y"));
+                        //dimensions = json.getJSONObject(NEW_CANVAS_DIMENSIONS);
+                        x = Integer.parseInt(json.getString("x"));
+                        y = Integer.parseInt(json.getString("y"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -735,11 +735,11 @@ public class SocketManager  {
     }
     public void resizeCanvas(int width, int height){
         JSONObject json = null;
-        JSONObject dimensionsJson;
+        //JSONObject dimensionsJson;
         try{
-            dimensionsJson = new JSONObject().put("x",width).put("y",height);
+            //dimensionsJson = new JSONObject().put("x",width).put("y",height);
             json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG,drawingSessionId).put(USERNAME_TAG,FetchManager.currentInstance.getUserUsername())
-                    .put(NEW_CANVAS_DIMENSIONS, dimensionsJson);
+                    .put("x", width).put("y", height);
         } catch (JSONException e) {
             e.printStackTrace();
         }

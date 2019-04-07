@@ -108,8 +108,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                  //if (event.getAction() != MotionEvent.ACTION_MOVE &&
                    //!client.getSelectedShapes().isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
                 // Check if canvas is being resized
-                if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
-                    return resizeCanvas(event);
+                //if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
+                  //  return resizeCanvas(event);
                 switch (currentMode) {
                     case selection:
                         if (canResize() && client.getSelectedShapes().get(0).canResize(posX,posY)){
@@ -187,7 +187,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private boolean isFreeToSelect(String id){
         for (GenericShape shape : client.getSelectedShapes()){
             if (shape.getId().equals(id))
-                return false;
+                return true;
         }
         for (Player player : players){
             for (GenericShape shape : player.getSelectedShapes()){
@@ -519,7 +519,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     public void onNewUserJoined(String[] players) {
         for (int i =  0; i < players.length; i++){
             if (isNewPlayer(players[i]))
-                this.players.add(new Player(players[i],++selectedColorCpt % 12));
+                this.players.add(new Player(players[i],++selectedColorCpt % 4));
         }
     }
 
@@ -529,8 +529,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             @Override
             public void run() {
                 ViewGroup.LayoutParams params = iView.getLayoutParams();
-                params.width = width;
-                params.height = height;
+                params.width = checkCanvasWidth(width) ? width : DEFAULT_CANVAS_WIDTH;
+                params.height = checkCanvasHeight(height) ? height : DEFAULT_CANVAS_HEIGHT;
                 iView.setLayoutParams(params);
                 updateCanvas();
                 drawAllShapes();

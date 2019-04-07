@@ -76,7 +76,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected final int CANVAS_BACKGROUND_PADDING = 75;
     protected enum Mode{selection, lasso, creation, move, rotate}
     public enum ShapeType{none, UmlClass, Activity, Artefact, Role, Text, Arrow, Phase, Comment}
-    public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
+    public enum ConnectionFormType{Aggregation, Composition, Inheritance, Bidirectional, Line, Unidirectional}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
@@ -229,7 +229,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.connectionFormAgregation:
-                                setConnectionFormType(ConnectionFormType.Agregation);
+                                setConnectionFormType(ConnectionFormType.Aggregation);
                                 setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormInheritance:
@@ -243,6 +243,15 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                             case R.id.connectionFormComposition:
                                 setConnectionFormType(ConnectionFormType.Composition);
                                 setShapeType(ShapeType.Arrow);
+                                break;
+                            case R.id.connectionFormLine:
+                                setConnectionFormType(ConnectionFormType.Line);
+                                setShapeType(ShapeType.Arrow);
+                                break;
+                            case R.id.connectionFormUnidirectional:
+                                setConnectionFormType(ConnectionFormType.Unidirectional);
+                                setShapeType(ShapeType.Arrow);
+                                break;
                         }
                         return true;
                     }

@@ -33,6 +33,7 @@ public class ConnectionForm extends GenericShape {
     protected final static int DEFAULT_WIDTH = 250;
     protected final static int DEFAULT_HEIGHT = 30;
     public final static float DEFAULT_THICK = 6.0f;
+    public final static int VERTEX_RADIUS = 5;
     protected final String TYPE = "Arrow";
     private String type;
     private int arrowHeight;
@@ -100,7 +101,7 @@ public class ConnectionForm extends GenericShape {
         arrowPaint.setAntiAlias(true);
         arrowPaint.setStrokeWidth(1.0f);
         switch(type) {
-            case "Agregation":
+            case "Aggregation":
                 arrowHeight = 30;
                 arrowWidth = 50;
                 arrowPaint.setColor(Color.BLACK);
@@ -123,6 +124,16 @@ public class ConnectionForm extends GenericShape {
                 arrowWidth = 30;
                 arrowPaint.setColor(Color.BLACK);
                 arrowPaint.setStyle(Paint.Style.STROKE);
+                break;
+            case "Unidirectional":
+                arrowHeight = 50;
+                arrowWidth = 30;
+                arrowPaint.setColor(Color.BLACK);
+                arrowPaint.setStyle(Paint.Style.STROKE);
+                arrowPaint.setStrokeWidth(2.0f);
+                break;
+            case "Line":
+                //no arrow
                 break;
         }
     }
@@ -326,12 +337,14 @@ public class ConnectionForm extends GenericShape {
         float angle = 0;
         while (currentVertex.getNext() != null){
             if (!(currentVertex == first && type.equals(ImageEditingFragment.ConnectionFormType.Bidirectional.toString()))){
-                path.addCircle(currentVertex.x(), currentVertex.y(), 5, Path.Direction.CW);
+                path.addCircle(currentVertex.x(), currentVertex.y(), VERTEX_RADIUS, Path.Direction.CW);
             }
             path.lineTo(currentVertex.getNext().x(),currentVertex.getNext().y());
             angle = getAngle(currentVertex.getNext().getPoint(), currentVertex.getPoint());
             currentVertex = currentVertex.getNext();
         }
+        if (type.equals(ImageEditingFragment.ConnectionFormType.Line.toString()))
+            path.addCircle(currentVertex.x(), currentVertex.y(), VERTEX_RADIUS, Path.Direction.CW);
         last = currentVertex;
         canvas.drawPath(path, lineFillingPaint);
         canvas.drawPath(path,lineBorderPaint);
@@ -400,7 +413,17 @@ public class ConnectionForm extends GenericShape {
                 arrow.lineTo(last.x() + arrowWidth/2, last.y()); // Back to Top
                 arrow.close();
                 break;
-
+            case "Line":
+                //nothing
+                break;
+            case "Unidirectional":
+                canvas.rotate(angle,last.x(),last.y());
+                arrow.moveTo(last.x(), last.y()); // Top
+                arrow.lineTo(last.x() - arrowWidth/2, last.y() -  arrowHeight/2); //Left
+                arrow.moveTo(last.x(), last.y()); // Top
+                arrow.lineTo(last.x() - arrowWidth/2, last.y() +  arrowHeight/2); // Right
+               // arrow.close();
+                break;
             default: //composition et aggregation
                 canvas.rotate(angle,last.x(),last.y());
                 arrow.moveTo(last.x(), last.y() + arrowHeight/2); // Top
