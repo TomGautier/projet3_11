@@ -14,6 +14,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
+
     public async getShapesByImage(imageId: string) {
         return await this.databaseService.getAllByCriteria(Shape, this.IMAGE_ID_CRITERIA, imageId)
             .catch(err => {
