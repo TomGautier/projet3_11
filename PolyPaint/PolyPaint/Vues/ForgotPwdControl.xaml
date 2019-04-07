@@ -7,27 +7,71 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="300">
     <StackPanel>
-        <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
+        <Button Name="BackBtn" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Retour"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Back"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition  Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Username : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Nom d'utilisateur :"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Username :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <TextBox Grid.Column="1" Name="username" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition  Width="2*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Email address : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Adresse courriel :"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Email address :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <TextBox Grid.Column="1" Name="email" VerticalContentAlignment="Center"/>
         </Grid>
-        <Button Content="Send Passcode" Margin="6" Name="newPWDbtn" Click="NewPWDbtn_Click" IsDefault="True"/>
+        <Button Margin="6" Name="newPWDbtn" Click="NewPWDbtn_Click" IsDefault="True">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Envoyer le code de validation"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Send Passcode"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Grid Name="NewPwdForm" Visibility="Hidden">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="2*"/>
                 <ColumnDefinition  Width="2*"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -35,11 +79,44 @@
                 <RowDefinition Height="23"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <Label Grid.Column="0" Content="Passcode : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Code de validation :"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Passcode :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <TextBox Grid.Column="1" Grid.Row="0" Name="passcodeBox" VerticalContentAlignment="Center"/>
-            <Label Grid.Row="1" Grid.Column="0" Content="New Password : "/>
+            <Label Grid.Row="1" Grid.Column="0" >
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Nouveau mot de passe : "/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="New Password :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <PasswordBox Grid.Column="1" Grid.Row="1" Name="passwordBox" VerticalContentAlignment="Center"/>
-            <Button Content="Login" Margin="6" Grid.ColumnSpan="2" Grid.Row="2" Name="loginButton" Click="LoginButton_Click" IsDefault="True"/>
+            <Button Margin="6" Grid.ColumnSpan="2" Grid.Row="2" Name="loginButton" Click="LoginButton_Click" IsDefault="True">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Content" Value="Connexion"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Login"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </Grid>
     </StackPanel>
 </UserControl>

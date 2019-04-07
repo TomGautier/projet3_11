@@ -282,7 +282,7 @@ namespace PolyPaint.VueModeles
             SessionId = await networkManager.LoginAsync(Username, password);
             if (SessionId == "")
             {
-                MessageBox.Show("Wrong login informations", "Error");
+                MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
                 return;
             }
             ChatManager.Connect();
@@ -306,7 +306,7 @@ namespace PolyPaint.VueModeles
             SessionId = await networkManager.SignupAsync(Username, password);
             if (SessionId == "")
             {
-                MessageBox.Show("Wrong signup informations", "Error");
+                MessageBox.Show((Localization == "fr") ? "Le nom d'utilisateur existe déjà" : "Username already exists", "Error");
                 return;
             }
             SwitchView = 3;
@@ -346,7 +346,7 @@ namespace PolyPaint.VueModeles
             GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
             if (info.protection != pwd)
             {
-                MessageBox.Show("Wrong password", "Error");
+                MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
                 return;
             }
 
