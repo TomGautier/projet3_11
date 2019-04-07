@@ -28,15 +28,37 @@ export class ImageController implements ImageControllerInterface {
                 });
             });
 
+        router.get("/:sessionId/:username/:visibility",
+            (req: Request, res: Response, next: NextFunction) => {
+                // Send the request to the service and send the response
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
+                    { res.json(403); return; }
+                
+                switch(req.params.visibility) {
+                    case 'public': 
+                        this.imageService.getAll().then(images => {
+                            res.json(images);
+                        });
+                        break;
+                    case 'private':
+                        this.imageService.getAllByAuthor(req.params.username).then(images => {
+                            res.json(images);
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            });
+/*
         router.get("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
                 if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; }
                 
-                this.imageService.getAllByAuthor(req.params.username).then(image => {
-                    res.json(image);
-                });
+                    this.imageService.getAllByAuthor(req.params.username).then(image => {
+                        res.json(image);
+                    });
             });
             
         router.get("/common/:sessionId/:username",
@@ -49,7 +71,7 @@ export class ImageController implements ImageControllerInterface {
                     res.json(image);
                 });
             }); 
-
+*/
         router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
