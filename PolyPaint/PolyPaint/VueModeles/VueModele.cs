@@ -863,6 +863,7 @@ namespace PolyPaint.VueModeles
         //https://stackoverflow.com/a/554455
         public void UpdateThumbnail()
         {
+            // TODO : Fix align?
             int margin = (int)Canvas.Margin.Left;
             int width = (int)Canvas.ActualWidth;
             int height = (int)Canvas.ActualHeight;
@@ -870,14 +871,11 @@ namespace PolyPaint.VueModeles
             System.Windows.Media.Imaging.RenderTargetBitmap renderBitmap =
             new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
             renderBitmap.Render(Canvas);
-
-            System.Windows.Controls.Image img = new System.Windows.Controls.Image();
-            img.Source = renderBitmap;
-
+            
             using (System.IO.MemoryStream memStream = new System.IO.MemoryStream())
             {
                 System.Windows.Media.Imaging.JpegBitmapEncoder encoder = new System.Windows.Media.Imaging.JpegBitmapEncoder();
-                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(img.Source as System.Windows.Media.Imaging.BitmapImage));
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(renderBitmap));
                 encoder.Save(memStream);
                 string b64 = Convert.ToBase64String(memStream.ToArray());
 
