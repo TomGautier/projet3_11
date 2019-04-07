@@ -65,9 +65,9 @@ public class HomeActivity extends AppCompatActivity {
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
 		}
-		int[] position = {1,2};
-		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
-		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
+		//int[] position = {1,2};
+		//CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
+		//CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
         //SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
 	}
 

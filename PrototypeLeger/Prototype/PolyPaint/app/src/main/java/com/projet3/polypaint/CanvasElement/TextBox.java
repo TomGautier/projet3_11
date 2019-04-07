@@ -9,25 +9,26 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 public class TextBox extends GenericTextShape {
 
     public static final String TYPE = "Text";
+    protected static final int DEFAULT_WIDTH = 50;
+    protected  static final int DEFAULT_HEIGHT = 50;
 
-    public TextBox(String id, int x, int y, PaintStyle style, float angle) {
-        super(id, x, y, style,angle);
+    public TextBox(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id, x, y, width, height,style,angle);
     }
-    private TextBox(String id, int x, int y, PaintStyle style, String contents, float angle) {
-        super(id, x, y, style, contents, angle);
-    }
-
-    @Override
-    public void setAnchorPoints() {
+    private TextBox(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
+        super(id, x, y, width, height, style, contents, angle);
     }
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
+        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.rotate(angle,posX,posY);
         canvas.drawText(text, posX, posY + height / 2, style.getTextPaint());
+        canvas.restore();
     }
 
     public TextBox clone() {
-        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text, angle);
+        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text, angle);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
@@ -35,4 +36,17 @@ public class TextBox extends GenericTextShape {
     }
 
     public String getType() { return TYPE; }
+
+    @Override
+    public void setAnchorPoints() {
+        //no anchor points for connectionForms
+    }
+    @Override
+    public void drawAnchorPoints(Canvas canvas){
+        //no anchor points
+    }
+    @Override
+    public void rotateAnchorPoints(){
+        //no anchor points
+    }
 }

@@ -19,9 +19,9 @@ export let shapeSchema: Schema = new Schema({
         type: { type: String, required: true },
         fillingColor: { type: String, required: true },
         borderColor: { type: String, required: true },
-        middlePointCoord: { type: [Number], required: true },
+        middlePointCoord: { type: [Number], required: false },
         height: { type: Number, required: true },
-        width: { type: Number, required: true },
+        width: { type: Number, required: false },
         rotation: { type: Number }
     },
 

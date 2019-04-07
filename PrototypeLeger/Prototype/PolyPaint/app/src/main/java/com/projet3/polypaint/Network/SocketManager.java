@@ -13,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Properties;
+
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
@@ -73,6 +75,7 @@ public class SocketManager  {
     private final String MESSAGE_TAG = "message";
     private final String SESSION_ID_TAG = "sessionId";
     private final String CONVERSATION_ID_TAG = "conversationId";
+
 
     public static SocketManager currentInstance;
     private Socket socket;
@@ -182,7 +185,7 @@ public class SocketManager  {
                             stringNews[j] = (String)news.get(j);
                         drawingCollabSessionListener.onSelectedElements(stringOlds, stringNews,author);
 
-                    } catch (/*JSONException e*/Exception e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
@@ -412,9 +415,20 @@ public class SocketManager  {
             if (CollabConnectionProperties.class.equals(shape.getProperties().getClass())){
                 CollabConnectionProperties properties = (CollabConnectionProperties)shape.getProperties();
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
-                        .put(CollabConnectionProperties.CONNECTION_TYPE_TAG, properties.getConnectionType()).
-                                put(CollabConnectionProperties.FILLING_COLOR_TAG,properties.getFillingColor()).
-                                put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()));
+                        .put(CollabShapeProperties.FILLING_COLOR_TAG, shape.getProperties().getFillingColor())
+                        .put(CollabShapeProperties.BORDER_COLOR_TAG, shape.getProperties().getBorderColor())
+                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, null)
+                        .put(CollabShapeProperties.HEIGHT_TAG, properties.getThick())
+                        .put(CollabShapeProperties.WIDTH_TAG, null)
+                        .put(CollabShapeProperties.ROTATION_TAG, null)
+                        .put(CollabConnectionProperties.CATEGORY_TAG, properties.getConnectionType())
+                        .put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()))
+                        .put(CollabConnectionProperties.ID_SHAPE1_TAG,properties.getIdShape1())
+                        .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
+                        .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
+                        .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
+                        .put(CollabConnectionProperties.Q1_TAG,null)
+                        .put(CollabConnectionProperties.Q2_TAG,null);
             }
             else{
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
@@ -423,7 +437,11 @@ public class SocketManager  {
                         .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shape.getProperties().getMiddlePointCoord()))
                         .put(CollabShapeProperties.HEIGHT_TAG, shape.getProperties().getHeight())
                         .put(CollabShapeProperties.WIDTH_TAG, shape.getProperties().getWidth())
-                        .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation());
+                        .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation())
+                        .put(CollabShapeProperties.ATTRIBUTES_TAG,shape.getProperties().getAttributes())
+                        .put(CollabShapeProperties.METHODS_TAG,shape.getProperties().getMethods())
+                        .put(CollabShapeProperties.LABEL_TAG,shape.getProperties().getLabel())
+                        .put(CollabShapeProperties.BORDER_TYPE_TAG,shape.getProperties().getBorderType());
             }
 
             shapeJson = new JSONObject().put(CollabShape.ID_TAG, shape.getId())
@@ -449,9 +467,20 @@ public class SocketManager  {
                 if (CollabConnectionProperties.class.equals(shapes[i].getProperties().getClass())){
                     CollabConnectionProperties properties = (CollabConnectionProperties)shapes[i].getProperties();
                     shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
-                            .put(CollabConnectionProperties.CONNECTION_TYPE_TAG, properties.getConnectionType()).
-                                    put(CollabConnectionProperties.FILLING_COLOR_TAG,properties.getFillingColor()).
-                                    put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()));
+                            .put(CollabShapeProperties.FILLING_COLOR_TAG, shapes[i].getProperties().getFillingColor())
+                            .put(CollabShapeProperties.BORDER_COLOR_TAG, shapes[i].getProperties().getBorderColor())
+                            .put(CollabShapeProperties.MIDDLE_POINT_TAG, null)
+                            .put(CollabShapeProperties.HEIGHT_TAG, properties.getThick())
+                            .put(CollabShapeProperties.WIDTH_TAG, null)
+                            .put(CollabShapeProperties.ROTATION_TAG, null)
+                            .put(CollabConnectionProperties.CATEGORY_TAG, properties.getConnectionType())
+                            .put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()))
+                            .put(CollabConnectionProperties.ID_SHAPE1_TAG,properties.getIdShape1())
+                            .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
+                            .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
+                            .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
+                            .put(CollabConnectionProperties.Q1_TAG,null)
+                            .put(CollabConnectionProperties.Q2_TAG,null);
                 }
                 else{
                     shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
@@ -460,7 +489,11 @@ public class SocketManager  {
                             .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord()))
                             .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                             .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
-                            .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation());
+                            .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation())
+                            .put(CollabShapeProperties.ATTRIBUTES_TAG,shapes[i].getProperties().getAttributes())
+                            .put(CollabShapeProperties.METHODS_TAG,shapes[i].getProperties().getMethods())
+                            .put(CollabShapeProperties.LABEL_TAG,shapes[i].getProperties().getLabel())
+                            .put(CollabShapeProperties.BORDER_TYPE_TAG,shapes[i].getProperties().getBorderType());
                 }
 
 
@@ -491,9 +524,20 @@ public class SocketManager  {
                 if (CollabConnectionProperties.class.equals(shapes[i].getProperties().getClass())){
                     CollabConnectionProperties properties = (CollabConnectionProperties)shapes[i].getProperties();
                     shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
-                            .put(CollabConnectionProperties.CONNECTION_TYPE_TAG, properties.getConnectionType()).
-                                    put(CollabConnectionProperties.FILLING_COLOR_TAG,properties.getFillingColor()).
-                                    put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()));
+                            .put(CollabShapeProperties.FILLING_COLOR_TAG, shapes[i].getProperties().getFillingColor())
+                            .put(CollabShapeProperties.BORDER_COLOR_TAG, shapes[i].getProperties().getBorderColor())
+                            .put(CollabShapeProperties.MIDDLE_POINT_TAG, null)
+                            .put(CollabShapeProperties.HEIGHT_TAG, properties.getThick())
+                            .put(CollabShapeProperties.WIDTH_TAG, null)
+                            .put(CollabShapeProperties.ROTATION_TAG, null)
+                            .put(CollabConnectionProperties.CATEGORY_TAG, properties.getConnectionType())
+                            .put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()))
+                            .put(CollabConnectionProperties.ID_SHAPE1_TAG,properties.getIdShape1())
+                            .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
+                            .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
+                            .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
+                            .put(CollabConnectionProperties.Q1_TAG,null)
+                            .put(CollabConnectionProperties.Q2_TAG,null);
                 }
                 else{
 
@@ -503,7 +547,11 @@ public class SocketManager  {
                             .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord()))
                             .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                             .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
-                            .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation());
+                            .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation())
+                            .put(CollabShapeProperties.ATTRIBUTES_TAG,shapes[i].getProperties().getAttributes())
+                            .put(CollabShapeProperties.METHODS_TAG,shapes[i].getProperties().getMethods())
+                            .put(CollabShapeProperties.LABEL_TAG,shapes[i].getProperties().getLabel())
+                            .put(CollabShapeProperties.BORDER_TYPE_TAG,shapes[i].getProperties().getBorderType());
                 }
 
 
@@ -534,9 +582,20 @@ public class SocketManager  {
                 if (CollabConnectionProperties.class.equals(shapes[i].getProperties().getClass())){
                     CollabConnectionProperties properties = (CollabConnectionProperties)shapes[i].getProperties();
                     shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
-                            .put(CollabConnectionProperties.CONNECTION_TYPE_TAG, properties.getConnectionType()).
-                                    put(CollabConnectionProperties.FILLING_COLOR_TAG,properties.getFillingColor()).
-                                    put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()));
+                            .put(CollabShapeProperties.FILLING_COLOR_TAG, shapes[i].getProperties().getFillingColor())
+                            .put(CollabShapeProperties.BORDER_COLOR_TAG, shapes[i].getProperties().getBorderColor())
+                            .put(CollabShapeProperties.MIDDLE_POINT_TAG, null)
+                            .put(CollabShapeProperties.HEIGHT_TAG, properties.getThick())
+                            .put(CollabShapeProperties.WIDTH_TAG, null)
+                            .put(CollabShapeProperties.ROTATION_TAG, null)
+                            .put(CollabConnectionProperties.CATEGORY_TAG, properties.getConnectionType())
+                            .put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()))
+                            .put(CollabConnectionProperties.ID_SHAPE1_TAG,properties.getIdShape1())
+                            .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
+                            .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
+                            .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
+                            .put(CollabConnectionProperties.Q1_TAG,null)
+                            .put(CollabConnectionProperties.Q2_TAG,null);
                 }
                 else{
 
@@ -546,7 +605,11 @@ public class SocketManager  {
                             .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord()))
                             .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                             .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
-                            .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation());
+                            .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation())
+                            .put(CollabShapeProperties.ATTRIBUTES_TAG,shapes[i].getProperties().getAttributes())
+                            .put(CollabShapeProperties.METHODS_TAG,shapes[i].getProperties().getMethods())
+                            .put(CollabShapeProperties.LABEL_TAG,shapes[i].getProperties().getLabel())
+                            .put(CollabShapeProperties.BORDER_TYPE_TAG,shapes[i].getProperties().getBorderType());
                 }
 
                 shapeJson = new JSONObject().put(CollabShape.ID_TAG, shapes[i].getId())
@@ -621,9 +684,20 @@ public class SocketManager  {
             if (CollabConnectionProperties.class.equals(shape.getProperties().getClass())){
                 CollabConnectionProperties properties = (CollabConnectionProperties)shape.getProperties();
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
-                        .put(CollabConnectionProperties.CONNECTION_TYPE_TAG, properties.getConnectionType()).
-                                put(CollabConnectionProperties.FILLING_COLOR_TAG,properties.getFillingColor()).
-                                put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()));
+                        .put(CollabShapeProperties.FILLING_COLOR_TAG, shape.getProperties().getFillingColor())
+                        .put(CollabShapeProperties.BORDER_COLOR_TAG, shape.getProperties().getBorderColor())
+                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, null)
+                        .put(CollabShapeProperties.HEIGHT_TAG, properties.getThick())
+                        .put(CollabShapeProperties.WIDTH_TAG, null)
+                        .put(CollabShapeProperties.ROTATION_TAG, null)
+                        .put(CollabConnectionProperties.CATEGORY_TAG, properties.getConnectionType())
+                        .put(CollabConnectionProperties.VERTICES_TAG,new JSONArray(properties.getVertices()))
+                        .put(CollabConnectionProperties.ID_SHAPE1_TAG,properties.getIdShape1())
+                        .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
+                        .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
+                        .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
+                        .put(CollabConnectionProperties.Q1_TAG,null)
+                        .put(CollabConnectionProperties.Q2_TAG,null);
             }
             else{
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
@@ -632,7 +706,11 @@ public class SocketManager  {
                         .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shape.getProperties().getMiddlePointCoord()))
                         .put(CollabShapeProperties.HEIGHT_TAG, shape.getProperties().getHeight())
                         .put(CollabShapeProperties.WIDTH_TAG, shape.getProperties().getWidth())
-                        .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation());
+                        .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation())
+                        .put(CollabShapeProperties.ATTRIBUTES_TAG,shape.getProperties().getAttributes())
+                        .put(CollabShapeProperties.METHODS_TAG,shape.getProperties().getMethods())
+                        .put(CollabShapeProperties.LABEL_TAG,shape.getProperties().getLabel())
+                        .put(CollabShapeProperties.BORDER_TYPE_TAG,shape.getProperties().getBorderType());
 
             }
 

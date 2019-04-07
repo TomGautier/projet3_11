@@ -374,9 +374,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected boolean canResize(){
         return selections.size() == 1 && selections.get(0).getClass().equals(ConnectionForm.class);
     }
-    protected boolean canRotate(){
+    /*protected boolean canRotate(){
         return selections.size() == 1;
-    }
+    }*/
     @SuppressLint("ClickableViewAccessibility")
     protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
@@ -471,10 +471,14 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
 
     protected void stack(){
+        GenericShape shape = shapes.get(shapes.size()-1);
+        stack.push(shape);
+        shapes.remove(shape);
 
     }
     protected void unStack(){
-
+        GenericShape shape = stack.pop();
+        shapes.add(shape);
     }
     protected void checkSelection(int x, int y) {
         selections.clear();
@@ -566,18 +570,21 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Comment :
-                nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new Comment(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType),defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case text_box :
-                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle,0);
+                nShape = new TextBox(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                        GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case ConnectionForm:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
                         String.format("#%06x", ContextCompat.getColor(getActivity(),
-                                R.color.DefaultConnectionFormColor)), ConnectionForm.generateDefaultPoints(posX,posY));
+                                R.color.DefaultConnectionFormFillingColor)),String.format("#%06x",ContextCompat.getColor(getActivity(),
+                        R.color.DefaultConnectionFormBorderColor)),ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultPoints(posX,posY));
         }
         if (nShape != null) {
             shapes.add(nShape);
@@ -633,6 +640,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         if (selections.size() > 0) {
             ArrayList<GenericShape> stackElems = new ArrayList<>();
             for (GenericShape shape : selections) {
+                if (shape.getClass().equals(ConnectionForm.class))
+                    ((ConnectionForm)shape).clearConnection();
                 shapes.remove(shape);
                 stackElems.add(shape);
             }
@@ -647,7 +656,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     protected void tryToAnchor(ConnectionForm connection, int x, int y){
         for (GenericShape shape : shapes) {
-            if (shape != connection) {
+            if (shape != connection && !shape.getClass().equals(ConnectionForm.class)) {
                 shape.updateAnchor(connection);
             }
         }

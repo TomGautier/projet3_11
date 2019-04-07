@@ -108,9 +108,9 @@ export class DrawingSessionManager {
         console.log(doc);
         
         // FOR LOOP
-        //for (const shape of doc.shapes){
-         //this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
-        //}
+        for (const shape of doc.shapes){
+         this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+        }
        this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedElements, doc);
     }
 
@@ -120,6 +120,9 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc);
     }
     public duplicateCutElements(doc : any){
+        for (const shape of doc.shapes){
+            this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+           }
         console.log(doc);
         this.socketService.emit(doc.shapes[0].drawingSessionId, SocketEvents.DuplicatedCutElements, doc);
 

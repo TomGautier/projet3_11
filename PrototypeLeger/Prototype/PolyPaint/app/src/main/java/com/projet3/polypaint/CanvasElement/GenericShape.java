@@ -11,6 +11,7 @@ import android.graphics.RectF;
 import android.graphics.Region;
 import android.opengl.Matrix;
 import android.renderscript.Matrix2f;
+import android.util.Pair;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 
@@ -52,13 +53,28 @@ public abstract class GenericShape {
         rotationPath = new Path();
         rotationPath.addCircle(posX,posY,(float)(Math.sqrt(Math.pow(width,2) + Math.pow(height,2)) + ROTATION_BOX_OFFSET), Path.Direction.CW);
     }
+    public String getFillingColor(){
+        return String.format("#%06X", (0xFFFFFF & style.getBackgroundPaint().getColor()));
+    }
+    public String getBorderColor(){
+        return String.format("#%06X", (0xFFFFFF & style.getBorderPaint().getColor()));
+    }
 
+    public void recuperateConnectionStatus(GenericShape shape){
+        for (int i =0; i < shape.getAnchorPoints().size(); i++){
+            AnchorPoint anchor = shape.getAnchorPoints().get(i);
+            if (anchor.isConnected()){
+                AnchorPoint newAnchor = anchorPoints.get(anchor.getIndex());
+                newAnchor.setConnection(anchor.getConnectionVertex());
+            }
+        }
+    }
     public void setAnchorPoints(){
         anchorPoints = new ArrayList<>();
-        anchorPoints.add(new AnchorPoint("right",this));
-        anchorPoints.add(new AnchorPoint("left",this));
         anchorPoints.add(new AnchorPoint("top",this));
+        anchorPoints.add(new AnchorPoint("right",this));
         anchorPoints.add(new AnchorPoint("bottom",this));
+        anchorPoints.add(new AnchorPoint("left",this));
     }
     public abstract void drawOnCanvas(Canvas canvas);
 
@@ -127,20 +143,50 @@ public abstract class GenericShape {
     public boolean contains(int x, int y) {
         return getBoundingBox().contains(x,y);
     }
+
+    public void linkAnchorPoint(int anchorPointIndex, ConnectionFormVertex connectionVertex){
+        anchorPoints.get(anchorPointIndex).setConnection(connectionVertex);
+            //anchorPoints.get(anchorPointIndex).setConnection(connectionVertex);
+            //connectionVertex.getOwner().setConnection(anchorPoints.get(anchorPointIndex),connectionVertex.getIndex());
+
+    }
+
     public void updateAnchor(ConnectionForm connection){
-        ConnectionFormVertex vertex = connection.getDockingVertex();
-        if (vertex == null)
+       /* Pair pair = connection.getDockingPair();
+        if (pair == null || pair.first == null)
+            return;*/
+        boolean changedAnchor = false;
+       ConnectionFormVertex vertex = connection.getSelectedVertex();
+
+        if (vertex == null || vertex.getIndex() == -1)
             return;
         if (anchorPoints != null && anchorPoints.size() > 0){
             for (AnchorPoint anchorPoint : anchorPoints){
-                if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
+               /* if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
                     anchorPoint.setConnection(vertex);
+                    //connection.setConnection(anchorPoint.getIndex(),getId(),vertex.getIndex());
                 }
                 else if (anchorPoint.isConnected() && !anchorPoint.stillConnected()){
-                    anchorPoint.setConnection(null);
-                }
+                    anchorPoint.removeConnection();
+                    //connection.removeConnection(vertex.getIndex());
+                }*/
+               if (anchorPoint.intersect(vertex.getBox())){
+                   anchorPoint.setConnection(vertex);
+                   connection.setConnection(anchorPoint.getIndex(),getId(),vertex.getIndex());
+                   changedAnchor = true;
+               }
+               else if(anchorPoint.getConnectionVertex() == vertex){
+                   anchorPoint.removeConnection();
+                   //connection.removeConnection(vertex.getIndex());
+               }
+            }
+            if (!changedAnchor){
+                connection.removeConnection(vertex.getIndex());
             }
         }
+    }
+    public void removeAnchorConnection(int anchorPointIndex){
+        anchorPoints.get(anchorPointIndex).removeConnection();
     }
     public boolean canResize(int x, int y){
         return false;
@@ -183,9 +229,7 @@ public abstract class GenericShape {
                 anchorPoint.setPath();
         }
     }
-    public String getBackgroundColorString() {
-        return Integer.toHexString(style.getBackgroundPaint().getColor()).substring(2);
-    }
+
     public abstract String getType();
     public int getHeight(){
         return height;
@@ -207,6 +251,11 @@ public abstract class GenericShape {
                 return ConnectionForm.DEFAULT_HEIGHT;
             case Phase:
                 return UMLPhase.DEFAULT_HEIGHT;
+            case Comment:
+                return Comment.DEFAULT_HEIGHT;
+            case text_box:
+                return TextBox.DEFAULT_HEIGHT;
+
         }
         return 0;
     }
@@ -224,8 +273,19 @@ public abstract class GenericShape {
                 return ConnectionForm.DEFAULT_WIDTH;
             case Phase:
                 return UMLPhase.DEFAULT_WIDTH;
+            case Comment:
+                return Comment.DEFAULT_WIDTH;
+            case text_box:
+                return TextBox.DEFAULT_WIDTH;
         }
         return 0;
+    }
+
+    public String getAttributes(){
+        return "";
+    }
+    public String getMethods(){
+        return "";
     }
     public String getId() {
         return id;

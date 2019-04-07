@@ -183,8 +183,8 @@
 
             <ImageView
                 android:id="@+id/canvasView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="1500px"
+                android:layout_height="1000px"
                 android:background="@android:color/background_light"
                 android:scrollbars="none"
                 app:srcCompat="@android:color/background_light" />
