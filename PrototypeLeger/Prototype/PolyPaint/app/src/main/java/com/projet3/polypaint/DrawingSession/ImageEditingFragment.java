@@ -584,7 +584,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
                         String.format("#%06x", ContextCompat.getColor(getActivity(),
                                 R.color.DefaultConnectionFormFillingColor)),String.format("#%06x",ContextCompat.getColor(getActivity(),
-                        R.color.DefaultConnectionFormBorderColor)),ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultPoints(posX,posY));
+                        R.color.DefaultConnectionFormBorderColor)),ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultX(posX),
+                        ConnectionForm.generateDefaultY(posY));
         }
         if (nShape != null) {
             shapes.add(nShape);

@@ -309,7 +309,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             ConnectionForm connection  = (ConnectionForm)shape;
             //connection.removeConnection(0);
             //connection.removeConnection(1);
-            properties = new CollabConnectionProperties(connection.getVerticesPos(0),connection.getThick(),
+            properties = new CollabConnectionProperties(connection.getVerticesXPos(0),connection.getVerticesYPos(0),connection.getThick(),
                     connection.getType(),connection.getConnectionType(),
                     connection.getFillingColor(),shape.getBorderColor(),connection.getTailShapeId(),connection.getFrontShapeId()
                     ,connection.getTailAnchorPointIndex(), connection.getFrontAnchorPointIndex());
@@ -332,8 +332,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             int borderColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormBorderColor,null);
             String hexFillingColor = String.format("#%06X", (0xFFFFFF & fillingColor));
             String hexBorderColor = String.format("#%06X", (0xFFFFFF & borderColor));
-            properties = new CollabConnectionProperties(ConnectionForm.generateDefaultPoints(posX,posY)
-                    ,ConnectionForm.DEFAULT_THICK,currentShapeType.toString(), currentConnectionFormType.toString(),hexFillingColor,hexBorderColor,"","",-1,-1);
+            properties = new CollabConnectionProperties(ConnectionForm.generateDefaultX(posX), ConnectionForm.generateDefaultY(posY),
+                    ConnectionForm.DEFAULT_THICK,currentShapeType.toString(), currentConnectionFormType.toString(),hexFillingColor,hexBorderColor,"","",-1,-1);
         }
         else{
             hexColor = String.format("#%06X", (0xFFFFFF & selectionPaint.getColor()));
@@ -870,7 +870,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             case "ConnectionForm":
                 CollabConnectionProperties properties = ((CollabConnectionProperties)collabShape.getProperties());
                 genShape = new ConnectionForm(collabShape.getId(),properties.getConnectionType(),properties.getFillingColor(),
-                        properties.getBorderColor(), properties.getThick(), properties.getVertices());
+                        properties.getBorderColor(), properties.getThick(), properties.getVerticesX(), properties.getVerticesY());
                 if (!properties.getIdShape1().isEmpty() && properties.getIndex1() != -1){
                     GenericShape shape = findGenShapeById(properties.getIdShape1());
                     shape.linkAnchorPoint(properties.getIndex1(),((ConnectionForm) genShape).getFirst());

@@ -64,14 +64,14 @@ public class ConnectionForm extends GenericShape {
     private float thick;
 
 
-    public ConnectionForm(String id, String type, String fillingColor, String borderColor, float thick, int[][] vertices){
+    public ConnectionForm(String id, String type, String fillingColor, String borderColor, float thick, Integer[] verticesX, Integer[] verticesY){
         this.id = id;
         this.type = type;
         this.fillingColor = fillingColor;
         this.borderColor = borderColor;
         this.thick = thick;
         initializeProperties();
-        initializeVertices(vertices);
+        initializeVertices(verticesX,verticesY);
     }
 
     private void initializeProperties(){
@@ -127,11 +127,11 @@ public class ConnectionForm extends GenericShape {
         }
     }
 
-    private void initializeVertices(int[][] values){
+    private void initializeVertices(Integer[] valuesX, Integer[] valuesY){
         ArrayList<Point> points = new ArrayList();
         //ArrayList<ConnectionFormVertex> vertex;
-        for (int i = 0; i < values.length; i ++){
-            points.add(new Point(values[i][0],values[i][1]));
+        for (int i = 0; i < valuesX.length; i ++){
+            points.add(new Point(valuesX[i],valuesY[i]));
         }
         last = new ConnectionFormVertex(points.get(points.size()-1),null, this,1);
         ConnectionFormVertex vertex1;
@@ -143,7 +143,7 @@ public class ConnectionForm extends GenericShape {
         first = new ConnectionFormVertex(points.get(0),vertex2, this,0);
     }
     public ConnectionForm clone() {
-        return new ConnectionForm(id + "clone", this.type, fillingColor, borderColor, thick, getVerticesPos(CLONE_OFFSET));
+        return new ConnectionForm(id + "clone", this.type, fillingColor, borderColor, thick, getVerticesXPos(CLONE_OFFSET), getVerticesYPos(CLONE_OFFSET));
     }
     public void setConnection(int anchorPointIndex, String shapeId, int vertexIndex){
         switch(vertexIndex){
@@ -259,14 +259,23 @@ public class ConnectionForm extends GenericShape {
     }
 
 
-    public int[][] getVerticesPos(int offset){
-        ArrayList<int[]> list = new ArrayList<>();
+    public Integer[] getVerticesXPos(int offset){
+        ArrayList<Integer> list = new ArrayList<>();
         ConnectionFormVertex current = first;
         while (current != null){
-            list.add(new int[] {current.x() + offset,current.y() + offset});
+            list.add(current.x());
             current = current.getNext();
         }
-        return list.toArray(new int[list.size()][2]);
+        return list.toArray(new Integer[list.size()]);
+    }
+    public Integer[] getVerticesYPos(int offset){
+        ArrayList<Integer> list = new ArrayList<>();
+        ConnectionFormVertex current = first;
+        while (current != null){
+            list.add(current.y());
+            current = current.getNext();
+        }
+        return list.toArray(new Integer[list.size()]);
     }
 
 
@@ -329,7 +338,7 @@ public class ConnectionForm extends GenericShape {
         drawArrow(angle, canvas);
        // canvas.drawPath(arrow, arrowPaint);
     }
-    public static int[][] generateDefaultPoints(int x, int y){
+   /* public static int[][] generateDefaultPoints(int x, int y){
         int[][] array = new int[4][2];
         int width = GenericShape.getDefaultWidth(ImageEditingFragment.ShapeType.ConnectionForm);
         for (int i =0; i < array.length; i++){
@@ -337,7 +346,26 @@ public class ConnectionForm extends GenericShape {
             array[i][1] = y;
         }
         return array;
+    }*/
+    public static Integer[] generateDefaultX(int x){
+        Integer[] array = new Integer[4];
+        int width = GenericShape.getDefaultWidth(ImageEditingFragment.ShapeType.ConnectionForm);
+        for (int i =0; i < array.length; i++){
+            array[i] = (x - width/2) + (width/3)*i;
+            //array[i][1] = y;
+        }
+        return array;
     }
+    public static Integer[] generateDefaultY(int y){
+        Integer[] array = new Integer[4];
+       // int width = GenericShape.getDefaultWidth(ImageEditingFragment.ShapeType.ConnectionForm);
+        for (int i =0; i < array.length; i++){
+            //array[i][0] = (x - width/2) + (width/3)*i;
+            array[i] = y;
+        }
+        return array;
+    }
+
 
 
     private void drawArrow(float angle, Canvas canvas){

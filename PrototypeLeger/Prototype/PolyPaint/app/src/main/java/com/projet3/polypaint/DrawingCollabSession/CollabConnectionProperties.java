@@ -22,7 +22,8 @@ import java.util.ArrayList;
 public class CollabConnectionProperties extends CollabShapeProperties  {
     public static String CATEGORY_TAG = "category";
     public static String FILLING_COLOR_TAG = "fillingColor";
-    public static String VERTICES_TAG = "vertices";
+    public static String VERTICESX_TAG = "verticesX";
+    public static String VERTICESY_TAG = "verticesY";
     public static String ID_SHAPE1_TAG = "idShape1";
     public static String ID_SHAPE2_TAG = "idShape2";
     public static String INDEX1_TAG = "index1";
@@ -32,7 +33,8 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
 
 
     private String connectionType;
-    private int[][] vertices;
+    private Integer[] verticesX;
+    private Integer[] verticesY;
     private String idShape1;
     private String idShape2;
     private int index1;
@@ -42,7 +44,7 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
     private float thick;
 
 
-    public CollabConnectionProperties(int[][] vertices, float thick, String type, String connectionType, String fillingColor, String borderColor
+    public CollabConnectionProperties(Integer[] verticesX, Integer[] verticesY, float thick, String type, String connectionType, String fillingColor, String borderColor
     ,String idShape1, String idShape2, int index1, int index2){
         super(type,fillingColor,borderColor);
         this.idShape1 = idShape1;
@@ -51,7 +53,8 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
         this.index2 = index2;
         this.q1 = null;
         this.q2 = null;
-        this.vertices = vertices;
+        this.verticesX = verticesX;
+        this.verticesY = verticesY;
         this.connectionType = connectionType;
         this.thick = thick;
     }
@@ -60,14 +63,19 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
     public CollabConnectionProperties(JSONObject obj) throws JSONException {
         super(obj.getString(TYPE_TAG), obj.getString(FILLING_COLOR_TAG), obj.getString(BORDER_COLOR_TAG));
         connectionType = obj.getString(CATEGORY_TAG);
-        JSONArray array = obj.getJSONArray(VERTICES_TAG);
-        ArrayList<int[]> list = new ArrayList();
+        JSONArray array = obj.getJSONArray(VERTICESX_TAG);
+        ArrayList<Integer> list = new ArrayList();
         int index = 0;
         for (int i = 0; i < array.length(); i++) {
-            list.add(new int[] {(int) array.getJSONArray(index).get(0),(int)array.getJSONArray(index).get(1)});
-            index++;
+            list.add(array.getInt(i));
         }
-        vertices = list.toArray(new int[list.size()][2]);
+        JSONArray array2 = obj.getJSONArray(VERTICESY_TAG);
+        ArrayList<Integer> list2 = new ArrayList();
+        for (int j = 0; j < array2.length(); j++) {
+            list2.add(array2.getInt(j));
+        }
+        verticesX = list.toArray(new Integer[list.size()]);
+        verticesY = list2.toArray(new Integer[list2.size()]);
         idShape1 = obj.getString(ID_SHAPE1_TAG);
         idShape2 = obj.getString(ID_SHAPE2_TAG);
         index1 =  (int)obj.get(INDEX1_TAG);
@@ -78,9 +86,10 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
     public String getConnectionType(){
         return connectionType;
     }
-    public int[][] getVertices(){
-        return vertices;
+    public Integer[] getVerticesX(){
+        return verticesX;
     }
+    public Integer[] getVerticesY() { return verticesY;}
     public String getIdShape1(){
         return idShape1;
     }
