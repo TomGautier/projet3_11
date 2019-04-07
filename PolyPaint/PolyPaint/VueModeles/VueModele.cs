@@ -443,7 +443,7 @@ namespace PolyPaint.VueModeles
                 this.SessionId = "MockSessionId";
                 editeur.initializeSocketEvents();
                 SocketManager.JoinDrawingSession("MockSessionID");
-                //this.SendLocalCanvas();
+                this.SendLocalCanvas();
             }
             else
             {
