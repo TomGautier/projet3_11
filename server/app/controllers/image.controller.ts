@@ -77,6 +77,18 @@ export class ImageController implements ImageControllerInterface {
                     });
             });
 
+        router.post("/thumbnail/:sessionId/:username/:imageId",
+            (req: Request, res: Response, next: NextFunction) => {
+                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                    { res.json(403); return; }
+                
+                this.imageService.updateThumbnail(req.params.imageId, req.body.thumbnail, req.body.thumbnailTimestamp)
+                    .then(image => {
+                        res.json(image);
+                    });
+
+            });
+
         return router;
     }
 }

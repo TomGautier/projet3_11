@@ -18,7 +18,7 @@ export let imageSchema: Schema = new Schema({
     },
     protection: {
         type: String,
-        required: true
+        required: false
     },
     canvasX: {
         type: Number,
@@ -27,6 +27,12 @@ export let imageSchema: Schema = new Schema({
     canvasY: {
         type: Number,
         required: false
+    },
+    thumbnail: {
+        type: String
+    },
+    thumbnailTimestamp: {
+        type: Number
     }
 }, {timestamps: true});
 

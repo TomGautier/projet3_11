@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,6 +43,9 @@ public class HomeActivity extends AppCompatActivity {
 	private FrameLayout collabImageEditingFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
+	private CollabImageEditingFragment collabImageEditingFragment;
+	private GalleryFragment galleryFragment;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,14 +64,13 @@ public class HomeActivity extends AppCompatActivity {
 			createUsersListFragment();
 			createChatFragment();
 			createImageEditingFragment();
-			createCollabImageEditingFragment();
 			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
 		}
-		//int[] position = {1,2};
-		//CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
-		//CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);
+		/*int[] position = {1,2};
+		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
+		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);*/
         //SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
 	}
 
@@ -84,17 +87,6 @@ public class HomeActivity extends AppCompatActivity {
 		transaction.add(R.id.usersTableFragment, new UsersListFragment(),USER_TABLE_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();
-		//ArrayList<String> users = new ArrayList<>();
-		/*users.add("Marcel");
-		users.add("Marcel2");
-		users.add("Marcel3");
-		users.add("Marcel4");
-		users.add("Marcel5");
-		users.add("Marcel6");
-		users.add("Marcel7");
-		users.add("Marcel8");
-		users.add("Marcel9");*/
-
 	}
 
 	private void createImageEditingFragment(){
@@ -104,10 +96,12 @@ public class HomeActivity extends AppCompatActivity {
         transaction.addToBackStack(null);
         transaction.commit();
 	}
-	private void createCollabImageEditingFragment(){
+	private void createCollabImageEditingFragment(String imageId){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.collabImageEditingFragment, new CollabImageEditingFragment(),COLLAB_EDITING_TAG);
+
+		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId);
+		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
 		transaction.commit();
 	}
@@ -140,29 +134,6 @@ public class HomeActivity extends AppCompatActivity {
 			case R.id.galleryAction:
 				toggleGalleryVisibility();
 				break;
-			/*case R.id.chatAction:
-				PopupMenu dropDownMenu = new PopupMenu(getApplicationContext(), findViewById(R.id.chatAction));
-				dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
-				dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-					@Override
-					public boolean onMenuItemClick(MenuItem menuItem) {
-						switch(menuItem.getItemId()){
-							case R.id.addConversationChatAction:
-								createAddConversationPopup();
-								break;
-							case R.id.removeConversationChatAction:
-								createRemoveConversationPopup();
-								break;
-							case R.id.hideShowChatAction:
-								toggleChatVisibility();
-								break;
-						}
-						return true;
-					}
-				});
-				dropDownMenu.show();
-				toggleChatVisibility();
-				break;*/
 			case R.id.imageEditingAction:
 				toggleImageEditingVisibility();
 				break;
@@ -175,28 +146,38 @@ public class HomeActivity extends AppCompatActivity {
 	private void toggleImageEditingVisibility(){
 		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			imageEditingFragmentLayout.setVisibility(View.GONE);
-		else
+		else {
 			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
 	}
 	private void toggleCollabImageEditingVisibility(){
 		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			collabImageEditingFragmentLayout.setVisibility(View.GONE);
-		else
+		else {
+			createCollabImageEditingFragment(null);
 			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
+	}
+	public void joinCollabEditingSession(String imageId) {
+		createCollabImageEditingFragment(imageId);
+		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
 	private void createGalleryFragment(){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.galleryFragment,new GalleryFragment(),GALLERY_TAG);
+		galleryFragment = new GalleryFragment();
+		transaction.add(R.id.galleryFragment, galleryFragment, GALLERY_TAG);
 		transaction.addToBackStack(null);
 		transaction.commit();
 	}
-	private void toggleGalleryVisibility(){
+	public void toggleGalleryVisibility(){
 		if (galleryFragmentLayout.getVisibility() == View.VISIBLE)
 			galleryFragmentLayout.setVisibility(View.GONE);
-		else
+		else {
 			galleryFragmentLayout.setVisibility(View.VISIBLE);
+			galleryFragment.refresh();
+		}
 	}
 
 	/*private void toggleChatVisibility(){

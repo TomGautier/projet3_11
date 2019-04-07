@@ -26,8 +26,8 @@ export class ImageService implements ImageServiceInterface {
             author: author,
             visibility: visibility,
             protection: protection,
-            canvasX: 1170,
-            canvasY: 530
+            canvasX: 1726,
+            canvasY: 1185
         });
             
         return await this.databaseService.create(Image, image)
@@ -75,5 +75,20 @@ export class ImageService implements ImageServiceInterface {
                 Logger.warn('ImageService', `This image ${id} couldn't be removed.`);
                 throw err;
             });
+    }
+
+    public async updateThumbnail(imageId: string, thumbnail: any, thumbnailTimestamp: number) {
+        const image = new Image(await this.getById(imageId));
+        if(image.thumbnailTimestamp === undefined || image.thumbnailTimestamp <= thumbnailTimestamp) {
+                image.thumbnail = thumbnail;
+                image.thumbnailTimestamp = thumbnailTimestamp;
+                return await this.databaseService.update(Image, this.ID_CRITERIA, imageId, image)
+                    .catch(err => {
+                        Logger.warn('ImageService', `This image ${imageId} couldn't be updated.`);
+                        throw err;
+                    });
+        }
+
+        return image;
     }
 }

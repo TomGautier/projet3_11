@@ -143,6 +143,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         setTouchListener();
         initializeCanvas();
+        drawAllShapes();
         return rootView;
     }
 
@@ -357,6 +358,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected void initializePaint() {
         // Border paint
         int borderColor = ResourcesCompat.getColor(getResources(), R.color.shape, null);
+        System.out.println("Default shape color : " + borderColor);
         Paint borderPaint = new Paint();
         borderPaint.setColor(borderColor);
 
@@ -561,7 +563,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
-                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Activity :
                 nShape = new UMLActivity(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
@@ -579,7 +580,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
-                //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Comment :
                 nShape = new Comment(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
@@ -590,7 +590,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
-                //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Arrow:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),

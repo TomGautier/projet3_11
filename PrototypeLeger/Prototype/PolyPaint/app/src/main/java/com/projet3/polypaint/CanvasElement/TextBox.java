@@ -15,8 +15,17 @@ public class TextBox extends GenericTextShape {
     public TextBox(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height,style,angle);
     }
+<<<<<<< HEAD
     private TextBox(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
         super(id, x, y, width, height, style, contents, angle);
+=======
+    public TextBox(String id, int x, int y, PaintStyle style, String contents, float angle) {
+        super(id, x, y, style, contents, angle);
+    }
+
+    @Override
+    public void setAnchorPoints() {
+>>>>>>> dev
     }
 
     @Override
