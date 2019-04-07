@@ -22,7 +22,7 @@ export class ConversationController implements ConversationControllerInterface {
                 // Send the request to the service and send the response
                 if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; };
-                this.conversationService.getAllByUsername(req.params.username).then(conversations => {
+                this.conversationService.getAll().then(conversations => {
                     res.json(conversations);
                 })
                 .catch(err => {
@@ -32,8 +32,8 @@ export class ConversationController implements ConversationControllerInterface {
 
         router.post("/:sessionId/:username/:conversationName",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
                 
                 this.conversationService.create(req.params.conversationName, req.params.username).then(conversation => {
                     res.json(conversation)

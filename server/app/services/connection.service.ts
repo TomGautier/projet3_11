@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
-import { SocketService, GENERAL_ROOM } from "./socket.service";
+import { SocketService } from "./socket.service";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { Logger } from "./logger.service";
 import { ConversationManager } from "./conversation.manager";
@@ -15,7 +15,6 @@ import { UserManager } from "./user.manager";
 export class ConnectionService implements ConnectionServiceInterface {
     
     constructor(
-        @inject(TYPES.ConversationManager) private conversationManager: ConversationManager,
         @inject(TYPES.UserManager) private userManager: UserManager,
         @inject(TYPES.UserService) private userService: UserService,
         @inject(TYPES.SocketService) private socketService: SocketService
@@ -34,9 +33,8 @@ export class ConnectionService implements ConnectionServiceInterface {
     }
 
     public async onUserSignup(username: string, password: string) {   
-        let createdUser = {};
         try {
-            createdUser = await this.userService.create(new User({username: username, password: password}));
+            await this.userService.create(new User({username: username, password: password}));
         }
         catch (err) {
             if (err.name === 'MongoError' && err.code === 11000) {

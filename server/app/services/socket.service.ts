@@ -8,9 +8,6 @@ import { TYPES } from "../types";
 import { Logger } from "./logger.service";
 import SocketEvents from "../../../common/communication/socketEvents";
 import { UnsaucedEventEmitter } from "../interfaces/events";
-import { Room } from "../../../common/room";
-
-export const GENERAL_ROOM = new Room("General")
 
 @injectable()
 export class SocketService {
