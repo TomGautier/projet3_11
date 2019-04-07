@@ -133,7 +133,7 @@ namespace PolyPaint.VueModeles
         public Stroke StrokeBeingRotated { get; set; }
         public bool isDragging { get; set; }
         public int IndexBeingDragged { get; set; }
-
+       
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
 

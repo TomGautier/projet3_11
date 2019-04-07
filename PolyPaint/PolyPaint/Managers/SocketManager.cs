@@ -18,6 +18,7 @@ namespace PolyPaint.Managers
     {
         private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.18.25";
         private const string SERVER_PORT = "3000";
+        public const double S_PROP = 0.5d;
         public Socket Socket;
         public int Compteur { get; set; }
 
@@ -85,7 +86,7 @@ namespace PolyPaint.Managers
         }
         public void ResizeCanvas(double width, double height)
         {
-            double[] size = new double[2] { width, height };
+            double[] size = new double[2] { width*S_PROP, height*S_PROP };
 
             string parameters = new JavaScriptSerializer().Serialize(new
             {
@@ -108,6 +109,7 @@ namespace PolyPaint.Managers
         }
         public void AddElement(Shape shape_)
         {
+            ConvertToMobile(shape_);
             shape_.id = this.UserName + "_" + this.Compteur.ToString();
             shape_.author = this.UserName;
 
@@ -168,6 +170,7 @@ namespace PolyPaint.Managers
         }
         public void HandleModification(Shape[] shapes_)
         {
+            foreach (Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 drawingSessionId = this.SessionID,
@@ -179,6 +182,7 @@ namespace PolyPaint.Managers
         }
         public void DuplicateElements(Shape[] shapes_)
         {
+            foreach(Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 drawingSessionId = this.SessionID,
@@ -189,6 +193,7 @@ namespace PolyPaint.Managers
         }
         public void DuplicateCutElements(Shape[] shapes_)
         {
+            foreach (Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 drawingSessionId = this.SessionID,
@@ -196,6 +201,27 @@ namespace PolyPaint.Managers
                 shapes = shapes_
             });
             this.Socket.Emit("DuplicateCutElements", parameters);
+        }
+        public void ConvertToMobile(Shape shape)
+        {
+            if (shape.properties.type == "Arrow")
+            {
+                shape.properties.height = (int)(shape.properties.height * S_PROP);
+                shape.properties.width = (int)(shape.properties.width * S_PROP);
+                for(int i = 0; i< shape.properties.pointsX.Length; i++)
+                {
+                    shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * S_PROP);
+                    shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * S_PROP);
+                }
+
+            }
+            else
+            {
+                shape.properties.height = (int)(shape.properties.height * S_PROP);
+                shape.properties.width = (int)(shape.properties.width * S_PROP);
+                shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * S_PROP);
+                shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * S_PROP);
+            }
         }
     }
 }

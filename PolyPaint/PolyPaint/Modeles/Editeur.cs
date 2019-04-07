@@ -24,8 +24,7 @@ namespace PolyPaint.Modeles
     /// </summary>
     class Editeur : INotifyPropertyChanged
     {
-        public const double HEIGHT_PROPORTION = 1.00d;
-        public const double WIDTH_PROPORTION = 1.00d;
+        public const double HC_PROP = 1 / SocketManager.S_PROP;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public StrokeCollection traits = new StrokeCollection();
@@ -1044,7 +1043,51 @@ namespace PolyPaint.Modeles
                 this.LastCut = null;
             
         }
-    
+        public void ConvertToHC(Shape shape)
+        {
+            if (shape.properties.type == "Arrow")
+            {
+                shape.properties.height = (int)(shape.properties.height * HC_PROP);
+                shape.properties.width = (int)(shape.properties.width * HC_PROP);
+                for (int i = 0; i < shape.properties.pointsX.Length; i++)
+                {
+                    shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * HC_PROP);
+                    shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * HC_PROP);
+                }
+
+            }
+            else
+            {
+                shape.properties.height = (int)(shape.properties.height * HC_PROP);
+                shape.properties.width = (int)(shape.properties.width * HC_PROP);
+                shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * HC_PROP);
+                shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * HC_PROP);
+            }
+        }
+        public void ConvertToHC(Shape[] shapes)
+        {
+            foreach (Shape shape in shapes)
+            {
+                if (shape.properties.type == "Arrow")
+                {
+                    shape.properties.height = (int)(shape.properties.height * HC_PROP);
+                    shape.properties.width = (int)(shape.properties.width * HC_PROP);
+                    for (int i = 0; i < shape.properties.pointsX.Length; i++)
+                    {
+                        shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * HC_PROP);
+                        shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * HC_PROP);
+                    }
+
+                }
+                else
+                {
+                    shape.properties.height = (int)(shape.properties.height * HC_PROP);
+                    shape.properties.width = (int)(shape.properties.width * HC_PROP);
+                    shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * HC_PROP);
+                    shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * HC_PROP);
+                }
+            }
+        }
 
 
         public void initializeSocketEvents()
@@ -1078,8 +1121,8 @@ namespace PolyPaint.Modeles
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    this.CanvasWidth = dimensions[0];
-                    this.CanvasHeight = dimensions[1];
+                    this.CanvasWidth = dimensions[0] * HC_PROP;
+                    this.CanvasHeight = dimensions[1] * HC_PROP;
                     ProprieteModifiee("CanvasSize");
                     
                 });
@@ -1092,6 +1135,7 @@ namespace PolyPaint.Modeles
                     //   string id = (data as JObject)["id"].ToObject<String>();
                     JObject result = (data as JObject);                
                     Shape shape = result["shape"].ToObject<Shape>();
+                    ConvertToHC(shape);
                     //Shape shape = (data as JObject).ToObject<Shape>();//["properties"].ToObject<Shape>();
                     Application.Current.Dispatcher.Invoke(() =>
                      {
@@ -1188,7 +1232,7 @@ namespace PolyPaint.Modeles
                 JObject result = (data as JObject);
                 String username = result["username"].ToObject<String>();
                 Shape shape = result["shape"].ToObject<Shape>();
-
+                ConvertToHC(shape);
                 StylusPointCollection pts = new StylusPointCollection();
                 pts.Add(new StylusPoint(0, 0));
                 Form toUnstack = new Form(pts);
@@ -1227,6 +1271,7 @@ namespace PolyPaint.Modeles
                 JObject result = (data as JObject);
                 String username = result["username"].ToObject<String>();
                 Shape[] shapes = result["shapes"].ToObject<Shape[]>();
+                
                 //int rotation = shapes[0].properties.rotation;
                 Application.Current.Dispatcher.Invoke(() =>
                 {                 
@@ -1234,6 +1279,7 @@ namespace PolyPaint.Modeles
                     {
                         foreach (Shape s in shapes)
                         {
+                            ConvertToHC(s);
                             for (int i = 0; i < traits.Count; i++)
                             {
                                 if ((traits[i] as Form).Id == s.id)
@@ -1256,11 +1302,13 @@ namespace PolyPaint.Modeles
                 JObject result = (data as JObject);
                 String username = result["username"].ToObject<String>();
                 Shape[] shapes = result["shapes"].ToObject<Shape[]>();
+                //for (int i = 0; i < shapes.Length; i++) { }//ConvertToHC(shapes); }
                 //int rotation = shapes[0].properties.rotation;
                 Application.Current.Dispatcher.Invoke(() =>
                 {                  
                         foreach (Shape s in shapes)
                         {
+                        ConvertToHC(s);
                         if (s.properties.type == "Arrow")
                         {
                            
@@ -1287,6 +1335,7 @@ namespace PolyPaint.Modeles
                 {
                     foreach (Shape s in shapes)
                     {
+                        ConvertToHC(s);
                         if (s.properties.type == "Arrow")
                         {
                             s.properties.index1 = -1;
