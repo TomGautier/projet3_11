@@ -213,11 +213,7 @@ namespace PolyPaint.VueModeles
 
         private void OnNavigateNewSession()
         {
-            string newDrawingId = Username + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
-
-            networkManager.PostImage(Username, SessionId, newDrawingId, "public", "");
-            
-            JoinDrawSession(newDrawingId);
+            SwitchView = 7;
         }
 
         private void OnNavigateForgotPwd()
@@ -267,7 +263,50 @@ namespace PolyPaint.VueModeles
 
         public bool JoinDrawSession(string joinningSessionID)
         {
+            if(GalleryItems == null)
+            {
+                var newFormat = new
+                {
+                    sessionId = SessionId,
+                    username = Username,
+                    imageId = joinningSessionID
+                };
+
+                SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(newFormat));
+
+                SocketManager.Socket.On("JoinedDrawingSession", () => {
+                        //TODO : Load default canvas
+                });
+                SwitchView = 5;
+                return true;
+            }
             GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+            //While we don't handle differently
+            if(info == null)
+            {
+                var newFormat = new
+                {
+                    sessionId = SessionId,
+                    username = Username,
+                    imageId = joinningSessionID
+                };
+
+                SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(newFormat));
+
+                SocketManager.Socket.On("JoinedDrawingSession", () => {
+                    if (info != null)
+                    {
+                        //TODO : Load canvas from GalleryItems 
+                    }
+                    else
+                    {
+                        //TODO : Load default canvas
+                    }
+                });
+                SwitchView = 5;
+                return true;
+            }
+
             if (info.protection != "")
                 return false;
 
@@ -316,6 +355,15 @@ namespace PolyPaint.VueModeles
                     //TODO : Load canvas from GalleryItems 
             });
             SwitchView = 5;
+        }
+
+        public void CreateNewSession(string visibility, string protection)
+        {
+            string newDrawingId = Username + "_" + System.DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();
+
+            networkManager.PostImage(Username, SessionId, newDrawingId, visibility, protection);
+
+            JoinDrawSession(newDrawingId);
         }
 
         public async void LoadGallery(string galleryType)

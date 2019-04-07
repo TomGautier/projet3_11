@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyPaint.VueModeles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,9 @@ namespace PolyPaint.Vues
 
         private void Confirm_Click(object sender, RoutedEventArgs e)
         {
-
+            string visibility = ((RadioButton)FindName("public")).IsChecked.Value ? "public" : "private";
+            string protection = ((TextBox)FindName("protection")).Text;
+            (DataContext as VueModele).CreateNewSession(visibility, protection);
         }
     }
 }

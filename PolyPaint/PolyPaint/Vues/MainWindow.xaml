@@ -51,6 +51,12 @@
                 <Vues:ForgotPwdControl/>
             </DockPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="NewSessionView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:NewSessionControl/>
+            </DockPanel>
+        </DataTemplate>
     </Window.Resources>
 
     <Window.DataContext>
@@ -86,6 +92,11 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding SwitchView}" Value="6">
                             <Setter Property="ContentTemplate" Value="{StaticResource ForgotPWDView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="7">
+                            <Setter Property="ContentTemplate" Value="{StaticResource NewSessionView}" />
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="MaxWidth" Value="300"/>
                         </DataTrigger>
