@@ -33,7 +33,7 @@ namespace PolyPaint.Vues
             };
             chatWindow = null;
 
-            this.Loaded += new RoutedEventHandler((s, e) => { UpdateUserList(); });
+            this.Loaded += new RoutedEventHandler((s, e) => { UpdateUserList(); (DataContext as VueModele).LoadChannelAsync(); });
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
@@ -85,6 +85,7 @@ namespace PolyPaint.Vues
         private void AddChannel_Click(object sender, RoutedEventArgs e)
         {
             ((StackPanel)FindName("AddChannelForm")).Visibility = Visibility.Hidden;
+            (DataContext as VueModele).addChannelAsync();
         }
 
         private async void UpdateUserList()
