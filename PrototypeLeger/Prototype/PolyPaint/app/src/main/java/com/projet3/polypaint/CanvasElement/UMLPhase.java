@@ -13,14 +13,10 @@ public class UMLPhase extends GenericTextShape {
     public static final String TYPE = "Phase";
 
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y, style);
-        this.width = width;
-        this.height = height;
+        super(id, x, y, width, height, style);
     }
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents) {
-        super(id, x, y, style, contents);
-        this.width = width;
-        this.height = height;
+        super(id, x, y, width, height, style, contents);
     }
 
     @Override

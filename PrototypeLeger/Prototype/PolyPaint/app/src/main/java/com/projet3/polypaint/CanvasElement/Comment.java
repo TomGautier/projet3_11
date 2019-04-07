@@ -9,12 +9,12 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 public class Comment extends GenericTextShape {
     public static final String TYPE = "Comment";
 
-    public Comment(String id, int x, int y, PaintStyle style) {
-        super(id, x, y, style);
+    public Comment(String id, int x, int y, int width, int height, PaintStyle style) {
+        super(id, x, y, width, height, style);
         height += 2*PADDING;
     }
-    public Comment(String id, int x, int y, PaintStyle style, String contents) {
-        super(id, x, y, style, contents);
+    public Comment(String id, int x, int y, int width, int height, PaintStyle style, String contents) {
+        super(id, x, y, width, height, style, contents);
         height += 2*PADDING;
     }
 
@@ -39,7 +39,7 @@ public class Comment extends GenericTextShape {
 
     @Override
     public GenericShape clone() {
-        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, this.style, text);
+        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text);
     }
 
     @Override

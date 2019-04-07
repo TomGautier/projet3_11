@@ -5,13 +5,13 @@ public abstract class GenericTextShape extends GenericShape {
     protected final int PADDING = 8;
     protected String text = "";
 
-    public GenericTextShape(String id, int x, int y, PaintStyle style) {
-        super(id, x, y, 0, FONT_SIZE, style);
+    public GenericTextShape(String id, int x, int y, int width, int height, PaintStyle style) {
+        super(id, x, y, width, Math.max(FONT_SIZE, height), style);
         text = "";
         adjustWidthToText();
     }
-    protected GenericTextShape(String id, int x, int y, PaintStyle style, String contents) {
-        super(id, x, y, 0, FONT_SIZE, style);
+    protected GenericTextShape(String id, int x, int y, int width, int height, PaintStyle style, String contents) {
+        super(id, x, y, width, Math.max(FONT_SIZE, height), style);
         text = contents;
         adjustWidthToText();
     }

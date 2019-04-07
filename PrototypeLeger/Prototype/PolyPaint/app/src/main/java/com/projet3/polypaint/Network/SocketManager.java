@@ -419,24 +419,31 @@ public class SocketManager  {
             for (int i = 0; i < shapes.length; i++) {
                 JSONObject shapeJson = null;
                 JSONObject shapePropertiesJson = null;
+                CollabShape shape = shapes[i];
 
-                shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
-                        .put(CollabShapeProperties.FILLING_COLOR_TAG, shapes[i].getProperties().getFillingColor())
-                        .put(CollabShapeProperties.BORDER_COLOR_TAG, shapes[i].getProperties().getBorderColor())
-                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shapes[i].getProperties().getMiddlePointCoord()))
-                        .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
-                        .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
-                        .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation());
+                shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
+                        .put(CollabShapeProperties.FILLING_COLOR_TAG, shape.getProperties().getFillingColor())
+                        .put(CollabShapeProperties.BORDER_COLOR_TAG, shape.getProperties().getBorderColor())
+                        .put(CollabShapeProperties.STROKE_TAG, shape.getProperties().getStrokeType().toString())
+                        .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shape.getProperties().getMiddlePointCoord()))
+                        .put(CollabShapeProperties.HEIGHT_TAG, shape.getProperties().getHeight())
+                        .put(CollabShapeProperties.WIDTH_TAG, shape.getProperties().getWidth())
+                        .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation())
+                        .put(CollabShapeProperties.LABEL_TAG, shape.getProperties().getText())
+                        .put(CollabShapeProperties.ATTRIBUTE_TAG, shape.getProperties().getAttributesJson())
+                        .put(CollabShapeProperties.METHOD_TAG, shape.getProperties().getMethodsJson());
 
-                shapeJson = new JSONObject().put(CollabShape.ID_TAG, shapes[i].getId())
-                        .put(CollabShape.DRAWING_SESSION_TAG, shapes[i].getDrawingSessionId())
-                        .put(CollabShape.AUTHOR_TAG, shapes[i].getAuthor())
+                shapeJson = new JSONObject().put(CollabShape.ID_TAG, shape.getId())
+                        .put(CollabShape.DRAWING_SESSION_TAG, shape.getDrawingSessionId())
+                        .put(CollabShape.AUTHOR_TAG, shape.getAuthor())
                         .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
+
+                System.out.println("Drawing session id : " + shape.getDrawingSessionId());
 
                 if (shapeJson != null && shapePropertiesJson != null)
                     array.put(shapeJson);
             }
-            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
+            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
                     .put("shapes", array);
         }catch (JSONException e) {
                 e.printStackTrace();

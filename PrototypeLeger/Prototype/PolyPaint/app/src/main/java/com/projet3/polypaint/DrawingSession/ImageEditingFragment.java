@@ -464,11 +464,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 //ImageEditingDialogManager.getInstance().showTextAndStyleDialog(getFragmentManager(), defaultStyle, "");
                 break;
             case Comment :
-                nShape = new Comment(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new Comment(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case text_box :
-                nShape = new TextBox(Integer.toString(idCpt), posX, posY, defaultStyle);
+                nShape = new TextBox(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType.toString()),
+                        GenericShape.getDefaultHeight(currentShapeType.toString()), defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
                 //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;

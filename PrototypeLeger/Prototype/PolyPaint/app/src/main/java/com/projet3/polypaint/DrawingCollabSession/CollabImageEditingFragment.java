@@ -67,12 +67,12 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 int posY = (int)event.getY(0);
 
                 // Check if an showEditingDialog button was clicked
-               // if (event.getAction() != MotionEvent.ACTION_MOVE &&
-                        //!selections.isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
+                if (event.getAction() != MotionEvent.ACTION_MOVE &&
+                        !client.getSelectedShapes().isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
                 // Check if canvas is being resized
                // else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
                     //return resizeCanvas(event);
-                /*else*/ switch (currentMode) {
+                else switch (currentMode) {
                         case selection:
                             checkSelection(posX, posY);
                             break;
@@ -135,6 +135,26 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         return null;
     }*/
 
+   @Override
+   protected boolean checkEditButton(int x, int y) {
+       ArrayList<GenericShape> selections = client.getSelectedShapes();
+       ArrayList<String> selectionIDs = new ArrayList<>();
+       for (GenericShape s : selections) selectionIDs.add(s.getId());
+
+       for (int i = selections.size() - 1; i >= 0; i--) {
+           if (selections.get(i).getEditButton().contains(x, y)){
+               GenericShape clicked = selections.get(i);
+               String[] clickedID = {clicked.getId()};
+               SocketManager.currentInstance.selectElements(selectionIDs.toArray(new String[selections.size()]), clickedID);
+               client.clearSelectedShape();
+               client.addSelectedShape(clicked);
+               currentShape = createCollabShape(clicked);
+               clicked.showEditingDialog(getFragmentManager());
+               return true;
+           }
+       }
+       return false;
+   }
 
     private boolean isFreeToSelect(String id){
         for (GenericShape shape : client.getSelectedShapes()){
@@ -245,25 +265,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString()),
                 GenericShape.getDefaultWidth(currentShapeType.toString()),0);
 
-        /*switch (shapeType) {
-            case "UmlClass":
-                properties = new CollabShapeProperties(shapeType, backgroundColor,
-                        borderColor, new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType.toString()),
-                        GenericShape.getDefaultWidth(currentShapeType.toString()),0);
-                break;
-            case "Artefact":
-                break;
-            case "Activity":
-                break;
-            case "Role":
-                break;
-            case "Phase":
-                break;
-            case "Comment":
-                break;
-            case "text_box":
-                break;
-        }*/
         return new CollabShape(id,drawingSessionId, client.getName(),properties);
     }
     @Override
@@ -674,7 +675,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 break;
             case "text_box":
                 genShape = new TextBox(collabShape.getId(), properties.getMiddlePointCoord()[0],
-                        properties.getMiddlePointCoord()[1], properties.getStyle(), properties.getText());
+                        properties.getMiddlePointCoord()[1], properties.getWidth(), properties.getHeight(), properties.getStyle(), properties.getText());
                 break;
             case "Phase":
                 genShape = new UMLPhase(collabShape.getId(), properties.getMiddlePointCoord()[0],
@@ -683,7 +684,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 break;
             case "Comment":
                 genShape = new Comment(collabShape.getId(), properties.getMiddlePointCoord()[0],
-                        properties.getMiddlePointCoord()[1], properties.getStyle(), properties.getText());
+                        properties.getMiddlePointCoord()[1], properties.getWidth(), properties.getHeight(), properties.getStyle(), properties.getText());
         }
         return genShape;
     }
@@ -722,24 +723,38 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     @Override
     public void onStyleDialogPositiveResponse(PaintStyle style){
-        System.out.println("Entered collab version of onStyleDialogPositiveResponse()");
-        if (isEditingNewShape && currentShape != null) {
+        System.out.println("onStyleDialogPositiveResponse");
+        if (currentShape != null) {
             currentShape.getProperties().setStyle(style);
-            SocketManager.currentInstance.addElement(currentShape);
-            currentShape = null;
-            isEditingNewShape = false;
+            if (isEditingNewShape) {
+                SocketManager.currentInstance.addElement(currentShape);
+                currentShape = null;
+                isEditingNewShape = false;
+            }
+            else {
+                System.out.println("Shape id : " +currentShape.getId());
+                CollabShape[] shape = {currentShape};
+                SocketManager.currentInstance.modifyElements(shape);
+                currentShape = null;
+            }
         }
-
     }
     @Override
     public void onStyleDialogNegativeResponse(){
-        if (isEditingNewShape && currentShape != null) {
-            currentShape.getProperties().setStyle(defaultStyle);
-            SocketManager.currentInstance.addElement(currentShape);
-            currentShape = null;
-            isEditingNewShape = false;
+        if (currentShape != null) {
+            if (isEditingNewShape) {
+                currentShape.getProperties().setStyle(defaultStyle);
+                SocketManager.currentInstance.addElement(currentShape);
+                currentShape = null;
+                isEditingNewShape = false;
+            }
+            else {
+                CollabShape[] shape = {currentShape};
+                currentShape.getProperties().setStyle(defaultStyle);
+                SocketManager.currentInstance.modifyElements(shape);
+                currentShape = null;
+            }
         }
-
     }
     @Override
     public void onClassDialogPositiveResponse(String name, String attributes, String methods, PaintStyle style){

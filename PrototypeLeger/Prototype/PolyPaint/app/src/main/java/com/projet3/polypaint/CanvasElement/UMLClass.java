@@ -22,21 +22,15 @@ public class UMLClass extends GenericTextShape {
     public static final String TYPE = "UmlClass";
 
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y, style);
+        super(id, x, y, width, height, style);
 
         attributes = new ArrayList<>();
         methods = new ArrayList<>();
 
-        if (width > this.width) this.width = width;
-        this.height = height;
-
         initializePaint();
     }
     public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style) {
-        super(id, x, y, style, name);
-
-        if (width > this.width) this.width = width;
-        this.height = height;
+        super(id, x, y, width, height, style, name);
 
         this.attributes = new ArrayList<>();
         this.methods = new ArrayList<>();
