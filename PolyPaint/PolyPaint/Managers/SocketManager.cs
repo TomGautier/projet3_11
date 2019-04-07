@@ -112,7 +112,7 @@ namespace PolyPaint.Managers
         public void AddElement(Shape shape_)
         {
             ConvertToMobile(shape_);
-            shape_.id = this.UserName + "_" + this.Compteur.ToString();
+            shape_.id = this.UserName + "_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();//this.Compteur.ToString();
             shape_.author = this.UserName;
 
             string parameters = new JavaScriptSerializer().Serialize(new
