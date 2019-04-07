@@ -334,7 +334,7 @@ namespace PolyPaint.VueModeles
                     shapes = contents
 
                 });
-               // this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
+                this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
                
 
             }
