@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.spec.RSAOtherPrimeInfo;
+import java.util.ArrayList;
 
 public class CollabShapeProperties {
     public static String TYPE_TAG = "type";
@@ -13,20 +14,38 @@ public class CollabShapeProperties {
     public static String HEIGHT_TAG = "height";
     public static String WIDTH_TAG = "width";
     public static String ROTATION_TAG = "rotation";
+    public static String BORDER_TYPE_TAG = "borderType";
+    public static String LABEL_TAG = "label";
+    public static String METHODS_TAG = "methods";
+    public static String ATTRIBUTES_TAG = "attributes";
 
-    private String type;
-    private String fillingColor;
+    protected String type;
+    protected String fillingColor;
     private String borderColor;
     private int[] middlePointCoord;
     private int height;
     private int width;
     private int rotation;
+    private String attributes;
+    private String methods;
+    private String label;
+    private String borderType;
 
-    public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, int[] middlePointCoord_,
+    public CollabShapeProperties(String type_, String fillingColor_, String borderColor_) { // pour les formes de connexion
+        type = type_;
+        fillingColor = fillingColor_;
+        borderColor = borderColor_;
+    }
+    public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, String attributes, String methods,
+                                 String label, String borderType, int[] middlePointCoord_,
                                  int height_, int width_, int rotation_){
         type = type_;
         fillingColor = fillingColor_;
         borderColor = borderColor_;
+        this.attributes = attributes;
+        this.methods = methods;
+        this.label = label;
+        this.borderType = borderType;
         middlePointCoord = middlePointCoord_;
 
         height = height_;
@@ -57,6 +76,18 @@ public class CollabShapeProperties {
     }
     public String getBorderColor(){
         return borderColor;
+    }
+    public String getAttributes(){
+        return attributes;
+    }
+    public String getMethods(){
+        return methods;
+    }
+    public String getLabel(){
+        return label;
+    }
+    public String getBorderType(){
+        return borderType;
     }
     public int[] getMiddlePointCoord(){
         return middlePointCoord;

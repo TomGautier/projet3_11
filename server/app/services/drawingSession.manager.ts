@@ -53,11 +53,9 @@ export class DrawingSessionManager {
             this.connectedUsers.set(doc.drawingSessionId, new Array<String>());
         }
         var users = this.connectedUsers.get(doc.drawingSessionId) as String[];
-        console.log("USERS: ",users)
         if (users !== undefined){
-            if (users.indexOf(doc.username) == -1){
+            if (doc.username != null && users.indexOf(doc.username) == -1){
                 users.push(doc.username);
-                console.log("AJOUTE LE USER ", doc.username);
             }
             this.socketService.emit(doc.drawingSessionId,SocketEvents.NewUserJoined, users);
         } 
@@ -102,7 +100,6 @@ export class DrawingSessionManager {
         for (const shape of doc.shapes){
             this.drawingSessionService.modifyElement(shape);
         }
-        
         this.socketService.emit(doc.drawingSessionId, SocketEvents.ModifiedElement, doc);
     }
     public selectElements(doc : any) {
@@ -126,6 +123,9 @@ export class DrawingSessionManager {
         this.socketService.emit(doc.drawingSessionId, SocketEvents.CutedElements, doc);
     }
     public duplicateCutElements(doc : any){
+        for (const shape of doc.shapes){
+            this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);
+           }
         console.log(doc);
         for (const shape of doc.shapes){
             this.drawingSessionService.addElement(shape.id,shape.drawingSessionId, shape.author, shape.properties);

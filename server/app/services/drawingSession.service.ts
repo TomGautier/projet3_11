@@ -51,7 +51,6 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     public async deleteElements(elementIds: any): Promise<{}> {
         // TODO: Review criteria to remove every elements
         const elementsWithCriteria = {$in: elementIds};
-        console.log(elementIds);
         return await this.databaseService.remove(Shape, this.ID_CRITERIA, elementsWithCriteria)
             .catch(err => {throw err;});
     }

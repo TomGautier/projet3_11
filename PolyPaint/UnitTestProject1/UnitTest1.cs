@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PolyPaint.Utilitaires;
+using PolyPaint.Managers;
 
 namespace UnitTestProject1
 {

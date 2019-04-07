@@ -8,7 +8,6 @@ using System.Windows.Media;
 using PolyPaint.Modeles;
 using PolyPaint.Utilitaires;
 using PolyPaint.Managers;
-using System.Windows.Input;
 using PolyPaint.Vues;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,12 +50,11 @@ namespace PolyPaint.VueModeles
         }
 
         private int switchView = 0;
+        private int previousView;
         public int SwitchView
         {
             get { return switchView; }
-            set { switchView = value; ProprieteModifiee(); }
-            //get { return editeur.OutilSelectionne; }            
-            //set { ProprieteModifiee(); }
+            set { previousView = switchView; switchView = value; ProprieteModifiee(); }
         }
         private CustomInkCanvas Canvas { get; set; }
         public string CouleurSelectionnee
@@ -133,7 +131,14 @@ namespace PolyPaint.VueModeles
         public Stroke StrokeBeingRotated { get; set; }
         public bool isDragging { get; set; }
         public int IndexBeingDragged { get; set; }
-       
+
+        private List<GalleryControl.GalleryItem> galleryItems;
+        public List<GalleryControl.GalleryItem> GalleryItems
+        {
+            get { return galleryItems; }
+            set { galleryItems = value; ProprieteModifiee(); }
+        }
+
         // Ensemble d'attributs qui définissent l'apparence d'un trait.
         public DrawingAttributes AttributsDessin { get; set; } = new DrawingAttributes();
 
@@ -212,6 +217,9 @@ namespace PolyPaint.VueModeles
 
         public ICommand NavigateLogin { get { return new RelayCommand(OnNavigateLogin, () => { return true; }); } }
         public ICommand NavigateSignup { get { return new RelayCommand(OnNavigateSignup, () => { return true; }); } }
+        public ICommand NavigateBack { get { return new RelayCommand(OnNavigateBack, () => { return true; }); } }
+        public ICommand NavigateGallery { get { return new RelayCommand(OnNavigateGallery, () => { return true; }); } }
+        public ICommand NavigateDrawSession { get { return new RelayCommand(OnNavigateDrawSession, () => { return true; }); } }
 
         private void OnNavigateLogin()
         {
@@ -221,6 +229,21 @@ namespace PolyPaint.VueModeles
         private void OnNavigateSignup()
         {
             SwitchView = 2;
+        }
+
+        private void OnNavigateGallery()
+        {
+            SwitchView = 4;
+        }
+
+        private void OnNavigateDrawSession()
+        {
+            SwitchView = 5;
+        }
+
+        private void OnNavigateBack()
+        {
+            SwitchView = previousView;
         }
 
         public async void Login(string password)
@@ -244,6 +267,36 @@ namespace PolyPaint.VueModeles
                 return;
             }
             SwitchView = 3;
+        }
+
+        public void JoinDrawSession(string joinningSessionID)
+        {
+            //TODO : JOIN
+        }
+
+        public void LoadGallery()
+        {
+            //TODO : LOAD INTO GalleryItems
+            // NOTE : CALL DURING NAVIGATE_TO_GALLERY
+        }
+
+        public async System.Threading.Tasks.Task<List<ChatControl.UserItem>> LoadUsersAsync()
+        {
+            string userList = await networkManager.LoadUsersAsync(Username, SessionId);
+
+            List<ChatControl.UserItem> userItems = new List<ChatControl.UserItem>();
+
+            
+            var users = JsonConvert.DeserializeObject<List<ChatControl.UserItemTemplate>>(userList);
+
+            foreach (var user in users)
+            {
+                if (user.Username == Username)
+                    continue;
+                userItems.Add(new ChatControl.UserItem() { Username = user.Username, ConnectionStatus = user.ConnectionStatus ? 1 : 0 });
+            }
+
+            return userItems.OrderByDescending(x => x.ConnectionStatus).ToList(); ;
         }
 
         /// <summary>
