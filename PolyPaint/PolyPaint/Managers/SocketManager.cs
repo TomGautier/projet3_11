@@ -16,7 +16,7 @@ namespace PolyPaint.Managers
 {
     class SocketManager
     {
-        private const string SERVER_ADDRESS = "10.200.18.25";
+        private const string SERVER_ADDRESS = "127.0.0.1";
         private const string SERVER_PORT = "3000";
         public Socket Socket;
         private int Compteur { get; set; }
@@ -69,7 +69,7 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
             });
             this.Socket.Emit("ResetCanvas", parameters);
         }
@@ -80,7 +80,7 @@ namespace PolyPaint.Managers
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 username = this.UserName,
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 newCanvasDimensions = size
             });
             this.Socket.Emit("ResizeCanvas", parameters);

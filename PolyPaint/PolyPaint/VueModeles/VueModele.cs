@@ -104,6 +104,7 @@ namespace PolyPaint.VueModeles
             {
                 username = value;
                 ChatManager.Username = value;
+
                 this.SocketManager.UserName = username;
                 ProprieteModifiee();
             }
@@ -372,7 +373,7 @@ namespace PolyPaint.VueModeles
             //SocketManager.JoinDrawingSession("MockSessionID");
             ChatManager.socket = SocketManager.Socket;
             //SocketManager.UserName = "Olivier";
-            SocketManager.UserName = this.Username;
+           // SocketManager.UserName = this.Username;
             
             editeur.initializeSocketEvents();
             //SocketManager.JoinDrawingSession("MockSessionID");

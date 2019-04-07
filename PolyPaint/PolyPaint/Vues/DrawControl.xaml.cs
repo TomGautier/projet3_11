@@ -33,7 +33,7 @@ namespace PolyPaint.Vues
         public DrawControl()
         {
             InitializeComponent();
-            DataContext = new VueModele();
+            //DataContext = new VueModele();
             
             //this.surfaceDessin.AllowSelection = false;
             //this.surfaceDessin.IsDraging = false;
