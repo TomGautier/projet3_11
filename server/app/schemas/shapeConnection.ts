@@ -7,7 +7,7 @@ export let shapeConnectionSchema: Schema = new Schema({
         type: String,
         required: true
     }, 
-    drawingSessionId: {
+    imageId: {
         type: String,
         required: true
     },

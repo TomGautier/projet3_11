@@ -45,6 +45,12 @@
                 <Vues:DrawControl/>
             </DockPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="ForgotPWDView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:ForgotPwdControl/>
+            </DockPanel>
+        </DataTemplate>
     </Window.Resources>
 
     <Window.DataContext>
@@ -77,6 +83,11 @@
                         </DataTrigger>
                         <DataTrigger Binding="{Binding SwitchView}" Value="5">
                             <Setter Property="ContentTemplate" Value="{StaticResource DrawView}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="6">
+                            <Setter Property="ContentTemplate" Value="{StaticResource ForgotPWDView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
                         </DataTrigger>
                     </Style.Triggers>
                     

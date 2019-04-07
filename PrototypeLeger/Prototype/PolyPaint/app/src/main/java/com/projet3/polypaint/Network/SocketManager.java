@@ -82,7 +82,7 @@ public class SocketManager  {
 
     private String uri;
     private String sessionId;
-    private String drawingSessionId;
+    private String imageId;
 
     public SocketManager(String ipAddress_, String sessionId_) {
         uri = formatIpToUri(ipAddress_);
@@ -139,14 +139,14 @@ public class SocketManager  {
             socket.on(CREATED_COLLAB_SESSION_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    //drawingSessionId = (String)args[0];
+                    //imageId = (String)args[0];
                 }
             });
             socket.on(JOINED_COLLAB_SESSION_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    // drawingSessionId = (String)args[0];
-                    //drawingCollabSessionListener.onJoinedSession(drawingSessionId);
+                   // imageId = (String)args[0];
+                    //drawingCollabSessionListener.onJoinedSession(imageId);
                 }
             });
             socket.on(NEW_USER_JOINED, new Emitter.Listener() {
@@ -375,33 +375,24 @@ public class SocketManager  {
     //SESSION COLLABORATIVE ------------------------------------------------------------------------------------------------------------------
 
 
-    public void createCollabSession(String name, String visibility, String image){
+    public void joinCollabSession(String imageId){
         JSONObject json = null;
         try {
-            json = new JSONObject().put(NAME_TAG, name).put(VISIBILITY_TAG, visibility).put(IMAGE_TAG, image);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if (json != null)
-            socket.emit(CREATE_COLLAB_SESSION_TAG,json);
-    }
-    public void joinCollabSession(String drawingSessionId){
-        JSONObject json = null;
-        try {
-            json = new JSONObject().put(SESSION_ID_TAG, sessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
-                    .put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId);
+            json = new JSONObject().put(SESSION_ID_TAG, sessionId)
+                    .put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
+                    .put(CollabShape.IMAGE_ID_TAG, imageId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         if(json != null){
             socket.emit(JOIN_COLLAB_SESSION_TAG, json.toString());
-            this.drawingSessionId = drawingSessionId;
-            this.drawingCollabSessionListener.onJoinedSession(this.drawingSessionId);
+            this.imageId = imageId;
+            this.drawingCollabSessionListener.onJoinedSession(this.imageId);
         }
 
-        //socket.emit(JOIN_COLLAB_SESSION_TAG, drawingSessionId, FetchManager.currentInstance.getUserUsername());
-        //this.drawingSessionId = drawingSessionId;
-        //this.drawingCollabSessionListener.onJoinedSession(this.drawingSessionId);
+       //socket.emit(JOIN_COLLAB_SESSION_TAG, imageId, FetchManager.currentInstance.getUserUsername());
+       //this.imageId = imageId;
+       //this.drawingCollabSessionListener.onJoinedSession(this.imageId);
     }
 
     public void addElement(CollabShape shape){
@@ -427,7 +418,7 @@ public class SocketManager  {
             }
 
             shapeJson = new JSONObject().put(CollabShape.ID_TAG, shape.getId())
-                    .put(CollabShape.DRAWING_SESSION_TAG, shape.getDrawingSessionId())
+                    .put(CollabShape.IMAGE_ID_TAG, shape.getImageId())
                     .put(CollabShape.AUTHOR_TAG, shape.getAuthor())
                     .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
             json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
@@ -465,14 +456,14 @@ public class SocketManager  {
 
 
                 shapeJson = new JSONObject().put(CollabShape.ID_TAG, shapes[i].getId())
-                        .put(CollabShape.DRAWING_SESSION_TAG, shapes[i].getDrawingSessionId())
+                        .put(CollabShape.IMAGE_ID_TAG, shapes[i].getImageId())
                         .put(CollabShape.AUTHOR_TAG, shapes[i].getAuthor())
                         .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
 
                 if (shapeJson != null && shapePropertiesJson != null)
                     array.put(shapeJson);
             }
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG,drawingSessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
+            json = new JSONObject().put(CollabShape.IMAGE_ID_TAG, imageId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
                     .put("shapes", array);
         }catch (JSONException e) {
             e.printStackTrace();
@@ -508,7 +499,7 @@ public class SocketManager  {
 
 
                 shapeJson = new JSONObject().put(CollabShape.ID_TAG, shapes[i].getId())
-                        .put(CollabShape.DRAWING_SESSION_TAG, shapes[i].getDrawingSessionId())
+                        .put(CollabShape.IMAGE_ID_TAG, shapes[i].getImageId())
                         .put(CollabShape.AUTHOR_TAG, shapes[i].getAuthor())
                         .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
 
@@ -550,7 +541,7 @@ public class SocketManager  {
                 }
 
                 shapeJson = new JSONObject().put(CollabShape.ID_TAG, shapes[i].getId())
-                        .put(CollabShape.DRAWING_SESSION_TAG, shapes[i].getDrawingSessionId())
+                        .put(CollabShape.IMAGE_ID_TAG, shapes[i].getImageId())
                         .put(CollabShape.AUTHOR_TAG, shapes[i].getAuthor())
                         .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
 
@@ -568,7 +559,7 @@ public class SocketManager  {
     public void deleteElements(String[] ids){
         JSONObject json = null;
         try {
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId).put(ELEMENTS_IDS_TAG, new JSONArray(ids))
+            json = new JSONObject().put(CollabShape.IMAGE_ID_TAG, imageId).put(ELEMENTS_IDS_TAG, new JSONArray(ids))
                     .put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -579,7 +570,7 @@ public class SocketManager  {
     public void cutElements(String[] ids){
         JSONObject json = null;
         try {
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId).put(ELEMENTS_IDS_TAG, new JSONArray(ids))
+            json = new JSONObject().put(CollabShape.IMAGE_ID_TAG, imageId).put(ELEMENTS_IDS_TAG, new JSONArray(ids))
                     .put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -591,7 +582,7 @@ public class SocketManager  {
     public void selectElements(String[] oldSelections, String[] newSelections){
         JSONObject json = null;
         try {
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId)
+            json = new JSONObject().put(CollabShape.IMAGE_ID_TAG, imageId)
                     .put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
                     .put("oldElementIds", new JSONArray(oldSelections)).put("newElementIds", new JSONArray(newSelections));
         } catch (JSONException e) {
@@ -604,7 +595,7 @@ public class SocketManager  {
     public void stackElement(String id){
         JSONObject json = null;
         try {
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG, drawingSessionId)
+            json = new JSONObject().put(CollabShape.IMAGE_ID_TAG, imageId)
                     .put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
                     .put(ELEMENT_ID_TAG, id);
         } catch (JSONException e) {
@@ -637,7 +628,7 @@ public class SocketManager  {
             }
 
             shapeJson = new JSONObject().put(CollabShape.ID_TAG, shape.getId())
-                    .put(CollabShape.DRAWING_SESSION_TAG, shape.getDrawingSessionId())
+                    .put(CollabShape.IMAGE_ID_TAG, shape.getImageId())
                     .put(CollabShape.AUTHOR_TAG, shape.getAuthor())
                     .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
             json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
@@ -655,7 +646,7 @@ public class SocketManager  {
         JSONObject dimensionsJson;
         try{
             dimensionsJson = new JSONObject().put("x",width).put("y",height);
-            json = new JSONObject().put(CollabShape.DRAWING_SESSION_TAG,drawingSessionId).put(USERNAME_TAG,FetchManager.currentInstance.getUserUsername())
+            json = new JSONObject().put(CollabShape.IMAGE_ID_TAG, imageId).put(USERNAME_TAG,FetchManager.currentInstance.getUserUsername())
                     .put(NEW_CANVAS_DIMENSIONS, dimensionsJson);
         } catch (JSONException e) {
             e.printStackTrace();

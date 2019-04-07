@@ -44,6 +44,10 @@ export interface DrawingSessionServiceInterface {
     
 }
 
+export interface DrawingSessionControllerInterface {
+    router: Router;    
+}
+
 export interface IndexServiceInterface {
     about(): Message;
     helloWorld(): Promise<Message>;

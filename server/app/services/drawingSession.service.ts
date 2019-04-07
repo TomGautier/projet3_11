@@ -1,22 +1,40 @@
 import { DrawingSessionServiceInterface } from "../interfaces";
 import Shape from "../schemas/shape";
+import ShapeConnection from "../schemas/shapeConnection";
 import { inject, injectable } from "inversify";
 import { TYPES } from "../types";
 import { DatabaseService } from "./database.service";
 import { Logger } from "./logger.service";
-import * as uuid from 'node-uuid';
 
 @injectable()
 export class DrawingSessionService implements DrawingSessionServiceInterface {
     private readonly ID_CRITERIA = "id";
+    private readonly IMAGE_ID_CRITERIA = "imageId";
+    
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async addElement(id:string, drawingSessionId: string, username: string, properties: any): Promise<{}> {
-        const shapeId = id//uuid.v1();
+
+    public async getShapesByImage(imageId: string) {
+        return await this.databaseService.getAllByCriteria(Shape, this.IMAGE_ID_CRITERIA, imageId)
+            .catch(err => {
+                Logger.warn('ImageService', `This image ${imageId} has no shapes.`);
+                throw err;
+            });
+    }
+
+    public async getShapeConnectionsByImage(imageId: string) {
+        return await this.databaseService.getAllByCriteria(ShapeConnection, this.IMAGE_ID_CRITERIA, imageId)
+            .catch(err => {
+                Logger.warn('ImageService', `This image ${imageId} has no shape connection.`);
+                throw err;
+            });
+    }
+
+    public async addElement(id:string, imageId: string, username: string, properties: any): Promise<{}> {
         const shape = new Shape({
-            id: shapeId,
-            drawingSessionId: drawingSessionId,
+            id: id,
+            imageId: imageId,
             author: username,
             properties: {
                 type: properties.type,
@@ -31,7 +49,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     
         return await this.databaseService.create(Shape, shape)
             .catch(err => {
-                Logger.warn('ConversationService', `Couldn't create shape : ${shapeId}`);
+                Logger.warn('ConversationService', `Couldn't create shape : ${id}`);
                 throw err;
         });
     }

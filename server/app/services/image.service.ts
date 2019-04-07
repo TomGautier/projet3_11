@@ -19,19 +19,17 @@ export class ImageService implements ImageServiceInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async create(author: string, visibility: string, protection: string, shapes: string): Promise<{}> {
-        const imageId = uuid.v1();
+    public async create(author: string, id: string, visibility: string, protection: string): Promise<{}> {
         const image =  new Image({
-            id: imageId,
+            id: id,
             author: author,
             visibility: visibility,
-            protection: protection,
-            shapes: shapes
+            protection: protection
         });
             
         return await this.databaseService.create(Image, image)
             .catch(err => {
-                Logger.warn('ImageService', `Couldn't create image : ${imageId}`);
+                Logger.warn('ImageService', `Couldn't create image : ${id}`);
                 throw err;
            });
     }
@@ -66,5 +64,20 @@ export class ImageService implements ImageServiceInterface {
                 Logger.warn('ImageService', `This image ${id} couldn't be removed.`);
                 throw err;
             });
+    }
+
+    public async updateThumbnail(imageId: string, thumbnail: any, thumbnailTimestamp: number) {
+        const image = new Image(await this.getById(imageId));
+        if(image.thumbnailTimestamp === undefined || image.thumbnailTimestamp <= thumbnailTimestamp) {
+                image.thumbnail = thumbnail;
+                image.thumbnailTimestamp = thumbnailTimestamp;
+                return await this.databaseService.update(Image, this.ID_CRITERIA, imageId, image)
+                    .catch(err => {
+                        Logger.warn('ImageService', `This image ${imageId} couldn't be updated.`);
+                        throw err;
+                    });
+        }
+
+        return image;
     }
 }
