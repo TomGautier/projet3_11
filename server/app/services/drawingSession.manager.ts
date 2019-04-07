@@ -11,8 +11,9 @@ export class DrawingSessionManager {
     /*If it is selected: the key is the object id and the value is the user's sessionId who selected it.
     Otherwise, it doesn't exist.*/
     private selectedObjects: Map<String, String> = new Map();
+    // Key: username, value: imageId
     private connectedUsers : Map<String, String[]> = new Map();
-
+    
     constructor(@inject(TYPES.SocketService) private socketService: SocketService,
                 @inject(TYPES.DrawingSessionServiceInterface) private drawingSessionService: DrawingSessionService,
                 @inject(TYPES.UserManager) private userManager: UserManager)
@@ -46,6 +47,7 @@ export class DrawingSessionManager {
         this.newUserJoined(doc);    
         this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession); 
     }
+
     public newUserJoined(doc : any) {
         if (this.connectedUsers.get(doc.imageId) == undefined){
             this.connectedUsers.set(doc.imageId, new Array<String>());
@@ -64,19 +66,20 @@ export class DrawingSessionManager {
         {
             // TODO: Delete every user's selected objects when he leaves a session.
             console.log(value, key);
+            map.delete(key);
         });
-        this.socketService.leaveRoom(doc.sessionId, socketId);
-        var users = this.connectedUsers.get(doc.imageId) as String[];
-        for (let i = 0; i< users.length; i++)
-        {
-            if (users[i] == doc.username){
-                delete users[i];
-            }
-        }
-        this.connectedUsers.set(doc.drawingSessionId,users);
 
+        this.socketService.leaveRoom(doc.imageId, socketId);
+
+        var users = this.connectedUsers.get(doc.imageId) as String[];
         
-        this.socketService.emit(doc.sessionId, SocketEvents.LeftDrawingSession);
+        const index = users.indexOf(doc.username, 0);
+        if (index > -1) {
+            users.splice(index, 1);
+        }
+
+        this.connectedUsers.set(doc.imageId, users);
+        this.socketService.emit(doc.sessionId, SocketEvents.LeftDrawingSession, users);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
@@ -98,7 +101,6 @@ export class DrawingSessionManager {
         for (const shape of doc.shapes){
             this.drawingSessionService.modifyElement(shape);
         }
-        
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
     public selectElements(doc : any) {
