@@ -101,6 +101,17 @@ export class DatabaseService {
         });
     }
 
+    
+    public async updateOne(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.update({username: doc.username},{$set:{password: doc.password}},{new:true}
+                , (err: any, document: any) => {
+                    if(err) { return reject(err); }; 
+                    resolve(document);
+            });
+        });
+    }
+
     public async remove(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.remove({ [criteria]: doc }, (err: any, document: any) => {
