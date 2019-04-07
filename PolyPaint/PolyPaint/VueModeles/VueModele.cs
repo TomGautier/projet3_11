@@ -96,7 +96,7 @@ namespace PolyPaint.VueModeles
             set { editeur.FormConnectorManager = value; }
         }
 
-        private string username = RandomString(5);
+        private string username; //= RandomString(5);
         public string Username
         {
             get { return username; }
@@ -104,6 +104,7 @@ namespace PolyPaint.VueModeles
             {
                 username = value;
                 ChatManager.Username = value;
+
                 this.SocketManager.UserName = username;
                 ProprieteModifiee();
             }
@@ -372,10 +373,10 @@ namespace PolyPaint.VueModeles
             //SocketManager.JoinDrawingSession("MockSessionID");
             ChatManager.socket = SocketManager.Socket;
             //SocketManager.UserName = "Olivier";
-            SocketManager.UserName = this.Username;
+           // SocketManager.UserName = this.Username;
             
             editeur.initializeSocketEvents();
-            SocketManager.JoinDrawingSession("MockSessionID");
+            //SocketManager.JoinDrawingSession("MockSessionID");
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
