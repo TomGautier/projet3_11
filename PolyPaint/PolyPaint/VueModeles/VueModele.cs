@@ -645,9 +645,9 @@ namespace PolyPaint.VueModeles
             {
                 editeur.HandleChangeSelection(strokes);
             }
-            else if (strokes.Count == 1 && !strokes[0].HitTest(LastMousePos));//this.isDragging)
+            else if (strokes.Count == 1 && !strokes[0].HitTest(LastMousePos) && this.isDragging)
             {
-               // editeur.HandleChangeSelection(strokes);
+                editeur.HandleChangeSelection(strokes);
                 
                 //this.StrokeBeingLassoed = strokes[0];
                   //this.HandlePreviewMouseDown((strokes[0] as Form).Center);
