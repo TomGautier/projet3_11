@@ -704,22 +704,24 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     // ------------------------- Dialogs -------------------------
     @Override
     public void onTextDialogPositiveResponse(String contents, PaintStyle style){
-        if (isEditingNewShape && currentShape != null) {
+        if (currentShape != null) {
             currentShape.getProperties().setText(contents);
             currentShape.getProperties().setStyle(style);
-            SocketManager.currentInstance.addElement(currentShape);
+            if (isEditingNewShape) {
+                SocketManager.currentInstance.addElement(currentShape);
+                isEditingNewShape = false;
+            } else {
+                CollabShape[] shape = {currentShape};
+                SocketManager.currentInstance.modifyElements(shape);
+            }
             currentShape = null;
-            isEditingNewShape = false;
         }
 
     }
     @Override
     public void onTextDialogNegativeResponse(){
-        if (isEditingNewShape && currentShape != null) {
-            currentShape = null;
-            isEditingNewShape = false;
-        }
-
+        currentShape = null;
+        isEditingNewShape = false;
     }
     @Override
     public void onStyleDialogPositiveResponse(PaintStyle style){
@@ -728,42 +730,44 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             currentShape.getProperties().setStyle(style);
             if (isEditingNewShape) {
                 SocketManager.currentInstance.addElement(currentShape);
-                currentShape = null;
                 isEditingNewShape = false;
             }
             else {
-                System.out.println("Shape id : " +currentShape.getId());
                 CollabShape[] shape = {currentShape};
                 SocketManager.currentInstance.modifyElements(shape);
-                currentShape = null;
             }
+            currentShape = null;
         }
     }
     @Override
     public void onStyleDialogNegativeResponse(){
         if (currentShape != null) {
+            currentShape.getProperties().setStyle(defaultStyle);
             if (isEditingNewShape) {
-                currentShape.getProperties().setStyle(defaultStyle);
                 SocketManager.currentInstance.addElement(currentShape);
-                currentShape = null;
                 isEditingNewShape = false;
             }
             else {
                 CollabShape[] shape = {currentShape};
-                currentShape.getProperties().setStyle(defaultStyle);
                 SocketManager.currentInstance.modifyElements(shape);
-                currentShape = null;
             }
+            currentShape = null;
         }
     }
     @Override
     public void onClassDialogPositiveResponse(String name, String attributes, String methods, PaintStyle style){
-        if (isEditingNewShape && currentShape != null) {
+        if ( currentShape != null) {
             currentShape.getProperties().setTextFields(name, attributes, methods);
             currentShape.getProperties().setStyle(style);
-            SocketManager.currentInstance.addElement(currentShape);
+            if (isEditingNewShape) {
+                SocketManager.currentInstance.addElement(currentShape);
+                isEditingNewShape = false;
+            }
+            else {
+                CollabShape[] shape = {currentShape};
+                SocketManager.currentInstance.modifyElements(shape);
+            }
             currentShape = null;
-            isEditingNewShape = false;
         }
 
     }
