@@ -58,17 +58,10 @@ namespace PolyPaint.Utilitaires
             var body = new StringContent(JsonConvert.SerializeObject(bodyTemplate), Encoding.UTF8, "application/json");
             var response = client.PostAsync("http://" + ipAddress + ":3000/api/images/" + sessionId + "/" + username, body);
         }
-
-        public async Task<string> LoadAllImageAsync(string username, string sessionId)
+        
+        public async Task<string> LoadGalleryAsync(string username, string sessionId, string visibility)
         {
-            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/images/common/" + sessionId + "/" + username);
-
-            return await response.Content.ReadAsStringAsync();
-        }
-
-        public async Task<string> LoadUserImageAsync(string username, string sessionId)
-        {
-            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/images/" + sessionId + "/" + username);
+            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/images/" + sessionId + "/" + username + "/" + visibility);
 
             return await response.Content.ReadAsStringAsync();
         }

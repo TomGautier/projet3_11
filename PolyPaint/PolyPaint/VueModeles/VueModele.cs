@@ -369,14 +369,7 @@ namespace PolyPaint.VueModeles
         public async void LoadGallery(string galleryType)
         {
             string gallery;
-            if (galleryType == "private")
-            {
-                gallery = await networkManager.LoadUserImageAsync(Username, SessionId);
-            }
-            else
-            {
-                gallery = await networkManager.LoadAllImageAsync(Username, SessionId);
-            }
+            gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
             if(GalleryItems != null)
                 GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
