@@ -14,8 +14,8 @@ namespace PolyPaint.Utilitaires
 {
     class Comment : Form
     {
-        public const int DEFAULT_HEIGHT = 70;
-        public const int DEFAULT_WIDTH = 130;
+        public const int DEFAULT_HEIGHT = 25;// 50;
+        public const int DEFAULT_WIDTH = 50;//100;
         public const string TYPE = "Comment";
 
         public string Name { get; set; }
@@ -26,8 +26,8 @@ namespace PolyPaint.Utilitaires
 
         {
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 50;
-            this.Width = 100;
+            this.Height = 25;
+            this.Width = 50;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;

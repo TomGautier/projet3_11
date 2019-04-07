@@ -29,6 +29,8 @@ namespace PolyPaint.Vues
     /// </summary>
     public partial class DrawControl : UserControl
     {
+        private const int MAX_WIDTH = 855;
+        private const int MAX_HEIGHT = 525;
         public string LastDrag { get; set; }
         public DrawControl()
         {
@@ -75,8 +77,10 @@ namespace PolyPaint.Vues
             //LastDrag = (sender as Thumb).Name;
             LastDrag = "diagonal";            //if (nom == "horizontal" || nom == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.HorizontalChange));
             //if (nom == "vertical" || nom == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.VerticalChange));
-            this.surfaceDessin.Width += e.HorizontalChange;
-            this.surfaceDessin.Height += e.VerticalChange;
+            if ((this.surfaceDessin.Width + e.HorizontalChange < MAX_WIDTH) && (this.surfaceDessin.Height + e.VerticalChange < MAX_HEIGHT)){
+                this.surfaceDessin.Width += e.HorizontalChange;
+                this.surfaceDessin.Height += e.VerticalChange;
+            }
             
         }
         
@@ -102,16 +106,18 @@ namespace PolyPaint.Vues
         private void surfaceDessin_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // if (LastDrag == "horizontal" || LastDrag == "diagonal") colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.NewSize.Width - e.PreviousSize.Width));
+          
             if (!(e.PreviousSize.Height == 0 && e.PreviousSize.Width == 0))
             {
                 colonne.Width = new GridLength(Math.Max(32, colonne.Width.Value + e.NewSize.Width - e.PreviousSize.Width));
                 // if (LastDrag == "vertical" || LastDrag == "diagonal") ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.NewSize.Height - e.PreviousSize.Height
                 ligne.Height = new GridLength(Math.Max(32, ligne.Height.Value + e.NewSize.Height - e.PreviousSize.Height));
-            }
-    
-
-            this.surfaceDessin.Width = e.NewSize.Width;
-            this.surfaceDessin.Height = e.NewSize.Height;
+              
+            }  
+            
+                this.surfaceDessin.Width = e.NewSize.Width;
+                this.surfaceDessin.Height = e.NewSize.Height;
+            
             
            // (DataContext as VueModele).HandleCanvasResize(e.NewSize);
         }

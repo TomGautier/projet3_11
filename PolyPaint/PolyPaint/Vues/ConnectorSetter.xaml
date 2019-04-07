@@ -48,7 +48,7 @@
             <ComboBox x:Name="typeList" Width="100" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="2,0,98,0">
                 <ComboBoxItem Content="Line"/>
                 <ComboBoxItem Content="One Way"/>
-                <ComboBoxItem Content="Two Ways"/>
+                <ComboBoxItem Content="Bidirectional"/>
                 <ComboBoxItem Content="Inheritance"/>
                 <ComboBoxItem Content="Aggregation"/>
                 <ComboBoxItem Content="Composition"/>

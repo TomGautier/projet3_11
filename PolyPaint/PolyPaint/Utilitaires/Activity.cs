@@ -14,8 +14,8 @@ namespace PolyPaint.Utilitaires
 {
     class Activity : Form
     {
-        public const int DEFAULT_HEIGHT = 70;
-        public const int DEFAULT_WIDTH = 130;
+        public const int DEFAULT_HEIGHT = 35;//27;
+        public const int DEFAULT_WIDTH = 65;//40;
         public const string TYPE = "Activity";
 
         public string Name { get; set; }
@@ -26,8 +26,8 @@ namespace PolyPaint.Utilitaires
 
         {
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 70;
-            this.Width = 130;
+            this.Height = 35;
+            this.Width = 65;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;

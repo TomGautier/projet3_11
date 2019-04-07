@@ -14,8 +14,8 @@ namespace PolyPaint.Utilitaires
 {
     class Role : Form
     {
-        public const int DEFAULT_HEIGHT = 75;
-        public const int DEFAULT_WIDTH = 40;
+        public const int DEFAULT_HEIGHT = 60; //75;
+        public const int DEFAULT_WIDTH = 30;//40;
         public const string TYPE = "Role";
 
         public string Name { get; set; }
@@ -30,8 +30,8 @@ namespace PolyPaint.Utilitaires
             // this.StylusPoints = pts;
             this.Center = new Point(pts[0].X, pts[0].Y);
             this.Name = "";
-            this.Height = 120;
-            this.Width = 60;
+            this.Height = 60;
+            this.Width = 30;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;

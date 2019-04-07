@@ -403,7 +403,7 @@ namespace PolyPaint.VueModeles
             if (this.IsOffline) { this.editeur.ResizedCanvas(new double[2] { this.Canvas.Width, this.Canvas.Height }); }
             else
             {
-                this.SocketManager.ResizeCanvas(this.Canvas.Width, this.Canvas.Height);
+                this.SocketManager.ResizeCanvas((int)this.Canvas.Width, (int)this.Canvas.Height);
             }
         }
 

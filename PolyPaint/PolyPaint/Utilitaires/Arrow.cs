@@ -87,8 +87,11 @@ namespace PolyPaint.Utilitaires
         {
             this.Id = shape.id;
             this.Author = shape.author;
-            this.DrawingAttributes.Width = shape.properties.width;
-            this.DrawingAttributes.Height = shape.properties.width;
+            if (shape.properties.height > 0)
+            {
+                this.DrawingAttributes.Width = shape.properties.height;//shape.properties.width;
+                this.DrawingAttributes.Height = shape.properties.height;//shape.properties.width;
+            }
             StylusPointCollection points = new StylusPointCollection();
             for (int i = 0; i < shape.properties.pointsX.Length; i++)
             {
@@ -132,7 +135,7 @@ namespace PolyPaint.Utilitaires
                 // pts[i] = this.StylusPoints[i].ToPoint();
             }
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), null,
-                (int)this.DrawingAttributes.Width, (int)this.DrawingAttributes.Width, -1, this.BorderStyle, this.Label,null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, ptsX,ptsY, this.Category);
+                (int)this.DrawingAttributes.Height, (int)this.DrawingAttributes.Height, -1, this.BorderStyle, this.Label,null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, ptsX,ptsY, this.Category);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         private  void DrawCategory(DrawingContext drawingContext)
@@ -142,7 +145,7 @@ namespace PolyPaint.Utilitaires
                 case "One Way":
                     DrawOneWay(drawingContext);
                     break;
-                case "Two Ways":
+                case "Bidirectional":
                     DrawTwoWays(drawingContext);
                     break;
                 case "Inheritance":
@@ -317,7 +320,10 @@ namespace PolyPaint.Utilitaires
                 //origin.Y += this.DrawingAttributes.Width;
                 SolidColorBrush brush = new SolidColorBrush(Colors.Black);
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
-                drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+                if (this.Label != null)
+                {
+                    drawingContext.DrawText(new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 12, brush), origin);
+                }
             }
         }
     }
