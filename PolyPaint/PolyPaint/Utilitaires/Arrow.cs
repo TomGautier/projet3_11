@@ -113,8 +113,8 @@ namespace PolyPaint.Utilitaires
 
         public override Shape ConvertToShape(string drawingSessionID)
         {
-            string id1 = null;
-            string id2 = null;
+            string id1 = "";//null;
+            string id2 = "";//null;
             if (this.Shape1 != null)
             {
                 id1 = this.Shape1.Id;
@@ -132,7 +132,7 @@ namespace PolyPaint.Utilitaires
                 // pts[i] = this.StylusPoints[i].ToPoint();
             }
             ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), null,
-                (int)this.DrawingAttributes.Width, (int)this.DrawingAttributes.Width, -1, this.BorderStyle, this.Label, null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, ptsX,ptsY, this.Category);
+                (int)this.DrawingAttributes.Width, (int)this.DrawingAttributes.Width, -1, this.BorderStyle, this.Label,null, null, id1, id2, this.Index1, this.Index2, this.Q1, this.Q2, ptsX,ptsY, this.Category);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
         private  void DrawCategory(DrawingContext drawingContext)

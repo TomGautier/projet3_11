@@ -175,6 +175,7 @@ namespace PolyPaint.Utilitaires
 
                 default:
                     pen.DashStyle = DashStyles.Solid;
+                    this.BorderStyle = "Solid";
                     break;
             }
             return pen;

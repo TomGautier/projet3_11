@@ -800,8 +800,8 @@ namespace PolyPaint.Modeles
                         {
                             shape.properties.pointsX[i] += 30;
                             shape.properties.pointsY[i] += 30;
-                            shape.properties.idShape1 = null;
-                            shape.properties.idShape2 = null;
+                            shape.properties.idShape1 = "";//null;
+                            shape.properties.idShape2 = "";//null;
                             shape.properties.index1 = -1;
                             shape.properties.index2 = -1;
 
@@ -896,7 +896,7 @@ namespace PolyPaint.Modeles
                         (s as Arrow).StylusPoints[(s as Arrow).StylusPoints.Count - 1] = new StylusPoint((stk as Form).EncPoints[(s as Arrow).Index2].X, (stk as Form).EncPoints[(s as Arrow).Index2].Y);
                     }
                 }
-                if (shape.properties.idShape1 == null)
+                if (shape.properties.idShape1 == null || shape.properties.idShape1 == "")
                 {
                     if ((s as Arrow).Shape1 != null)
                     {
@@ -905,7 +905,7 @@ namespace PolyPaint.Modeles
                     }
 
                 }
-                if (shape.properties.idShape2 == null)
+                if (shape.properties.idShape2 == null || shape.properties.idShape2 == "")
                 {
                     if ((s as Arrow).Shape2 != null)
                     {
@@ -1018,8 +1018,8 @@ namespace PolyPaint.Modeles
             {
                 if (s.properties.type == "Arrow")
                 {
-                    s.properties.idShape1 = null;
-                    s.properties.idShape2 = null;
+                    s.properties.idShape1 = "";//null;
+                    s.properties.idShape2 = "";//null;
                     s.properties.index1 = -1;
                     s.properties.index2 = -1;
                 }
@@ -1033,8 +1033,8 @@ namespace PolyPaint.Modeles
             {
                 if (s.properties.type == "Arrow")
                 {
-                    s.properties.idShape1 = null;
-                    s.properties.idShape2 = null;
+                    s.properties.idShape1 = "";//null;
+                    s.properties.idShape2 = "";//null;
                     s.properties.index1 = -1;
                     s.properties.index2 = -1;
                 }
@@ -1232,7 +1232,7 @@ namespace PolyPaint.Modeles
                 JObject result = (data as JObject);
                 String username = result["username"].ToObject<String>();
                 Shape shape = result["shape"].ToObject<Shape>();
-                ConvertToHC(shape);
+                //ConvertToHC(shape);
                 StylusPointCollection pts = new StylusPointCollection();
                 pts.Add(new StylusPoint(0, 0));
                 Form toUnstack = new Form(pts);
@@ -1242,8 +1242,8 @@ namespace PolyPaint.Modeles
                     toUnstack = new Arrow(pts);
                     shape.properties.index1 = -1;
                     shape.properties.index2 = -1;
-                    shape.properties.idShape1 = null;
-                    shape.properties.idShape2 = null;
+                    shape.properties.idShape1 = "";//null;
+                    shape.properties.idShape2 = "";// null;
                 }
                 toUnstack.SetToShape(shape);
                 ManageShapeToArrow(shape,toUnstack);
@@ -1314,8 +1314,8 @@ namespace PolyPaint.Modeles
                            
                             s.properties.index1 = -1;
                             s.properties.index2 = -1;
-                            s.properties.idShape1 = null;
-                            s.properties.idShape2 = null;
+                            s.properties.idShape1 = "";//null;
+                            s.properties.idShape2 = ""; //null;
                         }
                         this.AddForm(s, true);
                         }
@@ -1340,8 +1340,8 @@ namespace PolyPaint.Modeles
                         {
                             s.properties.index1 = -1;
                             s.properties.index2 = -1;
-                            s.properties.idShape1 = null;
-                            s.properties.idShape2 = null;
+                            s.properties.idShape1 = "";//null;
+                            s.properties.idShape2 = "";//null;
                         }
                         this.AddForm(s, true);
                     }
