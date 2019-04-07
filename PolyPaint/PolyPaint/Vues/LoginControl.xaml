@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="300">
     <StackPanel>
-        <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
+        <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateHome}"/>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>

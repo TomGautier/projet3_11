@@ -29,17 +29,14 @@ namespace PolyPaint.Utilitaires
             return await response.Content.ReadAsStringAsync();
         }
 
-        public Task RequestPwdAsync(string username, string email)
+        public async Task RequestPwdAsync(string username, string email)
         {
-            throw new NotImplementedException();
+            var response = await client.PostAsync("http://" + ipAddress + ":3000/connection/forgot/" + username + "/" + email, null);
         }
 
-        public async Task<string> ForgotPWDAsync(string username, string oldPassword, string newPassword)
+        public async Task ForgotPWDAsync(string username, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
-            var response = await client.PostAsync("http://" + ipAddress + ":3000/connection/??????????/", null);
-
-            return await response.Content.ReadAsStringAsync();
+            var response = await client.PostAsync("http://" + ipAddress + ":3000/connection/reset/" + username + "/" + oldPassword + "/" + newPassword, null);
         }
 
         public async Task<string> LoadUsersAsync(string username, string sessionId)

@@ -188,6 +188,12 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateGallery { get { return new RelayCommand(OnNavigateGallery, () => { return true; }); } }
         public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
+        public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
+
+        private void OnNavigateHome()
+        {
+            SwitchView = 0;
+        }
 
         private void OnNavigateLogin()
         {
@@ -243,9 +249,8 @@ namespace PolyPaint.VueModeles
         public async void NewPassword(string oldPassword, string newPassword)
         {
             {
-                SessionId = await networkManager.ForgotPWDAsync(Username, oldPassword, newPassword);
-                ChatManager.Connect();
-                SwitchView = 3;
+                await networkManager.ForgotPWDAsync(Username, oldPassword, newPassword);
+                Login(newPassword);
             }
         }
 
