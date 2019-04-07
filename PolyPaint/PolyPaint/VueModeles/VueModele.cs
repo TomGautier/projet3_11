@@ -96,7 +96,7 @@ namespace PolyPaint.VueModeles
             set { editeur.FormConnectorManager = value; }
         }
 
-        private string username = RandomString(5);
+        private string username;
         public string Username
         {
             get { return username; }
@@ -375,7 +375,7 @@ namespace PolyPaint.VueModeles
             SocketManager.UserName = this.Username;
             
             editeur.initializeSocketEvents();
-            SocketManager.JoinDrawingSession("MockSessionID");
+            //SocketManager.JoinDrawingSession("MockSessionID");
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -688,6 +688,33 @@ namespace PolyPaint.VueModeles
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        // Sources
+        //https://stackoverflow.com/questions/20623126/inkcanvas-to-bitmap
+        //https://stackoverflow.com/a/554455
+        public void UpdateThumbnail()
+        {
+            int margin = (int)Canvas.Margin.Left;
+            int width = (int)Canvas.ActualWidth;
+            int height = (int)Canvas.ActualHeight;
+            //render ink to bitmap
+            System.Windows.Media.Imaging.RenderTargetBitmap renderBitmap =
+            new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
+            renderBitmap.Render(Canvas);
+
+            System.Windows.Controls.Image img = new System.Windows.Controls.Image();
+            img.Source = renderBitmap;
+
+            using (System.IO.MemoryStream memStream = new System.IO.MemoryStream())
+            {
+                System.Windows.Media.Imaging.JpegBitmapEncoder encoder = new System.Windows.Media.Imaging.JpegBitmapEncoder();
+                encoder.Frames.Add(System.Windows.Media.Imaging.BitmapFrame.Create(img.Source as System.Windows.Media.Imaging.BitmapImage));
+                encoder.Save(memStream);
+                string b64 = Convert.ToBase64String(memStream.ToArray());
+
+                networkManager.PostThumbnail(Username, SessionId, SocketManager.SessionID, b64);
+            }
         }
     }
 }
