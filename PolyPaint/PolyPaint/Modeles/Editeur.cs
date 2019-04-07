@@ -368,7 +368,7 @@ namespace PolyPaint.Modeles
             {
                 for (int i = 0; i < form.EncPoints.Length; i++)
                 {
-                    if (Math.Abs(Point.Subtract(form.EncPoints[i], pts).Length) < 20)
+                    if (Math.Abs(Point.Subtract(form.EncPoints[i], pts).Length) < 8)
                     {
 
                         if (index == 0)
@@ -433,7 +433,7 @@ namespace PolyPaint.Modeles
             {
                 for (int i = 0; i < form.EncPoints.Length; i++)
                 {
-                    if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
+                    if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 8)
                     {
                         this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor, this.ConnectorQ1, this.ConnectorQ2);
                         newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);

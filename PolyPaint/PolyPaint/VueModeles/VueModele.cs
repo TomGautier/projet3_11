@@ -131,6 +131,7 @@ namespace PolyPaint.VueModeles
         }
         public Stroke StrokeBeingDragged { get; set; }
         public Stroke StrokeBeingRotated { get; set; }
+        public Point LastMousePos { get; set; }
         public bool isDragging { get; set; }
         public int IndexBeingDragged { get; set; }
 
@@ -644,9 +645,9 @@ namespace PolyPaint.VueModeles
             {
                 editeur.HandleChangeSelection(strokes);
             }
-            else if (strokes.Count == 1 && this.isDragging)
+            else if (strokes.Count == 1 && !strokes[0].HitTest(LastMousePos));//this.isDragging)
             {
-                editeur.HandleChangeSelection(strokes);
+               // editeur.HandleChangeSelection(strokes);
                 
                 //this.StrokeBeingLassoed = strokes[0];
                   //this.HandlePreviewMouseDown((strokes[0] as Form).Center);
@@ -834,6 +835,7 @@ namespace PolyPaint.VueModeles
         
         public void HandlePreviewMouseUp(Point mousePos)
         {
+            LastMousePos = mousePos;
             //this.isDragging = false;
             if (this.StrokeBeingDragged != null)
             {

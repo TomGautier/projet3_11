@@ -132,9 +132,7 @@ export class DrawingSessionManager {
             this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties);
            }
         console.log(doc);
-        for (const shape of doc.shapes){
-            this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties);
-           }
+
         this.socketService.emit(doc.shapes[0].imageId, SocketEvents.DuplicatedCutElements, doc);
 
     }
