@@ -22,6 +22,7 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
                 type: properties.type,
                 fillingColor: properties.fillingColor,
                 borderColor: properties.borderColor,
+                strokeType: properties.strokeType,
                 middlePointCoord: properties.middlePointCoord,
                 height: properties.height,
                 width: properties.width,

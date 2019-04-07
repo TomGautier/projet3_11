@@ -76,6 +76,9 @@ public class ClassEditingDialog extends DialogFragment {
                 })
                 .setNeutralButton(R.string.revertDefault, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        name = titleEdit.getText().toString();
+                        attributes = attributesEdit.getText().toString();
+                        methods = methodsEdit.getText().toString();
                         ImageEditingDialogManager.getInstance().onClassDialogPositiveClick(style, name, attributes, methods);
                         ImageEditingDialogManager.getInstance().onStyleDialogNegativeClick();
                     }

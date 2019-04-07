@@ -438,9 +438,9 @@ public class SocketManager  {
                         .put(CollabShapeProperties.MIDDLE_POINT_TAG, new JSONArray(shape.getProperties().getMiddlePointCoord()))
                         .put(CollabShapeProperties.HEIGHT_TAG, shape.getProperties().getHeight())
                         .put(CollabShapeProperties.WIDTH_TAG, shape.getProperties().getWidth())
-                        .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation())
-                        .put(CollabShapeProperties.ATTRIBUTES_TAG,shape.getProperties().getAttributes())
-                        .put(CollabShapeProperties.METHODS_TAG,shape.getProperties().getMethods())
+                        .put(CollabShapeProperties.ROTATION_TAG,shape.getProperties().getRotation())
+                        .put(CollabShapeProperties.ATTRIBUTES_TAG,new JSONArray(shape.getProperties().getAttributes()))
+                        .put(CollabShapeProperties.METHODS_TAG,new JSONArray(shape.getProperties().getMethods()))
                         .put(CollabShapeProperties.LABEL_TAG,shape.getProperties().getLabel())
                         .put(CollabShapeProperties.BORDER_TYPE_TAG,shape.getProperties().getBorderType());
             }
@@ -451,6 +451,8 @@ public class SocketManager  {
                     .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
             json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG, FetchManager.currentInstance.getUserUsername())
                     .put("shape", shapeJson);
+
+            System.out.println(json.toString());
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -492,8 +494,8 @@ public class SocketManager  {
                             .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                             .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
                             .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation())
-                            .put(CollabShapeProperties.ATTRIBUTES_TAG,shapes[i].getProperties().getAttributes())
-                            .put(CollabShapeProperties.METHODS_TAG,shapes[i].getProperties().getMethods())
+                            .put(CollabShapeProperties.ATTRIBUTES_TAG,new JSONArray(shapes[i].getProperties().getAttributes()))
+                            .put(CollabShapeProperties.METHODS_TAG,new JSONArray(shapes[i].getProperties().getMethods()))
                             .put(CollabShapeProperties.LABEL_TAG,shapes[i].getProperties().getLabel())
                             .put(CollabShapeProperties.BORDER_TYPE_TAG,shapes[i].getProperties().getBorderType());
                 }
@@ -503,6 +505,8 @@ public class SocketManager  {
                         .put(CollabShape.DRAWING_SESSION_TAG, shapes[i].getDrawingSessionId())
                         .put(CollabShape.AUTHOR_TAG, shapes[i].getAuthor())
                         .put(CollabShape.PROPERTIES_TAG, shapePropertiesJson);
+
+                //System.out.println("Drawing session id : " + shape.getDrawingSessionId());
 
                 if (shapeJson != null && shapePropertiesJson != null)
                     array.put(shapeJson);
@@ -551,8 +555,8 @@ public class SocketManager  {
                             .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                             .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
                             .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation())
-                            .put(CollabShapeProperties.ATTRIBUTES_TAG,shapes[i].getProperties().getAttributes())
-                            .put(CollabShapeProperties.METHODS_TAG,shapes[i].getProperties().getMethods())
+                            .put(CollabShapeProperties.ATTRIBUTES_TAG,new JSONArray(shapes[i].getProperties().getAttributes()))
+                            .put(CollabShapeProperties.METHODS_TAG,new JSONArray(shapes[i].getProperties().getMethods()))
                             .put(CollabShapeProperties.LABEL_TAG,shapes[i].getProperties().getLabel())
                             .put(CollabShapeProperties.BORDER_TYPE_TAG,shapes[i].getProperties().getBorderType());
                 }
@@ -610,8 +614,8 @@ public class SocketManager  {
                             .put(CollabShapeProperties.HEIGHT_TAG, shapes[i].getProperties().getHeight())
                             .put(CollabShapeProperties.WIDTH_TAG, shapes[i].getProperties().getWidth())
                             .put(CollabShapeProperties.ROTATION_TAG, shapes[i].getProperties().getRotation())
-                            .put(CollabShapeProperties.ATTRIBUTES_TAG,shapes[i].getProperties().getAttributes())
-                            .put(CollabShapeProperties.METHODS_TAG,shapes[i].getProperties().getMethods())
+                            .put(CollabShapeProperties.ATTRIBUTES_TAG,new JSONArray(shapes[i].getProperties().getAttributes()))
+                            .put(CollabShapeProperties.METHODS_TAG,new JSONArray(shapes[i].getProperties().getMethods()))
                             .put(CollabShapeProperties.LABEL_TAG,shapes[i].getProperties().getLabel())
                             .put(CollabShapeProperties.BORDER_TYPE_TAG,shapes[i].getProperties().getBorderType());
                 }
@@ -712,8 +716,8 @@ public class SocketManager  {
                         .put(CollabShapeProperties.HEIGHT_TAG, shape.getProperties().getHeight())
                         .put(CollabShapeProperties.WIDTH_TAG, shape.getProperties().getWidth())
                         .put(CollabShapeProperties.ROTATION_TAG, shape.getProperties().getRotation())
-                        .put(CollabShapeProperties.ATTRIBUTES_TAG,shape.getProperties().getAttributes())
-                        .put(CollabShapeProperties.METHODS_TAG,shape.getProperties().getMethods())
+                        .put(CollabShapeProperties.ATTRIBUTES_TAG,new JSONArray(shape.getProperties().getAttributes()))
+                        .put(CollabShapeProperties.METHODS_TAG,new JSONArray(shape.getProperties().getMethods()))
                         .put(CollabShapeProperties.LABEL_TAG,shape.getProperties().getLabel())
                         .put(CollabShapeProperties.BORDER_TYPE_TAG,shape.getProperties().getBorderType());
 

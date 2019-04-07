@@ -281,11 +281,11 @@ public abstract class GenericShape {
         return 0;
     }
 
-    public String getAttributes(){
-        return "";
+    public ArrayList<String> getAttributes(){
+        return new ArrayList<>();
     }
-    public String getMethods(){
-        return "";
+    public ArrayList<String> getMethods(){
+        return new ArrayList<>();
     }
     public String getLabel() {return ""; }
     public String getBorderType() {return "";}

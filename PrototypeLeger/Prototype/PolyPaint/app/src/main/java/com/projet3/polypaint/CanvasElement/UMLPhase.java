@@ -14,13 +14,9 @@ public class UMLPhase extends GenericTextShape {
 
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height, style,angle);
-        this.width = width;
-        this.height = height;
     }
     private UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
         super(id, x, y, width, height, style, contents,angle);
-        this.width = width;
-        this.height = height;
     }
 
     @Override
@@ -61,16 +57,5 @@ public class UMLPhase extends GenericTextShape {
 
     @Override
     public String getType() { return TYPE; }
-    @Override
-    public void setAnchorPoints() {
-        //no anchor points for connectionForms
-    }
-    @Override
-    public void drawAnchorPoints(Canvas canvas){
-        //no anchor points
-    }
-    @Override
-    public void rotateAnchorPoints(){
-        //no anchor points
-    }
+
 }

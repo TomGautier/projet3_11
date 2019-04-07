@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public class ImageEditingDialogManager {
     public interface ImageEditingDialogSubscriber {
-        void onTextDialogPositiveResponse(String contents);
+        void onTextDialogPositiveResponse(String contents, PaintStyle style);
         void onTextDialogNegativeResponse();
         void onStyleDialogPositiveResponse(PaintStyle style);
         void onStyleDialogNegativeResponse();
-        void onClassDialogPositiveResponse(String name, String attributes, String methods);
+        void onClassDialogPositiveResponse(String name, String attributes, String methods, PaintStyle style);
     }
 
     private static ImageEditingDialogManager instance = null;
@@ -70,19 +70,19 @@ public class ImageEditingDialogManager {
 
     void onDialogPositiveClick(PaintStyle style, String contents) {
         for (ImageEditingDialogSubscriber s : subscribers) {
-            if (style != null)
-                s.onStyleDialogPositiveResponse(style);
-            if (contents != null && !contents.isEmpty())
-                s.onTextDialogPositiveResponse(contents);
+            if (contents != null && !contents.isEmpty() && style != null)
+                s.onTextDialogPositiveResponse(contents, style);
         }
     }
     void onClassDialogPositiveClick(PaintStyle style, String name, String attributes, String methods) {
         for (ImageEditingDialogSubscriber s : subscribers) {
-            if (style != null)
-                s.onStyleDialogPositiveResponse(style);
-            if (name != null && !name.isEmpty())
-                s.onClassDialogPositiveResponse(name, attributes, methods);
+            if (name != null && !name.isEmpty() && style != null)
+                s.onClassDialogPositiveResponse(name, attributes, methods, style);
         }
+    }
+    void onStyleDialogPositiveClick(PaintStyle style) {
+        for (ImageEditingDialogSubscriber s : subscribers)
+            s.onStyleDialogPositiveResponse(style);
     }
     void onStyleDialogNegativeClick() {
         for (ImageEditingDialogSubscriber s : subscribers)

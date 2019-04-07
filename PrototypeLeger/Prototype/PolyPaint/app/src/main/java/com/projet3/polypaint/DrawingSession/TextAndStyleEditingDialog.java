@@ -55,7 +55,7 @@ public class TextAndStyleEditingDialog extends DialogFragment {
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String contents = editText.getText().toString();
+                        contents = editText.getText().toString();
                         modifyCurrentStyle();
                         ImageEditingDialogManager.getInstance().onDialogPositiveClick(style, contents);
 
@@ -68,6 +68,7 @@ public class TextAndStyleEditingDialog extends DialogFragment {
                 })
                 .setNeutralButton(R.string.revertDefault, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        contents = editText.getText().toString();
                         ImageEditingDialogManager.getInstance().onDialogPositiveClick(style, contents);
                         ImageEditingDialogManager.getInstance().onStyleDialogNegativeClick();
                     }

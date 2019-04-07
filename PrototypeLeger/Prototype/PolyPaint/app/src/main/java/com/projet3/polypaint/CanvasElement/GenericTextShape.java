@@ -6,12 +6,12 @@ public abstract class GenericTextShape extends GenericShape {
     protected String text = "";
 
     public GenericTextShape(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
-        super(id, x, y, width, height, style, angle);
+        super(id, x, y, width,  Math.max(FONT_SIZE, height), style, angle);
         text = "";
         adjustWidthToText();
     }
     protected GenericTextShape(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
-        super(id, x, y, width, height, style, angle);
+        super(id, x, y, width,  Math.max(FONT_SIZE, height), style, angle);
         text = contents;
         adjustWidthToText();
     }

@@ -97,6 +97,7 @@ export class DrawingSessionManager {
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public modifyElement(doc: any) {
+        console.log(doc.shapes);
         for (const shape of doc.shapes){
             this.drawingSessionService.modifyElement(shape);
         }
