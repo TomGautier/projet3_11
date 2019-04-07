@@ -12,7 +12,6 @@ export class ImageController implements ImageControllerInterface {
     
     public constructor(
         @inject(TYPES.ImageServiceInterface) private imageService: ImageService,
-        @inject(TYPES.DrawingSessionManager) private drawingSessionManager: DrawingSessionManager,
         @inject(TYPES.UserManager) private userManager: UserManager
     ) { }
 
