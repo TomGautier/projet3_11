@@ -187,6 +187,7 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateBack { get { return new RelayCommand(OnNavigateBack, () => { return true; }); } }
         public ICommand NavigateGallery { get { return new RelayCommand(OnNavigateGallery, () => { return true; }); } }
         public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
+        public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
 
         private void OnNavigateLogin()
         {
@@ -213,6 +214,11 @@ namespace PolyPaint.VueModeles
             JoinDrawSession(newDrawingId);
         }
 
+        private void OnNavigateForgotPwd()
+        {
+            SwitchView = 6;
+        }
+
         private void OnNavigateBack()
         {
             SwitchView = previousView;
@@ -228,6 +234,19 @@ namespace PolyPaint.VueModeles
             }
             ChatManager.Connect();
             SwitchView = 3;
+        }
+        public async void RequestPwd(string email)
+        {
+            await networkManager.RequestPwdAsync(Username, email);
+        }
+
+        public async void NewPassword(string oldPassword, string newPassword)
+        {
+            {
+                SessionId = await networkManager.ForgotPWDAsync(Username, oldPassword, newPassword);
+                ChatManager.Connect();
+                SwitchView = 3;
+            }
         }
 
         public async void Signup(string password)
@@ -263,8 +282,8 @@ namespace PolyPaint.VueModeles
                 {
                     //TODO : Load default canvas
                 }
-                SwitchView = 5;
             });
+            SwitchView = 5;
         }
 
         public async void LoadGallery(string galleryType)

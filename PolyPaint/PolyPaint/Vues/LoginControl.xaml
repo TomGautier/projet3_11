@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PolyPaint.Vues"
              mc:Ignorable="d" 
-             d:DesignHeight="80" d:DesignWidth="300">
+             d:DesignHeight="250" d:DesignWidth="300">
     <StackPanel>
         <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
         <Grid>
@@ -24,6 +24,7 @@
             <Label Grid.Column="0" Content="Password : "/>
             <PasswordBox Grid.Column="1" Name="passwordBox" VerticalContentAlignment="Center"/>
         </Grid>
-        <Button Content="Login" Name="loginButton" Click="LoginButton_Click" IsDefault="True"/>
+        <Button  Margin="6" Content="Login" Name="loginButton" Click="LoginButton_Click" IsDefault="True"/>
+        <Button  Margin="6" Content="Forgot Password?" Command="{Binding NavigateForgotPWD}"/>
     </StackPanel>
 </UserControl>
