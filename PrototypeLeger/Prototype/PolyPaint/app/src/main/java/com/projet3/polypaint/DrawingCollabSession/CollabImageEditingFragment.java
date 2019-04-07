@@ -251,8 +251,13 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     protected GenericShape addShape(int posX, int posY) {
         currentShape = createCollabShape(posX,posY);
-        isEditingNewShape = true;
-        currentShape.showEditingDialog(getFragmentManager());
+        
+        if(currentShape.getProperties().getType() == "Arrow")
+            SocketManager.currentInstance.addElement(currentShape);
+        else {
+            isEditingNewShape = true;
+            currentShape.showEditingDialog(getFragmentManager());
+        }
 
         return null;
     }
