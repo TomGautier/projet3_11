@@ -65,5 +65,12 @@ namespace PolyPaint.Utilitaires
 
             return await response.Content.ReadAsStringAsync();
         }
+
+        public async Task<string> LoadShapesAsync(string username, string sessionId, string imageId)
+        {
+            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/shapes/" + sessionId + "/" + username + "/" + imageId);
+
+            return await response.Content.ReadAsStringAsync();
+        }
     }
 }

@@ -14,6 +14,7 @@ using System.Linq;
 using System;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PolyPaint.VueModeles
 {
@@ -255,106 +256,68 @@ namespace PolyPaint.VueModeles
             SessionId = await networkManager.SignupAsync(Username, password);
             if (SessionId == "")
             {
-                MessageBox.Show("Wrong signup informations", "Error");
+                MessageBox.Show("Username already exists", "Error");
                 return;
             }
             SwitchView = 3;
         }
 
-        public bool JoinDrawSession(string joinningSessionID)
+        public void JoinNewDrawSession(string joinningImageID)
         {
-            if(GalleryItems == null)
+            SwitchView = 5;
+            var newFormat = new
             {
-                var newFormat = new
-                {
-                    sessionId = SessionId,
-                    username = Username,
-                    imageId = joinningSessionID
-                };
+                sessionId = SessionId,
+                username = Username,
+                imageId = joinningImageID
+            };
 
-                SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(newFormat));
+            SocketManager.JoinDrawingSession(joinningImageID);
+        }
 
-                SocketManager.Socket.On("JoinedDrawingSession", () => {
-                        //TODO : Load default canvas
-                });
-                SwitchView = 5;
-                return true;
-            }
-            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
-            //While we don't handle differently
-            if(info == null)
-            {
-                var newFormat = new
-                {
-                    sessionId = SessionId,
-                    username = Username,
-                    imageId = joinningSessionID
-                };
-
-                SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(newFormat));
-
-                SocketManager.Socket.On("JoinedDrawingSession", () => {
-                    if (info != null)
-                    {
-                        //TODO : Load canvas from GalleryItems 
-                    }
-                    else
-                    {
-                        //TODO : Load default canvas
-                    }
-                });
-                SwitchView = 5;
-                return true;
-            }
+        public async System.Threading.Tasks.Task<bool> JoinDrawSession(string joinningImageID)
+        {
+            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningImageID);
 
             if (info.protection != "")
                 return false;
 
+            SwitchView = 5;
             var format = new
             {
                 sessionId = SessionId,
                 username = Username,
-                imageId = joinningSessionID
+                imageId = joinningImageID
             };
 
-            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
+            SocketManager.JoinDrawingSession(joinningImageID);
 
-            SocketManager.Socket.On("JoinedDrawingSession", () => {
-                if(info != null)
-                {
-                    //TODO : Load canvas from GalleryItems 
-                }
-                else
-                {
-                    //TODO : Load default canvas
-                }
-            });
-            SwitchView = 5;
+            string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
+            LoadLocally(shapes); // TODO : Verify it works
             return true;
         }
 
-        public void JoinSecuredDrawSession(string joinningSessionID, string pwd)
+        public async void JoinSecuredDrawSession(string joinningImageID, string pwd)
         {
-            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningImageID);
             if (info.protection != pwd)
             {
                 MessageBox.Show("Wrong password", "Error");
                 return;
             }
+            SwitchView = 5;
 
             var format = new
             {
                 sessionId = SessionId,
                 username = Username,
-                imageId = joinningSessionID
+                imageId = joinningImageID
             };
+            
+            SocketManager.JoinDrawingSession(joinningImageID);
 
-            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
-
-            SocketManager.Socket.On("JoinedDrawingSession", () => {
-                    //TODO : Load canvas from GalleryItems 
-            });
-            SwitchView = 5;
+            string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
+            LoadLocally(shapes); // TODO : Verify it works
         }
 
         public void CreateNewSession(string visibility, string protection)
@@ -363,7 +326,7 @@ namespace PolyPaint.VueModeles
 
             networkManager.PostImage(Username, SessionId, newDrawingId, visibility, protection);
 
-            JoinDrawSession(newDrawingId);
+            JoinNewDrawSession(newDrawingId);
         }
 
         public async void LoadGallery(string galleryType)

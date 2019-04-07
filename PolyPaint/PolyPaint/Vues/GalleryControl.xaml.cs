@@ -31,10 +31,10 @@ namespace PolyPaint.Vues
             InitializeComponent();
         }
 
-        private void JoinDrawSession_Click(object sender, RoutedEventArgs e)
+        private async void JoinDrawSession_Click(object sender, RoutedEventArgs e)
         {
             string sessionID = ((Grid)((Button)sender).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
-            if (!((VueModele)DataContext).JoinDrawSession(sessionID))
+            if (!await ((VueModele)DataContext).JoinDrawSession(sessionID))
             {
                 ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().Last().Visibility = Visibility.Visible;
             }
@@ -43,7 +43,7 @@ namespace PolyPaint.Vues
         private void SecuredBtn_Click(object sender, RoutedEventArgs e)
         {
             string password = ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "PwdTextBox").Text;
-            string sessionID = ((Grid)((Grid)((Button)sender).Parent).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
+            string sessionID = ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().First().Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
             ((VueModele)DataContext).JoinSecuredDrawSession(sessionID, password);
         }
 
