@@ -46,6 +46,18 @@
                                 </Grid.RowDefinitions>
                                 <Image Grid.ColumnSpan="3" Grid.Row="0" Source="{Binding thumbnail, Converter={StaticResource Base64ImageConverter}}"/>
                                 <Label Grid.Column="0" Grid.Row="1" Content="{Binding author}"/>
+                                <Label>
+                                    <Label.Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Content" Value="🔒"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding protection}" Value="">
+                                                    <Setter Property="Content" Value=""/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
                                 <Button Grid.Column="2" Grid.Row="1" Content="Joindre" Name="JoinDrawSession" Click="JoinDrawSession_Click"/>
                                 <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
                             </Grid>
@@ -59,7 +71,7 @@
                                     <RowDefinition/>
                                 </Grid.RowDefinitions>
                                 <Label Grid.Column="0" Grid.Row="0" Content="Password"/>
-                                <TextBox Name="PwdTextBox" Grid.Column="1" Grid.Row="0"/>
+                                <TextBox Name="PwdTextBox" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center"/>
                                 <Button Name="SecuredBtn" Grid.Row="1" Grid.ColumnSpan="2" Content="Join" Click="SecuredBtn_Click"/>
                             </Grid>
                         </StackPanel>
