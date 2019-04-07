@@ -71,12 +71,12 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonUnstack;
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
-    protected final int DEFAULT_CANVAS_WIDTH = 1500;
-    protected final int DEFAULT_CANVAS_HEIGHT = 1000;
+    protected final int DEFAULT_CANVAS_WIDTH = 1727;
+    protected final int DEFAULT_CANVAS_HEIGHT = 1185;
     protected final int CANVAS_BACKGROUND_PADDING = 75;
     protected enum Mode{selection, lasso, creation, move, rotate}
-    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm, Phase, Comment}
-    public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
+    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, Text, Arrow, Phase, Comment}
+    public enum ConnectionFormType{Aggregation, Composition, Inheritance, Bidirectional, Line, Unidirectional}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
     protected final String ADD_ACTION = "ADD";
@@ -116,6 +116,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected String id;
     protected RotationGestureDetector rotationDetector;
     protected GenericShape rotatingShape = null;
+    protected int refreshCpt = 0;
 
     public ImageEditingFragment() {}
     @Override
@@ -213,7 +214,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.text_box);
+                setShapeType(ShapeType.Text);
             }
         });
 
@@ -228,20 +229,29 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
                             case R.id.connectionFormAgregation:
-                                setConnectionFormType(ConnectionFormType.Agregation);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setConnectionFormType(ConnectionFormType.Aggregation);
+                                setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormInheritance:
                                 setConnectionFormType(ConnectionFormType.Inheritance);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormBidirectional:
                                 setConnectionFormType(ConnectionFormType.Bidirectional);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormComposition:
                                 setConnectionFormType(ConnectionFormType.Composition);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
+                                break;
+                            case R.id.connectionFormLine:
+                                setConnectionFormType(ConnectionFormType.Line);
+                                setShapeType(ShapeType.Arrow);
+                                break;
+                            case R.id.connectionFormUnidirectional:
+                                setConnectionFormType(ConnectionFormType.Unidirectional);
+                                setShapeType(ShapeType.Arrow);
+                                break;
                         }
                         return true;
                     }
@@ -382,7 +392,10 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                updateCanvas();
+                if (refreshCpt++ >= 1){
+                    updateCanvas();
+                    refreshCpt = 0;
+                }
 
                 boolean continueListening = false;
 
@@ -425,7 +438,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
                 drawAllShapes();
                 view.invalidate();
-
                 return continueListening;
             }
         });
@@ -574,13 +586,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         GenericShape.getDefaultHeight(currentShapeType),defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
-            case text_box :
+            case Text :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
-            case ConnectionForm:
+            case Arrow:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
                         String.format("#%06x", ContextCompat.getColor(getActivity(),
                                 R.color.DefaultConnectionFormFillingColor)),String.format("#%06x",ContextCompat.getColor(getActivity(),
@@ -610,9 +622,11 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     //width = 1808, height = 1264
     protected void updateCanvas() {
+        bitmap.recycle();
         bitmap = Bitmap.createBitmap(iView.getLayoutParams().width, iView.getLayoutParams().height, Bitmap.Config.ARGB_8888);
         iView.setImageBitmap(bitmap);
-        canvas = new Canvas(bitmap);
+        //canvas = new Canvas(bitmap);
+        canvas.setBitmap(bitmap);
 
     }
     protected void initializeCanvas(){
@@ -708,6 +722,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
+
                 }
                 break;
             case MotionEvent.ACTION_UP:

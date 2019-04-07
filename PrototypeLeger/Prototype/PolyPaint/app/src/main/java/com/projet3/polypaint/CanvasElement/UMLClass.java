@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class UMLClass extends GenericTextShape {
-    protected final static int DEFAULT_WIDTH = 180;
-    protected final static int DEFAULT_HEIGHT = 150;
+    protected final static int DEFAULT_WIDTH = 124;
+    protected final static int DEFAULT_HEIGHT = 248;
 
     private ArrayList<String> attributes;
     private ArrayList<String> methods;

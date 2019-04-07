@@ -7,8 +7,8 @@ import android.graphics.Path;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLPhase extends GenericTextShape {
-    protected final static int DEFAULT_WIDTH = 400;
-    protected final static int DEFAULT_HEIGHT = 300;
+    protected final static int DEFAULT_WIDTH = 451;
+    protected final static int DEFAULT_HEIGHT = 350;
 
     public static final String TYPE = "Phase";
 

@@ -94,7 +94,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                updateCanvas();
+                if (refreshCpt++ >= 1){
+                    updateCanvas();
+                    refreshCpt = 0;
+                }
 
                 boolean continueListening = false;
 
@@ -106,7 +109,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                    //!client.getSelectedShapes().isEmpty() && checkEditButton(posX, posY)) { /*Do nothing*/ }
                 // Check if canvas is being resized
                 //if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
-                   // return resizeCanvas(event);
+                  //  return resizeCanvas(event);
                 switch (currentMode) {
                     case selection:
                         if (canResize() && client.getSelectedShapes().get(0).canResize(posX,posY)){
@@ -184,7 +187,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private boolean isFreeToSelect(String id){
         for (GenericShape shape : client.getSelectedShapes()){
             if (shape.getId().equals(id))
-                return false;
+                return true;
         }
         for (Player player : players){
             for (GenericShape shape : player.getSelectedShapes()){
@@ -291,9 +294,9 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         else if (genClass.equals(UMLArtefact.class))
             return ShapeType.Artefact.toString();
         else if (genClass.equals(TextBox.class))
-            return ShapeType.text_box.toString();
+            return ShapeType.Text.toString();
         else if (genClass.equals(ConnectionForm.class))
-            return ShapeType.ConnectionForm.toString();
+            return ShapeType.Arrow.toString();
         else if (genClass.equals(UMLPhase.class))
             return ShapeType.Phase.toString();
         else if (genClass.equals(Comment.class))
@@ -305,7 +308,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         String type = findGenShapeType(shape.getClass());
         CollabShape collabShape;
         CollabShapeProperties properties;
-        if (type.equals(ShapeType.ConnectionForm.toString())){
+        if (type.equals(ShapeType.Arrow.toString())){
             ConnectionForm connection  = (ConnectionForm)shape;
             //connection.removeConnection(0);
             //connection.removeConnection(1);
@@ -317,7 +320,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         else {
             //String hexColor = String.format("#%06X", (0xFFFFFF & shape.getFillingColor()));
             properties = new CollabShapeProperties(type, shape.getFillingColor(),
-                    shape.getBorderColor(),shape.getAttributes(), shape.getMethods(),"","", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
+                    shape.getBorderColor(),shape.getAttributes(), shape.getMethods(),shape.getLabel(),shape.getBorderType(),
+                    shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
         }
 
         collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
@@ -327,7 +331,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         CollabShapeProperties properties;
         id = client.getName() + "_" + Integer.toString(idCpt++);
         String hexColor;
-        if(currentShapeType.toString().equals(ShapeType.ConnectionForm.toString())){
+        if(currentShapeType.toString().equals(ShapeType.Arrow.toString())){
             int fillingColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormFillingColor,null);
             int borderColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormBorderColor,null);
             String hexFillingColor = String.format("#%06X", (0xFFFFFF & fillingColor));
@@ -463,6 +467,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                     //SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
+                    //updateCanvas();
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -514,7 +519,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     public void onNewUserJoined(String[] players) {
         for (int i =  0; i < players.length; i++){
             if (isNewPlayer(players[i]))
-                this.players.add(new Player(players[i],++selectedColorCpt));
+                this.players.add(new Player(players[i],++selectedColorCpt % 4));
         }
     }
 
@@ -524,8 +529,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             @Override
             public void run() {
                 ViewGroup.LayoutParams params = iView.getLayoutParams();
-                params.width = width;
-                params.height = height;
+                params.width = checkCanvasWidth(width) ? width : DEFAULT_CANVAS_WIDTH;
+                params.height = checkCanvasHeight(height) ? height : DEFAULT_CANVAS_HEIGHT;
                 iView.setLayoutParams(params);
                 updateCanvas();
                 drawAllShapes();
@@ -867,7 +872,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                         collabShape.getProperties().getMiddlePointCoord()[1], collabShape.getProperties().getWidth(),
                         collabShape.getProperties().getHeight(), defaultStyle,collabShape.getProperties().getRotation());
                 break;
-            case "ConnectionForm":
+            case "Arrow":
                 CollabConnectionProperties properties = ((CollabConnectionProperties)collabShape.getProperties());
                 genShape = new ConnectionForm(collabShape.getId(),properties.getConnectionType(),properties.getFillingColor(),
                         properties.getBorderColor(), properties.getThick(), properties.getVerticesX(), properties.getVerticesY());
@@ -883,7 +888,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
 
                 }
                 break;
-            case "text_box":
+            case "Text":
                 genShape = new TextBox(collabShape.getId(),collabShape.getProperties().getMiddlePointCoord()[0],
                         collabShape.getProperties().getMiddlePointCoord()[1],collabShape.getProperties().getWidth(),collabShape.getProperties().getHeight(),
                         defaultStyle, collabShape.getProperties().getRotation());
