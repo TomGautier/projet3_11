@@ -44,16 +44,15 @@ export class DrawingSessionManager {
 
     public joinSession(socketId: string, doc : any) {
         this.socketService.joinRoom(doc.imageId, socketId);
-        this.newUserJoined(doc);     
+        this.newUserJoined(doc);    
+        this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession); 
     }
 
     public newUserJoined(doc : any) {
         if (this.connectedUsers.get(doc.imageId) == undefined){
             this.connectedUsers.set(doc.imageId, new Array<String>());
         }
-
         var users = this.connectedUsers.get(doc.imageId) as String[];
-        
         if (users !== undefined){
             if (doc.username != null && users.indexOf(doc.username) == -1){
                 users.push(doc.username);
@@ -69,6 +68,7 @@ export class DrawingSessionManager {
             console.log(value, key);
             map.delete(key);
         });
+
         this.socketService.leaveRoom(doc.imageId, socketId);
 
         var users = this.connectedUsers.get(doc.imageId) as String[];

@@ -8,6 +8,6 @@
              d:DesignHeight="200" d:DesignWidth="100">
     <StackPanel>
         <Button Content="Galleries" Margin="5" Command="{Binding NavigateGallery}"/>
-        <Button Content="Nouvelle image" Margin="5" Command="{Binding NavigateDrawSession}"/>
+        <Button Content="Nouvelle image" Margin="5" Command="{Binding NavigateNewSession}"/>
     </StackPanel>
 </UserControl>
