@@ -56,6 +56,25 @@ namespace PolyPaint.Utilitaires
             return await response.Content.ReadAsStringAsync();
         }
 
+        public async Task<string> LoadChannelAsync(string username, string sessionId)
+        {
+            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/chat/" + sessionId + "/" + username);
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+        public async void CreateChannelAsync(string username, string sessionId, string conversationName)
+        {
+            var bodyTemplate = new
+            {
+                sessionId = sessionId,
+                username = username,
+                conversationName = conversationName
+            };
+            var body = new StringContent(JsonConvert.SerializeObject(bodyTemplate), Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("http://" + ipAddress + ":3000/api/chat/" + sessionId + "/" + username + "/" + conversationName, body);
+        }
+
         public void PostImage(string username, string sessionId, string imageId, string visibility, string protection)
         {
             var bodyTemplate = new

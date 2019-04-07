@@ -391,6 +391,40 @@ namespace PolyPaint.VueModeles
             return userItems.OrderByDescending(x => x.ConnectionStatus).ToList(); ;
         }
 
+        private class channelTemplate
+        {
+            public Object participants;
+            public string name;
+        }
+
+        public async void LoadChannelAsync()
+        {
+            string channelList = await networkManager.LoadChannelAsync(Username, SessionId);
+
+            List<channelTemplate> channels = JsonConvert.DeserializeObject<List<channelTemplate>>(channelList);
+
+            ChatManager.RoomsID.Clear();
+            foreach (var channel in channels)
+            {
+                ChatManager.RoomsID.Add(channel.name);
+            }
+        }
+
+        public void addChannelAsync()
+        {
+            try
+            {
+                networkManager.CreateChannelAsync(Username, SessionId, ChatManager.NewRoomID);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Chanel already exists", "Error");
+                return;
+            }
+            ChatManager.RoomsID.Add(ChatManager.NewRoomID);
+            ChatManager.RoomID = ChatManager.NewRoomID;
+        }
+
         /// <summary>
         /// Constructeur de VueModele
         /// On récupère certaines données initiales du modèle et on construit les commandes
