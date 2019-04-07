@@ -16,6 +16,7 @@ const TYPES =  {
         UserControllerInterface:Symbol.for("UserControllerInterface"),
         UserServiceInterface:Symbol.for("UserServiceInterface"),
         DrawingSessionServiceInterface:Symbol.for("DrawingSessionServiceInterface"),
+        DrawingSessionControllerInterface:Symbol.for("DrawingSessionControllerInterface"),
         
         DateControllerInterface: Symbol.for("DateControllerInterface"),
         IndexControllerInterface: Symbol.for("IndexControllerInterface"),

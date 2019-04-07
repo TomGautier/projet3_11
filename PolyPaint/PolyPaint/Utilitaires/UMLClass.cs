@@ -14,8 +14,8 @@ namespace PolyPaint.Utilitaires
 {
     class UMLClass : Form
     {
-        public const int DEFAULT_HEIGHT = 220;
-        public const int DEFAULT_WIDTH = 110;
+        public const int DEFAULT_HEIGHT = 110;//220;
+        public const int DEFAULT_WIDTH = 55;//110;
         public const string TYPE = "UmlClass";
 
         public string Name { get; set; }
@@ -29,8 +29,8 @@ namespace PolyPaint.Utilitaires
             
         {
             this.Center = new Point(pts[0].X,pts[0].Y);
-            this.Height = 220;
-            this.Width = 110;
+            this.Height = 110;
+            this.Width = 55;
             MakeShape();
             this.Name = "";
             this.Methods = new List<String>();

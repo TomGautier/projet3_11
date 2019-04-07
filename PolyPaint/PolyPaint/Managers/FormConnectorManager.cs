@@ -97,8 +97,10 @@ namespace PolyPaint.Managers
                     this.Arrows[this.Arrows.Count - 1].StylusPoints.Add(p);
                     this.Shape2 = shape;
                     this.Index2 = index;
-
-                    this.Shape1.Arrow.Add(this.Arrows[this.Arrows.Count - 1]);
+                    if (this.Shape1 != null)
+                    {
+                        this.Shape1.Arrow.Add(this.Arrows[this.Arrows.Count - 1]);
+                    }
                     this.Shape2.Arrow.Add(this.Arrows[this.Arrows.Count - 1]);
                     this.Arrows[this.Arrows.Count - 1].Shape1 = this.Shape1;
                     this.Arrows[this.Arrows.Count - 1].Shape2 = this.Shape2;

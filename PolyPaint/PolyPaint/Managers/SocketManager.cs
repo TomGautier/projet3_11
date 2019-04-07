@@ -16,9 +16,9 @@ namespace PolyPaint.Managers
 {
     class SocketManager
     {
-        private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.18.25";
+        private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.9.112";//"127.0.0.1";
         private const string SERVER_PORT = "3000";
-        public const double S_PROP = 0.5d;
+        public const double S_PROP = 2.256d;
         public Socket Socket;
         public int Compteur { get; set; }
 
@@ -49,7 +49,7 @@ namespace PolyPaint.Managers
             this.SessionID = sessionID;
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,              
             });
             Socket.Emit("JoinDrawingSession", parameters);
@@ -57,6 +57,7 @@ namespace PolyPaint.Managers
         }
         public void UnStackElement(Shape shape_)
         {
+            ConvertToMobile(shape_);
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 sessionId = this.SessionID,
@@ -71,7 +72,7 @@ namespace PolyPaint.Managers
             {
                 sessionId = this.SessionID,
                 username = this.UserName,
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 elementId = id_
             });
             this.Socket.Emit("StackElement",parameters);
@@ -80,19 +81,21 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
             });
             this.Socket.Emit("ResetCanvas", parameters);
         }
-        public void ResizeCanvas(double width, double height)
+        public void ResizeCanvas(int width, int height)
         {
-            double[] size = new double[2] { width*S_PROP, height*S_PROP };
+            int[] size = new int[2] {(int) (width*S_PROP), (int)(height*S_PROP) };
 
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 username = this.UserName,
-                drawingSessionId = this.SessionID,
-                newCanvasDimensions = size
+                imageId = this.SessionID,
+                x = size[0],
+                y = size[1]
+
             });
             this.Socket.Emit("ResizeCanvas", parameters);
         }
@@ -100,7 +103,7 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,
                 oldElementIds = oldSelection,
                 newElementIds = newSelection
@@ -110,7 +113,7 @@ namespace PolyPaint.Managers
         public void AddElement(Shape shape_)
         {
             ConvertToMobile(shape_);
-            shape_.id = this.UserName + "_" + this.Compteur.ToString();
+            shape_.id = this.UserName + "_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString();//this.Compteur.ToString();
             shape_.author = this.UserName;
 
             string parameters = new JavaScriptSerializer().Serialize(new
@@ -121,7 +124,7 @@ namespace PolyPaint.Managers
               /*  shape = new
                 {
                     id = this.UserName + "_" + this.Compteur.ToString(),
-                    drawingSessionId = this.SessionID,
+                    imageId = this.SessionID,
                     author = this.UserName,
                     properties = new
                     {
@@ -149,7 +152,7 @@ namespace PolyPaint.Managers
 
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 elementIds = idList,
                 username = this.UserName
             });
@@ -161,7 +164,7 @@ namespace PolyPaint.Managers
         {
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 elementIds = idList,
                 username = this.UserName
             });
@@ -173,7 +176,7 @@ namespace PolyPaint.Managers
             foreach (Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,
                 shapes = shapes_
             });
@@ -185,7 +188,7 @@ namespace PolyPaint.Managers
             foreach(Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId= this.SessionID,
                 username = this.UserName,
                 shapes = shapes_
             });
@@ -196,7 +199,7 @@ namespace PolyPaint.Managers
             foreach (Shape s in shapes_) { ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
-                drawingSessionId = this.SessionID,
+                imageId = this.SessionID,
                 username = this.UserName,
                 shapes = shapes_
             });
@@ -207,7 +210,7 @@ namespace PolyPaint.Managers
             if (shape.properties.type == "Arrow")
             {
                 shape.properties.height = (int)(shape.properties.height * S_PROP);
-                shape.properties.width = (int)(shape.properties.width * S_PROP);
+                //hape.properties.width = (int)(shape.properties.height * S_PROP);
                 for(int i = 0; i< shape.properties.pointsX.Length; i++)
                 {
                     shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * S_PROP);

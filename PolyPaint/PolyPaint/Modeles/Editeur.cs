@@ -224,6 +224,16 @@ namespace PolyPaint.Modeles
                 this.AddForm(shape, false);
             }
         }
+        public void LoadFromServer(string json)
+        {
+            this.ResetCanvas();
+            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            foreach (Shape shape in datalist)
+            {
+                ConvertToHC(shape);
+                this.AddForm(shape, false);
+            }
+        }
         public void HandleChangeSelection(StrokeCollection strokes)
         {
             //ProprieteModifiee("Test");
@@ -699,6 +709,9 @@ namespace PolyPaint.Modeles
                 {
                     if (!this.IsOffline)
                     {
+                        foreach (Stroke f in (traits.Where(x => (x as Form).SelectionColor == this.PlayerManager.GetPlayer(shape.author).Color))){
+                            (f as Form).IsSelectedByOther = false;
+                        }
                         (traits.Last() as Form).SelectionColor = this.PlayerManager.GetPlayer(shape.author).Color;
                         (traits.Last() as Form).IsSelectedByOther = true;
                     }
@@ -1116,8 +1129,10 @@ namespace PolyPaint.Modeles
             this.SocketManager.Socket.On("ResizedCanvas", (data) =>
             {
                 JObject result = (data as JObject);
-                double[] dimensions = new double[2];
-                dimensions = result["newCanvasDimensions"].ToObject<double[]>();
+                int[] dimensions = new int[2];
+                dimensions[0] = result["x"].ToObject<int>();
+                dimensions[1] = result["y"].ToObject<int>();
+
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
@@ -1232,7 +1247,10 @@ namespace PolyPaint.Modeles
                 JObject result = (data as JObject);
                 String username = result["username"].ToObject<String>();
                 Shape shape = result["shape"].ToObject<Shape>();
-                //ConvertToHC(shape);
+                //if (username != this.SocketManager.UserName)
+                //{
+                    ConvertToHC(shape);
+                //}
                 StylusPointCollection pts = new StylusPointCollection();
                 pts.Add(new StylusPoint(0, 0));
                 Form toUnstack = new Form(pts);
@@ -1279,7 +1297,8 @@ namespace PolyPaint.Modeles
                     {
                         foreach (Shape s in shapes)
                         {
-                            ConvertToHC(s);
+                                ConvertToHC(s);
+
                             for (int i = 0; i < traits.Count; i++)
                             {
                                 if ((traits[i] as Form).Id == s.id)

@@ -8,6 +8,7 @@ import { UserService } from "./user.service";
 import User from "../schemas/user"
 import { ConnectionServiceInterface } from "../interfaces";
 import * as uuid from 'node-uuid';
+import * as nodemailer from "nodemailer";
 import user from "../schemas/user";
 import { UserManager } from "./user.manager";
 
@@ -42,10 +43,56 @@ export class ConnectionService implements ConnectionServiceInterface {
             if (err.name === 'MongoError' && err.code === 11000) {
                 // Duplicate username
                 Logger.warn('LoginService', `The username ${username} already exists.`);
-                return false;
+                return '';
             }    
         }
-        return createdUser ? true : false;
+        const sessionId = uuid.v1();
+        this.userManager.addUser(sessionId, username);
+        return sessionId;
+    }
+
+    public async onForgotPassword(username: string, email: string) {
+        // generate new random password
+        const newPwd = Math.random().toString(36).substr(2, 8);
+        // change password in database
+        await this.userService.updatePassword(username, newPwd);
+        let account = await nodemailer.createTestAccount()
+        const smtpTransport = nodemailer.createTransport({  
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: 'polypaint11@gmail.com',
+                pass: 'Poly11Paint!'
+            },
+            logger: true,
+            debug: false
+        }); 
+
+        const mailOptions = {  
+            from: 'polypaint11@gmail.com',
+            to: email,
+            subject: 'PolyPaint Password Reset',  
+            text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
+                +  'Your new password is: ' + newPwd + '\n\n' + 
+                'Please return on the application to reset your password.' 
+        };  
+        let info = await smtpTransport.sendMail(mailOptions, function(err) {                 
+            return {status : 'success', message : 'An e-mail has been sent to ' + email + ' with further instructions.'};
+        });  
+
+    }
+
+    public async onResetPassword(username: string, password: string, newPassword: string) {
+        const user = new User(await this.userService.find(username));
+        if (user.password === password) {
+            await this.userService.updatePassword(username, newPassword);
+
+            const sessionId = uuid.v1();
+            this.userManager.addUser(sessionId, username);
+            return sessionId;
+        }
+        return '';
     }
 
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {

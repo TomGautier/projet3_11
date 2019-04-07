@@ -48,6 +48,16 @@ export class UserService {
         return userStatuses;
     }
 
+    public async updatePassword(username: string, newPassword: string): Promise<{}> {
+        const doc = {
+            username: username,
+            password: newPassword,
+        }
+        
+        return await this.databaseService.updateOne(User, doc)
+            .catch(err => {throw err;});
+    }
+
     public async create(user: any): Promise<{}> {
         return await this.databaseService.create(User, user)
             .catch(err => {throw err;});

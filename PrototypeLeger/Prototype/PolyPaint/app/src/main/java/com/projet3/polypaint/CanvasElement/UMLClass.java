@@ -112,21 +112,23 @@ public class UMLClass extends GenericTextShape {
     }
 
     public void setAttributes(String attributes) {
-        if (attributes.length() != 0) {
+        if (attributes != null && !attributes.isEmpty()) {
             String[] a = attributes.split("\n");
             this.attributes = new ArrayList<>();
             this.attributes.addAll(Arrays.asList(a));
             adjustHeightToText();
-        } else this.attributes = new ArrayList<>();
+        }
+        else this.attributes = new ArrayList<>();
     }
 
     public void setMethods(String methods) {
-        if (methods.length() != 0) {
+        if (methods != null && !methods.isEmpty()) {
             String[] m = methods.split("\n");
             this.methods = new ArrayList<>();
             this.methods.addAll(Arrays.asList(m));
             adjustHeightToText();
-        } else this.methods = new ArrayList<>();
+        }
+        else this.methods = new ArrayList<>();
     }
 
     @Override

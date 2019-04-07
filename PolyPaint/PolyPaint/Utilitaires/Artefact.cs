@@ -15,8 +15,8 @@ namespace PolyPaint.Utilitaires
 {
     class Artefact : Form
     {
-        public const int DEFAULT_HEIGHT = 65;
-        public const int DEFAULT_WIDTH = 50;
+        public const int DEFAULT_HEIGHT = 33; //65;
+        public const int DEFAULT_WIDTH = 25;//50;
         public const string TYPE = "Artefact";
 
         public string Name { get; set; }
@@ -27,8 +27,8 @@ namespace PolyPaint.Utilitaires
 
         {
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 65;
-            this.Width = 50;
+            this.Height = 33;
+            this.Width = 25;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;

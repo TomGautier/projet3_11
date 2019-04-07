@@ -129,7 +129,6 @@ namespace PolyPaint.Managers
         public ChatManager()
         {
             RoomsID = new ObservableCollection<string>();
-            RoomsID.Add("generalRoom"); // TODO : Load from server
         }
         #endregion
 
