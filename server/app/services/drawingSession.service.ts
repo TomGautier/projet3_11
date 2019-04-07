@@ -12,11 +12,11 @@ export class DrawingSessionService implements DrawingSessionServiceInterface {
     constructor(@inject(TYPES.DatabaseService) private databaseService: DatabaseService) {
     }
 
-    public async addElement(id:string, drawingSessionId: string, username: string, properties: any): Promise<{}> {
+    public async addElement(id:string, imageId: string, username: string, properties: any): Promise<{}> {
         const shapeId = id//uuid.v1();
         const shape = new Shape({
             id: shapeId,
-            drawingSessionId: drawingSessionId,
+            imageId: imageId,
             author: username,
             properties: {
                 type: properties.type,
