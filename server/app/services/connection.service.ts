@@ -8,6 +8,7 @@ import { UserService } from "./user.service";
 import User from "../schemas/user"
 import { ConnectionServiceInterface } from "../interfaces";
 import * as uuid from 'node-uuid';
+import * as nodemailer from "nodemailer";
 import user from "../schemas/user";
 import { UserManager } from "./user.manager";
 
@@ -46,6 +47,53 @@ export class ConnectionService implements ConnectionServiceInterface {
             }    
         }
         return createdUser ? true : false;
+    }
+
+    public async onForgotPassword(username: string, email: string) {
+        // generate new random password
+        const newPwd = Math.random().toString(36).substr(2, 8);
+        
+        // change password in database
+        await this.userService.updatePassword(username, newPwd);
+        
+        let account = await nodemailer.createTestAccount()
+        // send email with new password
+        /*const smtpTransport = nodemailer.createTransport({  
+                host: account.smtp.host,
+                port: account.smtp.port,
+                secure: account.smtp.secure,
+                auth: {
+                    user: account.user,
+                    pass: account.pass
+                },
+                logger: true,
+                debug: false // include SMTP traffic in the logs
+          }); */
+        const smtpTransport = nodemailer.createTransport({  
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
+            auth: {
+                user: 'polypaint11@gmail.com',
+                pass: 'Poly11Paint!'
+            },
+            logger: true,
+            debug: false
+        }); 
+
+        const mailOptions = {  
+            from: 'polypaint11@gmail.com',
+            to: email,
+            subject: 'PolyPaint Password Reset',  
+            text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +  
+                +  'Your new password is ' + newPwd + '\n\n' + 
+                'Please return on the application to reset your password.' 
+        };  
+        let info = await smtpTransport.sendMail(mailOptions, function(err) {                 
+            console.log("Hi: "+ email);  
+            return {status : 'success', message : 'An e-mail has been sent to ' + email + ' with further instructions.'};
+        });  
+
     }
 
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {
