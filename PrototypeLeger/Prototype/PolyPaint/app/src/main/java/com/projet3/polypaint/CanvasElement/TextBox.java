@@ -8,7 +8,7 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class TextBox extends GenericTextShape {
 
-    public static final String TYPE = "Text";
+    public static final String TYPE = "text_box";
     protected static final int DEFAULT_WIDTH = 50;
     protected  static final int DEFAULT_HEIGHT = 50;
 

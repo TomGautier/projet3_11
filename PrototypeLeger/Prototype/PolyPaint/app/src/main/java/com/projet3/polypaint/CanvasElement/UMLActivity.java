@@ -10,7 +10,7 @@ public class UMLActivity extends GenericShape {
     protected final static int DEFAULT_WIDTH = 90;
     protected final static int DEFAULT_HEIGHT = 60;
 
-    public static final String TYPE = "UmlActivity";
+    public static final String TYPE = "Activity";
 
     public UMLActivity(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height, style, angle);

@@ -71,8 +71,8 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected Button buttonUnstack;
     protected ImageButton buttonRestore;
     protected ImageButton buttonBack;
-    protected final int DEFAULT_CANVAS_WIDTH = 1500;
-    protected final int DEFAULT_CANVAS_HEIGHT = 1000;
+    protected final int DEFAULT_CANVAS_WIDTH = 1727;
+    protected final int DEFAULT_CANVAS_HEIGHT = 1185;
     protected final int CANVAS_BACKGROUND_PADDING = 75;
     protected enum Mode{selection, lasso, creation, move, rotate}
     public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm, Phase, Comment}
@@ -116,6 +116,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected String id;
     protected RotationGestureDetector rotationDetector;
     protected GenericShape rotatingShape = null;
+    protected int refreshCpt = 0;
 
     public ImageEditingFragment() {}
     @Override
@@ -382,7 +383,10 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                updateCanvas();
+                if (refreshCpt++ >= 1){
+                    updateCanvas();
+                    refreshCpt = 0;
+                }
 
                 boolean continueListening = false;
 
@@ -425,7 +429,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
                 drawAllShapes();
                 view.invalidate();
-
                 return continueListening;
             }
         });
@@ -610,9 +613,11 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     //width = 1808, height = 1264
     protected void updateCanvas() {
+        bitmap.recycle();
         bitmap = Bitmap.createBitmap(iView.getLayoutParams().width, iView.getLayoutParams().height, Bitmap.Config.ARGB_8888);
         iView.setImageBitmap(bitmap);
-        canvas = new Canvas(bitmap);
+        //canvas = new Canvas(bitmap);
+        canvas.setBitmap(bitmap);
 
     }
     protected void initializeCanvas(){
@@ -708,6 +713,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
+
                 }
                 break;
             case MotionEvent.ACTION_UP:

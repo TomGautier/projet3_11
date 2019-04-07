@@ -94,7 +94,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         iView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                updateCanvas();
+                if (refreshCpt++ >= 1){
+                    updateCanvas();
+                    refreshCpt = 0;
+                }
 
                 boolean continueListening = false;
 
@@ -317,7 +320,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         else {
             //String hexColor = String.format("#%06X", (0xFFFFFF & shape.getFillingColor()));
             properties = new CollabShapeProperties(type, shape.getFillingColor(),
-                    shape.getBorderColor(),shape.getAttributes(), shape.getMethods(),"","", shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
+                    shape.getBorderColor(),shape.getAttributes(), shape.getMethods(),shape.getLabel(),shape.getBorderType(),
+                    shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
         }
 
         collabShape = new CollabShape(shape.getId(),drawingSessionId, client.getName(),properties);
@@ -463,6 +467,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                     //SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                     lastTouchPosX = posX;
                     lastTouchPosY = posY;
+                    //updateCanvas();
                 }
                 break;
             case MotionEvent.ACTION_UP:
@@ -514,7 +519,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     public void onNewUserJoined(String[] players) {
         for (int i =  0; i < players.length; i++){
             if (isNewPlayer(players[i]))
-                this.players.add(new Player(players[i],++selectedColorCpt));
+                this.players.add(new Player(players[i],++selectedColorCpt % 12));
         }
     }
 

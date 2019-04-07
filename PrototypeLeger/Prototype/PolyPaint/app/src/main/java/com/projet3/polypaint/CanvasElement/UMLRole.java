@@ -9,7 +9,7 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 public class UMLRole extends GenericShape {
     protected final static int DEFAULT_WIDTH = 60;
     protected final static int DEFAULT_HEIGHT = 90;
-    public static final String TYPE = "UmlRole";
+    public static final String TYPE = "Role";
     public UMLRole(String id,int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width,height, style, angle);
         //width = DEFAULT_WIDTH;

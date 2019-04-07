@@ -287,6 +287,8 @@ public abstract class GenericShape {
     public String getMethods(){
         return "";
     }
+    public String getLabel() {return ""; }
+    public String getBorderType() {return "";}
     public String getId() {
         return id;
     }
