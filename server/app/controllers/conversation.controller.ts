@@ -24,6 +24,9 @@ export class ConversationController implements ConversationControllerInterface {
                     { res.json(403); return; };
                 this.conversationService.getAllByUsername(req.params.username).then(conversations => {
                     res.json(conversations);
+                })
+                .catch(err => {
+                    res.json(400);
                 });
             });
 
@@ -38,6 +41,9 @@ export class ConversationController implements ConversationControllerInterface {
                     if (err.name === 'MongoError' && err.code === 11000) {
                         // Duplicate conv name
                         res.json(409);
+                    }
+                    else {
+                        res.json(400);
                     }
                 });
             });

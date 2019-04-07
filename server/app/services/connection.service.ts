@@ -9,7 +9,6 @@ import User from "../schemas/user"
 import { ConnectionServiceInterface } from "../interfaces";
 import * as uuid from 'node-uuid';
 import * as nodemailer from "nodemailer";
-import user from "../schemas/user";
 import { UserManager } from "./user.manager";
 
 @injectable()
@@ -56,7 +55,7 @@ export class ConnectionService implements ConnectionServiceInterface {
         const newPwd = Math.random().toString(36).substr(2, 8);
         // change password in database
         await this.userService.updatePassword(username, newPwd);
-        let account = await nodemailer.createTestAccount()
+        
         const smtpTransport = nodemailer.createTransport({  
             host: 'smtp.gmail.com',
             port: 465,
@@ -93,12 +92,5 @@ export class ConnectionService implements ConnectionServiceInterface {
             return sessionId;
         }
         return '';
-    }
-
-    public async onUserDisconnection(roomId: string, socketId:string, username: string) {
-        this.userManager.removeUser(username);
-        await this.userService.removeByUsername(username)
-//            .then(() => this.conversationManager.leaveConversation(roomId, socketId, username))
-            .catch(err => Logger.warn('LoginService', `This username doesn't exist : ${username}`));
     }
 }

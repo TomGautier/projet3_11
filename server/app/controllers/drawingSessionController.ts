@@ -28,7 +28,7 @@ export class DrawingSessionController implements DrawingSessionControllerInterfa
                         res.json(shapes);
                     })
                     .catch(err => {
-                        res.json({});
+                        res.json(400);
                     });
         });
 
@@ -43,7 +43,7 @@ export class DrawingSessionController implements DrawingSessionControllerInterfa
                         res.json(shapeConnections);
                     })
                     .catch(err => {
-                        res.json({});
+                        res.json(400);
                     });
         });
 

@@ -107,11 +107,11 @@ export class DrawingSessionManager {
         }
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
+
     public selectElements(doc : any) {
         console.log("SELECT EVENT");
         this.socketService.emit(doc.imageId, SocketEvents.SelectedElements, doc);
     }
-
 
     public duplicateElements(doc: any) {
         console.log(doc);
