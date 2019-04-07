@@ -15,8 +15,8 @@ namespace PolyPaint.Utilitaires
 {
     class Artefact : Form
     {
-        public const int DEFAULT_HEIGHT = 65;
-        public const int DEFAULT_WIDTH = 50;
+        public const int DEFAULT_HEIGHT = 33; //65;
+        public const int DEFAULT_WIDTH = 25;//50;
         public const string TYPE = "Artefact";
 
         public string Name { get; set; }
@@ -27,8 +27,8 @@ namespace PolyPaint.Utilitaires
 
         {
             this.Center = new Point(pts[0].X, pts[0].Y);
-            this.Height = 65;
-            this.Width = 50;
+            this.Height = 33;
+            this.Width = 25;
             MakeShape();
             this.CurrentRotation = 0;
             this.BorderColor = Colors.Black;
@@ -50,6 +50,13 @@ namespace PolyPaint.Utilitaires
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y + this.Height));
             pts.Add(new StylusPoint(pts[0].X, pts[0].Y));
             this.StylusPoints = pts;
+
+            if (this.CurrentRotation != 0)
+            {
+                int rotation = this.CurrentRotation;
+                this.CurrentRotation = 0;
+                this.SetRotation(rotation);
+            }
         }
         private void updatePoints()
         {
@@ -64,9 +71,10 @@ namespace PolyPaint.Utilitaires
             this.Height = Point.Subtract(this.StylusPoints[7].ToPoint(), this.StylusPoints[0].ToPoint()).Length;
             this.UpdateEncPoints();
 
-            if (this.Arrow != null)
+            if (this.Arrow.Count > 0)
             {
-                this.Arrow.ShapeMoved(this.Id);
+                foreach( Arrow a in this.Arrow)
+                a.ShapeMoved(this.Id);
             }
         }
         private void Fill(DrawingContext drawingContext)
@@ -94,8 +102,12 @@ namespace PolyPaint.Utilitaires
             OnDrawCore(drawingContext, drawingAttributes);
             //          base.DrawCore(drawingContext, drawingAttributes);
             updatePoints();
-            DrawName(drawingContext);
+            if (this.Label != null)
+            {
+                DrawName(drawingContext);
+            }
             DrawEncrage(drawingContext);
+            DrawRotator(drawingContext);
         }
         private void DrawName(DrawingContext drawingContext)
         {

@@ -29,6 +29,16 @@ namespace PolyPaint.Utilitaires
             return await response.Content.ReadAsStringAsync();
         }
 
+        public void CreateImage(object parameters, string sessionId, string username)
+        {
+            var body = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+            var response =  client.PostAsync("http://127.0.0.1:3000/api/images/" + sessionId + "/" + username, body);
+        }
+        public void SendLocalCanvas(string username, string sessionId, string canvasString)
+        {
+            var body = new StringContent((canvasString), Encoding.UTF8, "application/json");
+            var response = client.PostAsync("http://127.0.0.1:3000/api/images/offline/" + sessionId + "/" + username, body);
+        }
         public async Task RequestPwdAsync(string username, string email)
         {
             var response = await client.PostAsync("http://" + ipAddress + ":3000/connection/forgot/" + username + "/" + email, null);

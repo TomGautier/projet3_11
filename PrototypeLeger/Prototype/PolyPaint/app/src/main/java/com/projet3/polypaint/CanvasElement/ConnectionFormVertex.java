@@ -5,15 +5,18 @@ import android.graphics.Point;
 import android.graphics.Rect;
 
 public class ConnectionFormVertex {
-    protected final int ANCHOR_POINT_RADIUS =  20;
+    protected final int ANCHOR_POINT_RADIUS =  30;
     private Point point;
     private ConnectionFormVertex next;
-    private Path path;
+    private ConnectionForm owner;
     private Rect box;
+    private int index;
 
-    public ConnectionFormVertex(Point point, ConnectionFormVertex next){
+    public ConnectionFormVertex(Point point, ConnectionFormVertex next, ConnectionForm owner, int index){
         this.point = point;
         this.next = next;
+        this.index = index;
+        this.owner = owner;
         setBox();
     }
     public Rect getBox(){
@@ -22,8 +25,6 @@ public class ConnectionFormVertex {
     public void setBox(){
         box = new Rect(point.x - ANCHOR_POINT_RADIUS - 5, point.y - ANCHOR_POINT_RADIUS - 5,
                 point.x + ANCHOR_POINT_RADIUS + 5, point.y + ANCHOR_POINT_RADIUS + 5);
-        //path = new Path();
-        //path.addCircle(point.x,point.y,ANCHOR_POINT_RADIUS, Path.Direction.CW);
     }
     public boolean contains(int x, int y){
         return box.contains(x,y);
@@ -33,11 +34,6 @@ public class ConnectionFormVertex {
         point.x += x;
         point.y += y;
         setBox();
-        //box.offset(x,y);
-        /*if (next != null){
-            next.x += x;
-            next.y += y;
-        }*/
     }
     public final int x(){
         return point.x;
@@ -57,12 +53,15 @@ public class ConnectionFormVertex {
         return next;
     }
 
-    public void setNext(ConnectionFormVertex next){
-        this.next = next;
-    }
 
     public ConnectionFormVertex clone(){
-        return new ConnectionFormVertex(point,next);
+        return new ConnectionFormVertex(point,next, owner, index);
+    }
+    public int getIndex(){
+        return index;
+    }
+    public ConnectionForm getOwner(){
+        return owner;
     }
 
 

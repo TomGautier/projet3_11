@@ -14,6 +14,8 @@ using System.Linq;
 using System;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using System.Net.Http;
+using System.IO;
 
 namespace PolyPaint.VueModeles
 {
@@ -25,6 +27,9 @@ namespace PolyPaint.VueModeles
     /// </summary>
     class VueModele : INotifyPropertyChanged
     {
+
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
@@ -57,6 +62,21 @@ namespace PolyPaint.VueModeles
             get { return editeur.CouleurSelectionnee; }
             set {
                 editeur.CouleurSelectionnee = value;
+            }
+        }
+        public bool IsOffline
+        {
+            get
+            {
+                return editeur.IsOffline;
+            }
+            set
+            {
+                editeur.IsOffline = value;
+                if (!editeur.IsOffline)
+                {
+                    //SendLocalCanvas();
+                }
             }
         }
         public StrokeCollection LastCut
@@ -108,6 +128,8 @@ namespace PolyPaint.VueModeles
             }
         }
         public Stroke StrokeBeingDragged { get; set; }
+        public Stroke StrokeBeingRotated { get; set; }
+        public bool isDragging { get; set; }
         public int IndexBeingDragged { get; set; }
 
         private List<GalleryControl.GalleryItem> galleryItems;
@@ -122,10 +144,10 @@ namespace PolyPaint.VueModeles
 
         public string OutilSelectionne
         {
-            get { return editeur.OutilSelectionne; }            
+            get { return editeur.OutilSelectionne; }
             set { ProprieteModifiee(); }
         }
-        
+
 
         public int TailleTrait
         {
@@ -137,6 +159,17 @@ namespace PolyPaint.VueModeles
             get { return editeur.ConnectorLabel; }
             set { editeur.ConnectorLabel = value; }
         }
+        public string ConnectorQ1
+        {
+            get { return editeur.ConnectorQ1; }
+            set { editeur.ConnectorQ1 = value; }
+        }
+        public string ConnectorQ2
+        {
+            get { return editeur.ConnectorQ2; }
+            set { editeur.ConnectorQ2 = value; }
+        }
+
         public string ConnectorType
         {
             get { return editeur.ConnectorType; }
@@ -151,13 +184,13 @@ namespace PolyPaint.VueModeles
         {
             get { return editeur.ConnectorColor; }
             set { editeur.ConnectorColor = value; }
-        } 
+        }
         public string ConnectorBorderStyle
         {
             get { return editeur.ConnectorBorderStyle; }
             set { editeur.ConnectorBorderStyle = value; }
         }
-        
+
         public StrokeCollection SelectedStrokes
         {
             get { return editeur.selectedStrokes; }
@@ -359,19 +392,29 @@ namespace PolyPaint.VueModeles
         /// </summary>
         public VueModele()
         {
+            this.IsOffline = false;
+            
             this.Canvas = new CustomInkCanvas();
 
             FormConnectorManager = new FormConnectorManager();
-            SocketManager = new SocketManager();
+            SocketManager = new SocketManager(this.IsOffline);
             PlayerManager = new PlayerManager();
-            
+
             //SocketManager.JoinDrawingSession("MockSessionID");
             ChatManager.socket = SocketManager.Socket;
             //SocketManager.UserName = "Olivier";
-            SocketManager.UserName = this.Username;
-            
-            editeur.initializeSocketEvents();
-            SocketManager.JoinDrawingSession("MockSessionID");
+            if (!this.IsOffline)
+            {
+                SocketManager.UserName = this.Username;
+                this.SessionId = "MockSessionId";
+                editeur.initializeSocketEvents();
+                SocketManager.JoinDrawingSession("MockSessionID");
+                this.SendLocalCanvas();
+            }
+            else
+            {
+                this.PlayerManager.AddPlayer(this.SocketManager.UserName);
+            }
             // On écoute pour des changements sur le modèle. Lorsqu'il y en a, EditeurProprieteModifiee est appelée.
             editeur.PropertyChanged += new PropertyChangedEventHandler(EditeurProprieteModifiee);
 
@@ -379,19 +422,19 @@ namespace PolyPaint.VueModeles
             AttributsDessin = new DrawingAttributes();
             AttributsDessin.Color = (Color)ColorConverter.ConvertFromString(editeur.CouleurSelectionnee);
             AjusterPointe();
-            
+
             Traits = editeur.traits;
             StylusPointCollection pts = new StylusPointCollection();
-            
+
             //editeur.traits.Add(new Stroke(pts));
             SelectedStrokes = editeur.selectedStrokes;
             this.IndexBeingDragged = -1;
-            
-            
+
+
 
             // Pour chaque commande, on effectue la liaison avec des méthodes du modèle.            
-            Empiler = new RelayCommand<object>(editeur.Empiler, editeur.PeutEmpiler);
-            Depiler = new RelayCommand<object>(editeur.Depiler, editeur.PeutDepiler);
+            Empiler = new RelayCommand<object>(editeur.Empiler);//, editeur.PeutEmpiler);
+            Depiler = new RelayCommand<object>(editeur.Depiler);//, editeur.PeutDepiler);
             //AddForm = new RelayCommand<string>(editeur.AddForm);
             RotateForm = new RelayCommand<object>(editeur.RotateForm);
             // Pour les commandes suivantes, il est toujours possible des les activer.
@@ -406,9 +449,48 @@ namespace PolyPaint.VueModeles
         {
             this.Canvas = canvas;
         }
+        public void SendLocalCanvas()
+        {
+            int compteur = 0;
+            foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
+            {
+                string contents = File.ReadAllText(file);
+
+                var parameters = new
+                {
+                    author = this.Username,
+                    imageId = this.Username + "_" + compteur,
+                    visibility = "protected",
+                    protection = "public"
+
+                    
+                };
+                compteur++;
+                this.networkManager.CreateImage(parameters,this.SessionId,this.Username);
+
+                string canvas = new JavaScriptSerializer().Serialize(new
+                {
+                    shapes = contents
+
+                });
+                this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
+               
+
+            }
+            string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory() + "/Backup");
+            foreach (string filePath in filePaths)
+                File.Delete(filePath);
+
+            //HttpClient client = new HttpClient();
+            //client.PostAsync("http://127.0.0.1:3000/api/images/" +this.SessionId + "/"+ this.Username  , null);
+        }
         public void HandleCanvasResize()//double width, double height)
         {
-            this.SocketManager.ResizeCanvas(this.Canvas.Width , this.Canvas.Height);
+            if (this.IsOffline) { this.editeur.ResizedCanvas(new double[2] { this.Canvas.Width, this.Canvas.Height }); }
+            else
+            {
+                this.SocketManager.ResizeCanvas((int)this.Canvas.Width, (int)this.Canvas.Height);
+            }
         }
 
         /// <summary>
@@ -492,7 +574,7 @@ namespace PolyPaint.VueModeles
                         break;
                 }
                 //this.Canvas.EditingMode = InkCanvasEditingMode.None;
- 
+
                 foreach (Stroke s in this.SelectedStrokes)
                 {
                     if ((s as Form).Type == "Text")
@@ -505,9 +587,9 @@ namespace PolyPaint.VueModeles
                         this.Canvas.MoveEnabled = false;
                     }
                 }
-                
+
             }
-            
+
         }
         public void HandleSelection(StrokeCollection strokes)
         {
@@ -515,28 +597,34 @@ namespace PolyPaint.VueModeles
             {
                 editeur.HandleChangeSelection(strokes);
             }
-            else if (strokes.Count == 1)
+            else if (strokes.Count == 1 && this.isDragging)
             {
-                this.HandlePreviewMouseDown((strokes[0] as Form).Center);
+                editeur.HandleChangeSelection(strokes);
+                
+                //this.StrokeBeingLassoed = strokes[0];
+                  //this.HandlePreviewMouseDown((strokes[0] as Form).Center);
             }
+            this.isDragging = false;
             //TODO : Send socket -> selection was changed
         }
-        public void SetConnectorSettings(string label, string type, string border, int size,string color)
+        public void SetConnectorSettings(string label, string type, string border, int size, string color, string q1, string q2)
         {
             this.ConnectorLabel = label;
             this.ConnectorType = type;
             this.ConnectorBorderStyle = border;
             this.ConnectorSize = size;
             this.ConnectorColor = color;
-            //TODO BORDER
+            this.ConnectorQ1 = q1;
+            this.ConnectorQ2 = q2;
         }
         public void HandleLabelChange(string label, string border)
         {
-            editeur.HandleLabelChange(label,border);
+            editeur.HandleLabelChange(label, border);
         }
         public void HandleUmlTextChange(string name, string border, List<string> methods, List<string> attributes)
         {
-            editeur.HandleUmlTextChange(name,border,methods,attributes);
+            editeur.HandleUmlTextChange(name, border, methods, attributes);
+            editeur.HandleSelectionModification();
         }
         public void HandleSelectionSuppression()
         {
@@ -544,21 +632,22 @@ namespace PolyPaint.VueModeles
         }
         public void HandleDrag()
         {
-            // TODO : Send socket -> selection has moved
-            foreach (Stroke s in this.SelectedStrokes)
-            {
-               /* if ((s as Form).Center.X > this.Canvas.Width || (s as Form).Center.X < 0)
-                {
-                    (s as Form).Center = new Point(this.Canvas.Width / 2, (s as Form).Center.Y);
-                    (s as Form).MakeShape();
-                }
-                if ((s as Form).Center.Y > this.Canvas.Height || (s as Form).Center.Y < 0)
-                {
-                    (s as Form).Center = new Point((s as Form).Center.X, this.Canvas.Height / 2);
-                    (s as Form).MakeShape();
-                }*/
-            }
             editeur.HandleSelectionModification();
+            // TODO : Send socket -> selection has moved
+            /* foreach (Stroke s in this.SelectedStrokes)
+             {
+                 if ((s as Form).Center.X > this.Canvas.Width || (s as Form).Center.X < 0)
+                 {
+                     (s as Form).Center = new Point(this.Canvas.Width / 2, (s as Form).Center.Y);
+                     (s as Form).MakeShape();
+                 }
+                 if ((s as Form).Center.Y > this.Canvas.Height || (s as Form).Center.Y < 0)
+                 {
+                     (s as Form).Center = new Point((s as Form).Center.X, this.Canvas.Height / 2);
+                     (s as Form).MakeShape();
+                 }
+             }*/
+
         }
         public void HandleResize()
         {
@@ -594,69 +683,139 @@ namespace PolyPaint.VueModeles
 
         public void HandleMouseDown(Point mousePos)
         {
-            
-   /*         else
+
+            /*         else
+                     {
+                         editeur.HandleMouseDown(mousePos);
+                     }*/
+        }
+        public void HandleMouseMove(Point mousePos)
+        {
+            if (this.StrokeBeingDragged != null)
             {
-                editeur.HandleMouseDown(mousePos);
-            }*/
+                this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+            }
+            else if (this.StrokeBeingRotated != null)
+            {
+                CalculateAngle(mousePos);
+            }
+        }
+        private void CalculateAngle(Point mousePos)
+        {
+            Vector direction = (this.StrokeBeingRotated as Form).Center - mousePos;
+            Vector origin = new Vector(0, 1);//(this.StrokeBeingRotated as Form).HeightDirection;
+            //direction.Normalize();
+            double angle = Vector.AngleBetween(origin, direction);
+            (this.StrokeBeingRotated as Form).SetRotation((int)angle);
+            if (angle != 0)
+            {
+
+            }
         }
         public void HandlePreviewMouseDown(Point mousePos)
         {
-            
+            this.isDragging = true;
             Rect selectionZone = this.Canvas.GetSelectionBounds();
             if (selectionZone.Size != Size.Empty)
             {
-                
+
                 selectionZone.Inflate(new Size(15, 15)); //To cover the resizing bounds
             }
-            if (this.OutilSelectionne == "lasso" && this.StrokeBeingDragged == null)
-            if (this.OutilSelectionne == "lasso" && this.StrokeBeingDragged == null)
+            //if (this.OutilSelectionne == "lasso" && this.StrokeBeingDragged == null)
+            if (this.OutilSelectionne == "lasso" && this.StrokeBeingRotated == null && this.StrokeBeingDragged == null)
             {
-                foreach (Stroke s in Traits.Where(x=> (x as Form).Type == "Arrow"))
+                foreach (Stroke s in SelectedStrokes.Where(x => (x as Form).Type != "Arrow"))
                 {
-                    for (int i = 0; i< s.StylusPoints.Count; i++)
+                    Point pts = (s as Form).RotatePoint;
+                    if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10)
+                    {
+                        this.Canvas.MoveEnabled = false;
+                        this.StrokeBeingRotated = s;
+                        this.isDragging = false;
+                        //this.Canvas.EditingMode = InkCanvasEditingMode.None;
+                    }
+                }
+            }
+            if (this.OutilSelectionne == "lasso" && this.StrokeBeingDragged == null && this.StrokeBeingRotated == null)
+            {
+                foreach (Stroke s in SelectedStrokes.Where(x => (x as Form).Type == "Arrow"))
+                {
+                    for (int i = 0; i < s.StylusPoints.Count; i++)
                     {
                         Point pts = s.StylusPoints[i].ToPoint();
                         if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10 && this.IndexBeingDragged == -1)
                         {
                             this.StrokeBeingDragged = s;
                             this.IndexBeingDragged = i;
+                            this.isDragging = false;
                             editeur.ShowEncrage = true;
-                            this.Canvas.EditingMode = InkCanvasEditingMode.None;
+                            //this.Canvas.EditingMode = InkCanvasEditingMode.None;
                         }
                     }
                 }
             }
-            if (this.OutilSelectionne == "lasso" && !selectionZone.Contains(mousePos) && this.StrokeBeingDragged == null)
+            if (this.OutilSelectionne == "lasso" && !selectionZone.Contains(mousePos) && this.StrokeBeingDragged == null && this.StrokeBeingRotated == null)
             {
                 StrokeCollection selection = new StrokeCollection();
-                for (int i = Traits.Count -1; i >= 0; i--)
+                for (int i = Traits.Count - 1; i >= 0; i--)
                 {
-                    if (Traits[i].GetBounds().Contains(mousePos) && selection.Count == 0)
+                    if (Traits[i].GetBounds().Contains(mousePos) && selection.Count == 0) //&& (Traits[i] as Form).Type != "Arrow")
                     {
-                        selection.Add(Traits[i]);
+                        if ((Traits[i] as Form).Type == "Arrow")
+                        {
+                            if (Traits[i].HitTest(mousePos)) { selection.Add(Traits[i]); }
+
+                        }
+                        else
+                        {
+                            selection.Add(Traits[i]);
+                        }
                     }
 
                 }
-                    editeur.HandleChangeSelection(selection);
-                
+                editeur.HandleChangeSelection(selection);
+
 
             }
             else
             {
+                this.isDragging = false;
                 editeur.HandleMouseDown(mousePos);
             }
         }
+            
+        
         public void HandlePreviewMouseUp(Point mousePos)
         {
+            //this.isDragging = false;
             if (this.StrokeBeingDragged != null)
             {
                 editeur.ShowEncrage = false;
                 this.Canvas.EditingMode = InkCanvasEditingMode.Select;
                 editeur.UpdateArrow(this.StrokeBeingDragged, this.IndexBeingDragged,mousePos);
-                this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+                //this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
+                Shape[] shapes = new Shape[1];
+                shapes[0] = (this.StrokeBeingDragged as Form).ConvertToShape(this.SocketManager.SessionID);
+                if (IsOffline) { this.editeur.ModifiedElements(shapes); }
+                else
+                {
+                    this.SocketManager.HandleModification(shapes);
+                }
                 this.StrokeBeingDragged = null;
                 this.IndexBeingDragged = -1;
+            }
+            else if (this.StrokeBeingRotated != null)
+            {               
+                //this.Canvas.EditingMode = InkCanvasEditingMode.Select;
+                this.Canvas.MoveEnabled = true;
+                Shape[] shapes = new Shape[1];
+                shapes[0] = (this.StrokeBeingRotated as Form).ConvertToShape(this.SocketManager.SessionID);
+                if (IsOffline) { this.editeur.ModifiedElements(shapes); }
+                else
+                {
+                    this.SocketManager.HandleModification(shapes);
+                }
+                this.StrokeBeingRotated = null;
             }
             
         }

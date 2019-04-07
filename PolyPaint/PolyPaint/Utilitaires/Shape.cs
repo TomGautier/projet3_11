@@ -10,14 +10,14 @@ namespace PolyPaint.Utilitaires
     class Shape
     {
         public string id { get; set; }
-        public string drawingSessionId { get; set; }
+        public string imageId { get; set; }
         public string author { get; set; }
         public ShapeProperties properties { get; set; }
         
-        public Shape(string id, string drawingSessionId, string author, ShapeProperties properties)
+        public Shape(string id, string imageId, string author, ShapeProperties properties)
         {
             this.id = id;
-            this.drawingSessionId = drawingSessionId;
+            this.imageId = imageId;
             this.author = author;
             this.properties = properties;
         }

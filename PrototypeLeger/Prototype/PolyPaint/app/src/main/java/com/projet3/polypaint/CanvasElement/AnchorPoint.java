@@ -17,6 +17,7 @@ public class AnchorPoint {
     private ConnectionFormVertex connectionVertex;
     private Point centerPoint;
     private Path path;
+    private int index;
    // private int connectedVertexIndex;
 
 
@@ -39,12 +40,16 @@ public class AnchorPoint {
     }
     public void setConnection(ConnectionFormVertex vertex){
         this.connectionVertex = vertex;
+       // this.owner = this.connectionVertex.getOwner();
+        if (this.connectionVertex != null)
+            this.connectionVertex.setPoint(new Point(centerPoint.x,centerPoint.y));
     }
-    public void relativeMove(int x, int y){
-        setPath();
-        //if (isConnected())
-          //  connectionVertex.relativeMove(x,y);
+    public void removeConnection(){
+        if (this.connectionVertex != null){
+            this.connectionVertex = null;
+        }
     }
+
     public void rotate(){
         //path = new Path();
         Matrix matrix = new Matrix();
@@ -65,27 +70,47 @@ public class AnchorPoint {
             /*box = new Rect(owner.posX - owner.width/2 - 2*ANCHOR_POINT_RADIUS,owner.posY - ANCHOR_POINT_RADIUS,
                     owner.posX - owner.width/2, owner.posY + ANCHOR_POINT_RADIUS );*/
             centerPoint = new Point(owner.posX - owner.width/2 - ANCHOR_POINT_RADIUS, owner.posY);
+            index = 3;
             break;
             case "right":
             /*box = new Rect(owner.posX + owner.width/2,owner.posY - ANCHOR_POINT_RADIUS,
                     owner.posX + owner.width/2 + 2*ANCHOR_POINT_RADIUS, owner.posY + ANCHOR_POINT_RADIUS );*/
             centerPoint = new Point(owner.posX + owner.width/2 + ANCHOR_POINT_RADIUS, owner.posY);
+            index = 1;
             break;
             case "top":
             /*box = new Rect(owner.posX - ANCHOR_POINT_RADIUS,owner.posY - owner.height/2 - 2*ANCHOR_POINT_RADIUS,
                     owner.posX + ANCHOR_POINT_RADIUS, owner.posY - owner.height/2 );*/
             centerPoint = new Point(owner.posX, owner.posY - owner.height/2 - ANCHOR_POINT_RADIUS);
+            index = 0;
             break;
             case "bottom":
             /*box = new Rect(owner.posX - ANCHOR_POINT_RADIUS,owner.posY + owner.height/2,
                     owner.posX + ANCHOR_POINT_RADIUS, owner.posY + owner.height/2 + 2*ANCHOR_POINT_RADIUS );*/
             centerPoint = new Point(owner.posX, owner.posY + owner.height/2 + ANCHOR_POINT_RADIUS);
+            index = 2;
             break;
         }
         rotate();
         //path.addCircle(centerPoint.x,centerPoint.y,ANCHOR_POINT_RADIUS, Path.Direction.CW);
     }
-
+    public int getIndex(){
+        return index;
+    }
+    public GenericShape getOwner(){
+        return owner;
+    }
+    public ConnectionFormVertex getConnectionVertex(){
+        return connectionVertex;
+    }
+    public void updateVertex(ConnectionFormVertex vertex){
+        if (connectionVertex == null && vertex.getBox().contains(centerPoint.x,centerPoint.y)){
+            setConnection(vertex);
+        }
+        else if (connectionVertex != null && !vertex.getBox().contains(centerPoint.x,centerPoint.y)){
+            removeConnection();
+        }
+    }
 
     public boolean stillConnected(){
         return connectionVertex.getBox().contains(centerPoint.x,centerPoint.y);
@@ -93,10 +118,11 @@ public class AnchorPoint {
         //return Rect.intersects(box,connectionVertex.getBox());
     }
     public boolean intersect(Rect vertexBox){
-        //Path temp = new Path();
-        //temp.op(path,vertexPath, Path.Op.INTERSECT);
+       // Path temp = new Path();
+        //temp.addRect(vertexBox.left,vertexBox.top,vertexBox.right,vertexBox.bottom, Path.Direction.CW);
+       // temp.op(path, Path.Op.INTERSECT);
         //return connectionVertex.getBox().contains(centerPoint.x,centerPoint.y);
-        //return !temp.isEmpty();
+       // return !temp.isEmpty();
         return vertexBox.contains(centerPoint.x,centerPoint.y);
        // return Rect.intersects(box,vertexBox);
     }

@@ -139,6 +139,7 @@
     <Compile Include="Managers\FormConnectorManager.cs" />
     <Compile Include="Managers\SocketManager.cs" />
     <Compile Include="Modeles\Editeur.cs" />
+    <Compile Include="Utilitaires\ArrowProperties.cs" />
     <Compile Include="Utilitaires\Activity.cs" />
     <Compile Include="Utilitaires\Arrow.cs" />
     <Compile Include="Utilitaires\Artefact.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Utilitaires\FloatingText.cs" />
     <Compile Include="Utilitaires\Form.cs" />
     <Compile Include="Utilitaires\Phase.cs" />
+    <Compile Include="Utilitaires\FormProperties.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
     <Compile Include="Utilitaires\Role.cs" />
     <Compile Include="Utilitaires\Shape.cs" />

@@ -27,7 +27,7 @@ public class CollabShape {
             id = obj.getString(ID_TAG);
             imageId = obj.getString(IMAGE_ID_TAG);
             author = obj.getString(AUTHOR_TAG);
-            if (obj.getJSONObject(PROPERTIES_TAG).getString(CollabShapeProperties.TYPE_TAG).equals(ImageEditingFragment.ShapeType.ConnectionForm.toString()))
+            if (obj.getJSONObject(PROPERTIES_TAG).getString(CollabShapeProperties.TYPE_TAG).equals(ImageEditingFragment.ShapeType.Arrow.toString()))
                 properties = new CollabConnectionProperties(obj.getJSONObject(PROPERTIES_TAG));
             else
                 properties = new CollabShapeProperties(obj.getJSONObject(PROPERTIES_TAG));

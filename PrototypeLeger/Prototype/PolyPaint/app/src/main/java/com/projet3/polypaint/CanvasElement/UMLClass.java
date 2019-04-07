@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class UMLClass extends GenericTextShape {
-    protected final static int DEFAULT_WIDTH = 180;
-    protected final static int DEFAULT_HEIGHT = 150;
+    protected final static int DEFAULT_WIDTH = 124;
+    protected final static int DEFAULT_HEIGHT = 248;
 
     private ArrayList<String> attributes;
     private ArrayList<String> methods;
@@ -23,7 +23,7 @@ public class UMLClass extends GenericTextShape {
     public static final String TYPE = "UmlClass";
 
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
-        super(id, x, y, style,angle);
+        super(id, x, y, width,height, style,angle);
 
         attributes = new ArrayList<>();
         methods = new ArrayList<>();
@@ -34,7 +34,7 @@ public class UMLClass extends GenericTextShape {
         initializePaint();
     }
     public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style, float angle) {
-        super(id, x, y, style, name,angle);
+        super(id, x, y,width,height,style, name,angle);
 
         setAttributes(attributes);
         setMethods(methods);
@@ -102,11 +102,11 @@ public class UMLClass extends GenericTextShape {
 
     @Override
     protected void adjustWidthToText() {
-        int currentWidth = width;
+       /* int currentWidth = width;
         super.adjustWidthToText();
         width += 2*PADDING;
 
-        if (currentWidth > width ) width = currentWidth;
+        if (currentWidth > width ) width = currentWidth;*/
     }
 
     private void adjustHeightToText() {
@@ -151,4 +151,13 @@ public class UMLClass extends GenericTextShape {
     }
 
     public String getType() { return TYPE; }
+
+    @Override
+    public String getAttributes(){
+        return concatenateList(attributes);
+    }
+    @Override
+    public String getMethods(){
+        return concatenateList(methods);
+    }
 }

@@ -5,6 +5,7 @@ import { TYPES } from "../types";
 import { UserManager } from "../services/user.manager";
 import { ImageControllerInterface } from "../interfaces";
 import { ImageService } from "../services/image.service";
+import { DrawingSessionManager } from "../services/drawingSession.manager";
 
 @injectable()
 export class ImageController implements ImageControllerInterface {
@@ -35,6 +36,7 @@ export class ImageController implements ImageControllerInterface {
                     { res.json(403); return; }
                 
                 this.imageService.getAllByAuthor(req.params.username).then(image => {
+                    
                     res.json(image);
                 });
             });
@@ -50,13 +52,24 @@ export class ImageController implements ImageControllerInterface {
                 });
             }); 
 
+        router.post("/offline/:sessionId/:username",
+            (req: Request, res: Response, next: NextFunction) => {
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
+            
+                this.imageService.createMultiple(req.body.shapes)
+                    .then(image => {
+                        res.json(image);
+                    });
+        });
+
         router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
                 
-                this.imageService.create(req.body.author,
-                                        req.body.id,
+                this.imageService.create(req.body.imageId, 
+                                        req.body.author,
                                         req.body.visibility,
                                         req.body.protection)
                     .then(image => {

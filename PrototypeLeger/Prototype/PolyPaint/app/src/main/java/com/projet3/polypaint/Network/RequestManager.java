@@ -185,13 +185,16 @@ public class RequestManager {
     }
 
     public ArrayList<JSONObject> fetchPublicGallery() {
-        return fetchGalleryContent(Request.ImagesCommon);
+        return fetchGalleryContent(Request.ImagesCommon); // TODO: replace with line below
+        //return fetchGalleryContent("public");
     }
     public ArrayList<JSONObject> fetchPrivateGallery() {
-        return fetchGalleryContent(Request.Images);
+        return fetchGalleryContent(Request.Images);// TODO: replace with line below
+        //return fetchGalleryContent("private");
     }
     private ArrayList<JSONObject> fetchGalleryContent(String request) {
-        url = formatUrl(request,null);
+        url = formatUrl(request,null); // TODO: replace with line below
+        //url = formatUrl(Request.Images, request);
         UserGetTask task = new UserGetTask();
         task.execute(url);
         try{
@@ -325,8 +328,8 @@ public class RequestManager {
                     String attributes = "";
                     String methods = "";
                     // TODO: Check that the shape contains the text fields and fill them accordingly
-                    /*if (properties.has("text"))
-                        text = properties.getString("text");
+                    /*if (properties.has("label"))
+                        text = properties.getString("label");
                     if (properties.has("attributes"))
                         attributes = properties.getString("attributes");
                     if (properties.has("methods"))
@@ -342,14 +345,7 @@ public class RequestManager {
 
                     PaintStyle.StrokeType strokeType = PaintStyle.StrokeType.full;
                     //TODO: reactivate this part when server implements strokeType field.
-                    /*switch (properties.getString("strokeType")) {
-                        case "dotted" :
-                            strokeType = PaintStyle.StrokeType.dotted;
-                            break;
-                        case "dashed" :
-                            strokeType = PaintStyle.StrokeType.dashed;
-                            break;
-                    }*/
+                    //PaintStyle.StrokeType strokeType = PaintStyle.StrokeType.valueOf(properties.getString("strokeType"));
 
                     PaintStyle style = new PaintStyle(borderPaint, backgroundPaint, new Paint(borderPaint), strokeType);
 
@@ -362,7 +358,7 @@ public class RequestManager {
                             nShape = new UMLArtefact(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, rotation);
                             break;
                         case "Comment" :
-                            nShape = new Comment(object.getString("id"), position.getInt(0), position.getInt(1), style, text, rotation);
+                            nShape = new Comment(object.getString("id"), position.getInt(0), position.getInt(1), width, height,style, text, rotation);
                             break;
                         case "Phase" :
                             nShape = new UMLPhase(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, text, rotation);
@@ -371,7 +367,7 @@ public class RequestManager {
                             nShape = new UMLRole(object.getString("id"), position.getInt(0), position.getInt(1), width, height, style, rotation);
                             break;
                         case "text_box" :
-                            nShape = new TextBox(object.getString("id"), position.getInt(0), position.getInt(1), style, text, rotation);
+                            nShape = new TextBox(object.getString("id"), position.getInt(0), position.getInt(1), width, height,style, text, rotation);
                             break;
                         case "UmlClass" :
                             nShape = new UMLClass(object.getString("id"), position.getInt(0), position.getInt(1), width, height, text, attributes, methods, style, rotation);
