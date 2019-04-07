@@ -34,6 +34,20 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
+        private string localization = "fr";
+        public string Localization
+        {
+            get
+            {
+                return localization;
+            }
+            set
+            {
+                localization = value;
+                ProprieteModifiee();
+            }
+        }
+
         private string sessionId;
         public string SessionId
         {
