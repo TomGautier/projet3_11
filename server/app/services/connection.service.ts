@@ -71,12 +71,11 @@ export class ConnectionService implements ConnectionServiceInterface {
             from: 'polypaint11@gmail.com',
             to: email,
             subject: 'PolyPaint Password Reset',  
-            text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +  
-                +  'Your new password is ' + newPwd + '\n\n' + 
+            text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n'
+                +  'Your new password is: ' + newPwd + '\n\n' + 
                 'Please return on the application to reset your password.' 
         };  
         let info = await smtpTransport.sendMail(mailOptions, function(err) {                 
-            console.log("Hi: "+ email);  
             return {status : 'success', message : 'An e-mail has been sent to ' + email + ' with further instructions.'};
         });  
 
