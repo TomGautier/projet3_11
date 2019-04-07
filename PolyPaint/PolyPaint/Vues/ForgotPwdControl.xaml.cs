@@ -28,6 +28,9 @@ namespace PolyPaint.Vues
 
         private void NewPWDbtn_Click(object sender, RoutedEventArgs e)
         {
+            ((TextBox)FindName("email")).IsEnabled = false;
+            ((TextBox)FindName("username")).IsEnabled = false;
+            ((Button)sender).IsEnabled = false;
             ((Button)sender).IsDefault = false;
             ((VueModele)DataContext).RequestPwd(((TextBox)FindName("email")).Text);
             ((Grid)FindName("NewPwdForm")).Visibility = Visibility.Visible;
