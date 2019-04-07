@@ -16,7 +16,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Visibility : "/>
             <RadioButton Grid.Column="1" Name="public" VerticalContentAlignment="Center" IsChecked="True">
-                <Label Content="Pubic"/>
+                <Label Content="Public"/>
             </RadioButton>
             <RadioButton Grid.Column="2" Name="private" VerticalContentAlignment="Center">
                 <Label Content="Private"/>
