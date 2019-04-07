@@ -7,8 +7,8 @@ import android.graphics.Path;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLActivity extends GenericShape {
-    protected final static int DEFAULT_WIDTH = 90;
-    protected final static int DEFAULT_HEIGHT = 60;
+    protected final static int DEFAULT_WIDTH = 147;
+    protected final static int DEFAULT_HEIGHT = 79;
 
     public static final String TYPE = "Activity";
 

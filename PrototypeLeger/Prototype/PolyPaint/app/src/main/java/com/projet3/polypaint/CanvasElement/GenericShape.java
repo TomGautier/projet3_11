@@ -247,13 +247,13 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_HEIGHT;
             case Role:
                 return UMLRole.DEFAULT_HEIGHT;
-            case ConnectionForm:
+            case Arrow:
                 return ConnectionForm.DEFAULT_HEIGHT;
             case Phase:
                 return UMLPhase.DEFAULT_HEIGHT;
             case Comment:
                 return Comment.DEFAULT_HEIGHT;
-            case text_box:
+            case Text:
                 return TextBox.DEFAULT_HEIGHT;
 
         }
@@ -269,13 +269,13 @@ public abstract class GenericShape {
                 return UMLArtefact.DEFAULT_WIDTH;
             case Role:
                 return UMLRole.DEFAULT_WIDTH;
-            case ConnectionForm:
+            case Arrow:
                 return ConnectionForm.DEFAULT_WIDTH;
             case Phase:
                 return UMLPhase.DEFAULT_WIDTH;
             case Comment:
                 return Comment.DEFAULT_WIDTH;
-            case text_box:
+            case Text:
                 return TextBox.DEFAULT_WIDTH;
         }
         return 0;

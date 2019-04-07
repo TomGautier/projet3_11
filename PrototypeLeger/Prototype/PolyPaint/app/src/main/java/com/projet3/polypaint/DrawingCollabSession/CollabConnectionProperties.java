@@ -21,9 +21,8 @@ import java.util.ArrayList;
 
 public class CollabConnectionProperties extends CollabShapeProperties  {
     public static String CATEGORY_TAG = "category";
-    public static String FILLING_COLOR_TAG = "fillingColor";
-    public static String VERTICESX_TAG = "verticesX";
-    public static String VERTICESY_TAG = "verticesY";
+    public static String VERTICESX_TAG = "pointsX";
+    public static String VERTICESY_TAG = "pointsY";
     public static String ID_SHAPE1_TAG = "idShape1";
     public static String ID_SHAPE2_TAG = "idShape2";
     public static String INDEX1_TAG = "index1";

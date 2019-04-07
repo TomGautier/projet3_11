@@ -8,8 +8,8 @@ import java.util.regex.Matcher;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class UMLArtefact extends GenericShape {
-    protected final static int DEFAULT_WIDTH = 60;
-    protected final static int DEFAULT_HEIGHT = 80;
+    protected final static int DEFAULT_WIDTH = 56;
+    protected final static int DEFAULT_HEIGHT = 74;
     public static final String TYPE = "Artefact";
     public UMLArtefact(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id,x, y, width, height, style, angle);

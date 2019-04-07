@@ -75,7 +75,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected final int DEFAULT_CANVAS_HEIGHT = 1185;
     protected final int CANVAS_BACKGROUND_PADDING = 75;
     protected enum Mode{selection, lasso, creation, move, rotate}
-    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, text_box, ConnectionForm, Phase, Comment}
+    public enum ShapeType{none, UmlClass, Activity, Artefact, Role, Text, Arrow, Phase, Comment}
     public enum ConnectionFormType{Agregation, Composition, Inheritance, Bidirectional}
     protected final float DEFAULT_STROKE_WIDTH = 2f;
     protected final float SELECTION_STROKE_WIDTH = 4f;
@@ -214,7 +214,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         buttonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setShapeType(ShapeType.text_box);
+                setShapeType(ShapeType.Text);
             }
         });
 
@@ -230,19 +230,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         switch (menuItem.getItemId()) {
                             case R.id.connectionFormAgregation:
                                 setConnectionFormType(ConnectionFormType.Agregation);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormInheritance:
                                 setConnectionFormType(ConnectionFormType.Inheritance);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormBidirectional:
                                 setConnectionFormType(ConnectionFormType.Bidirectional);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
                                 break;
                             case R.id.connectionFormComposition:
                                 setConnectionFormType(ConnectionFormType.Composition);
-                                setShapeType(ShapeType.ConnectionForm);
+                                setShapeType(ShapeType.Arrow);
                         }
                         return true;
                     }
@@ -577,13 +577,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         GenericShape.getDefaultHeight(currentShapeType),defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
-            case text_box :
+            case Text :
                 nShape = new TextBox(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 //ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), defaultStyle, "");
                 break;
-            case ConnectionForm:
+            case Arrow:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
                         String.format("#%06x", ContextCompat.getColor(getActivity(),
                                 R.color.DefaultConnectionFormFillingColor)),String.format("#%06x",ContextCompat.getColor(getActivity(),

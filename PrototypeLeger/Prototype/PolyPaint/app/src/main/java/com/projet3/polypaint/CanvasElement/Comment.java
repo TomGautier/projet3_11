@@ -8,8 +8,8 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 public class Comment extends GenericTextShape {
     public static final String TYPE = "Comment";
-    protected static final int DEFAULT_WIDTH = 50;
-    protected  static final int DEFAULT_HEIGHT = 50;
+    protected static final int DEFAULT_WIDTH = 113;
+    protected  static final int DEFAULT_HEIGHT = 56;
 
 
     public Comment(String id, int x, int y, int width, int height, PaintStyle style) {

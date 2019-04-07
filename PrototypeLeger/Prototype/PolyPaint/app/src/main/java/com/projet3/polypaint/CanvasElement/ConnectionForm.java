@@ -33,7 +33,7 @@ public class ConnectionForm extends GenericShape {
     protected final static int DEFAULT_WIDTH = 250;
     protected final static int DEFAULT_HEIGHT = 30;
     public final static float DEFAULT_THICK = 6.0f;
-    protected final String TYPE = "ConnectionForm";
+    protected final String TYPE = "Arrow";
     private String type;
     private int arrowHeight;
     private int arrowWidth;
@@ -349,7 +349,7 @@ public class ConnectionForm extends GenericShape {
     }*/
     public static Integer[] generateDefaultX(int x){
         Integer[] array = new Integer[4];
-        int width = GenericShape.getDefaultWidth(ImageEditingFragment.ShapeType.ConnectionForm);
+        int width = GenericShape.getDefaultWidth(ImageEditingFragment.ShapeType.Arrow);
         for (int i =0; i < array.length; i++){
             array[i] = (x - width/2) + (width/3)*i;
             //array[i][1] = y;
