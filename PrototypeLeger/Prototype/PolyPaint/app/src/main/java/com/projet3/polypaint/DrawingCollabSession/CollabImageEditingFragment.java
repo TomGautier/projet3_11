@@ -256,7 +256,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             ImageEditingDialogManager.getInstance().showTextEditingDialog(getFragmentManager(), "");
         }*/
         SocketManager.currentInstance.addElement(shape);
-        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
 
         return null;
     }
@@ -343,7 +342,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     }
     private CollabShape createCollabShape(int posX, int posY){
         CollabShapeProperties properties;
-        id = client.getName() + "_" + Integer.toString(idCpt++);
+        String id = client.getName() + "_" + (new Date()).getTime();
         String hexColor;
         if(currentShapeType.toString().equals(ShapeType.Arrow.toString())){
             int fillingColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormFillingColor,null);
@@ -395,14 +394,12 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     protected void stack(){
         if (shapes.size() > 0) {
             SocketManager.currentInstance.stackElement(shapes.get(shapes.size() - 1).getId());
-            RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
         }
     }
     @Override
     protected void unStack(){
         if (!stack.empty()) {
             SocketManager.currentInstance.unstackElement(createCollabShape(stack.peek()));
-            RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
         }
     }
     @Override
@@ -416,7 +413,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             ids.add(shape.getId());
         }
         SocketManager.currentInstance.deleteElements(ids.toArray(new String[ids.size()]));
-        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
     }
     @Override
     public void duplicateSelection() {
@@ -437,7 +433,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         }
         else return;
 
-        RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
     }
     @Override
     protected void moveSelectedShape(MotionEvent event) {
@@ -485,7 +480,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 }
                 SocketManager.currentInstance.modifyElements(shapes.toArray(new CollabShape[shapes.size()]));
                 isMovingSelection = false;
-                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
                 break;
         }
     }
@@ -494,9 +488,11 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     @Override
     public void onJoinedSession(String drawingSessionId_) {
         imageID = drawingSessionId_;
-
-        shapes.addAll(RequestManager.currentInstance.getAllShapes(imageID));
-        //drawAllShapes();
+        ArrayList<GenericShape> newShapes = RequestManager.currentInstance.getAllShapes(imageID);
+        if (newShapes != null) {
+            shapes.addAll(newShapes);
+            drawAllShapes();
+        }
     }
     @Override
     public void onNewUserJoined(String[] players) {
@@ -518,6 +514,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
 
             }
         });
@@ -542,6 +539,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
 
             }
         });
@@ -563,6 +561,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
@@ -585,6 +584,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
@@ -637,6 +637,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
         //  Toast.makeText(getContext(),"DELETE UN ELEMENT", Toast.LENGTH_LONG).show();
@@ -663,8 +664,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
+
     }
 
     @Override
@@ -689,23 +692,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
-        /*Player player = findPlayer(author);
-        player = (player == null) ? client : player;
-        for (int i = 0; i < collabShapes.length; i++){
-            GenericShape shape = createGenShape(collabShapes[i]);
-            player.removeSelectedShape(shape);
-        }
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                updateCanvas();
-                drawAllShapes();
-                rootView.invalidate();
-            }
-        });
-        //  Toast.makeText(getContext(),"MODIFIER UN ELEMENT", Toast.LENGTH_LONG).show();*/
+
 
     }
 
@@ -785,6 +775,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }
@@ -806,6 +797,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 updateCanvas();
                 drawAllShapes();
                 iView.invalidate();
+                RequestManager.currentInstance.postThumbnail(Bitmap.createBitmap(bitmap), imageID);
             }
         });
     }

@@ -46,6 +46,7 @@ import com.projet3.polypaint.R;
 import com.projet3.polypaint.Network.FetchManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Stack;
 
 public class ImageEditingFragment extends Fragment implements ImageEditingDialogManager.ImageEditingDialogSubscriber, RotationGestureDetector.OnRotationGestureListener {
@@ -112,8 +113,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
     protected boolean isResizingCanvas = false;
     protected boolean isLongPressed = false;
-    protected int idCpt;
-    protected String id;
     protected RotationGestureDetector rotationDetector;
     protected GenericShape rotatingShape = null;
     protected int refreshCpt = 0;
@@ -134,8 +133,6 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         addStack = new Stack<>();
         removeStack = new Stack<>();
         stack = new Stack<>();
-        idCpt = 0;
-        id = FetchManager.currentInstance.getUserUsername() + idCpt;
 
         initializeButtons();
         initializePaint();
@@ -557,7 +554,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected GenericShape addShape(int posX, int posY) {
         selections.clear();
         GenericShape nShape = null;
-        id = FetchManager.currentInstance.getUserUsername() + Integer.toString(idCpt++);
+        String id = FetchManager.currentInstance.getUserUsername() + "_" + (new Date()).getTime();
         switch (currentShapeType) {
             case UmlClass :
                 nShape = new UMLClass(id,posX, posY, GenericShape.getDefaultWidth(currentShapeType),
@@ -577,17 +574,17 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle, 0);
                 break;
             case Phase :
-                nShape = new UMLPhase(Integer.toString(idCpt), posX, posY, GenericShape.getDefaultWidth(currentShapeType),
+                nShape = new UMLPhase(id, posX, posY, GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case Comment :
-                nShape = new Comment(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                nShape = new Comment(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType),defaultStyle);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case Text :
-                nShape = new TextBox(Integer.toString(idCpt), posX, posY,GenericShape.getDefaultWidth(currentShapeType),
+                nShape = new TextBox(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
                         GenericShape.getDefaultHeight(currentShapeType), defaultStyle,0);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
