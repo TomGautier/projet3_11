@@ -20,7 +20,8 @@ public abstract class GenericTextShape extends GenericShape {
         this.text = text;
         adjustWidthToText();
     }
-    public String getText() {
+    @Override
+    public String getLabel() {
         return text;
     }
 

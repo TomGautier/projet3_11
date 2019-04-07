@@ -288,7 +288,7 @@ public abstract class GenericShape {
         return new ArrayList<>();
     }
     public String getLabel() {return ""; }
-    public String getBorderType() {return "";}
+    public PaintStyle.StrokeType getBorderType() {return style.getStrokeType();}
     public String getId() {
         return id;
     }

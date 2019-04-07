@@ -879,7 +879,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     }
     @Override
     public void onTextDialogNegativeResponse() {
-        if (!selections.isEmpty() && ((GenericTextShape)selections.get(0)).getText().equals("")) {
+        if (!selections.isEmpty() && ((GenericTextShape)selections.get(0)).getLabel().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
             updateCanvas();
@@ -916,6 +916,18 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             ((UMLClass) selections.get(0)).setAttributes(attributes);
             ((UMLClass) selections.get(0)).setMethods(methods);
             selections.get(0).setStyle(style);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
+    }
+    @Override
+    public void onClassDialogNeutralResponse(String name, String attributes, String methods) {
+        if (!selections.isEmpty()) {
+            ((UMLClass) selections.get(0)).setText(name);
+            ((UMLClass) selections.get(0)).setAttributes(attributes);
+            ((UMLClass) selections.get(0)).setMethods(methods);
+            selections.get(0).setStyle(defaultStyle);
             updateCanvas();
             drawAllShapes();
             iView.invalidate();

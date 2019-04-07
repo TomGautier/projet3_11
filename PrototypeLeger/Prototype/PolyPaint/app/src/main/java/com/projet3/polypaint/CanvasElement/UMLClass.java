@@ -67,7 +67,7 @@ public class UMLClass extends GenericTextShape {
         canvas.rotate(angle, posX, posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
-        canvas.drawPath(p, style.getBorderPaint());
+        //canvas.drawPath(p, style.getBorderPaint());
 
         //canvas.drawPath(p, style.getBorderPaint());
         traceStyledLine(posX - w2, posY - h2, posX + w2, posY - h2, canvas);

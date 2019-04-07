@@ -79,8 +79,7 @@ public class ClassEditingDialog extends DialogFragment {
                         name = titleEdit.getText().toString();
                         attributes = attributesEdit.getText().toString();
                         methods = methodsEdit.getText().toString();
-                        ImageEditingDialogManager.getInstance().onClassDialogPositiveClick(style, name, attributes, methods);
-                        ImageEditingDialogManager.getInstance().onStyleDialogNegativeClick();
+                        ImageEditingDialogManager.getInstance().onClassDialogNeutralClick(name, attributes, methods);
                     }
                 });
         return builder.create();

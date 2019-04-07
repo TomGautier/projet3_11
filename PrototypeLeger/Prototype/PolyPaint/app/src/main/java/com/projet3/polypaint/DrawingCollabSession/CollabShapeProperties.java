@@ -28,7 +28,7 @@ public class CollabShapeProperties {
     protected String type;
     protected String fillingColor;
     private String borderColor;
-    private PaintStyle.StrokeType strokeType = PaintStyle.StrokeType.full;
+    private PaintStyle.StrokeType borderType = PaintStyle.StrokeType.full;
     private int[] middlePointCoord;
     private int height;
     private int width;
@@ -36,7 +36,6 @@ public class CollabShapeProperties {
     private ArrayList<String> attributes = new ArrayList<>();
     private ArrayList<String> methods = new ArrayList<>();
     private String label="";
-    private String borderType;
 
     public CollabShapeProperties(String type_, String fillingColor_, String borderColor_) { // pour les formes de connexion
         type = type_;
@@ -44,7 +43,7 @@ public class CollabShapeProperties {
         borderColor = borderColor_;
     }
     public CollabShapeProperties(String type_, String fillingColor_, String borderColor_, ArrayList<String> attributes, ArrayList<String> methods,
-                                 String label, String borderType, int[] middlePointCoord_,
+                                 String label, PaintStyle.StrokeType borderType, int[] middlePointCoord_,
                                  int height_, int width_, int rotation_){
         type = type_;
         fillingColor = fillingColor_;
@@ -65,7 +64,7 @@ public class CollabShapeProperties {
             type = obj.getString(TYPE_TAG);
             fillingColor = obj.getString(FILLING_COLOR_TAG);
             borderColor = obj.getString(BORDER_COLOR_TAG);
-            strokeType = PaintStyle.StrokeType.valueOf(obj.getString(BORDER_TYPE_TAG));
+            borderType = PaintStyle.StrokeType.valueOf(obj.getString(BORDER_TYPE_TAG));
             for (int i = 0; i < 2; i++)
                 middlePointCoord[i] = (int)obj.getJSONArray(MIDDLE_POINT_TAG).get(i);
             height= Integer.parseInt(obj.getString(HEIGHT_TAG));
@@ -109,7 +108,7 @@ public class CollabShapeProperties {
     public String getLabel(){
         return label;
     }
-    public String getBorderType(){
+    public PaintStyle.StrokeType getBorderType(){
         return borderType;
     }
     public int[] getMiddlePointCoord(){
@@ -173,7 +172,7 @@ public class CollabShapeProperties {
     public void setStyle(PaintStyle style) {
         borderColor = Integer.toHexString(style.getBorderPaint().getColor() & 0xffffff);
         fillingColor = Integer.toHexString(style.getBackgroundPaint().getColor() & 0xffffff);
-        strokeType = style.getStrokeType();
+        borderType = style.getStrokeType();
     }
     public PaintStyle getStyle() {
         Paint backgroundPaint = new Paint();
@@ -185,7 +184,7 @@ public class CollabShapeProperties {
             backgroundPaint.setColor(Integer.decode("#" + fillingColor) + 0xff000000);
             borderPaint.setColor(Integer.decode("#" + borderColor) + 0xff000000);
         }
-        return new PaintStyle(borderPaint, backgroundPaint, new Paint(borderPaint), strokeType);
+        return new PaintStyle(borderPaint, backgroundPaint, new Paint(borderPaint), borderType);
     }
 
 }

@@ -14,9 +14,11 @@ public class UMLPhase extends GenericTextShape {
 
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height, style,angle);
+        this.width = width;
     }
-    private UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
+    public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
         super(id, x, y, width, height, style, contents,angle);
+        this.width = width;
     }
 
     @Override
