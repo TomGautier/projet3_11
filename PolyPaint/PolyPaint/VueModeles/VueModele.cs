@@ -452,6 +452,8 @@ namespace PolyPaint.VueModeles
         public void SendLocalCanvas()
         {
             int compteur = 0;
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + "/Backup"))
+                return;
             foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
             {
                 string contents = File.ReadAllText(file);
