@@ -24,5 +24,10 @@ namespace PolyPaint.Vues
         {
             InitializeComponent();
         }
+
+        private void Confirm_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
