@@ -260,8 +260,11 @@ namespace PolyPaint.VueModeles
             SwitchView = 3;
         }
 
-        public void JoinDrawSession(string joinningSessionID)
+        public bool JoinDrawSession(string joinningSessionID)
         {
+            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+            if (info.protection != "")
+                return false;
 
             var format = new
             {
@@ -273,7 +276,6 @@ namespace PolyPaint.VueModeles
             SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
 
             SocketManager.Socket.On("JoinedDrawingSession", () => {
-                GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
                 if(info != null)
                 {
                     //TODO : Load canvas from GalleryItems 
@@ -282,6 +284,31 @@ namespace PolyPaint.VueModeles
                 {
                     //TODO : Load default canvas
                 }
+            });
+            SwitchView = 5;
+            return true;
+        }
+
+        public void JoinSecuredDrawSession(string joinningSessionID, string pwd)
+        {
+            GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningSessionID);
+            if (info.protection != pwd)
+            {
+                MessageBox.Show("Wrong password", "Error");
+                return;
+            }
+
+            var format = new
+            {
+                sessionId = SessionId,
+                username = Username,
+                imageId = joinningSessionID
+            };
+
+            SocketManager.Socket.Emit("JoinDrawingSession", JsonConvert.SerializeObject(format));
+
+            SocketManager.Socket.On("JoinedDrawingSession", () => {
+                    //TODO : Load canvas from GalleryItems 
             });
             SwitchView = 5;
         }

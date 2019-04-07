@@ -34,7 +34,17 @@ namespace PolyPaint.Vues
         private void JoinDrawSession_Click(object sender, RoutedEventArgs e)
         {
             string sessionID = ((Grid)((Button)sender).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
-            ((VueModele)DataContext).JoinDrawSession(sessionID);
+            if (!((VueModele)DataContext).JoinDrawSession(sessionID))
+            {
+                ((Grid)((Button)sender).Parent).Children.OfType<Grid>().AsEnumerable().First().Visibility = Visibility.Visible;
+            }
+        }
+
+        private void SecuredBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string password = ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "PwdTextBox").Text;
+            string sessionID = ((Grid)((Grid)((Button)sender).Parent).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
+            ((VueModele)DataContext).JoinSecuredDrawSession(sessionID, password);
         }
 
         public class ShapeProperties
