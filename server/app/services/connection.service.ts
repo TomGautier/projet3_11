@@ -52,23 +52,9 @@ export class ConnectionService implements ConnectionServiceInterface {
     public async onForgotPassword(username: string, email: string) {
         // generate new random password
         const newPwd = Math.random().toString(36).substr(2, 8);
-        
         // change password in database
         await this.userService.updatePassword(username, newPwd);
-        
         let account = await nodemailer.createTestAccount()
-        // send email with new password
-        /*const smtpTransport = nodemailer.createTransport({  
-                host: account.smtp.host,
-                port: account.smtp.port,
-                secure: account.smtp.secure,
-                auth: {
-                    user: account.user,
-                    pass: account.pass
-                },
-                logger: true,
-                debug: false // include SMTP traffic in the logs
-          }); */
         const smtpTransport = nodemailer.createTransport({  
             host: 'smtp.gmail.com',
             port: 465,
@@ -94,6 +80,18 @@ export class ConnectionService implements ConnectionServiceInterface {
             return {status : 'success', message : 'An e-mail has been sent to ' + email + ' with further instructions.'};
         });  
 
+    }
+
+    public async onResetPassword(username: string, password: string, newPassword: string) {
+        const user = new User(await this.userService.find(username));
+        if (user.password === password) {
+            await this.userService.updatePassword(username, newPassword);
+
+            const sessionId = uuid.v1();
+            this.userManager.addUser(sessionId, username);
+            return sessionId;
+        }
+        return '';
     }
 
     public async onUserDisconnection(roomId: string, socketId:string, username: string) {

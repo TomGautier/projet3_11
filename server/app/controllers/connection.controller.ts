@@ -31,6 +31,13 @@ export class ConnectionController {
                 const valid = this.connectionService.onForgotPassword(req.params.username, req.params.email)
                     .then(success => res.send(success))
             });
+        
+        router.post("/reset/:username/:password/:newPassword",
+            (req: Request, res: Response, next: NextFunction) => {
+                const valid = this.connectionService.onResetPassword(req.params.username, req.params.password, req.params.newPassword)
+                    .then(success => res.send(success))
+            });
+
         return router;
     }
 

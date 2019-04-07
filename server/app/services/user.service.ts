@@ -48,10 +48,10 @@ export class UserService {
         return userStatuses;
     }
 
-    public async updatePassword(username: string, newPwd: string): Promise<{}> {
+    public async updatePassword(username: string, newPassword: string): Promise<{}> {
         const doc = {
             username: username,
-            password: newPwd,
+            password: newPassword,
         }
         
         return await this.databaseService.updateOne(User, doc)
