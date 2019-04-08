@@ -7,23 +7,67 @@
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="300">
     <StackPanel>
-        <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
+        <Button Name="BackBtn" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Retour"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Back"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition  Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition  Width="3*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Username : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Nom d'utilisateur :"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Username :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <TextBox Grid.Column="1" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center"/>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition  Width="2*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition  Width="3*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Password : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Mot de passe : "/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Password :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <PasswordBox Grid.Column="1" Name="passwordBox" VerticalContentAlignment="Center"/>
         </Grid>
-        <Button  Margin="6" Content="Sign Up" Name="signupButton" Click="SignupButton_Click" IsDefault="True"/>
+        <Button  Margin="6" Name="signupButton" Click="SignupButton_Click" IsDefault="True">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Inscription"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Sign Up"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 </UserControl>
