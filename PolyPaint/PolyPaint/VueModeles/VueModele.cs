@@ -641,9 +641,12 @@ namespace PolyPaint.VueModeles
                     };
                     SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
                     SocketManager.JoinDrawingSession(formatedData.imageId);
-                    shapes = await networkManager.LoadShapesAsync(Username, SessionId, formatedData.imageId);
-                    sizes = await networkManager.LoadImageData(Username, SessionId, formatedData.imageId);
-                    editeur.LoadFromServer(shapes, sizes);
+                    await Application.Current.Dispatcher.Invoke(async() =>
+                    {
+                        shapes = await networkManager.LoadShapesAsync(Username, SessionId, formatedData.imageId);
+                        sizes = await networkManager.LoadImageData(Username, SessionId, formatedData.imageId);
+                        editeur.LoadFromServer(shapes, sizes);
+                    });
                     //TODO SET CANVAS TO IMAGEID
                     SwitchView = 5;
                 }
