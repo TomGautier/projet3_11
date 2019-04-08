@@ -541,6 +541,8 @@ namespace PolyPaint.VueModeles
                     conversationId = ""
                 };
                 var formatedData = JsonConvert.DeserializeAnonymousType(data.ToString(), dataFormat);
+                if (formatedData.conversationId == ChatManager.RoomID)
+                    return;
                 string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre la discussion " : " invited you to join the chatroom ") + formatedData.conversationId;
                 string captation = "Invitation";
                 if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
@@ -582,6 +584,8 @@ namespace PolyPaint.VueModeles
                     imageId = ""
                 };
                 var formatedData = JsonConvert.DeserializeAnonymousType(data.ToString(), dataFormat);
+                if (formatedData.imageId == SocketManager.SessionID)
+                    return;
                 string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre sa session de dessin" : " invited you to join his drawing session");
                 string captation = "Invitation";
                 if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
