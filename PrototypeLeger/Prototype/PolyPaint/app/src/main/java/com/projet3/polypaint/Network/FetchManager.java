@@ -55,6 +55,17 @@ public class FetchManager {
     public final Conversation getUserConversationAt(int index) {
         return userConversations.get(index);
     }
+    public ArrayList<Conversation> getUserConversations(){
+        return userConversations;
+    }
+    public Conversation getUserConversationByName(String conversationName){
+        for (int i = 0; i < userConversations.size(); i++){
+            if(userConversations.get(i).getName().equals(conversationName))
+                return userConversations.get(i);
+        }
+        return null;
+    }
+
     public void addUserConversation(String name){
         userConversations.add(new Conversation(name));
     }

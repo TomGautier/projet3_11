@@ -1,4 +1,5 @@
 export default {
+    UserConnected:"UserConnected",
     // Chat
     MessageSent:"MessageSent",
     UserJoinedChat:"UserJoinedChat",
@@ -7,11 +8,17 @@ export default {
     UserLeftConversation:"UserLeftConversation",
     CreateConversation:"CreateConversation",
     CreatedConversation:"CreatedConversation",
+    
+    InviteToConversation:"InviteToConversation",
+    InvitedToConversation:"InvitedToConversation",
+    RespondToConversationInvite:"RespondToConversationInvite",
+    RespondedToConversationInvite:"RespondedToConversationInvite",
     // Connexion
     LoginAttempt:"LoginAttempt",
     SignUp:"SignUp",
     UserLogged:"UserLogged",
     UserIsNotLogged:"UserIsNotLogged",
+    UserIsNotConnected:"UserIsNotConnected",
     UserLeft:"UserLeft",
     UsernameAlreadyExists:"UsernameAlreadyExists",
     InvalidCredentials:"InvalidCredentials",
@@ -23,6 +30,11 @@ export default {
     JoinedDrawingSession:"JoinedDrawingSession",
     LeaveDrawingSession:"LeaveDrawingSession",
     LeftDrawingSession:"LeftDrawingSession",
+
+    InviteToDrawingSession:"InviteToDrawingSession",
+    InvitedToDrawingSession:"InvitedToDrawingSession",
+    RespondToDrawingInvite:"RespondToDrawingInvite",
+    RespondedToDrawingInvite:"RespondedToDrawingInvite",
 
     ObjectIsntSelected:"ObjectIsntSelected",
     ObjectSelectedByOtherUser:"ObjectSelectedByOtherUser",

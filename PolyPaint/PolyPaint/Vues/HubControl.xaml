@@ -31,17 +31,5 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Margin="5" Command="{Binding ChangeLanguage}">
-            <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                    <Setter Property="Content" Value="Change Language"/>
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding Localization}" Value="en">
-                            <Setter Property="Content" Value="Changer la langue"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Button.Style>
-        </Button>
     </StackPanel>
 </UserControl>

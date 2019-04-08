@@ -3,17 +3,25 @@ package com.projet3.polypaint.UserList;
 import android.app.Fragment;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
@@ -136,7 +144,7 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)).isConnected());
+                createUserDropdownMenu(view,((User) listView.getAdapter().getItem(position)));
             }
         });
     }
@@ -157,23 +165,52 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         });
     }
 
-    private void createUserDropdownMenu(View view, boolean isConnected) {
+    private void createUserDropdownMenu(View view, final User user) {
         PopupMenu dropDownMenu = new PopupMenu(getActivity(), view);
-        if (isConnected)
+        if (user.isConnected())
             dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
         else
-            dropDownMenu.getMenuInflater().inflate(R.menu.users_list_disconnected_entry_menu, dropDownMenu.getMenu());
+            return;
+            //dropDownMenu.getMenuInflater().inflate(R.menu.users_list_disconnected_entry_menu, dropDownMenu.getMenu());
         dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
+            public boolean onMenuItemClick(final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.inviteToFriend:
-                        break;
                     case R.id.inviteToConversation:
-
+                        LayoutInflater inflater =(LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+                        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                        boolean focusable = true;
+                        final View popupView = inflater.inflate(R.layout.invite_to, null);
+                        //TextView text = (TextView)popupView.findViewById(R.id.inviteInTextView);
+                        //text.setText("Entrez le nom de la conversation :");
+                        final EditText editText = (EditText)popupView.findViewById(R.id.inviteInEditText);
+                        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                        popupView.setOnTouchListener(new View.OnTouchListener() {
+                            @Override
+                            public boolean onTouch(View v, MotionEvent event) {
+                                if (v != popupView){
+                                    popupWindow.dismiss() ;
+                                }
+                                return true;
+                            }
+                        });
+                        Button acceptButton = (Button)popupView.findViewById(R.id.inviteToButton);
+                        acceptButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (!editText.getText().toString().isEmpty()){
+                                    SocketManager.currentInstance.sendInviteToConversation(user.getUsername(),editText.getText().toString());
+                                    popupWindow.dismiss();
+                                }
+                                else
+                                    Toast.makeText(getContext(),"veuillez entrer un nom de conversation valide",Toast.LENGTH_LONG).show();
+                            }
+                        });
                         break;
                     case R.id.inviteToDrawSession:
-
+                        SocketManager.currentInstance.sendInviteToDrawingSession(user.getUsername());
                         break;
                 }
                 return true;

@@ -1,19 +1,20 @@
 package com.projet3.polypaint.Network;
 
 
-import com.google.gson.JsonObject;
-import com.projet3.polypaint.Chat.NewMessageListener;
+import com.projet3.polypaint.Chat.ChatListener;
 import com.projet3.polypaint.DrawingCollabSession.CollabConnectionProperties;
 import com.projet3.polypaint.DrawingCollabSession.CollabShape;
 import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
 import com.projet3.polypaint.DrawingCollabSession.DrawingCollabSessionListener;
+import com.projet3.polypaint.HomeActivityListener;
+import com.projet3.polypaint.UserList.User;
 import com.projet3.polypaint.UserList.UsersListListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Properties;
+import java.util.ArrayList;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -56,7 +57,14 @@ public class SocketManager  {
     public final String STACKED_FORM_TAG = "StackedElement";
     public final String UNSTACK_FORM_TAG = "UnstackElement";
     public final String UNSTACKED_FORM_TAG = "UnstackedElement";
-
+    public final String INVITE_TO_CONVERSATION = "InviteToConversation";
+    public final String INVITE_TO_DRAWING_SESSION = "InviteToDrawingSession";
+    public final String INVITED_TO_CONVERSATION = "InvitedToConversation";
+    public final String INVITED_TO_DRAWING_SESSION = "InvitedToDrawingSession";
+    public final String RESPOND_TO_DRAWING_SESSION_INVITATION = "RespondToDrawingInvite";
+    public final String RESPOND_TO_CONVERSATION_INVITATION = "RespondToConversationInvite";
+    public final String RESPONDED_TO_DRAWING_SESSION_INVITATION = "RespondedToDrawingInvite";
+    public final String RESPONDED_TO_CONVERSATION_INVITATION = "RespondedToConversationInvite";
     //Liste d'utilisateurs
     public final String NEW_USER_CONNECTED_TAG = "UserJoinedChat";
 
@@ -64,6 +72,7 @@ public class SocketManager  {
 
 
     //Properties
+    public final String RESPONSE_TO_INVITATION = "response";
     private final String NEW_CANVAS_DIMENSIONS = "newCanvasDimensions";
     private final String ELEMENT_ID_TAG ="elementId";
     private final String ELEMENTS_IDS_TAG ="elementIds";
@@ -72,16 +81,20 @@ public class SocketManager  {
     private final String NAME_TAG = "name";
     private final String DATE_TAG = "date";
     private final String USERNAME_TAG = "username";
+    private final String INVITED_USERNAME_TAG = "invitedUsername";
+
     private final String MESSAGE_TAG = "message";
     private final String SESSION_ID_TAG = "sessionId";
     private final String CONVERSATION_ID_TAG = "conversationId";
+    private final String USER_CONNECTED_TAG = "UserConnected";
 
 
     public static SocketManager currentInstance;
     private Socket socket;
-    private NewMessageListener newMessagelistener;
+    private ChatListener chatListener;
     private DrawingCollabSessionListener drawingCollabSessionListener;
     private UsersListListener usersListListener;
+    private HomeActivityListener homeListener;
 
     private String uri;
     private String sessionId;
@@ -92,10 +105,12 @@ public class SocketManager  {
         sessionId = sessionId_;
         setupSocket();
     }
+    public void setupHomeListener(HomeActivityListener listener_) {
+        homeListener = listener_;
+    }
 
-
-    public void setupNewMessageListener(NewMessageListener listener_) {
-        newMessagelistener = listener_;
+    public void setupChatListener(ChatListener listener_) {
+        chatListener = listener_;
     }
     public void setupDrawingCollabSessionListener(DrawingCollabSessionListener listener_) {
         drawingCollabSessionListener = listener_;
@@ -115,15 +130,17 @@ public class SocketManager  {
                     String date = "";
                     String message = "";
                     String username = "";
+                    String conversation = "";
                     try {
                         //JSONObject json = new JSONObject((JSONObject)args[0]);
                         JSONObject json = (JSONObject)args[0];
                         date = json.getString(DATE_TAG);
                         username = json.getString(USERNAME_TAG);
                         message = json.getString(MESSAGE_TAG);
+                        conversation = json.getString(CONVERSATION_ID_TAG);
                     }
                     catch(JSONException e) {}
-                    newMessagelistener.onNewMessage(formatMessage(date,username,message));
+                    chatListener.onNewMessage(formatMessage(date,username,message), conversation);
                 }
             });
             socket.on(NEW_USER_CONNECTED_TAG, new Emitter.Listener() {
@@ -337,6 +354,71 @@ public class SocketManager  {
 
                 }
             });
+            socket.on(INVITED_TO_CONVERSATION, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject obj = (JSONObject)args[0];
+                    String username = "";
+                    String conversation = "";
+                    try{
+                        username = obj.getString(USERNAME_TAG);
+                        conversation = obj.getString(CONVERSATION_ID_TAG);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    chatListener.onInviteToConversation(username,conversation);
+                }
+            });
+            socket.on(INVITED_TO_DRAWING_SESSION, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject obj = (JSONObject)args[0];
+                    String username = "";
+                    String imageId = "";
+                    try{
+                        username = obj.getString(USERNAME_TAG);
+                        imageId = obj.getString(IMAGE_TAG);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    homeListener.onInviteToDrawingSession(username,imageId);
+                }
+            });
+            socket.on(RESPONDED_TO_DRAWING_SESSION_INVITATION, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject obj = (JSONObject) args[0];
+                    boolean response = false;
+                    String username = "";
+                    String imageId = "";
+                    try{
+                        response = obj.getBoolean(RESPONSE_TO_INVITATION);
+                        username = obj.getString(INVITED_USERNAME_TAG);
+                        imageId = obj.getString(IMAGE_TAG);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    homeListener.onResponseToDrawingSessionInvitation(username,imageId,response);
+                }
+            });
+            socket.on(RESPONDED_TO_CONVERSATION_INVITATION, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    JSONObject obj = (JSONObject) args[0];
+                    boolean response = false;
+                    String username = "";
+                    String conversation = "";
+                    try{
+                        response = obj.getBoolean(RESPONSE_TO_INVITATION);
+                        username = obj.getString(INVITED_USERNAME_TAG);
+                        conversation = obj.getString(CONVERSATION_ID_TAG);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    chatListener.onResponseToConversationInvitation(username,conversation,response);
+                }
+            });
+
 
         }catch(Exception e) {}
 
@@ -365,6 +447,7 @@ public class SocketManager  {
         }
         socket.emit(JOIN_CONVERSATION_TAG, json.toString());
     }
+
     public void leaveConversation(String conversationID){
         JSONObject json = null;
         try{
@@ -740,6 +823,68 @@ public class SocketManager  {
         }
         if(json != null)
             socket.emit(REZIZE_CANVAS_TAG, json.toString());
+    }
+    public void sendInviteToDrawingSession(String username){
+        JSONObject json = null;
+        if (!FetchManager.currentInstance.getUsersNames().contains(username))
+            return;
+        try{
+            //dimensionsJson = new JSONObject().put("x",width).put("y",height);
+            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG,FetchManager.currentInstance.getUserUsername())
+                    .put(INVITED_USERNAME_TAG, username).put(CollabShape.IMAGE_ID_TAG,imageId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json != null)
+            socket.emit(INVITE_TO_DRAWING_SESSION, json.toString());
+    }
+    public void sendInviteToConversation(String username, String conversation){
+        JSONObject json = null;
+        if (!FetchManager.currentInstance.getUsersNames().contains(username))
+            return;
+        if (!FetchManager.currentInstance.getUserConversationsNames().contains(conversation)){
+            if(!RequestManager.currentInstance.addUserConversation(conversation))
+                return;
+        }
+        try{
+            //dimensionsJson = new JSONObject().put("x",width).put("y",height);
+            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG,FetchManager.currentInstance.getUserUsername())
+                    .put(INVITED_USERNAME_TAG, username).put(CONVERSATION_ID_TAG,conversation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json != null)
+            socket.emit(INVITE_TO_CONVERSATION, json.toString());
+    }
+    public void sendResponseToDrawingSessionInvitation(String username, String imageId,boolean response){
+        JSONObject json = null;
+        if (!FetchManager.currentInstance.getUsersNames().contains(username))
+            return;
+        try{
+            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG,username)
+                    .put(INVITED_USERNAME_TAG, FetchManager.currentInstance.getUserUsername()).put(RESPONSE_TO_INVITATION,response).put(CollabShape.IMAGE_ID_TAG,imageId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json != null)
+            socket.emit(RESPOND_TO_DRAWING_SESSION_INVITATION, json.toString());
+    }
+    public void sendResponseToConversationInvitation(String username, String conversation,boolean response){
+        JSONObject json = null;
+        if (!FetchManager.currentInstance.getUsersNames().contains(username))
+            return;
+        try{
+            json = new JSONObject().put(SESSION_ID_TAG,sessionId).put(USERNAME_TAG,username)
+                    .put(INVITED_USERNAME_TAG, FetchManager.currentInstance.getUserUsername()).put(RESPONSE_TO_INVITATION,response).put(CONVERSATION_ID_TAG,conversation);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        if(json != null)
+            socket.emit(RESPOND_TO_CONVERSATION_INVITATION, json.toString());
+    }
+
+    public void sendUsername(){
+        socket.emit(USER_CONNECTED_TAG,FetchManager.currentInstance.getUserUsername());
     }
 
 
