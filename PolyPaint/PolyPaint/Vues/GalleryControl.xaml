@@ -104,8 +104,9 @@
                               </Button.Style>
                             </Button>
                             <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
-                          
-                          <Grid Visibility="Collapsed">
+
+                            </Grid>
+                            <Grid Visibility="Collapsed" Background="LightGray">
                             <Grid.ColumnDefinitions>
                               <ColumnDefinition Width="1*"/>
                               <ColumnDefinition Width="2*"/>
@@ -139,7 +140,6 @@
                                 </Style>
                               </Button.Style>
                             </Button>
-                          </Grid>
                           </Grid>
                       </StackPanel>
                     </DataTemplate>
