@@ -377,7 +377,7 @@ public class SocketManager  {
                     String imageId = "";
                     try{
                         username = obj.getString(USERNAME_TAG);
-                        imageId = obj.getString(IMAGE_TAG);
+                        imageId = obj.getString(CollabShape.IMAGE_ID_TAG);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -896,6 +896,9 @@ public class SocketManager  {
     public void leave(String username) {
         socket.emit(USERLEFT_TAG, username);
         socket.disconnect();
+    }
+    public boolean isInDrawingSession(){
+        return imageId != null && !imageId.isEmpty();
     }
 
     private String formatIpToUri(String ip) {
