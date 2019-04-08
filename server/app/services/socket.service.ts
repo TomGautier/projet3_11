@@ -17,8 +17,9 @@ export class SocketService {
     private users: Map<string, string> = new Map();
 
     private addUserSocketId(socketId: string, username: string) {
-        console.log("username ",socketId);
+        console.log("username ",username, socketId);
         this.users.set(username, socketId);
+        console.log("checked", this.getUserSocketId(username);
     }
 
     public getUserSocketId(username: string): string | undefined {

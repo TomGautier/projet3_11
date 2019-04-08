@@ -88,7 +88,7 @@ export class DrawingSessionManager {
         const response = { username: doc.username, invitedUsername: doc.invitedUsername, imageId: doc.imageId };
         const invitedSocketId = this.socketService.getUserSocketId(doc.invitedUsername);
         if(invitedSocketId !== undefined) {
-            this.socketService.emit(invitedSocketId, SocketEvents.RespondToDrawingInvite, response)
+            this.socketService.emit(invitedSocketId, SocketEvents.InvitedToDrawingSession, response)
         }
         else {
             this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
