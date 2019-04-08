@@ -41,10 +41,24 @@ export class ConversationManager {
     }
 
     public inviteToConversation(socketId: string, args: any) {
-
+        const doc = { username: args.username, invitedUsername: args.invitedUsername, conversationId: args.conversationId };
+        const invitedSocketId = this.socketService.getUserSocketId(args.invitedUsername);
+        if(invitedSocketId !== undefined) {
+            this.socketService.emit(invitedSocketId, SocketEvents.InvitedToConversation, doc)
+        }
+        else {
+            this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
+        }
     }
 
     public respondToConversationInvite(socketId: string, args: any) { 
-
+        const doc = { username: args.username, invitedUsername: args.invitedUsername, conversationId: args.conversationId, response: args.response };
+        const invitingSocketId = this.socketService.getUserSocketId(args.username);
+        if(invitingSocketId !== undefined) {
+            this.socketService.emit(invitingSocketId, SocketEvents.RespondedToConversationInvite, doc)
+        }
+        else {
+            this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
+        }
     }
 }

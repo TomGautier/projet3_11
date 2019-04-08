@@ -85,11 +85,25 @@ export class DrawingSessionManager {
     }
 
     public inviteToDrawingSession(socketId: string, doc: any) {
-
+        const response = { username: doc.username, invitedUsername: doc.invitedUsername, conversationId: doc.conversationId, response: doc.response };
+        const invitedSocketId = this.socketService.getUserSocketId(doc.invitedUsername);
+        if(invitedSocketId !== undefined) {
+            this.socketService.emit(invitedSocketId, SocketEvents.RespondToDrawingInvite, response)
+        }
+        else {
+            this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
+        }
     }
 
     public respondToDrawingInvite(socketId: string, doc: any) {
-
+        const response = { username: doc.username, invitedUsername: doc.invitedUsername, conversationId: doc.conversationId, response: doc.response };
+        const invitingSocketId = this.socketService.getUserSocketId(doc.username);
+        if(invitingSocketId !== undefined) {
+            this.socketService.emit(invitingSocketId, SocketEvents.RespondedToDrawingInvite, response)
+        }
+        else {
+            this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
+        }
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
