@@ -214,6 +214,7 @@ namespace PolyPaint.Vues
         private void surfaceDessin_OpenConnectorSettings(object sender, RoutedEventArgs e)
         {
             ConnectorSetter menu = new ConnectorSetter();
+            menu.DataContext = (DataContext as VueModele);
             surfaceDessin.Visibility = Visibility.Hidden;
             menu.Show();
             menu.Closing += new CancelEventHandler(ConnectorSetterClosingHandler);
@@ -242,12 +243,37 @@ namespace PolyPaint.Vues
         {
             if (surfaceDessin.GetSelectedStrokes().Count > 1)
             {
-                MessageBox.Show("Error : Too many elements selected");
+                if ((DataContext as VueModele).Localization == "en")
+                {
+                    MessageBox.Show("Error : Too many elements selected");
+                }
+                else
+                {
+                    MessageBox.Show("Erreur : Veuillez sélectionner 1 seul élément");
+                }
             }
             else if (surfaceDessin.GetSelectedStrokes().Count == 0)
             {
-                MessageBox.Show("Error : No element selected");
+                if ((DataContext as VueModele).Localization == "en")
+                {
+                    MessageBox.Show("Error : No element selected");
+                }
+                else
+                {
+                    MessageBox.Show("Erreur : Aucun élément sélectionné");
+                }
             }
+           /* else if ((surfaceDessin.GetSelectedStrokes()[0] as Form).Type == "Text")
+            {
+                if ((DataContext as VueModele).Localization == "en")
+                {
+                    MessageBox.Show("Error : Selected element must be a Form");
+                }
+                else
+                {
+                    MessageBox.Show("Erreur : L'élément sélectionné doit être une forme");
+                }
+            }*/
             else if ((surfaceDessin.GetSelectedStrokes()[0] as Form).Type == "UmlClass")
             {
                 string name = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Label;
@@ -256,6 +282,7 @@ namespace PolyPaint.Vues
                 List<string> attributes = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Attributes;
 
                 UmlClassSetter menu = new UmlClassSetter(name, border, methods, attributes);
+                menu.DataContext = (DataContext as VueModele);
                 surfaceDessin.Visibility = Visibility.Hidden;
                 menu.Show();
                 menu.Closing += new CancelEventHandler(UMLSetterClosingHandler);
@@ -266,6 +293,7 @@ namespace PolyPaint.Vues
                 string label = (surfaceDessin.GetSelectedStrokes()[0] as Form).Label;
                 string border = (surfaceDessin.GetSelectedStrokes()[0] as Form).BorderStyle;
                 GenericSetter menu = new GenericSetter(label, border);
+                menu.DataContext = (DataContext as VueModele);
                 surfaceDessin.Visibility = Visibility.Hidden;
                 menu.Show();
                 menu.Closing += new CancelEventHandler(GenericSetterClosingHandler);

@@ -128,6 +128,8 @@ namespace PolyPaint.Utilitaires
             RotateTransform RT = new RotateTransform(this.CurrentRotation, this.Center.X, this.Center.Y);
             drawingContext.PushTransform(RT);
 
+            while (text.Width > this.Width) { this.Width += 5; }
+            while (text.Height > this.Height) { this.Height += 5; }
             drawingContext.DrawText(text, origin);
 
             drawingContext.Pop();
