@@ -614,6 +614,10 @@ namespace PolyPaint.VueModeles
             {
                 ProprieteModifiee(e.PropertyName);
             }
+            else if (e.PropertyName == "Thumbnail")
+            {
+                UpdateThumbnail();
+            }
             else if (e.PropertyName == "CanvasSize")
             {
                 this.Canvas.Height = editeur.CanvasHeight;

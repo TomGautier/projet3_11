@@ -1095,6 +1095,7 @@ namespace PolyPaint.Modeles
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.ResetCanvas();
+                    ProprieteModifiee("Thumbnail");
                 });
             });
             this.SocketManager.Socket.On("NewUserJoined", (data) =>
@@ -1110,6 +1111,7 @@ namespace PolyPaint.Modeles
                     }
                     
                 }
+               // ProprieteModifiee("Thumbnail");
             });
             this.SocketManager.Socket.On("ResizedCanvas", (data) =>
             {
@@ -1124,7 +1126,7 @@ namespace PolyPaint.Modeles
                     this.CanvasWidth = dimensions[0] * HC_PROP;
                     this.CanvasHeight = dimensions[1] * HC_PROP;
                     ProprieteModifiee("CanvasSize");
-                    
+                    ProprieteModifiee("Thumbnail");
                 });
                 
             });
@@ -1145,7 +1147,9 @@ namespace PolyPaint.Modeles
                              this.FormConnectorManager.Arrows[this.FormConnectorManager.Arrows.Count - 1] = (this.traits.Last() as Arrow);
                          }
                          // Code causing the exception or requires UI thread access
+                         ProprieteModifiee("Thumbnail");
                      });
+                    
 
                 });
             this.SocketManager.Socket.On("DeletedElements", (data) =>
@@ -1165,9 +1169,11 @@ namespace PolyPaint.Modeles
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     this.deleteElements(idList);
+                    ProprieteModifiee("Thumbnail");
                     // this.AddForm(shape);
                     // Code causing the exception or requires UI thread access
                 });
+               // ProprieteModifiee("Thumbnail");
 
             });
             this.SocketManager.Socket.On("CutedElements", (data) =>
@@ -1191,7 +1197,9 @@ namespace PolyPaint.Modeles
                     this.deleteElements(idList);
                     // this.AddForm(shape);
                     // Code causing the exception or requires UI thread access
+                    ProprieteModifiee("Thumbnail");
                 });
+               // ProprieteModifiee("Thumbnail");
             });
             
             this.SocketManager.Socket.On("SelectedElements", (data) =>
@@ -1208,7 +1216,8 @@ namespace PolyPaint.Modeles
                 Application.Current.Dispatcher.Invoke(() =>
                 {                 
                     this.selectElements(username, oldIds, newIds);             
-                });              
+                });
+               // ProprieteModifiee("Thumbnail");
             });
             this.SocketManager.Socket.On("StackedElement", (data) =>
             {
@@ -1225,7 +1234,9 @@ namespace PolyPaint.Modeles
                         
                     }
                     this.deleteElements(new string[] { (toStack as Form).Id });
+                    ProprieteModifiee("Thumbnail");
                 });
+                
             });
             this.SocketManager.Socket.On("UnstackedElement", (data) =>
             {
@@ -1267,7 +1278,9 @@ namespace PolyPaint.Modeles
                         shape.author = username;
                     }
                     this.AddForm(shape, true);
+                    ProprieteModifiee("Thumbnail");
                 });
+                
             });
             this.SocketManager.Socket.On("ModifiedElement", (data) =>
             {
@@ -1296,10 +1309,10 @@ namespace PolyPaint.Modeles
                             //(toBeModified[0] as Form).SetToShape(s);
                         }
                     }
-                    
+                     ProprieteModifiee("Thumbnail");
                 });
-                
-                     
+
+               
             });
             this.SocketManager.Socket.On("DuplicatedElements", (data) =>
             {
@@ -1323,11 +1336,11 @@ namespace PolyPaint.Modeles
                         }
                         this.AddForm(s, true);
                         }
-                    
+                    ProprieteModifiee("Thumbnail");
 
                 });
 
-
+                //ProprieteModifiee("Thumbnail");
             });
             this.SocketManager.Socket.On("DuplicatedCutElements", (data) =>
             {
@@ -1354,10 +1367,10 @@ namespace PolyPaint.Modeles
                         this.LastCut = null;
                     }
 
-
+                    ProprieteModifiee("Thumbnail");
                 });
 
-
+               // ProprieteModifiee("Thumbnail");
             });
 
 
