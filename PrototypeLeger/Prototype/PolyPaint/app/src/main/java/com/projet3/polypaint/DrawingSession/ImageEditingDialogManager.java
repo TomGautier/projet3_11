@@ -72,19 +72,19 @@ public class ImageEditingDialogManager {
 
     void onDialogPositiveClick(PaintStyle style, String contents) {
         for (ImageEditingDialogSubscriber s : subscribers) {
-            if (contents != null && !contents.isEmpty() && style != null)
+            if (contents != null && style != null)
                 s.onTextDialogPositiveResponse(contents, style);
         }
     }
     void onClassDialogPositiveClick(PaintStyle style, String name, String attributes, String methods) {
         for (ImageEditingDialogSubscriber s : subscribers) {
-            if (name != null && !name.isEmpty() && style != null)
+            if (name != null && style != null)
                 s.onClassDialogPositiveResponse(name, attributes, methods, style);
         }
     }
     public void onClassDialogNeutralClick(String name, String attributes, String methods) {
         for (ImageEditingDialogSubscriber s : subscribers) {
-            if (name != null && !name.isEmpty())
+            if (name != null)
                 s.onClassDialogNeutralResponse(name, attributes, methods);
         }
     }

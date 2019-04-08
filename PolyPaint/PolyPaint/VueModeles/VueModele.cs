@@ -35,6 +35,7 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
+        public string currentGalleryType;
         private string localization = "fr";
         public string Localization
         {
@@ -59,7 +60,7 @@ namespace PolyPaint.VueModeles
             set
             {
                 sessionId = value;
-                ChatManager.SessionID = value;
+                ChatManager.SessionID = value;                
                 ProprieteModifiee();
             }
         }
@@ -111,6 +112,7 @@ namespace PolyPaint.VueModeles
         }
 
         private ChatManager chatManager = new ChatManager();
+
         public ChatManager ChatManager
         {
             get { return chatManager; }
@@ -302,7 +304,9 @@ namespace PolyPaint.VueModeles
                     MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
                     return;
                 }
-                ChatManager.Connect();
+                initializeVueModele();
+                notifyConnection();
+                ChatManager.Connect(Localization);
                 SwitchView = 3;
             }
             catch (Exception)
@@ -338,6 +342,8 @@ namespace PolyPaint.VueModeles
 
                     return;
                 }
+                initializeVueModele();
+                notifyConnection();
                 SwitchView = 3;
             }
             catch (Exception)
@@ -415,10 +421,26 @@ namespace PolyPaint.VueModeles
             JoinNewDrawSession(newDrawingId);
         }
 
+        public bool canChangeProtection(string author)
+        {
+            if (author != username)
+            {
+                MessageBox.Show((Localization == "fr") ? "Vous ne pouvez pas changer la protection de l'image d'un autre" : "You cannot change the protection of someone else's drawing", "Error");
+                return false;
+            }
+            return true;
+        }
+
+        public void ChangeProtection(string drawingId, string protection)
+        {
+            networkManager.changeProtection(SessionId, Username, drawingId, protection);
+            LoadGallery(currentGalleryType);
+        }
+
         public async void LoadGallery(string galleryType)
         {
-            string gallery;
-            gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
+            currentGalleryType = galleryType;
+            string gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
             if(GalleryItems != null)
                 GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -434,12 +456,12 @@ namespace PolyPaint.VueModeles
 
             foreach (var user in users)
             {
-                if (user.Username == Username)
+                if (user.username == Username)
                     continue;
-                userItems.Add(new ChatControl.UserItem() { Username = user.Username, ConnectionStatus = user.ConnectionStatus ? 1 : 0 });
+                userItems.Add(new ChatControl.UserItem() { username = user.username, connected = user.connected ? 1 : 0 });
             }
 
-            return userItems.OrderByDescending(x => x.ConnectionStatus).ToList(); ;
+            return userItems.OrderByDescending(x => x.connected).ToList(); ;
         }
 
         private class channelTemplate
@@ -469,11 +491,28 @@ namespace PolyPaint.VueModeles
             }
             catch (Exception)
             {
-                MessageBox.Show("Chanel already exists", "Error");
+                MessageBox.Show((Localization == "fr") ? "Le canal existe déjà" : "Chanel already exists", "Error");
                 return;
             }
             ChatManager.RoomsID.Add(ChatManager.NewRoomID);
             ChatManager.RoomID = ChatManager.NewRoomID;
+        }
+
+        public void InviteToDrawing(string invited)
+        {
+            var invite = new
+            {
+                sessionId = this.SessionId,
+                username = Username,
+                invitedUsername = invited,
+                imageId = SocketManager.SessionID
+            };
+            SocketManager.Socket.Emit("InviteToDrawingSession", JsonConvert.SerializeObject(invite));
+        }
+
+        public void notifyConnection()
+        {
+            SocketManager.Socket.Emit("UserConnected", Username);
         }
 
         /// <summary>
@@ -483,8 +522,12 @@ namespace PolyPaint.VueModeles
         /// </summary>
         public VueModele()
         {
+            SocketManager = new SocketManager(true);
+        }
+        public void initializeVueModele()
+        {
             this.IsOffline = false;
-            
+
             this.Canvas = new CustomInkCanvas();
 
             FormConnectorManager = new FormConnectorManager();
@@ -499,7 +542,8 @@ namespace PolyPaint.VueModeles
             //editeur.initializeSocketEvents();
             //SocketManager.JoinDrawingSession("MockSessionID");
 
-            if (!this.IsOffline) { 
+            if (!this.IsOffline)
+            {
 
                 //this.Username = "Bob";
                 //SocketManager.UserName = this.Username;
@@ -542,6 +586,88 @@ namespace PolyPaint.VueModeles
             HandleDuplicate = new RelayCommand<object>(editeur.HandleDuplicate);
 
 
+
+            SocketManager.Socket.On("InvitedToConversation", (data) =>
+            {
+                var dataFormat = new
+                {
+                    username = "",
+                    invitedUsername = "",
+                    conversationId = ""
+                };
+                var formatedData = JsonConvert.DeserializeAnonymousType(data.ToString(), dataFormat);
+                if (formatedData.conversationId == ChatManager.RoomID)
+                    return;
+                string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre la discussion " : " invited you to join the chatroom ") + formatedData.conversationId;
+                string captation = "Invitation";
+                if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    var res = new
+                    {
+                        username = formatedData.username,
+                        invitedUsername = formatedData.invitedUsername,
+                        conversationId = formatedData.conversationId,
+                        response = true
+                    };
+                    SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
+                    if (!ChatManager.RoomsID.Contains(formatedData.conversationId))
+                    {
+                        ChatManager.RoomsID.Add(formatedData.conversationId);
+                    }
+                    ChatManager.RoomID = formatedData.conversationId;
+                    ChatManager.JoinChannel(Localization);
+                }
+                else
+                {
+                    var res = new
+                    {
+                        username = formatedData.username,
+                        invitedUsername = formatedData.invitedUsername,
+                        conversationId = formatedData.conversationId,
+                        response = false
+                    };
+                    SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
+                }
+            });
+
+            SocketManager.Socket.On("InvitedToDrawingSession", (data) =>
+            {
+                var dataFormat = new
+                {
+                    username = "",
+                    invitedUsername = "",
+                    imageId = ""
+                };
+                var formatedData = JsonConvert.DeserializeAnonymousType(data.ToString(), dataFormat);
+                if (formatedData.imageId == SocketManager.SessionID)
+                    return;
+                string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre sa session de dessin" : " invited you to join his drawing session");
+                string captation = "Invitation";
+                if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                {
+                    var res = new
+                    {
+                        username = formatedData.username,
+                        invitedUsername = formatedData.invitedUsername,
+                        imageId = formatedData.imageId,
+                        response = true
+                    };
+                    SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
+                    SocketManager.JoinDrawingSession(formatedData.imageId);
+                    SwitchView = 5;
+                }
+                else
+                {
+                    var res = new
+                    {
+                        username = formatedData.username,
+                        invitedUsername = formatedData.invitedUsername,
+                        imageId = formatedData.imageId,
+                        response = false
+                    };
+                    SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
+                }
+            });
         }
         public void SendCanvas(CustomInkCanvas canvas)
         {

@@ -17,13 +17,16 @@ export class ConversationManager {
         this.socketService.subscribe(SocketEvents.UserJoinedConversation, args => this.joinConversation(args[0], JSON.parse(args[1])));
         // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId
         this.socketService.subscribe(SocketEvents.UserLeftConversation, args => this.leaveConversation(args[0], JSON.parse(args[1])));
+
+        this.socketService.subscribe(SocketEvents.InviteToConversation, args => this.inviteToConversation(args[0], JSON.parse(args[1])));
+        this.socketService.subscribe(SocketEvents.RespondToConversationInvite, args => this.respondToConversationInvite(args[0], JSON.parse(args[1])));
     }
 
     public onMessageSent(socketId: string, args: any) {
         const d = Date.now();
         const date = (new Date(Date.now())).toLocaleTimeString();
         
-        const messageJson = {date: date, username: args.username, message: args.message};
+        const messageJson = {date: date, username: args.username, message: args.message,conversationId: args.conversationId};
         this.socketService.emit(args.conversationId, SocketEvents.MessageSent, messageJson);
     }
 
@@ -35,5 +38,30 @@ export class ConversationManager {
     public leaveConversation(socketId: string, args: any) {
         this.socketService.leaveRoom(args.conversationId, socketId);
         this.socketService.emit(args.conversationId, SocketEvents.UserLeftConversation, args.username);
+    }
+
+    public inviteToConversation(socketId: string, args: any) {
+        const doc = { username: args.username, invitedUsername: args.invitedUsername, conversationId: args.conversationId };
+        const invitedSocketId = this.socketService.getUserSocketId(args.invitedUsername);
+        console.log(args.username, "inviting", args.invitedUsername, "to", args.conversationId);
+        console.log(invitedSocketId);
+        if(invitedSocketId !== undefined) {
+            this.socketService.emit(invitedSocketId, SocketEvents.InvitedToConversation, doc)
+            console.log("emitted InvitedToConversation to ", invitedSocketId, args.invitedUsername);
+        }
+        else {
+            this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
+        }
+    }
+
+    public respondToConversationInvite(socketId: string, args: any) { 
+        const doc = { username: args.username, invitedUsername: args.invitedUsername, conversationId: args.conversationId, response: args.response };
+        const invitingSocketId = this.socketService.getUserSocketId(args.username);
+        if(invitingSocketId !== undefined) {
+            this.socketService.emit(invitingSocketId, SocketEvents.RespondedToConversationInvite, doc)
+        }
+        else {
+            this.socketService.emit(socketId, SocketEvents.UserIsNotConnected)
+        }
     }
 }

@@ -67,5 +67,23 @@ namespace PolyPaint.Vues
         {
             ((VueModele)DataContext).LoadGallery("private");
         }
+
+        private void TryEditProtection_Click(object sender, RoutedEventArgs e)
+        {
+            string author = ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().First().Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "Author").Content.ToString();
+            if((DataContext as VueModele).canChangeProtection(author))
+            {
+                ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().ElementAt(1).Visibility = (((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().ElementAt(1).Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible);
+            }
+        }
+
+        private void ChangeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string NewCode = ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "NewCode").Text;
+            ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "NewCode").Clear();
+            string sessionID = ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().First().Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
+            (DataContext as VueModele).ChangeProtection(sessionID, NewCode);
+            ((Grid)((Button)sender).Parent).Visibility = Visibility.Collapsed;
+        }
     }
 }

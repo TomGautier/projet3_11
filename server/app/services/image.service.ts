@@ -91,4 +91,19 @@ export class ImageService implements ImageServiceInterface {
 
         return image;
     }
+
+    public async updateProtection(imageId: string, protection: string) {
+        const doc = {
+            id: imageId,
+            protection: protection
+        };
+        try {
+            await this.databaseService.updateProtection(Image, doc);
+        }
+        catch(err) {
+            throw err;
+        }
+        return true;
+        
+    }
 }

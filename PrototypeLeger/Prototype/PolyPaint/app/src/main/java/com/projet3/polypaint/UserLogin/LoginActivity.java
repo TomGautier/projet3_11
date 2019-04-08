@@ -89,6 +89,8 @@ public class LoginActivity extends Activity  {
 							RequestManager.currentInstance.fetchUserConversations();
 							progressBar.setProgress(50);
 							RequestManager.currentInstance.fetchUsers();
+							progressBar.setProgress(75);
+							SocketManager.currentInstance.sendUsername();
 							progressBar.setProgress(100);
 							android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 							//intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);

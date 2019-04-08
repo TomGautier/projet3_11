@@ -308,15 +308,15 @@ public abstract class GenericShape {
 
     protected void traceStyledLine(int x1, int y1, int x2, int y2, Canvas canvas) {
         switch (style.getStrokeType()) {
-            case full :
-            case solid :
+            case Full :
+            case Solid:olid :
                 canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
                 break;
-            case dotted :
+            case Dotted :
                 traceDottedLine(x1, y1, x2, y2, canvas);
                 break;
-            case dashed :
-            case dash :
+            case Dashed :
+            case Dash :
                 traceDashedLine(x1, y1, x2, y2, canvas);
                 break;
         }
@@ -364,15 +364,15 @@ public abstract class GenericShape {
 
     protected void traceStyledCircle(int x, int y, int radius, Canvas canvas) {
         switch (style.getStrokeType()) {
-            case full :
-            case solid :
+            case Full :
+            case Solid :
                 canvas.drawCircle(x, y, radius, style.getBorderPaint());
                 break;
-            case dotted :
+            case Dotted :
                 traceDottedCircle(x, y, radius, canvas);
                 break;
-            case dashed :
-            case dash :
+            case Dashed :
+            case Dash :
                 traceDashedCircle(x, y, radius, canvas);
                 break;
         }

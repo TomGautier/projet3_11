@@ -13,9 +13,17 @@ import { UnsaucedEventEmitter } from "../interfaces/events";
 export class SocketService {
     private server: SocketIO.Server;
     private sockets: Map<string, SocketIO.Socket> = new Map();
+    //Key: username, value: socketId
+    private users: Map<string, string> = new Map();
 
-    public getSocket(socketId: string): SocketIO.Socket | undefined {
-        return this.sockets.get(socketId);
+    private addUserSocketId(socketId: string, username: string) {
+        console.log("username ",username, socketId);
+        this.users.set(username, socketId);
+        console.log("checked", this.getUserSocketId(username));
+    }
+
+    public getUserSocketId(username: string): string | undefined {
+        return this.users.get(username);
     }
 
     public constructor(
@@ -29,12 +37,18 @@ export class SocketService {
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
             console.log("Socket id", socket.id, "connected.");
+            socket.on(SocketEvents.UserConnected, args => this.addUserSocketId(socket.id, args));
+
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
+            socket.on(SocketEvents.InviteToConversation, args => this.handleEvent(SocketEvents.InviteToConversation, socket.id, args));
+            socket.on(SocketEvents.RespondToConversationInvite, args => this.handleEvent(SocketEvents.RespondToConversationInvite, socket.id, args));
 
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+            socket.on(SocketEvents.InviteToDrawingSession, args => this.handleEvent(SocketEvents.InviteToDrawingSession, socket.id, args));
+            socket.on(SocketEvents.RespondToDrawingInvite, args => this.handleEvent(SocketEvents.RespondToDrawingInvite, socket.id, args));
 
             socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
             socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));

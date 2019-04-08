@@ -107,13 +107,15 @@ public class ClassEditingDialog extends DialogFragment {
     }
     private void initializeStyle() {
         switch (style.getStrokeType()) {
-            case full:
+            case Full:
+            case Solid:
                 radioGroup.check(R.id.radioFull);
                 break;
-            case dotted:
+            case Dotted:
                 radioGroup.check(R.id.radioDotted);
                 break;
-            case dashed:
+            case Dashed:
+            case Dash :
                 radioGroup.check(R.id.radioDashed);
                 break;
         }
@@ -224,13 +226,13 @@ public class ClassEditingDialog extends DialogFragment {
     private void modifyCurrentStyle() {
         switch (radioGroup.getCheckedRadioButtonId()) {
             case R.id.radioFull :
-                style.setStrokeType(PaintStyle.StrokeType.full);
+                style.setStrokeType(PaintStyle.StrokeType.Full);
                 break;
             case R.id.radioDotted :
-                style.setStrokeType(PaintStyle.StrokeType.dotted);
+                style.setStrokeType(PaintStyle.StrokeType.Dotted);
                 break;
             case R.id.radioDashed :
-                style.setStrokeType(PaintStyle.StrokeType.dashed);
+                style.setStrokeType(PaintStyle.StrokeType.Dashed);
                 break;
         }
 

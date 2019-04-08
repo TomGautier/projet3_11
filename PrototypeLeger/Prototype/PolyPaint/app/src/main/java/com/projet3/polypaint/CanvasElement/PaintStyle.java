@@ -4,7 +4,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 public class PaintStyle {
-    public enum StrokeType{full, solid, dotted, dashed, dash}
+    public enum StrokeType{Full, Solid, Dotted, Dashed, Dash}
 
     private final float DEFAULT_STROKE_WIDTH = 2f;
 

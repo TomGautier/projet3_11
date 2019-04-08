@@ -95,14 +95,14 @@ namespace PolyPaint.Vues
         
         public class UserItem
         {
-            public string Username { get; set; }
-            public int ConnectionStatus { get; set; }
+            public string username { get; set; }
+            public int connected { get; set; }
         }
 
         public class UserItemTemplate
         {
-            public string Username { get; set; }
-            public bool ConnectionStatus { get; set; }
+            public string username { get; set; }
+            public bool connected { get; set; }
         }
 
         private void UpdateUsersList_Click(object sender, RoutedEventArgs e)
@@ -110,11 +110,18 @@ namespace PolyPaint.Vues
             UpdateUserList();
         }
 
-        private void InviteUser_Click(object sender, RoutedEventArgs e)
+        private void InviteUserDraw_Click(object sender, RoutedEventArgs e)
         {
             string invited = ((Grid)((Button)sender).Parent).Children.OfType<TextBlock>().Single().Text;
 
-            //TODO : INVITE
+            (DataContext as VueModele).InviteToDrawing(invited);
+        }
+
+        private void InviteUserChat_Click(object sender, RoutedEventArgs e)
+        {
+            string invited = ((Grid)((Button)sender).Parent).Children.OfType<TextBlock>().Single().Text;
+
+            (DataContext as VueModele).ChatManager.InviteToChat(invited);
         }
     }
 }
