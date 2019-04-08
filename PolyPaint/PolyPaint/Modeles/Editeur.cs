@@ -1058,48 +1058,25 @@ namespace PolyPaint.Modeles
         }
         public void ConvertToHC(Shape shape)
         {
-            if (shape.properties.type == "Arrow")
-            {
-                shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                shape.properties.width = (int)(shape.properties.width * HC_PROP);
-                for (int i = 0; i < shape.properties.pointsX.Length; i++)
-                {
-                    shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * HC_PROP);
-                    shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * HC_PROP);
-                }
-
-            }
-            else
-            {
-                shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                shape.properties.width = (int)(shape.properties.width * HC_PROP);
-                shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * HC_PROP);
-                shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * HC_PROP);
-            }
-        }
-        public void ConvertToHC(Shape[] shapes)
-        {
-            foreach (Shape shape in shapes)
-            {
                 if (shape.properties.type == "Arrow")
                 {
-                    shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                    shape.properties.width = (int)(shape.properties.width * HC_PROP);
+                    shape.properties.height = (int)Math.Ceiling(shape.properties.height * HC_PROP);
+                    shape.properties.width = (int)Math.Ceiling(shape.properties.width * HC_PROP);
                     for (int i = 0; i < shape.properties.pointsX.Length; i++)
                     {
-                        shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * HC_PROP);
-                        shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * HC_PROP);
+                        shape.properties.pointsX[i] = (int)Math.Ceiling(shape.properties.pointsX[i] * HC_PROP);
+                        shape.properties.pointsY[i] = (int)Math.Ceiling(shape.properties.pointsY[i] * HC_PROP);
                     }
 
                 }
                 else
                 {
-                    shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                    shape.properties.width = (int)(shape.properties.width * HC_PROP);
-                    shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * HC_PROP);
-                    shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * HC_PROP);
+                    shape.properties.height = (int)Math.Ceiling(shape.properties.height * HC_PROP);
+                    shape.properties.width = (int)Math.Ceiling(shape.properties.width * HC_PROP);
+                    shape.properties.middlePointCoord[0] = (int)Math.Ceiling(shape.properties.middlePointCoord[0] * HC_PROP);
+                    shape.properties.middlePointCoord[1] = (int)Math.Ceiling(shape.properties.middlePointCoord[1] * HC_PROP);
                 }
-            }
+            
         }
 
 

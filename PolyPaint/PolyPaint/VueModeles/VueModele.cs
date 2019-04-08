@@ -775,7 +775,7 @@ namespace PolyPaint.VueModeles
                 foreach (Stroke s in SelectedStrokes.Where(x => (x as Form).Type != "Arrow"))
                 {
                     Point pts = (s as Form).RotatePoint;
-                    if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10)
+                    if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10 && this.StrokeBeingRotated == null)
                     {
                         this.Canvas.MoveEnabled = false;
                         this.StrokeBeingRotated = s;

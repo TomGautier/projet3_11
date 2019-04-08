@@ -25,7 +25,7 @@ namespace PolyPaint.Utilitaires
             this.Label = "text";
             this.TextSize = 30;
             this.Center = new Point(pts[0].X, pts[0].Y);
-            SolidColorBrush brush = new SolidColorBrush(Colors.Red);
+            SolidColorBrush brush = new SolidColorBrush(Colors.Black);
             Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             FormattedText text = new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, this.TextSize, brush);
 
