@@ -35,6 +35,7 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
+        public string currentGalleryType;
         private string localization = "fr";
         public string Localization
         {
@@ -432,14 +433,14 @@ namespace PolyPaint.VueModeles
 
         public void ChangeProtection(string drawingId, string protection)
         {
-            GalleryItems.Find(x => x.id == drawingId).protection = protection;
             networkManager.changeProtection(SessionId, Username, drawingId, protection);
+            LoadGallery(currentGalleryType);
         }
 
         public async void LoadGallery(string galleryType)
         {
-            string gallery;
-            gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
+            currentGalleryType = galleryType;
+            string gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
             if(GalleryItems != null)
                 GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
