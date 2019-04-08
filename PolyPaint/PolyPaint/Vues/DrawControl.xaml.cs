@@ -46,7 +46,7 @@ namespace PolyPaint.Vues
             this.Loaded += new RoutedEventHandler((s, e) =>
             {
                 (DataContext as VueModele).SendCanvas(this.surfaceDessin);
-                (DataContext as VueModele).Localization = "fr";
+                //(DataContext as VueModele).Localization = "fr";
                 this.surfaceDessin.AllowSelection = false;
                 this.surfaceDessin.IsDraging = false;
             });

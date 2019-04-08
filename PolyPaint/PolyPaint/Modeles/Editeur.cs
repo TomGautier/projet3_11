@@ -113,9 +113,10 @@ namespace PolyPaint.Modeles
 
                     for (int i = 0; i < selectedStrokes.Count; i++)
                     {
-                        if ((selectedStrokes[i] as Form).DrawingAttributes.Color != (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee))
+                        if ((selectedStrokes[i] as Form).BorderColor != (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee))//if ((selectedStrokes[i] as Form).DrawingAttributes.Color != (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee))
                         {
                             (selectedStrokes[i] as Form).DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+                            (selectedStrokes[i] as Form).BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
                             shapes.Add((selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID));
                         }
                     }
@@ -186,7 +187,7 @@ namespace PolyPaint.Modeles
             if (strokes.Count > 0)
             {
                 //selectedStrokes = strokes;
-                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
+                CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();//strokes[0].DrawingAttributes.Color.ToString();
                 RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
                 // ProprieteModifiee("TEST");
             }
