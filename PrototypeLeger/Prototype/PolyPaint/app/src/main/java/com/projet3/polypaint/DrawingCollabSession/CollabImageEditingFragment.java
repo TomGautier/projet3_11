@@ -82,7 +82,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     public void joinNewDrawingSession() {
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         String id = FetchManager.currentInstance.getUserUsername() + "_" + (new Date()).getTime();
-        RequestManager.currentInstance.postImage(id, "public", "protected", FetchManager.currentInstance.getUserUsername());
+        RequestManager.currentInstance.postImage(id, "public", "", FetchManager.currentInstance.getUserUsername());
         SocketManager.currentInstance.joinCollabSession(id);
     }
     @Override
@@ -203,18 +203,12 @@ public class CollabImageEditingFragment extends ImageEditingFragment
    @Override
    protected boolean checkEditButton(int x, int y) {
        ArrayList<GenericShape> selections = client.getSelectedShapes();
-       ArrayList<String> selectionIDs = new ArrayList<>();
-       for (GenericShape s : selections) selectionIDs.add(s.getId());
 
        for (int i = selections.size() - 1; i >= 0; i--) {
            if (selections.get(i).getEditButton().contains(x, y)){
                GenericShape clicked = selections.get(i);
-               String[] clickedID = {clicked.getId()};
-               SocketManager.currentInstance.selectElements(selectionIDs.toArray(new String[selections.size()]), clickedID);
-               client.clearSelectedShape();
-               client.addSelectedShape(clicked);
                currentShape = createCollabShape(clicked);
-               clicked.showEditingDialog(getFragmentManager());
+               currentShape.showEditingDialog(getFragmentManager());
                return true;
            }
        }
@@ -375,7 +369,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             String shapeType = currentShapeType.toString();
 
             properties = new CollabShapeProperties(shapeType, backgroundColor,
-                borderColor,new ArrayList<String>(), new ArrayList<String>(), "", PaintStyle.StrokeType.full,
+                borderColor,new ArrayList<String>(), new ArrayList<String>(), "", PaintStyle.StrokeType.Full,
                  new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType),
                 GenericShape.getDefaultWidth(currentShapeType),0);
         }
@@ -684,7 +678,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
 
     @Override
     public void onModifyElements(CollabShape[] collabShapes, String author) {
-        if (!client.getName().equals(author)) {
+        //if (!client.getName().equals(author)) {
             Player player = findPlayer(author);
             player = (player == null) ? client : player;
             player.clearSelectedShape();
@@ -699,7 +693,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                     player.addSelectedShape(newShape);
                 }
             }
-        }
+        //}
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

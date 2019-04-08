@@ -369,7 +369,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         Paint textPaint = new Paint();
         textPaint.setColor(borderColor);
 
-        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint, PaintStyle.StrokeType.full);
+        defaultStyle = new PaintStyle(borderPaint, backgroundPaint, textPaint, PaintStyle.StrokeType.Full);
 
         // Selection paint
         int selectionColor = ResourcesCompat.getColor(getResources(), R.color.shapeSelection, null);

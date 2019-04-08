@@ -28,7 +28,7 @@ public class CollabShapeProperties {
     protected String type;
     protected String fillingColor;
     private String borderColor;
-    private PaintStyle.StrokeType borderType = PaintStyle.StrokeType.full;
+    private PaintStyle.StrokeType borderType = PaintStyle.StrokeType.Full;
     private int[] middlePointCoord;
     private int height;
     private int width;
@@ -71,7 +71,7 @@ public class CollabShapeProperties {
             rotation =Integer.parseInt(obj.getString(ROTATION_TAG));
 
             if (obj.has(BORDER_TYPE_TAG) && !obj.getString(BORDER_TYPE_TAG).isEmpty())
-                borderType = PaintStyle.StrokeType.valueOf(obj.getString(BORDER_TYPE_TAG).toLowerCase());
+                borderType = PaintStyle.StrokeType.valueOf(obj.getString(BORDER_TYPE_TAG));
 
             if (obj.has(LABEL_TAG))
                 label = obj.getString(LABEL_TAG);
@@ -194,7 +194,6 @@ public class CollabShapeProperties {
     }
 
     private String formatColorString(String color) {
-        System.out.println("Input color : " + color);
         if (color.length() == 9) return color;
         else if (color.length() == 8) return "#" + color;
         else {

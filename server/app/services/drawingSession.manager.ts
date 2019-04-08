@@ -119,6 +119,7 @@ export class DrawingSessionManager {
                     console.log('modifyElement:', err)
                 });
         }
+        console.log(doc.shapes);
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
 
