@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace PolyPaint.Managers
 {
@@ -222,6 +223,20 @@ namespace PolyPaint.Managers
                 var message = JsonConvert.DeserializeAnonymousType(data.ToString(), messageFormat);
                 ReceiveMessage(message.date, message.username, message.message);
             });
+        }
+
+        public void InviteToChat(string invited)
+        {
+            if (roomID == "")
+                return;
+            var invite = new
+            {
+                sessionId = this.SessionID,
+                username = Username,
+                invitedUsername = invited,
+                conversationId = RoomID
+            };
+            socket.Emit("InviteToConversation", JsonConvert.SerializeObject(invite));
         }
         #endregion
 

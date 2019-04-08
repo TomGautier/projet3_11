@@ -40,7 +40,12 @@ public class Conversation implements Parcelable  {
     public void addToHistory(String message) {
         history.add(message);
     }
-
+    public ArrayList<String> getHistory(){
+        return history;
+    }
+    public void setHistory(ArrayList<String> history){
+        this.history = history;
+    }
 
     @Override
     public int describeContents() {
