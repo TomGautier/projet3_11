@@ -130,6 +130,16 @@ export class DatabaseService {
         });
     }
 
+    public async updateProtection(model: any, doc: any): Promise<{}> {
+        return new Promise((resolve, reject) => {
+            model.update({id: doc.id},{$set:{protection: doc.protection}},{new:true}
+                , (err: any, document: any) => {
+                    if(err) { return reject(err); }; 
+                    resolve(document);
+            });
+        });
+    }
+
     public async remove(model: any, criteria: string, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
             model.remove({ [criteria]: doc }, (err: any, document: any) => {

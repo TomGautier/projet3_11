@@ -77,6 +77,19 @@ export class ImageController implements ImageControllerInterface {
                     });
             });
 
+        router.post("/protection/:sessionId/:username/:imageId/",
+            (req: Request, res: Response, next: NextFunction) => {
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
+                this.imageService.updateProtection(req.params.imageId, req.body.protection)
+                    .then(success => {
+                        res.json(success);
+                    })
+                    .catch(err => {
+                        res.json(400);
+                    });
+            });
+
         router.post("/thumbnail/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
                 if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
@@ -85,7 +98,6 @@ export class ImageController implements ImageControllerInterface {
                 this.imageService.updateThumbnail(req.params.imageId, req.body.thumbnail, req.body.thumbnailTimestamp)
                     .then(image => {
                         res.json(image);
-                        console.log("POST DU THUMBNAIL REUSSI");
                     })
                     .catch(err => {
                         res.json(400);
