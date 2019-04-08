@@ -80,6 +80,7 @@ namespace PolyPaint.Vues
         private void ChangeBtn_Click(object sender, RoutedEventArgs e)
         {
             string NewCode = ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "NewCode").Text;
+            ((Grid)((Button)sender).Parent).Children.OfType<TextBox>().AsEnumerable().Single(x => x.Name == "NewCode").Clear();
             string sessionID = ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().First().Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
             (DataContext as VueModele).ChangeProtection(sessionID, NewCode);
             ((Grid)((Button)sender).Parent).Visibility = Visibility.Collapsed;

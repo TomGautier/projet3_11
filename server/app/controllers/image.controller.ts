@@ -77,11 +77,11 @@ export class ImageController implements ImageControllerInterface {
                     });
             });
 
-        router.post("/protection/:sessionId/:username/:imageId/:newProtection",
+        router.post("/protection/:sessionId/:username/:imageId/",
             (req: Request, res: Response, next: NextFunction) => {
                 //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                   //  { res.json(403); return; }
-                this.imageService.updateProtection(req.params.imageId, req.params.protection)
+                this.imageService.updateProtection(req.params.imageId, req.body.protection)
                     .then(success => {
                         res.json(success);
                     })

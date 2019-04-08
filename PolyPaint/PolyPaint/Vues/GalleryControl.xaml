@@ -58,7 +58,7 @@
             </Button.Style>
         </Button>
         <ScrollViewer Grid.Row="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch"  VerticalScrollBarVisibility="Auto">
-            <ItemsControl Name="Gallery" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GalleryItems}">
+            <ItemsControl Name="Gallery" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GalleryItems, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
@@ -84,7 +84,7 @@
                                         <Style TargetType="{x:Type Label}">
                                             <Setter Property="Content" Value="🔒"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding protection}" Value="">
+                                                <DataTrigger Binding="{Binding protection, UpdateSourceTrigger=PropertyChanged}" Value="">
                                                     <Setter Property="Content" Value=""/>
                                                 </DataTrigger>
                                             </Style.Triggers>
