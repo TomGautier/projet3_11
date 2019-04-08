@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.graphics.Canvas;
 import android.graphics.Path;
 
+import java.util.Date;
 import java.util.regex.Matcher;
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
@@ -19,7 +20,7 @@ public class UMLArtefact extends GenericShape {
 
 
     public UMLArtefact clone() {
-        return new UMLArtefact(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style, angle);
+        return new UMLArtefact(id +"_" + (new Date()).getTime(),this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width, height, this.style, angle);
     }
 
     @Override

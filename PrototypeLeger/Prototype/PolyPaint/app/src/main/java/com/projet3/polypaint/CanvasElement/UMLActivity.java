@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
+import java.util.Date;
+
 public class UMLActivity extends GenericShape {
     protected final static int DEFAULT_WIDTH = 147;
     protected final static int DEFAULT_HEIGHT = 79;
@@ -18,9 +20,8 @@ public class UMLActivity extends GenericShape {
         //height = DEFAULT_HEIGHT;
     }
 
-
     public UMLActivity clone() {
-        return new UMLActivity(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, this.angle);
+        return new UMLActivity(id +"_" + (new Date()).getTime(),this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, this.angle);
     }
 
     @Override

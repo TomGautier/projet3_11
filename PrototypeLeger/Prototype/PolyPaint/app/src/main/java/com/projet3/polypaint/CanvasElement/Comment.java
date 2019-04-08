@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
+import java.util.Date;
+
 public class Comment extends GenericTextShape {
     public static final String TYPE = "Comment";
     protected static final int DEFAULT_WIDTH = 113;
@@ -44,7 +46,7 @@ public class Comment extends GenericTextShape {
 
     @Override
     public GenericShape clone() {
-        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width,height, this.style, text, angle);
+        return new Comment(id +"_" + (new Date()).getTime(), this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width,height, this.style, text, angle);
     }
 
     @Override

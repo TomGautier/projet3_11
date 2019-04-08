@@ -151,15 +151,15 @@ public abstract class GenericShape {
 
     }
 
-    public void updateAnchor(ConnectionForm connection){
+    public boolean updateAnchor(ConnectionForm connection){
        /* Pair pair = connection.getDockingPair();
         if (pair == null || pair.first == null)
             return;*/
         boolean changedAnchor = false;
-       ConnectionFormVertex vertex = connection.getSelectedVertex();
+       //ConnectionFormVertex vertex = connection.getSelectedVertex();
 
-        if (vertex == null || vertex.getIndex() == -1)
-            return;
+      //  if (vertex == null || vertex.getIndex() == -1)
+          //  return;
         if (anchorPoints != null && anchorPoints.size() > 0){
             for (AnchorPoint anchorPoint : anchorPoints){
                /* if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
@@ -170,20 +170,22 @@ public abstract class GenericShape {
                     anchorPoint.removeConnection();
                     //connection.removeConnection(vertex.getIndex());
                 }*/
-               if (anchorPoint.intersect(vertex.getBox())){
-                   anchorPoint.setConnection(vertex);
-                   connection.setConnection(anchorPoint.getIndex(),getId(),vertex.getIndex());
+               if (anchorPoint.intersect(connection.getSelectedVertex().getBox())){
+                   anchorPoint.setConnection(connection.getSelectedVertex());
+                   connection.setConnection(anchorPoint.getIndex(),getId(),connection.getSelectedVertex().getIndex());
                    changedAnchor = true;
                }
-               else if(anchorPoint.getConnectionVertex() == vertex){
+               else if(anchorPoint.getConnectionVertex() == connection.getSelectedVertex()){
                    anchorPoint.removeConnection();
                    //connection.removeConnection(vertex.getIndex());
                }
             }
-            if (!changedAnchor){
-                connection.removeConnection(vertex.getIndex());
-            }
+            //if (!changedAnchor){
+              //  connection.removeConnection(vertex.getIndex());
+           // }
+            return changedAnchor;
         }
+        return false;
     }
     public void removeAnchorConnection(int anchorPointIndex){
         anchorPoints.get(anchorPointIndex).removeConnection();

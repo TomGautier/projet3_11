@@ -9,11 +9,14 @@
     <string name="ip">Adresse IP :</string>
     <string name="loginToast">Veuillez entrer vos identifiants de connexion.</string>
     <string name="loginUserAlreadyExistsToast">Ce nom d\'utilisateur est déjà pris. Veuillez en choisir un autre.</string>
+    <string name="loginImpossibleConnection">La connexion au server est impossible</string>
     <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
     <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
     <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
     <string name="ok">Confirmer</string>
     <string name="cancel">Annuler</string>
+    <string name="signupSucess">L\'inscription a réussi</string>
+    <string name="signupFail">L\'inscription a échoué</string>
 
     <!-- IMAGE EDITING -->
     <string name="buttonClass">Classe</string>
@@ -87,6 +90,8 @@
     <string name="classMethods">Méthodes</string>
     <string name="publicGallery">Galerie publique</string>
     <string name="privateGallery">Galerie privée</string>
+    <string name="signUpOption">S\'inscrire</string>
+    <string name="loginOption">Se connecter</string>
 
 
 </resources>
