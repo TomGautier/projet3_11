@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DrawingSession.ImageEditingFragment">
+
+    <TableRow
+        android:id="@+id/drawingCanevas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/chat">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scrollbarStyle="insideOverlay">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/imageEditingBackgroundColor"
+                android:orientation="vertical">
+
+
+                <Button
+                    android:id="@+id/buttonSelection"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonSelection" />
+
+                <Button
+                    android:id="@+id/buttonLasso"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonLasso" />
+
+                <Button
+                    android:id="@+id/buttonMove"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonMove" />
+                <Button
+                    android:id="@+id/buttonRotate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonRotate"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
+
+                <View style="@style/Divider" />
+
+                <Button
+                    android:id="@+id/buttonClass"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonClass" />
+
+                <Button
+                    android:id="@+id/buttonActivity"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonActivity" />
+
+                <Button
+                    android:id="@+id/buttonArtefact"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonArtefact" />
+
+                <Button
+                    android:id="@+id/buttonRole"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonRole" />
+
+                <Button
+                    android:id="@+id/buttonPhase"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonPhase" />
+
+                <Button
+                    android:id="@+id/buttonComment"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonComment" />
+
+                <Button
+                    android:id="@+id/buttonTextBox"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonTextBox" />
+                <Button
+                    android:id="@+id/buttonConnectionForm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonConnectionForm"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
+                <View
+                    style="@style/Divider"
+                    android:layout_width="120dp" />
+
+                <Button
+                    android:id="@+id/buttonDelete"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonDelete" />
+
+                <Button
+                    android:id="@+id/buttonCut"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonCut" />
+
+                <Button
+                    android:id="@+id/buttonDuplicate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonDuplicate"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                <Button
+                    android:id="@+id/buttonStack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonStack"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+                <Button
+                    android:id="@+id/buttonUnstack"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonUnstack"
+                    style="@style/Widget.AppCompat.Button.Borderless"/>
+
+                <Button
+                    android:id="@+id/buttonReset"
+                    style="@style/Widget.AppCompat.Button.Borderless"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonReset" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/backButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_back_arrow" />
+
+                    <ImageButton
+                        android:id="@+id/restoreButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_forward_arrow" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+
+        <LinearLayout
+            android:id="@+id/canvasBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/canvasBackground">
+
+            <ImageView
+                android:id="@+id/canvasView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/background_light"
+                android:scrollbars="none"
+                app:srcCompat="@android:color/background_light" />
+        </LinearLayout>
+
+    </TableRow>
+    <View style="@style/Divider"
+        android:layout_below="@+id/drawingCanevas"/>
+
+
+</RelativeLayout>

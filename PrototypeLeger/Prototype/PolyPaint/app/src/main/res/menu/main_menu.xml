@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/galleryAction"
+        android:title="@string/mainToolbarGalleryTag"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/collabImageEditingAction"
+        android:title="@string/mainToolbarCollabImageEditionTag"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/imageEditingAction"
+        android:title="@string/mainToolbarImageEditionTag"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/menuAbout"
+        android:title="About" />
+
+    <item
+        android:id="@+id/menuSettings"
+        android:title="Settings" />
+
+    <item
+        android:id="@+id/menuLogout"
+        android:title="Logout" />
+
+</menu>

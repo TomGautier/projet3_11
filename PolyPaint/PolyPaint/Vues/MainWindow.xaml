@@ -1,0 +1,109 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"       
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:Vues="clr-namespace:PolyPaint.Vues"
+        xmlns:VueModels="clr-namespace:PolyPaint.VueModeles"
+        x:Class="PolyPaint.MainWindow"
+        mc:Ignorable="d"
+        Title="Poly Paint" Height="700" Width="900" Background="#CBD4E4" MinWidth="627" MinHeight="200">
+    <Window.Resources>
+        <DataTemplate x:Key="HomeView" DataType="{x:Type VueModels:VueModele}">
+            <Vues:HomeControl VerticalAlignment="Center"/>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="LoginView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:LoginControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SignupView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:SignupControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HubView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:HubControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="GalleryView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:GalleryControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DrawView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:ChatControl/>
+                <Vues:DrawControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ForgotPWDView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:ForgotPwdControl/>
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NewSessionView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:NewSessionControl/>
+            </DockPanel>
+        </DataTemplate>
+    </Window.Resources>
+
+    <Window.DataContext>
+        <VueModels:VueModele/>
+    </Window.DataContext>
+
+    <DockPanel>
+        <ContentControl Content="{Binding }" >
+            <ContentControl.Style>
+                <Style TargetType="{x:Type ContentControl}">
+                    <Setter Property="ContentTemplate" Value="{StaticResource HomeView}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="1">
+                            <Setter Property="ContentTemplate" Value="{StaticResource LoginView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="2">
+                            <Setter Property="ContentTemplate" Value="{StaticResource SignupView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="3">
+                            <Setter Property="ContentTemplate" Value="{StaticResource HubView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="4">
+                            <Setter Property="ContentTemplate" Value="{StaticResource GalleryView}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="5">
+                            <Setter Property="ContentTemplate" Value="{StaticResource DrawView}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="6">
+                            <Setter Property="ContentTemplate" Value="{StaticResource ForgotPWDView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="7">
+                            <Setter Property="ContentTemplate" Value="{StaticResource NewSessionView}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                    
+                </Style>
+            </ContentControl.Style>
+        </ContentControl>
+    </DockPanel>
+</Window>

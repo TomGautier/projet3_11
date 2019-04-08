@@ -1,0 +1,226 @@
+﻿<Window x:Class="PolyPaint.Vues.ConnectorSetter"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PolyPaint.Vues"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        d:DesignHeight="60" d:DesignWidth="450"
+        Title="ConnectorSetter" Height="450" Width="800">
+    <Grid x:Name="umlClassSetter" Background="#B0000000">
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Background="LightBlue">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+
+            </Grid.RowDefinitions>
+            <TextBlock Text="Connector" Grid.ColumnSpan="3" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Margin="5" FontSize="20"/>
+
+          <TextBlock  x:Name="nameBlock" Grid.Row="1" Margin="3">
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Text" Value="Nom"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Text" Value="Label"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>          
+          </TextBlock>
+            <TextBox x:Name="txtLabel" TextChanged="connectorSetter_LabelChanged" Grid.Row="1" Margin="2,3,0,5" MinWidth="100" HorizontalAlignment="Left" Grid.ColumnSpan="3" Width="250" Grid.Column="1"/>
+            <TextBlock Text="Quantification" x:Name="quantificationBlock" Grid.Row="2" Margin="3">
+            </TextBlock>
+            <ComboBox x:Name="Quantification1List" Width="70" Grid.Column="1" Grid.Row="2" Margin="2,0,28,0">
+            <ComboBoxItem Content="1"/>
+            <ComboBoxItem Content="0..1"/>
+            <ComboBoxItem Content="*"/>
+            <ComboBoxItem Content="1..*"/>
+            </ComboBox>
+            <ComboBox x:Name="Quantification2List" Width="70" Grid.Column="2" Grid.Row="2" Margin="2,0,28,0">
+            <ComboBoxItem Content="1"/>
+            <ComboBoxItem Content="0..1"/>
+            <ComboBoxItem Content="*"/>
+            <ComboBoxItem Content="1..*"/>
+            </ComboBox>
+          <TextBlock Text="Type" Grid.Row="3" Margin="3"></TextBlock>
+            <ComboBox x:Name="typeList" Width="100" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="2,0,98,0">
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Ligne"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Line"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Unidirectionnelle"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Unidirectional"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Bidirectionnelle"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Bidirectional"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Héritage"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Inheritance"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Aggregation"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Aggregation"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Composition"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Composition"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+            </ComboBox>
+          <TextBlock  Grid.Row="4" Margin="3">
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Text" Value="Style de Bordure"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Text" Value="Border Style"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+          <ComboBox x:Name="borderList" Width="100" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="2,0,98,0">
+            <ComboBoxItem >
+              <ComboBoxItem.Style>
+                <Style TargetType="{x:Type ComboBoxItem}">
+                  <Setter Property="Content" Value="Pleine"/>
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                      <Setter Property="Content" Value="Full"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </ComboBoxItem.Style>
+            </ComboBoxItem>
+            <ComboBoxItem >
+              <ComboBoxItem.Style>
+                <Style TargetType="{x:Type ComboBoxItem}">
+                  <Setter Property="Content" Value="Tiret"/>
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                      <Setter Property="Content" Value="Dashed"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </ComboBoxItem.Style>
+            </ComboBoxItem>
+            <ComboBoxItem >
+              <ComboBoxItem.Style>
+                <Style TargetType="{x:Type ComboBoxItem}">
+                  <Setter Property="Content" Value="Pointillé"/>
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                      <Setter Property="Content" Value="Dotted"/>
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </ComboBoxItem.Style>
+            </ComboBoxItem>
+
+          </ComboBox>
+          <TextBlock  Grid.Row="5" Margin="3,2,3,7">
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Text" Value="Grandeur"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Text" Value="Size"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+            <ComboBox x:Name="sizeList" Width="100" Grid.Column="1" Grid.Row="5" Margin="2,1,98,26" Grid.RowSpan="2" Grid.ColumnSpan="2">
+            </ComboBox>
+
+          <TextBlock  Grid.Row="6" Margin="3,23,3,7.96" Grid.RowSpan="2">
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Text" Value="Couleur"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Text" Value="Color"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+            <xctk:ColorPicker x:Name="selecteurCouleur"   Grid.Row="6" MinWidth="100" HorizontalAlignment="Left"                  
+                  VerticalContentAlignment="Stretch"
+                  Background="Black"
+                  ShowDropDownButton="False"
+                  ShowRecentColors="True"
+                  BorderBrush="Black" Width="100"                  
+                  AvailableColorsHeader="Palette"
+                  StandardColorsHeader="Couleurs de base"
+                  StandardButtonHeader="Standard"
+                  RecentColorsHeader="Récemment utilisées"
+                  UsingAlphaChannel="True"
+                  AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.765,0.806" Grid.ColumnSpan="2" Margin="2,23,0,0" Grid.RowSpan="2" />
+        </Grid>
+    </Grid>
+</Window>

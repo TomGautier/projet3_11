@@ -1,43 +1,114 @@
 package com.projet3.polypaint;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+//import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import com.projet3.polypaint.Chat.Chat;
-import com.projet3.polypaint.Chat.SocketManager;
+import com.projet3.polypaint.Chat.ChatFragment;
+import com.projet3.polypaint.DrawingCollabSession.CollabShape;
+import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
+import com.projet3.polypaint.Gallery.GalleryFragment;
+import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
+import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.Network.FetchManager;
+import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.UserLogin.LoginActivity;
+import com.projet3.polypaint.UserList.UsersListFragment;
 
-public class HomeActivity extends Activity  {
+public class HomeActivity extends AppCompatActivity {
 
-	private final String CHAT_BUNDLE_TAG = "chat";
-	private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
-	private Chat chat;
-	private UserInformation userInformation;
+	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
+	//private UserInformation userInformation;
+    private final String CHAT_TAG = "CHAT_FRAGMENT";
+    private final String IMAGE_EDITING_TAG = "IMAGE_EDITING_FRAGMENT";
+	private final String USER_TABLE_TAG = "USER_TABLE_FRAGMENT";
+	private final String GALLERY_TAG = "GALLERY_FRAGMENT";
+	private final String COLLAB_EDITING_TAG = "COLLAB_IMAGE_EDITING_FRAGMENT";
+
+	private  Toolbar mainToolbar;
+	private FrameLayout chatFragmentLayout;
+	private FrameLayout imageEditingFragmentLayout;
+	private FrameLayout galleryFragmentLayout;
+	private FrameLayout collabImageEditingFragmentLayout;
+	private FrameLayout usersListFragmentLayout;
+
+	private CollabImageEditingFragment collabImageEditingFragment;
+	private GalleryFragment galleryFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if (savedInstanceState == null) {
-            userInformation = getIntent().getExtras().getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-            chat = new Chat(this, userInformation);
-        }
-		else {
-            userInformation = savedInstanceState.getParcelable(USER_INFORMATION_PARCELABLE_TAG);
-            chat = new Chat(this, userInformation, savedInstanceState.getBundle(CHAT_BUNDLE_TAG));
-        }
-        SocketManager.currentInstance.setupNewMessageListener(chat);
+		setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		mainToolbar = (Toolbar)findViewById(R.id.mainToolbar);
+		mainToolbar.setTitle("PolyPaint");
+		setSupportActionBar(mainToolbar);
+		chatFragmentLayout = (FrameLayout)findViewById(R.id.chatFragment);
+		imageEditingFragmentLayout = (FrameLayout)findViewById(R.id.imageEditingFragment);
+		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
+		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
+		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
+
+		if (savedInstanceState == null){
+			createUsersListFragment();
+			createChatFragment();
+			createImageEditingFragment();
+			toggleImageEditingVisibility();
+			toggleCollabImageEditingVisibility();
+			createGalleryFragment();
+		}
+		/*int[] position = {1,2};
+		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
+		CollabShape shape = new CollabShape("id","MockSessionId","Tristan",properties);*/
+        //SocketManager.currentInstance.modifyElements(new CollabShape[] {shape,shape,shape});
 	}
 
+	private void createChatFragment() {
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.chatFragment, new ChatFragment(),CHAT_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+	private void createUsersListFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.usersTableFragment, new UsersListFragment(),USER_TABLE_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
 
+	private void createImageEditingFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.imageEditingFragment,new ImageEditingFragment(),IMAGE_EDITING_TAG);
+        transaction.addToBackStack(null);
+        transaction.commit();
+	}
+	private void createCollabImageEditingFragment(String imageId){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+
+		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId);
+		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
+        transaction.addToBackStack(null);
+		transaction.commit();
+	}
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
-		savedInstanceState.putBundle(CHAT_BUNDLE_TAG, chat.getChatBundle());
-		savedInstanceState.putParcelable(USER_INFORMATION_PARCELABLE_TAG,userInformation);
 	}
 
 	@Override
@@ -47,21 +118,87 @@ public class HomeActivity extends Activity  {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case android.R.id.home:
-				SocketManager.currentInstance.leave(userInformation.getUsername());
+		switch(item.getItemId()) {
+			case R.id.menuAbout:
+				Toast.makeText(this, "You clicked about", Toast.LENGTH_SHORT).show();
+				break;
+
+			case R.id.menuSettings:
+				Toast.makeText(this, "You clicked settings", Toast.LENGTH_SHORT).show();
+				break;
+
+			case R.id.menuLogout:
+				SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 				startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
+				break;
+			case R.id.galleryAction:
+				toggleGalleryVisibility();
+				break;
+			case R.id.imageEditingAction:
+				toggleImageEditingVisibility();
+				break;
+			case R.id.collabImageEditingAction:
+				toggleCollabImageEditingVisibility();
+				break;
+		}
+		return true;
+	}
+	private void toggleImageEditingVisibility(){
+		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
+			imageEditingFragmentLayout.setVisibility(View.GONE);
+		else {
+			imageEditingFragmentLayout.setVisibility(View.VISIBLE);
 		}
 	}
-	@Override
-	public void onBackPressed() {
-		SocketManager.currentInstance.leave(userInformation.getUsername());
-		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
+	private void toggleCollabImageEditingVisibility(){
+		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
+			collabImageEditingFragmentLayout.setVisibility(View.GONE);
+		else {
+			createCollabImageEditingFragment(null);
+			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
+	}
+	public void joinCollabEditingSession(String imageId) {
+		createCollabImageEditingFragment(imageId);
+		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
 	}
 
+	private void createGalleryFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		galleryFragment = new GalleryFragment();
+		transaction.add(R.id.galleryFragment, galleryFragment, GALLERY_TAG);
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+	public void toggleGalleryVisibility(){
+		if (galleryFragmentLayout.getVisibility() == View.VISIBLE)
+			galleryFragmentLayout.setVisibility(View.GONE);
+		else {
+			galleryFragmentLayout.setVisibility(View.VISIBLE);
+			galleryFragment.refresh();
+		}
+	}
+
+	/*private void toggleChatVisibility(){
+		if (chatFragmentLayout.getVisibility() == View.VISIBLE)
+			chatFragmentLayout.setVisibility(View.GONE);
+		else
+			chatFragmentLayout.setVisibility(View.VISIBLE);
+	}*/
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return true;
+
+    }
+
+	@Override
+	public void onBackPressed() {
+		SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
+		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
+	}
 }
 
 

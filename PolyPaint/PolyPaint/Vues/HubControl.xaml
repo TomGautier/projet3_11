@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="PolyPaint.Vues.HubControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PolyPaint.Vues"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" d:DesignWidth="100">
+    <StackPanel>
+        <Button Margin="5" Command="{Binding NavigateGallery}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Galeries"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Galleries"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Margin="5" Command="{Binding NavigateNewSession}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Nouvelle image"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="New Drawing"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+    </StackPanel>
+</UserControl>
