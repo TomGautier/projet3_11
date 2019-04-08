@@ -8,9 +8,42 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel>
         <DockPanel Margin="0,40,0,40">
-            <Label FontFamily="Arial" FontSize="20" HorizontalAlignment="Center" Content="Bienvenu à Poly Paint"/>
+            <Label FontFamily="Arial" FontSize="20" HorizontalAlignment="Center">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Bienvenu à Poly Paint"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Welcome to Poly Paint"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
         </DockPanel>
-        <Button Name="Login" Height="25" Width="60" Margin="10" Content="Login" Command="{Binding NavigateLogin}"/>
-        <Button Name="SignUp" Height="25" Width="60" Content="Sign up" Command="{Binding NavigateSignup}"/>
+        <Button Name="Login" Height="25" Width="60" Margin="10" Command="{Binding NavigateLogin}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Connexion"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Login"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Name="SignUp" Height="25" Width="60" Command="{Binding NavigateSignup}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="S'inscrire"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Sign up"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 </UserControl>

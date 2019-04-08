@@ -178,7 +178,7 @@ namespace PolyPaint.Managers
             RoomID = NewRoomID;
         }
 
-        internal void JoinChannel()
+        internal void JoinChannel(string localization)
         {
             var joinFormat = new
             {
@@ -188,7 +188,7 @@ namespace PolyPaint.Managers
             };
             socket.Emit("UserJoinedConversation", JsonConvert.SerializeObject(joinFormat));
             // TEST ONLY
-            History = "Bienvenue dans la conversation " + RoomID + "!";
+            History = ((localization == "fr") ? "Bienvenue dans la conversation " : "Welcome to ") + RoomID + "!";
             
             //l'event est mis en commentaire dans le serveur
             //socket.On("UserJoinedConversation", (data) => {

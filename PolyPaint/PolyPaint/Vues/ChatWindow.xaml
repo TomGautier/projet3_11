@@ -7,7 +7,7 @@
         xmlns:VueModels="clr-namespace:PolyPaint.VueModeles"
         mc:Ignorable="d"
         ScrollViewer.VerticalScrollBarVisibility="Auto"
-        Title="Poly Paint - Chat" Background="#CBD4E4" Height="450" Width="322" ResizeMode="NoResize">
+        Title="Poly Paint" Background="#CBD4E4" Height="450" Width="322" ResizeMode="NoResize">
     <Window.DataContext>
         <VueModels:VueModele/>
     </Window.DataContext>
