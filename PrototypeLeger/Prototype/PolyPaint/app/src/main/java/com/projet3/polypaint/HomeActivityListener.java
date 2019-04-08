@@ -5,6 +5,6 @@ import com.projet3.polypaint.DrawingCollabSession.CollabShape;
 public interface HomeActivityListener {
 
    void onInviteToDrawingSession(String from, String imageId);
-   void onResponseToInvitation(boolean response);
+   void onResponseToDrawingSessionInvitation(String username, String imageId, boolean response);
 
 }

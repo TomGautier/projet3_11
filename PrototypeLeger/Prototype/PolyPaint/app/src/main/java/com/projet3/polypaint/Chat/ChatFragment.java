@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -47,6 +48,7 @@ public class ChatFragment extends Fragment implements ChatListener {
     private RelativeLayout chatToolbar;
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
+    private ArrayAdapter spinnerArrayAdapter;
 
     public Conversation currentConversation;
     private boolean chatIsExpended;
@@ -280,7 +282,7 @@ public class ChatFragment extends Fragment implements ChatListener {
         return stringConversations;
     }*/
     private void setupChatConversationSpinner() {
-        android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
+        spinnerArrayAdapter = new android.widget.ArrayAdapter<>
                 (getContext(), android.R.layout.simple_spinner_item, FetchManager.currentInstance.getUserConversationsNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                 .simple_spinner_dropdown_item);
@@ -392,7 +394,7 @@ public class ChatFragment extends Fragment implements ChatListener {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (v != popupView){
-                    SocketManager.currentInstance.sendResponseToInvitation(from,false);
+                    SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,false);
                     popupWindow.dismiss() ;
                 }
                 return true;
@@ -402,7 +404,8 @@ public class ChatFragment extends Fragment implements ChatListener {
         acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SocketManager.currentInstance.sendResponseToInvitation(from,true);
+                SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,true);
+                //JOIN LA CONVERSATION
                 popupWindow.dismiss() ;
             }
         });
@@ -410,11 +413,22 @@ public class ChatFragment extends Fragment implements ChatListener {
         declineButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SocketManager.currentInstance.sendResponseToInvitation(from,false);
-                popupWindow.dismiss() ;
+                SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,false);
+                popupWindow.dismiss();
             }
         });
 
+    }
+
+    @Override
+    public void onResponseToConversationInvitation(String username, String conversation, boolean response) {
+        if (response){
+            setupChatConversationSpinner();
+            int position = spinnerArrayAdapter.getPosition(conversation);
+            currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+            conversationSpinner.setSelection(position);
+            loadConversation();
+        }
     }
 
     @Override

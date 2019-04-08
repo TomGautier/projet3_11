@@ -8,7 +8,7 @@
         android:id="@+id/inviteInTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/addConversationTextView"/>
+        android:text="Entrez le nom de la conversation :"/>
     <EditText
         android:id="@+id/inviteInEditText"
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
         android:inputType="text"
         android:gravity="center_horizontal"/>
     <Button
-        android:id="@+id/addConversationButton"
+        android:id="@+id/inviteToButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/conversationButton"

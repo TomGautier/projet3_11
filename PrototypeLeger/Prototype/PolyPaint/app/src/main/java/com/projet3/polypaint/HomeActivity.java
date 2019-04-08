@@ -220,7 +220,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if (v != popupView){
-					SocketManager.currentInstance.sendResponseToInvitation(from,false);
+					SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
 					popupWindow.dismiss() ;
 				}
 				return true;
@@ -230,7 +230,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 		acceptButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SocketManager.currentInstance.sendResponseToInvitation(from,true);
+				SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,true);
 				popupWindow.dismiss() ;
 			}
 		});
@@ -238,16 +238,20 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 		declineButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				SocketManager.currentInstance.sendResponseToInvitation(from,false);
+				SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
 				popupWindow.dismiss() ;
 			}
 		});
 	}
 
-    @Override
-    public void onResponseToInvitation(boolean response) {
+	@Override
+	public void onResponseToDrawingSessionInvitation(String username, String imageId, boolean response) {
+		if (response){
+			//ECRIRE UN MESSAGE QUE LE USER A ACCEPTE L'INVITATION
+			Toast.makeText(getBaseContext(),"",Toast.LENGTH_LONG).show();
+		}
+	}
 
-    }
 }
 
 

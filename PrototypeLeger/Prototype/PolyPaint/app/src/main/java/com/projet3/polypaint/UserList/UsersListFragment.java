@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -169,23 +170,21 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         if (user.isConnected())
             dropDownMenu.getMenuInflater().inflate(R.menu.users_list_connected_entry_menu, dropDownMenu.getMenu());
         else
-            dropDownMenu.getMenuInflater().inflate(R.menu.users_list_disconnected_entry_menu, dropDownMenu.getMenu());
+            return;
+            //dropDownMenu.getMenuInflater().inflate(R.menu.users_list_disconnected_entry_menu, dropDownMenu.getMenu());
         dropDownMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.inviteToFriend:
-                        break;
                     case R.id.inviteToConversation:
                         LayoutInflater inflater =(LayoutInflater) getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
                         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
                         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
                         boolean focusable = true;
                         final View popupView = inflater.inflate(R.layout.invite_to, null);
-                        TextView text = (TextView)popupView.findViewById(R.id.inviteInTextView);
-                        text.setText("Entrez le nom de la conversation :");
+                        //TextView text = (TextView)popupView.findViewById(R.id.inviteInTextView);
+                        //text.setText("Entrez le nom de la conversation :");
                         final EditText editText = (EditText)popupView.findViewById(R.id.inviteInEditText);
-
                         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
                         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
                         popupView.setOnTouchListener(new View.OnTouchListener() {
@@ -197,7 +196,7 @@ public class UsersListFragment extends Fragment implements UsersListListener {
                                 return true;
                             }
                         });
-                        ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+                        Button acceptButton = (Button)popupView.findViewById(R.id.inviteToButton);
                         acceptButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -209,17 +208,9 @@ public class UsersListFragment extends Fragment implements UsersListListener {
                                     Toast.makeText(getContext(),"veuillez entrer un nom de conversation valide",Toast.LENGTH_LONG).show();
                             }
                         });
-                        ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
-                        declineButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                popupWindow.dismiss() ;
-                            }
-                        });
-
                         break;
                     case R.id.inviteToDrawSession:
-
+                        SocketManager.currentInstance.sendInviteToDrawingSession(user.getUsername());
                         break;
                 }
                 return true;
