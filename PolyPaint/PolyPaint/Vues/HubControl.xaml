@@ -7,7 +7,41 @@
              mc:Ignorable="d" 
              d:DesignHeight="200" d:DesignWidth="100">
     <StackPanel>
-        <Button Content="Galleries" Margin="5" Command="{Binding NavigateGallery}"/>
-        <Button Content="Nouvelle image" Margin="5" Command="{Binding NavigateNewSession}"/>
+        <Button Margin="5" Command="{Binding NavigateGallery}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Galeries"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Galleries"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Margin="5" Command="{Binding NavigateNewSession}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Nouvelle image"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="New Drawing"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Margin="5" Command="{Binding ChangeLanguage}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Change Language"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Changer la langue"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 </UserControl>

@@ -35,6 +35,20 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
+        private string localization = "en";
+        public string Localization
+        {
+            get
+            {
+                return localization;
+            }
+            set
+            {
+                localization = value;
+                ProprieteModifiee();
+            }
+        }
+
         private string sessionId;
         public string SessionId
         {
@@ -74,12 +88,14 @@ namespace PolyPaint.VueModeles
             set
             {
                 editeur.IsOffline = value;
-                if (!editeur.IsOffline)
-                {
-                    //SendLocalCanvas();
-                }
             }
         }
+               // if (!editeur.IsOffline)
+               // {
+                   // SendLocalCanvas();
+               // }
+            
+        
         public StrokeCollection LastCut
         {
             get { return editeur.LastCut; }
@@ -131,6 +147,7 @@ namespace PolyPaint.VueModeles
         }
         public Stroke StrokeBeingDragged { get; set; }
         public Stroke StrokeBeingRotated { get; set; }
+        public Point LastMousePos { get; set; }
         public bool isDragging { get; set; }
         public int IndexBeingDragged { get; set; }
 
@@ -224,6 +241,7 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
         public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
+        public ICommand ChangeLanguage { get { return new RelayCommand(OnChangeLanguage, () => { return true; }); } }
 
         private void OnNavigateHome()
         {
@@ -261,16 +279,29 @@ namespace PolyPaint.VueModeles
             SwitchView = previousView;
         }
 
+        private void OnChangeLanguage()
+        {
+            Localization = (Localization == "fr" ? "en" : "fr"); 
+        }
+
         public async void Login(string password)
         {
-            SessionId = await networkManager.LoginAsync(Username, password);
-            if (SessionId == "")
+            try
             {
-                MessageBox.Show("Wrong login informations", "Error");
+                SessionId = await networkManager.LoginAsync(Username, password);
+                if (SessionId == "")
+                {
+                    MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
+                    return;
+                }
+                ChatManager.Connect();
+                SwitchView = 3;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show((Localization == "fr") ? "Erreur de communication avec le serveur" : "Error contacting the server", "Error");
                 return;
             }
-            ChatManager.Connect();
-            SwitchView = 3;
         }
         public async void RequestPwd(string email)
         {
@@ -287,13 +318,23 @@ namespace PolyPaint.VueModeles
 
         public async void Signup(string password)
         {
-            SessionId = await networkManager.SignupAsync(Username, password);
-            if (SessionId == "")
+            try
+            { 
+                SessionId = await networkManager.SignupAsync(Username, password);
+                if (SessionId == "")
+                {
+
+                    MessageBox.Show((Localization == "fr") ? "Le nom d'utilisateur existe déjà" : "Username already exists", "Error");
+
+                    return;
+                }
+                SwitchView = 3;
+            }
+            catch (Exception)
             {
-                MessageBox.Show("Username already exists", "Error");
+                MessageBox.Show((Localization == "fr") ? "Erreur de communication avec le serveur" : "Error contacting the server", "Error");
                 return;
             }
-            SwitchView = 3;
         }
 
         public void JoinNewDrawSession(string joinningImageID)
@@ -337,7 +378,7 @@ namespace PolyPaint.VueModeles
             GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningImageID);
             if (info.protection != pwd)
             {
-                MessageBox.Show("Wrong password", "Error");
+                MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
                 return;
             }
             SwitchView = 5;
@@ -352,7 +393,7 @@ namespace PolyPaint.VueModeles
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
-            LoadLocally(shapes); // TODO : Verify it works
+            editeur.LoadFromServer(shapes); // TODO : Verify it works
         }
 
         public void CreateNewSession(string visibility, string protection)
@@ -455,7 +496,7 @@ namespace PolyPaint.VueModeles
                 //this.SessionId = "MockSessionId";
                 editeur.initializeSocketEvents();
                 //SocketManager.JoinDrawingSession("MockSessionID");
-               // this.SendLocalCanvas();
+                this.SendLocalCanvas();
             }
             else
             {
@@ -499,10 +540,18 @@ namespace PolyPaint.VueModeles
         public void SendLocalCanvas()
         {
             int compteur = 0;
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + "/Backup"))
+            {
+                return;
+            }
             foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
             {
-                string contents = File.ReadAllText(file);
-
+                string json = File.ReadAllText(file);
+                string[] split = json.Split(new string[1] { "%%%!" }, new StringSplitOptions());
+                string[] dimensions = split[1].Split(new char[1] { ',' });
+                //List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(split[0]);
+                int width = (int)Double.Parse(dimensions[0]);
+                int height = (int)Double.Parse(dimensions[1]);
                 var parameters = new
                 {
                     author = this.Username,
@@ -517,7 +566,7 @@ namespace PolyPaint.VueModeles
 
                 string canvas = new JavaScriptSerializer().Serialize(new
                 {
-                    shapes = contents
+                    shapes = split[0]
 
                 });
                 this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
@@ -644,7 +693,7 @@ namespace PolyPaint.VueModeles
             {
                 editeur.HandleChangeSelection(strokes);
             }
-            else if (strokes.Count == 1 && this.isDragging)
+            else if (strokes.Count == 1 && !strokes[0].HitTest(LastMousePos) && this.isDragging)
             {
                 editeur.HandleChangeSelection(strokes);
                 
@@ -774,7 +823,7 @@ namespace PolyPaint.VueModeles
                 foreach (Stroke s in SelectedStrokes.Where(x => (x as Form).Type != "Arrow"))
                 {
                     Point pts = (s as Form).RotatePoint;
-                    if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10)
+                    if (Math.Abs(Point.Subtract(pts, mousePos).Length) < 10 && this.StrokeBeingRotated == null)
                     {
                         this.Canvas.MoveEnabled = false;
                         this.StrokeBeingRotated = s;
@@ -834,6 +883,7 @@ namespace PolyPaint.VueModeles
         
         public void HandlePreviewMouseUp(Point mousePos)
         {
+            LastMousePos = mousePos;
             //this.isDragging = false;
             if (this.StrokeBeingDragged != null)
             {
