@@ -103,6 +103,7 @@ export class ImageService implements ImageServiceInterface {
         catch(err) {
             throw err;
         }
+        return true;
         
     }
 }
