@@ -85,7 +85,7 @@ export class DrawingSessionManager {
     }
 
     public inviteToDrawingSession(socketId: string, doc: any) {
-        const response = { username: doc.username, invitedUsername: doc.invitedUsername, conversationId: doc.conversationId, response: doc.response };
+        const response = { username: doc.username, invitedUsername: doc.invitedUsername, imageId: doc.imageId, response: doc.response };
         const invitedSocketId = this.socketService.getUserSocketId(doc.invitedUsername);
         if(invitedSocketId !== undefined) {
             this.socketService.emit(invitedSocketId, SocketEvents.RespondToDrawingInvite, response)
@@ -96,7 +96,7 @@ export class DrawingSessionManager {
     }
 
     public respondToDrawingInvite(socketId: string, doc: any) {
-        const response = { username: doc.username, invitedUsername: doc.invitedUsername, conversationId: doc.conversationId, response: doc.response };
+        const response = { username: doc.username, invitedUsername: doc.invitedUsername, imageId: doc.imageId, response: doc.response };
         const invitingSocketId = this.socketService.getUserSocketId(doc.username);
         if(invitingSocketId !== undefined) {
             this.socketService.emit(invitingSocketId, SocketEvents.RespondedToDrawingInvite, response)

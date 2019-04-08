@@ -1,4 +1,5 @@
 export default {
+    UserConnected:"UserConnected",
     // Chat
     MessageSent:"MessageSent",
     UserJoinedChat:"UserJoinedChat",
@@ -17,6 +18,7 @@ export default {
     SignUp:"SignUp",
     UserLogged:"UserLogged",
     UserIsNotLogged:"UserIsNotLogged",
+    UserIsNotConnected:"UserIsNotConnected",
     UserLeft:"UserLeft",
     UsernameAlreadyExists:"UsernameAlreadyExists",
     InvalidCredentials:"InvalidCredentials",
