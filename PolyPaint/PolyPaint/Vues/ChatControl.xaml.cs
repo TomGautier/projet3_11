@@ -110,11 +110,18 @@ namespace PolyPaint.Vues
             UpdateUserList();
         }
 
-        private void InviteUser_Click(object sender, RoutedEventArgs e)
+        private void InviteUserDraw_Click(object sender, RoutedEventArgs e)
         {
             string invited = ((Grid)((Button)sender).Parent).Children.OfType<TextBlock>().Single().Text;
 
-            //TODO : INVITE
+            (DataContext as VueModele).InviteToDrawing(invited);
+        }
+
+        private void InviteUserChat_Click(object sender, RoutedEventArgs e)
+        {
+            string invited = ((Grid)((Button)sender).Parent).Children.OfType<TextBlock>().Single().Text;
+
+            (DataContext as VueModele).ChatManager.InviteToChat(invited);
         }
     }
 }

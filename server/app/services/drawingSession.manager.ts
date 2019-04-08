@@ -85,7 +85,7 @@ export class DrawingSessionManager {
     }
 
     public inviteToDrawingSession(socketId: string, doc: any) {
-        const response = { username: doc.username, invitedUsername: doc.invitedUsername, imageId: doc.imageId, response: doc.response };
+        const response = { username: doc.username, invitedUsername: doc.invitedUsername, imageId: doc.imageId };
         const invitedSocketId = this.socketService.getUserSocketId(doc.invitedUsername);
         if(invitedSocketId !== undefined) {
             this.socketService.emit(invitedSocketId, SocketEvents.RespondToDrawingInvite, response)
