@@ -3,12 +3,14 @@ package com.projet3.polypaint.UserLogin;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
@@ -38,6 +40,7 @@ public class LoginActivity extends Activity  {
 	RelativeLayout userModuleLayout;
 	UserInformation userInformation;
 	ProgressBar progressBar;
+	Switch signUpSwitch;
 
 
 
@@ -45,6 +48,7 @@ public class LoginActivity extends Activity  {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
+		setRequestedOrientation (ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		initialize();
 	}
 	private void initialize() {
@@ -56,7 +60,7 @@ public class LoginActivity extends Activity  {
 		userModuleLayout = (RelativeLayout)findViewById(R.id.connexionLayout);
 		progressBar = (ProgressBar)findViewById(R.id.loginProgressBar);
 		progressBar.setVisibility(View.GONE);
-
+		signUpSwitch = (Switch)findViewById(R.id.signUpSwitch);
 		RequestManager.currentInstance = new RequestManager(IP);
 
 		//if (SocketManager.currentInstance != null && SocketManager.currentInstance.isConnected())
@@ -77,25 +81,36 @@ public class LoginActivity extends Activity  {
 		userConnexionButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0){
-					Utilities.changeButtonState(userConnexionButton,false);
-					userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
-
-					if (RequestManager.currentInstance.requestLogin(userInformation)) {
-						//FETCH
-						progressBar.setVisibility(View.VISIBLE);
-						RequestManager.currentInstance.fetchUserConversations();
-						progressBar.setProgress(50);
-						RequestManager.currentInstance.fetchUsers();
-						progressBar.setProgress(100);
-						android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
-						//intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
-						//intent.putExtra("USER_INFORMATION", userInformation);
-						startActivity(intent);
+				if (usernameEntry.getText().length() > 0 && passwordEntry.getText().length() > 0) {
+					if (!signUpSwitch.isChecked()) {
+						Utilities.changeButtonState(userConnexionButton, false);
+						userInformation = new UserInformation(usernameEntry.getText().toString(), passwordEntry.getText().toString());
+						if (RequestManager.currentInstance.requestLogin(userInformation)) {
+							//FETCH
+							progressBar.setVisibility(View.VISIBLE);
+							RequestManager.currentInstance.fetchUserConversations();
+							progressBar.setProgress(50);
+							RequestManager.currentInstance.fetchUsers();
+							progressBar.setProgress(100);
+							android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
+							//intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
+							//intent.putExtra("USER_INFORMATION", userInformation);
+							startActivity(intent);
+						} else {
+							Toast.makeText(getBaseContext(), getString(R.string.loginImpossibleConnection), Toast.LENGTH_LONG).show();
+							Utilities.changeButtonState(userConnexionButton, true);
+						}
 					}
 					else{
-						Toast.makeText(getBaseContext(), getString(R.string.loginUserAlreadyExistsToast),Toast.LENGTH_LONG).show();
-						Utilities.changeButtonState(userConnexionButton,true);
+							Utilities.changeButtonState(userConnexionButton, false);
+							if (RequestManager.currentInstance.postSignUp(usernameEntry.getText().toString(),
+									passwordEntry.getText().toString())){
+								Toast.makeText(getBaseContext(),getString(R.string.signupSucess),Toast.LENGTH_LONG).show();
+							}
+							else{
+								Toast.makeText(getBaseContext(),getString(R.string.signupFail),Toast.LENGTH_LONG).show();
+							}
+							Utilities.changeButtonState(userConnexionButton, true);
 					}
 				}
 				else

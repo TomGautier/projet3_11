@@ -151,15 +151,15 @@ public abstract class GenericShape {
 
     }
 
-    public void updateAnchor(ConnectionForm connection){
+    public boolean updateAnchor(ConnectionForm connection){
        /* Pair pair = connection.getDockingPair();
         if (pair == null || pair.first == null)
             return;*/
         boolean changedAnchor = false;
-       ConnectionFormVertex vertex = connection.getSelectedVertex();
+       //ConnectionFormVertex vertex = connection.getSelectedVertex();
 
-        if (vertex == null || vertex.getIndex() == -1)
-            return;
+      //  if (vertex == null || vertex.getIndex() == -1)
+          //  return;
         if (anchorPoints != null && anchorPoints.size() > 0){
             for (AnchorPoint anchorPoint : anchorPoints){
                /* if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
@@ -170,20 +170,22 @@ public abstract class GenericShape {
                     anchorPoint.removeConnection();
                     //connection.removeConnection(vertex.getIndex());
                 }*/
-               if (anchorPoint.intersect(vertex.getBox())){
-                   anchorPoint.setConnection(vertex);
-                   connection.setConnection(anchorPoint.getIndex(),getId(),vertex.getIndex());
+               if (anchorPoint.intersect(connection.getSelectedVertex().getBox())){
+                   anchorPoint.setConnection(connection.getSelectedVertex());
+                   connection.setConnection(anchorPoint.getIndex(),getId(),connection.getSelectedVertex().getIndex());
                    changedAnchor = true;
                }
-               else if(anchorPoint.getConnectionVertex() == vertex){
+               else if(anchorPoint.getConnectionVertex() == connection.getSelectedVertex()){
                    anchorPoint.removeConnection();
                    //connection.removeConnection(vertex.getIndex());
                }
             }
-            if (!changedAnchor){
-                connection.removeConnection(vertex.getIndex());
-            }
+            //if (!changedAnchor){
+              //  connection.removeConnection(vertex.getIndex());
+           // }
+            return changedAnchor;
         }
+        return false;
     }
     public void removeAnchorConnection(int anchorPointIndex){
         anchorPoints.get(anchorPointIndex).removeConnection();
@@ -306,15 +308,15 @@ public abstract class GenericShape {
 
     protected void traceStyledLine(int x1, int y1, int x2, int y2, Canvas canvas) {
         switch (style.getStrokeType()) {
-            case full :
-            case solid :
+            case Full :
+            case Solid:olid :
                 canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
                 break;
-            case dotted :
+            case Dotted :
                 traceDottedLine(x1, y1, x2, y2, canvas);
                 break;
-            case dashed :
-            case dash :
+            case Dashed :
+            case Dash :
                 traceDashedLine(x1, y1, x2, y2, canvas);
                 break;
         }
@@ -362,15 +364,15 @@ public abstract class GenericShape {
 
     protected void traceStyledCircle(int x, int y, int radius, Canvas canvas) {
         switch (style.getStrokeType()) {
-            case full :
-            case solid :
+            case Full :
+            case Solid :
                 canvas.drawCircle(x, y, radius, style.getBorderPaint());
                 break;
-            case dotted :
+            case Dotted :
                 traceDottedCircle(x, y, radius, canvas);
                 break;
-            case dashed :
-            case dash :
+            case Dashed :
+            case Dash :
                 traceDashedCircle(x, y, radius, canvas);
                 break;
         }

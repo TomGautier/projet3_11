@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
+import java.util.Date;
+
 public class UMLRole extends GenericShape {
     protected final static int DEFAULT_WIDTH = 68;
     protected final static int DEFAULT_HEIGHT = 135;
@@ -18,7 +20,7 @@ public class UMLRole extends GenericShape {
 
 
     public UMLRole clone() {
-        return new UMLRole(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, this.angle);
+        return new UMLRole(id +"_" + (new Date()).getTime(),this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, this.angle);
     }
 
     @Override

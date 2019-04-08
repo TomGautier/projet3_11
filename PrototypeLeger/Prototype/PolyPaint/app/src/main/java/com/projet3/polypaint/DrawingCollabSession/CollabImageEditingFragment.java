@@ -107,7 +107,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                 lastTouchPosY = posY;
                 break;
             case MotionEvent.ACTION_UP:
-                tryToAnchor(connectionForm,posX, posY);
+                tryToAnchor(connectionForm);
                 connectionForm.finishResize();
                 SocketManager.currentInstance.modifyElements(new CollabShape[] {createCollabShape(connectionForm)});
                 break;
@@ -203,14 +203,12 @@ public class CollabImageEditingFragment extends ImageEditingFragment
    @Override
    protected boolean checkEditButton(int x, int y) {
        ArrayList<GenericShape> selections = client.getSelectedShapes();
-       ArrayList<String> selectionIDs = new ArrayList<>();
-       for (GenericShape s : selections) selectionIDs.add(s.getId());
 
        for (int i = selections.size() - 1; i >= 0; i--) {
            if (selections.get(i).getEditButton().contains(x, y)){
                GenericShape clicked = selections.get(i);
                currentShape = createCollabShape(clicked);
-               clicked.showEditingDialog(getFragmentManager());
+               currentShape.showEditingDialog(getFragmentManager());
                return true;
            }
        }
@@ -342,7 +340,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             properties = new CollabConnectionProperties(connection.getVerticesXPos(0),connection.getVerticesYPos(0),connection.getThick(),
                     connection.getType(),connection.getConnectionType(),
                     connection.getFillingColor(),shape.getBorderColor(),connection.getTailShapeId(),connection.getFrontShapeId()
-                    ,connection.getTailAnchorPointIndex(), connection.getFrontAnchorPointIndex());
+                    ,connection.getTailAnchorPointIndex(), connection.getFrontAnchorPointIndex(),connection.getQ1(),connection.getQ2());
         }
         else {
             properties = new CollabShapeProperties(type, shape.getFillingColor(),
@@ -363,7 +361,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             String hexFillingColor = "#" + Integer.toHexString(fillingColor);
             String hexBorderColor = "#" + Integer.toHexString(borderColor);
             properties = new CollabConnectionProperties(ConnectionForm.generateDefaultX(posX), ConnectionForm.generateDefaultY(posY),
-                    ConnectionForm.DEFAULT_THICK,currentShapeType.toString(), currentConnectionFormType.toString(),hexFillingColor,hexBorderColor,"","",-1,-1);
+                    ConnectionForm.DEFAULT_THICK,currentShapeType.toString(), currentConnectionFormType.toString(),hexFillingColor,hexBorderColor,"","",-1,-1,"","");
         }
         else{
             String backgroundColor = "#" + Integer.toHexString(defaultStyle.getBackgroundPaint().getColor());
@@ -371,7 +369,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             String shapeType = currentShapeType.toString();
 
             properties = new CollabShapeProperties(shapeType, backgroundColor,
-                borderColor,new ArrayList<String>(), new ArrayList<String>(), "", PaintStyle.StrokeType.full,
+                borderColor,new ArrayList<String>(), new ArrayList<String>(), "", PaintStyle.StrokeType.Full,
                  new int[] {posX,posY},GenericShape.getDefaultHeight(currentShapeType),
                 GenericShape.getDefaultWidth(currentShapeType),0);
         }
@@ -680,20 +678,22 @@ public class CollabImageEditingFragment extends ImageEditingFragment
 
     @Override
     public void onModifyElements(CollabShape[] collabShapes, String author) {
-        Player player = findPlayer(author);
-        player = (player == null) ? client : player;
-        player.clearSelectedShape();
-        for (int i = 0; i < collabShapes.length; i ++){
-            GenericShape newShape = createGenShape(collabShapes[i]);
-            GenericShape oldShape = findGenShapeById(newShape.getId());
-            if (oldShape != null){
-                if (!newShape.getClass().equals(ConnectionForm.class))
-                    newShape.recuperateConnectionStatus(oldShape);
-                shapes.remove(oldShape);
-                shapes.add(newShape);
-                player.addSelectedShape(newShape);
+        //if (!client.getName().equals(author)) {
+            Player player = findPlayer(author);
+            player = (player == null) ? client : player;
+            player.clearSelectedShape();
+            for (int i = 0; i < collabShapes.length; i++) {
+                GenericShape newShape = createGenShape(collabShapes[i]);
+                GenericShape oldShape = findGenShapeById(newShape.getId());
+                if (oldShape != null) {
+                    if (!newShape.getClass().equals(ConnectionForm.class))
+                        newShape.recuperateConnectionStatus(oldShape);
+                    shapes.remove(oldShape);
+                    shapes.add(newShape);
+                    player.addSelectedShape(newShape);
+                }
             }
-        }
+        //}
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -828,7 +828,8 @@ public class CollabImageEditingFragment extends ImageEditingFragment
             case "Arrow":
                 CollabConnectionProperties connectionProperties = ((CollabConnectionProperties)collabShape.getProperties());
                 genShape = new ConnectionForm(collabShape.getId(),connectionProperties.getConnectionType(),connectionProperties.getFillingColor(),
-                        connectionProperties.getBorderColor(), connectionProperties.getThick(), connectionProperties.getVerticesX(), connectionProperties.getVerticesY());
+                        connectionProperties.getBorderColor(), connectionProperties.getThick(),
+                        connectionProperties.getVerticesX(), connectionProperties.getVerticesY(),connectionProperties.getQ1(),connectionProperties.getQ2());
                 if (!connectionProperties.getIdShape1().isEmpty() && connectionProperties.getIndex1() != -1){
                     GenericShape shape = findGenShapeById(connectionProperties.getIdShape1());
                     shape.linkAnchorPoint(connectionProperties.getIndex1(),((ConnectionForm) genShape).getFirst());
