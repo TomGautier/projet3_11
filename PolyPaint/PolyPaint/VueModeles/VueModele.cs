@@ -35,7 +35,7 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
-        private string localization = "en";
+        private string localization = "fr";
         public string Localization
         {
             get
@@ -241,11 +241,17 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
         public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
+        public ICommand NavigateMainMenu { get { return new RelayCommand(OnNavigateMainMenu, () => { return true; }); } }
         public ICommand ChangeLanguage { get { return new RelayCommand(OnChangeLanguage, () => { return true; }); } }
 
         private void OnNavigateHome()
         {
             SwitchView = 0;
+        }
+
+        private void OnNavigateMainMenu()
+        {
+            SwitchView = 3;
         }
 
         private void OnNavigateLogin()
@@ -286,6 +292,8 @@ namespace PolyPaint.VueModeles
 
         public async void Login(string password)
         {
+            if (password == "" || Username == "")
+                return;
             try
             {
                 SessionId = await networkManager.LoginAsync(Username, password);
@@ -318,6 +326,8 @@ namespace PolyPaint.VueModeles
 
         public async void Signup(string password)
         {
+            if (password == "" || Username == "")
+                return;
             try
             { 
                 SessionId = await networkManager.SignupAsync(Username, password);
