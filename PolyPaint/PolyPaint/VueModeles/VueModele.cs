@@ -241,11 +241,17 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
         public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
+        public ICommand NavigateMainMenu { get { return new RelayCommand(OnNavigateMainMenu, () => { return true; }); } }
         public ICommand ChangeLanguage { get { return new RelayCommand(OnChangeLanguage, () => { return true; }); } }
 
         private void OnNavigateHome()
         {
             SwitchView = 0;
+        }
+
+        private void OnNavigateMainMenu()
+        {
+            SwitchView = 3;
         }
 
         private void OnNavigateLogin()
