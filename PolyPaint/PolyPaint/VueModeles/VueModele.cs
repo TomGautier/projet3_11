@@ -306,7 +306,7 @@ namespace PolyPaint.VueModeles
                 }
                 initializeVueModele();
                 notifyConnection();
-                ChatManager.Connect();
+                ChatManager.Connect(Localization);
                 SwitchView = 3;
             }
             catch (Exception)
