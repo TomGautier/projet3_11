@@ -11,7 +11,7 @@ namespace PolyPaint.Utilitaires
     public class NetworkManager
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string ipAddress = "10.200.9.188";// "127.0.0.1";//"10.200.6.173";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
+        private readonly string ipAddress = "52.173.73.94";// "127.0.0.1";//"10.200.6.173";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
 
         public NetworkManager() { }
 
