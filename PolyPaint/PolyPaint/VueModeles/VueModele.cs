@@ -263,6 +263,8 @@ namespace PolyPaint.VueModeles
 
         public async void Login(string password)
         {
+            if (password == "" || Username == "")
+                return;
             SessionId = await networkManager.LoginAsync(Username, password);
             if (SessionId == "")
             {
@@ -287,6 +289,8 @@ namespace PolyPaint.VueModeles
 
         public async void Signup(string password)
         {
+            if (password == "" || Username == "")
+                return;
             SessionId = await networkManager.SignupAsync(Username, password);
             if (SessionId == "")
             {
