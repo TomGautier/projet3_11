@@ -29,9 +29,21 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Connector" Grid.ColumnSpan="3" Grid.Column="1" FontWeight="Bold" HorizontalAlignment="Center" Margin="5" FontSize="20"/>
 
-            <TextBlock Text="Label" x:Name="nameBlock" Grid.Row="1" Margin="3"/>
+          <TextBlock  x:Name="nameBlock" Grid.Row="1" Margin="3">
+            <TextBlock.Style>
+              <Style TargetType="{x:Type TextBlock}">
+                <Setter Property="Text" Value="Nom"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Text" Value="Label"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </TextBlock.Style>          
+          </TextBlock>
             <TextBox x:Name="txtLabel" TextChanged="connectorSetter_LabelChanged" Grid.Row="1" Margin="2,3,0,5" MinWidth="100" HorizontalAlignment="Left" Grid.ColumnSpan="3" Width="250" Grid.Column="1"/>
-            <TextBlock Text="Quantification" x:Name="quantificationBlock" Grid.Row="2" Margin="3"></TextBlock>
+            <TextBlock Text="Quantification" x:Name="quantificationBlock" Grid.Row="2" Margin="3">
+            </TextBlock>
             <ComboBox x:Name="Quantification1List" Width="70" Grid.Column="1" Grid.Row="2" Margin="2,0,28,0">
             <ComboBoxItem Content="1"/>
             <ComboBoxItem Content="0..1"/>
@@ -44,22 +56,120 @@
             <ComboBoxItem Content="*"/>
             <ComboBoxItem Content="1..*"/>
             </ComboBox>
-            <TextBlock Text="Type" Grid.Row="3" Margin="3"/>
+          <TextBlock Text="Type" Grid.Row="3" Margin="3"></TextBlock>
             <ComboBox x:Name="typeList" Width="100" Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="2" Margin="2,0,98,0">
-                <ComboBoxItem Content="Line"/>
-                <ComboBoxItem Content="One Way"/>
-                <ComboBoxItem Content="Bidirectional"/>
-                <ComboBoxItem Content="Inheritance"/>
-                <ComboBoxItem Content="Aggregation"/>
-                <ComboBoxItem Content="Composition"/>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Ligne"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Line"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Unidirectionnelle"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Unidirectionnal"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Bidirectionnelle"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Bidirectional"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Héritage"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Inheritance"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Aggregation"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Aggregation"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Composition"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Composition"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
             </ComboBox>
             <TextBlock Text="Border Style" Grid.Row="4" Margin="3"/>
             <ComboBox x:Name="borderList" Width="100" Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="2" Margin="2,0,98,0">
-                <ComboBoxItem Content="Solid"/>
-                <ComboBoxItem Content="Dash"/>
-                <ComboBoxItem Content="Dot"/>
-                <ComboBoxItem Content="DashDot"/>
-                <ComboBoxItem Content="DashDotDot"/>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Pleine"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Full"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Tiret"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Dashed"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+              <ComboBoxItem >
+                <ComboBoxItem.Style>
+                  <Style TargetType="{x:Type ComboBoxItem}">
+                    <Setter Property="Content" Value="Pointillé"/>
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Localization}" Value="en">
+                        <Setter Property="Content" Value="Dotted"/>
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ComboBoxItem.Style>
+              </ComboBoxItem>
+
             </ComboBox>
             <TextBlock Text="Size" Grid.Row="5" Margin="3,2,3,7"/>
             <ComboBox x:Name="sizeList" Width="100" Grid.Column="1" Grid.Row="5" Margin="2,1,98,26" Grid.RowSpan="2" Grid.ColumnSpan="2">

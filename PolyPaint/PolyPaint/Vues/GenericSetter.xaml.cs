@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyPaint.VueModeles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,7 +25,9 @@ namespace PolyPaint.Vues
         {
             this.Label = label;
             InitializeComponent();
-            borderList.Text = border;
+            DataContext = new VueModele();
+            borderList.SelectedIndex = 0;
+            //borderList.Text = border;
             txtLabel.Text = this.Label;
         }
         private void genericSetter_LabelChanged(object sender, TextChangedEventArgs args)

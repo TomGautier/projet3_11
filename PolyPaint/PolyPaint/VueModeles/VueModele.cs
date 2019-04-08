@@ -35,6 +35,20 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
+        private string localization = "en";
+        public string Localization
+        {
+            get
+            {
+                return localization;
+            }
+            set
+            {
+                localization = value;
+                ProprieteModifiee();
+            }
+        }
+
         private string sessionId;
         public string SessionId
         {
@@ -267,7 +281,7 @@ namespace PolyPaint.VueModeles
             SessionId = await networkManager.LoginAsync(Username, password);
             if (SessionId == "")
             {
-                MessageBox.Show("Wrong login informations", "Error");
+                MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
                 return;
             }
             ChatManager.Connect();
@@ -291,7 +305,9 @@ namespace PolyPaint.VueModeles
             SessionId = await networkManager.SignupAsync(Username, password);
             if (SessionId == "")
             {
-                MessageBox.Show("Username already exists", "Error");
+
+                MessageBox.Show((Localization == "fr") ? "Le nom d'utilisateur existe déjà" : "Username already exists", "Error");
+
                 return;
             }
             SwitchView = 3;
@@ -338,7 +354,7 @@ namespace PolyPaint.VueModeles
             GalleryControl.GalleryItem info = GalleryItems.Find(x => x.id == joinningImageID);
             if (info.protection != pwd)
             {
-                MessageBox.Show("Wrong password", "Error");
+                MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
                 return;
             }
             SwitchView = 5;
@@ -500,6 +516,8 @@ namespace PolyPaint.VueModeles
         public void SendLocalCanvas()
         {
             int compteur = 0;
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + "/Backup"))
+                return;
             foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
             {
                 string contents = File.ReadAllText(file);
