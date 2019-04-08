@@ -35,7 +35,7 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
-        private string localization = "en";
+        private string localization = "fr";
         public string Localization
         {
             get
