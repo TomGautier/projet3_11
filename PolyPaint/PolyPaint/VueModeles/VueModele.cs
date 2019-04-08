@@ -239,6 +239,7 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateNewSession { get { return new RelayCommand(OnNavigateNewSession, () => { return true; }); } }
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
         public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
+        public ICommand ChangeLanguage { get { return new RelayCommand(OnChangeLanguage, () => { return true; }); } }
 
         private void OnNavigateHome()
         {
@@ -274,6 +275,11 @@ namespace PolyPaint.VueModeles
         private void OnNavigateBack()
         {
             SwitchView = previousView;
+        }
+
+        private void OnChangeLanguage()
+        {
+            Localization = (Localization == "fr" ? "en" : "fr"); 
         }
 
         public async void Login(string password)
