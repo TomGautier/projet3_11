@@ -33,8 +33,12 @@ export class SocketService {
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
+            socket.on(SocketEvents.InviteToConversation, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+            socket.on(SocketEvents.RespondToConversationInvite, args => this.handleEvent(SocketEvents.RespondToConversationInvite, socket.id, args));
 
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+            socket.on(SocketEvents.InviteToDrawingSession, args => this.handleEvent(SocketEvents.InviteToDrawingSession, socket.id, args));
+            socket.on(SocketEvents.RespondToDrawingInvite, args => this.handleEvent(SocketEvents.RespondToDrawingInvite, socket.id, args));
 
             socket.on(SocketEvents.AddElement, args => this.handleEvent(SocketEvents.AddElement, socket.id, args));
             socket.on(SocketEvents.DeleteElements, args => this.handleEvent(SocketEvents.DeleteElements, socket.id, args));

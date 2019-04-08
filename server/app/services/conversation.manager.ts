@@ -17,6 +17,9 @@ export class ConversationManager {
         this.socketService.subscribe(SocketEvents.UserJoinedConversation, args => this.joinConversation(args[0], JSON.parse(args[1])));
         // arg [0] socketId, arg[1][0].sessionId, arg[1][0].username, arg[1][0].conversationId
         this.socketService.subscribe(SocketEvents.UserLeftConversation, args => this.leaveConversation(args[0], JSON.parse(args[1])));
+
+        this.socketService.subscribe(SocketEvents.InviteToConversation, args => this.inviteToConversation(args[0], JSON.parse(args[1])));
+        this.socketService.subscribe(SocketEvents.RespondToConversationInvite, args => this.respondToConversationInvite(args[0], JSON.parse(args[1])));
     }
 
     public onMessageSent(socketId: string, args: any) {
@@ -35,5 +38,13 @@ export class ConversationManager {
     public leaveConversation(socketId: string, args: any) {
         this.socketService.leaveRoom(args.conversationId, socketId);
         this.socketService.emit(args.conversationId, SocketEvents.UserLeftConversation, args.username);
+    }
+
+    public inviteToConversation(socketId: string, args: any) {
+
+    }
+
+    public respondToConversationInvite(socketId: string, args: any) { 
+
     }
 }
