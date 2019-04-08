@@ -56,6 +56,30 @@
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:background="@drawable/stroke_bg">
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+        <Switch
+            android:id="@+id/signUpSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/loginOption"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@android:color/black"
+            android:typeface="normal" />
+            <TextView
+                android:id="@+id/loginTextView"
+                android:layout_alignRight="@+id/signUpSwitch"
+                android:fontFamily="sans-serif"
+                android:text="@string/signUpOption"
+                android:layout_width="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/usernameModule"

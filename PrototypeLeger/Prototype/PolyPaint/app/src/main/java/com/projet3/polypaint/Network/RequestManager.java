@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Base64;
+import android.widget.RelativeLayout;
 
 import com.projet3.polypaint.CanvasElement.Comment;
 import com.projet3.polypaint.CanvasElement.GenericShape;
@@ -54,7 +55,7 @@ public class RequestManager {
 
     public boolean requestLogin(UserInformation userInformation_) {
         user = userInformation_;
-        url = formatUrl(Request.Connection, null);
+        url = formatUrl(Request.Connection, null,null);
         UserPostTask loginTask = new UserPostTask();
         loginTask.execute(url);
         boolean response = false;
@@ -82,7 +83,7 @@ public class RequestManager {
     }
 
     public ArrayList<Conversation> fetchUserConversations() {
-        url = formatUrl(Request.Conversations,null);
+        url = formatUrl(Request.Conversations,null,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
         try{
@@ -122,9 +123,29 @@ public class RequestManager {
              return conversations;
         }
     }
+    public boolean postSignUp(String username, String password){
+        String url = formatUrl(Request.Sign_Up,username,password);
+        boolean response = false;
+        UserPostTask task = new UserPostTask();
+        task.execute(url);
+        try{
+            response = configureSignUpResponse(task.get(TIMEOUT_DELAY,TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return response;
+
+    }
+    public boolean configureSignUpResponse(String response_){
+        return (response_ == null || response_.isEmpty()) || response_.equals("400") ? false : true;
+    }
 
     public boolean addUserConversation(String name){
-        url = formatUrl(Request.Conversations, name);
+        url = formatUrl(Request.Conversations, name,null);
         UserPostTask task = new UserPostTask();
         task.execute(url);
         try{
@@ -146,7 +167,7 @@ public class RequestManager {
     }
 
     public ArrayList<User> fetchUsers(){
-        url = formatUrl(Request.Users_Fetch,null);
+        url = formatUrl(Request.Users_Fetch,null,null);
         UserGetTask getTask = new UserGetTask();
         getTask.execute(url);
         try{
@@ -192,7 +213,7 @@ public class RequestManager {
         return fetchGalleryContent("private");
     }
     private ArrayList<JSONObject> fetchGalleryContent(String request) {
-        url = formatUrl(Request.Images, request);
+        url = formatUrl(Request.Images, request,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
         try{
@@ -227,7 +248,7 @@ public class RequestManager {
     }
 
     public void postImage(String id, String visibility, String protection, String author) {
-        url = formatUrl(Request.Images, null);
+        url = formatUrl(Request.Images, null,null);
         UserJsonPostTask task = new UserJsonPostTask();
 
         JSONObject image = new JSONObject();
@@ -258,7 +279,7 @@ public class RequestManager {
     }
 
     public void postThumbnail(Bitmap bitmap, String imageID) {
-        url = formatUrl(Request.Thumbnail, imageID);
+        url = formatUrl(Request.Thumbnail, imageID,null);
         UserJsonPostTask task = new UserJsonPostTask();
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, os);
@@ -292,7 +313,7 @@ public class RequestManager {
     }
 
     public ArrayList<CollabShape> getAllShapes(String imageId) {
-        url = formatUrl(Request.Shapes, imageId);
+        url = formatUrl(Request.Shapes, imageId,null);
         UserGetTask getTask = new UserGetTask();
         getTask.execute(url);
 
@@ -325,12 +346,14 @@ public class RequestManager {
         }
     }
 
-    private String formatUrl(String request, String information) {
+    private String formatUrl(String request, String information, String information2) {
         String formatUrl;
 
         if (request.equals(Request.Connection))
             formatUrl = "http://" + ip + PORT + request + user.getUsername() + "/"
                     + user.getPassword();
+        else if (request.equals(Request.Sign_Up))
+            formatUrl = "http://" + ip + PORT + request + information + "/" + information2;
         else if (information == null)
             formatUrl = "http://" + ip + PORT + request + sessionID + "/" + user.getUsername();
         else
