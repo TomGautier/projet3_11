@@ -82,7 +82,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     public void joinNewDrawingSession() {
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         String id = FetchManager.currentInstance.getUserUsername() + "_" + (new Date()).getTime();
-        RequestManager.currentInstance.postImage(id, "public", "protected", FetchManager.currentInstance.getUserUsername());
+        RequestManager.currentInstance.postImage(id, "public", "", FetchManager.currentInstance.getUserUsername());
         SocketManager.currentInstance.joinCollabSession(id);
     }
     @Override
@@ -209,10 +209,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
        for (int i = selections.size() - 1; i >= 0; i--) {
            if (selections.get(i).getEditButton().contains(x, y)){
                GenericShape clicked = selections.get(i);
-               String[] clickedID = {clicked.getId()};
-               SocketManager.currentInstance.selectElements(selectionIDs.toArray(new String[selections.size()]), clickedID);
-               client.clearSelectedShape();
-               client.addSelectedShape(clicked);
                currentShape = createCollabShape(clicked);
                clicked.showEditingDialog(getFragmentManager());
                return true;
@@ -349,7 +345,7 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                     ,connection.getTailAnchorPointIndex(), connection.getFrontAnchorPointIndex());
         }
         else {
-            properties = new CollabShapeProperties(currentShapeType.toString(), shape.getFillingColor(),
+            properties = new CollabShapeProperties(type, shape.getFillingColor(),
                     shape.getBorderColor(),shape.getAttributes(),shape.getMethods(),shape.getLabel(),shape.getBorderType(),
                     shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
         }
