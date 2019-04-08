@@ -7,6 +7,8 @@ export default {
     UserLeftConversation:"UserLeftConversation",
     CreateConversation:"CreateConversation",
     CreatedConversation:"CreatedConversation",
+    InviteToConversation:"InviteToConversation",
+    InvitedToConversation:"InvitedToConversation",
     // Connexion
     LoginAttempt:"LoginAttempt",
     SignUp:"SignUp",
@@ -23,6 +25,9 @@ export default {
     JoinedDrawingSession:"JoinedDrawingSession",
     LeaveDrawingSession:"LeaveDrawingSession",
     LeftDrawingSession:"LeftDrawingSession",
+
+    InviteToDrawingSession:"InviteToDrawingSession",
+    InvitedToDrawingSession:"InvitedToDrawingSession",
 
     ObjectIsntSelected:"ObjectIsntSelected",
     ObjectSelectedByOtherUser:"ObjectSelectedByOtherUser",
