@@ -615,7 +615,7 @@ namespace PolyPaint.VueModeles
                 }
             });
 
-            SocketManager.Socket.On("InvitedToDrawingSession", (data) =>
+            SocketManager.Socket.On("InvitedToDrawingSession", async (data) =>
             {
                 var dataFormat = new
                 {
@@ -628,6 +628,8 @@ namespace PolyPaint.VueModeles
                     return;
                 string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre sa session de dessin" : " invited you to join his drawing session");
                 string captation = "Invitation";
+;               string shapes = "";
+                string sizes = "";
                 if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                 {
                     var res = new
@@ -639,6 +641,10 @@ namespace PolyPaint.VueModeles
                     };
                     SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
                     SocketManager.JoinDrawingSession(formatedData.imageId);
+                    shapes = await networkManager.LoadShapesAsync(Username, SessionId, formatedData.imageId);
+                    sizes = await networkManager.LoadImageData(Username, SessionId, formatedData.imageId);
+                    editeur.LoadFromServer(shapes, sizes);
+                    //TODO SET CANVAS TO IMAGEID
                     SwitchView = 5;
                 }
                 else
