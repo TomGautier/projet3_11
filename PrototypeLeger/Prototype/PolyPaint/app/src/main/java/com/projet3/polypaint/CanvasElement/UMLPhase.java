@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
+import java.util.Date;
+
 public class UMLPhase extends GenericTextShape {
     protected final static int DEFAULT_WIDTH = 451;
     protected final static int DEFAULT_HEIGHT = 350;
@@ -45,7 +47,7 @@ public class UMLPhase extends GenericTextShape {
     }
 
     public UMLPhase clone() {
-        return new UMLPhase(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text,angle);
+        return new UMLPhase(id +"_" + (new Date()).getTime(),this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text,angle);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

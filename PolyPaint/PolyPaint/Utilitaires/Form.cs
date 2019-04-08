@@ -146,7 +146,7 @@ namespace PolyPaint.Utilitaires
         public virtual Shape ConvertToShape(string drawingSessionID)
         {
             int[] middlePoint = new int[2] { (int)this.Center.X, (int)this.Center.Y };
-            ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(), this.DrawingAttributes.Color.ToString(), middlePoint,
+            ShapeProperties properties = new ShapeProperties(this.Type, this.Remplissage.ToString(),this.BorderColor.ToString()/* this.DrawingAttributes.Color.ToString()*/, middlePoint,
                 (int)this.Height, (int)this.Width, this.CurrentRotation, this.BorderStyle, this.Label, null, null, null, null, -1, -1, null, null, null, null, null);
             return new Shape(this.Id, drawingSessionID, this.Author, properties);
         }
@@ -157,11 +157,11 @@ namespace PolyPaint.Utilitaires
             //pen.Thickness = 3;
            switch (this.BorderStyle)
             {
-                case "Dash":
+                case "Dashed":
                     pen.DashStyle = DashStyles.Dash;
                     break;
 
-                case "Dot":
+                case "Dotted":
                     pen.DashStyle = DashStyles.Dot;
                     break;
 

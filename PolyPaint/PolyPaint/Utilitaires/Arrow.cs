@@ -142,7 +142,7 @@ namespace PolyPaint.Utilitaires
         {
             switch (this.Category)
             {
-                case "One Way":
+                case "Unidirectional":
                     DrawOneWay(drawingContext);
                     break;
                 case "Bidirectional":

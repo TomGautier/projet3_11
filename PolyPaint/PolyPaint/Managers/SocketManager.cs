@@ -16,7 +16,7 @@ namespace PolyPaint.Managers
 {
     class SocketManager
     {
-        private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.9.112";//"127.0.0.1";
+        private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.6.173";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
         private const string SERVER_PORT = "3000";
         public const double S_PROP = 2.256d;
         public Socket Socket;
@@ -185,7 +185,10 @@ namespace PolyPaint.Managers
         }
         public void DuplicateElements(Shape[] shapes_)
         {
-            foreach(Shape s in shapes_) { ConvertToMobile(s); }
+            foreach(Shape s in shapes_) {
+                ConvertToMobile(s);
+                s.id = this.UserName + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+            }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 imageId= this.SessionID,
@@ -196,7 +199,9 @@ namespace PolyPaint.Managers
         }
         public void DuplicateCutElements(Shape[] shapes_)
         {
-            foreach (Shape s in shapes_) { ConvertToMobile(s); }
+            foreach (Shape s in shapes_) {
+                s.id = this.UserName + "_" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
+                ConvertToMobile(s); }
             string parameters = new JavaScriptSerializer().Serialize(new
             {
                 imageId = this.SessionID,
