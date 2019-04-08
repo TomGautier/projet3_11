@@ -23,6 +23,14 @@ export class ConversationService implements ConversationServiceInterface {
             });
     }
 
+    public async getAll(): Promise<{}> {
+        return await this.databaseService.getAll(Conversation)
+            .catch(err => {
+                Logger.warn('ConversationService', `Couldn't get conversations.`);
+                throw err;
+            });
+    } 
+
     public async getAllByUsername(username: string): Promise<{}> {
         return await this.databaseService.getAllByCriteria(Conversation, this.PARTICIPANTS_CRITERIA, username)
             .catch(err => {

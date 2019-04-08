@@ -580,7 +580,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case Comment :
                 nShape = new Comment(id, posX, posY,GenericShape.getDefaultWidth(currentShapeType),
-                        GenericShape.getDefaultHeight(currentShapeType),defaultStyle);
+                        GenericShape.getDefaultHeight(currentShapeType),defaultStyle, 0);
                 nShape.showEditingDialog(getFragmentManager());
                 break;
             case Text :
@@ -590,9 +590,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case Arrow:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
-                        String.format("#%06x", ContextCompat.getColor(getActivity(),
-                                R.color.DefaultConnectionFormFillingColor)),String.format("#%06x",ContextCompat.getColor(getActivity(),
-                        R.color.DefaultConnectionFormBorderColor)),ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultX(posX),
+                        Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.DefaultConnectionFormFillingColor)),
+                        Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.DefaultConnectionFormBorderColor)),
+                        ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultX(posX),
                         ConnectionForm.generateDefaultY(posY));
         }
         if (nShape != null) {
@@ -864,15 +864,18 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     // ------------------------- Dialogs -------------------------
     // TextEditingDialog
     @Override
-    public void onTextDialogPositiveResponse(String contents) {
-        ((GenericTextShape)selections.get(0)).setText(contents);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
+    public void onTextDialogPositiveResponse(String contents, PaintStyle style) {
+        if (!selections.isEmpty()) {
+            ((GenericTextShape) selections.get(0)).setText(contents);
+            selections.get(0).setStyle(style);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
     }
     @Override
     public void onTextDialogNegativeResponse() {
-        if (((GenericTextShape)selections.get(0)).getText().equals("")) {
+        if (!selections.isEmpty() && ((GenericTextShape)selections.get(0)).getLabel().equals("")) {
             shapes.removeAll(selections);
             selections.clear();
             updateCanvas();
@@ -884,27 +887,46 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     // StyleEditingDialog
     @Override
     public void onStyleDialogPositiveResponse(PaintStyle style) {
-        selections.get(0).setStyle(style);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
+        if (!selections.isEmpty()) {
+            selections.get(0).setStyle(style);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
     }
     @Override
     public void onStyleDialogNegativeResponse() {
-        selections.get(0).setStyle(defaultStyle);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
+        if (!selections.isEmpty()) {
+            selections.get(0).setStyle(defaultStyle);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
     }
 
     // ClassEditingDialog
     @Override
-    public void onClassDialogPositiveResponse(String name, String attributes, String methods) {
-        ((UMLClass)selections.get(0)).setText(name);
-        ((UMLClass)selections.get(0)).setAttributes(attributes);
-        ((UMLClass)selections.get(0)).setMethods(methods);
-        updateCanvas();
-        drawAllShapes();
-        iView.invalidate();
+    public void onClassDialogPositiveResponse(String name, String attributes, String methods, PaintStyle style) {
+        if (!selections.isEmpty()) {
+            ((UMLClass) selections.get(0)).setText(name);
+            ((UMLClass) selections.get(0)).setAttributes(attributes);
+            ((UMLClass) selections.get(0)).setMethods(methods);
+            selections.get(0).setStyle(style);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
+    }
+    @Override
+    public void onClassDialogNeutralResponse(String name, String attributes, String methods) {
+        if (!selections.isEmpty()) {
+            ((UMLClass) selections.get(0)).setText(name);
+            ((UMLClass) selections.get(0)).setAttributes(attributes);
+            ((UMLClass) selections.get(0)).setMethods(methods);
+            selections.get(0).setStyle(defaultStyle);
+            updateCanvas();
+            drawAllShapes();
+            iView.invalidate();
+        }
     }
 }

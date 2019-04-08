@@ -53,7 +53,8 @@ export default {
     ResizedCanvas:"ResizedCanvas",
     ResetCanvas:"ResetCanvas",
     CanvasReset:"CanvasReset",
-    // TODO: Te be cleared out
+    
     CannotJoin:"CannotJoin",
-    NewUserJoined:"NewUserJoined"
+    NewUserJoined:"NewUserJoined", // Sends list of users in the session
+    NewUserJoinedSelections:"NewUserJoinedSelections" // Sends list of selected objects in the session
 }

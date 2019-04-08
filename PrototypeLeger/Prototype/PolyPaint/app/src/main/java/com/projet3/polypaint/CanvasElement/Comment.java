@@ -12,12 +12,12 @@ public class Comment extends GenericTextShape {
     protected  static final int DEFAULT_HEIGHT = 56;
 
 
-    public Comment(String id, int x, int y, int width, int height, PaintStyle style) {
-        super(id, x, y,width, height,style, 0);
+    public Comment(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
+        super(id, x, y,width, height,style, angle);
         this.height += 2*PADDING;
     }
-    private Comment(String id, int x, int y,int width, int height, PaintStyle style, String contents) {
-        super(id, x, y,width,height, style, contents, 0);
+    public Comment(String id, int x, int y,int width, int height, PaintStyle style, String contents, float angle) {
+        super(id, x, y,width,height, style, contents, angle);
         this.height += 2*PADDING;
     }
 
@@ -44,7 +44,7 @@ public class Comment extends GenericTextShape {
 
     @Override
     public GenericShape clone() {
-        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width,height, this.style, text);
+        return new Comment(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,width,height, this.style, text, angle);
     }
 
     @Override

@@ -2,6 +2,7 @@ import { injectable, inject } from "inversify";
 import { TYPES } from "../types";
 import { SocketService } from "./socket.service";
 import SocketEvents from "../../../common/communication/socketEvents";
+import { ConversationService } from "./conversation.service";
 
 @injectable()
 export class ConversationManager {

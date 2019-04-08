@@ -54,10 +54,10 @@ public abstract class GenericShape {
         rotationPath.addCircle(posX,posY,(float)(Math.sqrt(Math.pow(width,2) + Math.pow(height,2)) + ROTATION_BOX_OFFSET), Path.Direction.CW);
     }
     public String getFillingColor(){
-        return String.format("#%06X", (0xFFFFFF & style.getBackgroundPaint().getColor()));
+        return Integer.toHexString(style.getBackgroundPaint().getColor());
     }
     public String getBorderColor(){
-        return String.format("#%06X", (0xFFFFFF & style.getBorderPaint().getColor()));
+        return Integer.toHexString(style.getBorderPaint().getColor());
     }
 
     public void recuperateConnectionStatus(GenericShape shape){
@@ -281,14 +281,14 @@ public abstract class GenericShape {
         return 0;
     }
 
-    public String getAttributes(){
-        return "";
+    public ArrayList<String> getAttributes(){
+        return new ArrayList<>();
     }
-    public String getMethods(){
-        return "";
+    public ArrayList<String> getMethods(){
+        return new ArrayList<>();
     }
     public String getLabel() {return ""; }
-    public String getBorderType() {return "";}
+    public PaintStyle.StrokeType getBorderType() {return style.getStrokeType();}
     public String getId() {
         return id;
     }
@@ -307,12 +307,14 @@ public abstract class GenericShape {
     protected void traceStyledLine(int x1, int y1, int x2, int y2, Canvas canvas) {
         switch (style.getStrokeType()) {
             case full :
+            case solid :
                 canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
                 break;
             case dotted :
                 traceDottedLine(x1, y1, x2, y2, canvas);
                 break;
             case dashed :
+            case dash :
                 traceDashedLine(x1, y1, x2, y2, canvas);
                 break;
         }
@@ -361,12 +363,14 @@ public abstract class GenericShape {
     protected void traceStyledCircle(int x, int y, int radius, Canvas canvas) {
         switch (style.getStrokeType()) {
             case full :
+            case solid :
                 canvas.drawCircle(x, y, radius, style.getBorderPaint());
                 break;
             case dotted :
                 traceDottedCircle(x, y, radius, canvas);
                 break;
             case dashed :
+            case dash :
                 traceDashedCircle(x, y, radius, canvas);
                 break;
         }
