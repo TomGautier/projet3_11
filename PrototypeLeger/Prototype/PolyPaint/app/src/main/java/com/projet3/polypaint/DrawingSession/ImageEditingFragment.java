@@ -34,6 +34,7 @@ import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.GenericTextShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.RotationGestureDetector;
+import com.projet3.polypaint.CanvasElement.ShapeAnimator;
 import com.projet3.polypaint.CanvasElement.TextBox;
 import com.projet3.polypaint.CanvasElement.UMLActivity;
 import com.projet3.polypaint.CanvasElement.UMLArtefact;
@@ -84,11 +85,13 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     protected final String REMOVE_ACTION = "REMOVE";
 
     protected Canvas canvas;
+    public Canvas getCanvas() { return canvas; }
     protected PaintStyle defaultStyle;
     protected Bitmap bitmap;
     protected ImageView iView;
     protected LinearLayout canvasBGLayout;
     protected ArrayList<GenericShape> shapes;
+    public ArrayList<GenericShape> getShapes() { return shapes; }
     protected ArrayList<GenericShape> cutShapes;
     protected Stack<Pair<ArrayList<GenericShape>, String>> addStack;
     protected Stack<Pair<ArrayList<GenericShape>, String>> removeStack;
@@ -140,6 +143,10 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
 
         setTouchListener();
         initializeCanvas();
+
+        ShapeAnimator anim = new ShapeAnimator(this);
+        anim.start();
+
         drawAllShapes();
         return rootView;
     }
@@ -386,6 +393,11 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
     /*protected boolean canRotate(){
         return selections.size() == 1;
     }*/
+
+    public void invalidateImageView() {
+        iView.postInvalidate();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     protected void setTouchListener() {
         iView.setOnTouchListener(new View.OnTouchListener() {
@@ -407,7 +419,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 // Check if canvas is being resized
                 else if (isResizingCanvas || checkCanvasResizeHandle(posX, posY))
                     return resizeCanvas(event);
-                 switch (currentMode) {
+                else switch (currentMode) {
                     case selection:
                         if (canResize() && selections.get(0).canResize(posX,posY)){
                             resizeShape(event);
@@ -599,6 +611,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
             shapes.add(nShape);
             selections.clear();
             selections.add(nShape);
+            animateShape(nShape);
         }
         return nShape;
     }
@@ -859,6 +872,22 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
 
         return isResizingCanvas;
+    }
+
+    protected void animateShape(GenericShape shape) {
+        /*ShapeAnimator anim = new ShapeAnimator(this);
+        while (shape.isAnimating) {
+            try {
+                anim.run();
+                anim.join();
+                iView.invalidate();
+            } catch (InterruptedException e) {}
+        }*/
+        /*Bitmap old = bitmap;
+        Bitmap newBitmap = Bitmap.createBitmap(iView.getLayoutParams().width, iView.getLayoutParams().height, Bitmap.Config.ARGB_8888);
+        iView.setImageBitmap(newBitmap);
+        canvas.setBitmap(newBitmap);
+        drawAllShapes();*/
     }
 
     // ------------------------- Dialogs -------------------------

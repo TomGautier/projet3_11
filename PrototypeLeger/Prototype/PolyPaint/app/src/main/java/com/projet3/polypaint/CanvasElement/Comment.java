@@ -23,8 +23,8 @@ public class Comment extends GenericTextShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        int w2 = width/2;
-        int h2 = height/2;
+        int w2 = displayWidth/2;
+        int h2 = displayHeight/2;
 
         Path p = new Path();
 
@@ -38,8 +38,9 @@ public class Comment extends GenericTextShape {
         traceStyledLine(posX + w2, posY + h2, posX - w2, posY + h2, canvas);
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
 
-        canvas.drawText(text, posX, posY + FONT_SIZE/2, style.getTextPaint());
+        if (!isAnimating) canvas.drawText(text, posX, posY + FONT_SIZE/2, style.getTextPaint());
         canvas.restore();
+        animate();
     }
 
     @Override

@@ -5,13 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Region;
-import android.opengl.Matrix;
-import android.renderscript.Matrix2f;
-import android.util.Pair;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 
@@ -24,6 +19,7 @@ public abstract class GenericShape {
     protected final int CLONE_OFFSET = 30;
     protected final int ROTATION_BOX_OFFSET = 40;
     private final double DOT_SPACING = 7.5;
+    private final int ANIMATION_FRAMES = 20;
 
     protected int posX;
     protected int posY;
@@ -35,6 +31,10 @@ public abstract class GenericShape {
     protected ArrayList<AnchorPoint> anchorPoints;
     protected ArrayList<ConnectionForm> connections;
     protected Path rotationPath;
+
+    protected int displayWidth;
+    protected int displayHeight;
+    public boolean isAnimating;
 
     public GenericShape() {}
     public GenericShape(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
@@ -48,6 +48,10 @@ public abstract class GenericShape {
         anchorPoints = new ArrayList<>();
         connections = new ArrayList<>();
         setAnchorPoints();
+
+        displayHeight = 0;
+        displayWidth = 0;
+        isAnimating = true;
     }
     public void setRotationBox(){
         rotationPath = new Path();
@@ -398,4 +402,18 @@ public abstract class GenericShape {
 
     public PaintStyle getStyle() { return style; }
     public void setStyle(PaintStyle style) { this.style = style; }
+
+    protected void animate() {
+        if (isAnimating) {
+            /*if (displayWidth < width || displayHeight < height) {
+                displayWidth += width / ANIMATION_FRAMES;
+                displayHeight += height / ANIMATION_FRAMES;
+            }
+            if (displayWidth >= width || displayHeight >= height) {*/
+                displayWidth = width;
+                displayHeight = height;
+                isAnimating = false;
+            //}
+        }
+    }
 }

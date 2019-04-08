@@ -24,10 +24,10 @@ public class UMLArtefact extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        int w2 = width/2;
-        int h2 = height/2;
-        int w4 = width/4;
-        int h4 = height/4;
+        int w2 = displayWidth/2;
+        int h2 = displayHeight/2;
+        int w4 = displayWidth/4;
+        int h4 = displayHeight/4;
 
         Path p = new Path();
 
@@ -50,6 +50,7 @@ public class UMLArtefact extends GenericShape {
         traceStyledLine(posX + w2, posY - h4, posX + w4, posY - h4, canvas);
         traceStyledLine(posX + w4, posY - h4, posX + w4, posY - h2, canvas);
         canvas.restore();
+        animate();
     }
 
     @Override

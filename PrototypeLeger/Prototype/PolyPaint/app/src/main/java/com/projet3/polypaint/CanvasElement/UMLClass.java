@@ -54,8 +54,8 @@ public class UMLClass extends GenericTextShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        int w2 = width / 2;
-        int h2 = height / 2;
+        int w2 = displayWidth / 2;
+        int h2 = displayHeight / 2;
 
         Path p = new Path();
 
@@ -81,14 +81,17 @@ public class UMLClass extends GenericTextShape {
                 posX + w2, posY - h2 + (attributes.size() + 1) * FONT_SIZE + 4 * PADDING, canvas);
 
         // Text
-        canvas.drawText(text, posX, posY - h2 + FONT_SIZE + PADDING, style.getTextPaint());
-        for (int i = 0; i < attributes.size(); i++) {
-            canvas.drawText(attributes.get(i), posX - w2 + PADDING, posY - h2 + (2 + i) * FONT_SIZE + 3 * PADDING, leftAlignedText);
-        }
-        for (int i = 0; i < methods.size(); i++) {
-            canvas.drawText(methods.get(i), posX - w2 + PADDING, posY - h2 + (2 + i + attributes.size()) * FONT_SIZE + 5 * PADDING, leftAlignedText);
+        if (!isAnimating) {
+            canvas.drawText(text, posX, posY - h2 + FONT_SIZE + PADDING, style.getTextPaint());
+            for (int i = 0; i < attributes.size(); i++) {
+                canvas.drawText(attributes.get(i), posX - w2 + PADDING, posY - h2 + (2 + i) * FONT_SIZE + 3 * PADDING, leftAlignedText);
+            }
+            for (int i = 0; i < methods.size(); i++) {
+                canvas.drawText(methods.get(i), posX - w2 + PADDING, posY - h2 + (2 + i + attributes.size()) * FONT_SIZE + 5 * PADDING, leftAlignedText);
+            }
         }
         canvas.restore();
+        animate();
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

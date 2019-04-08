@@ -23,10 +23,10 @@ public class UMLRole extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        int w2 = width/2;
-        int h2 = height/2;
-        int w4 = width/4;
-        int h4 = height/4;
+        int w2 = displayWidth/2;
+        int h2 = displayHeight/2;
+        int w4 = displayWidth/4;
+        int h4 = displayHeight/4;
 
         Path p = new Path();
 
@@ -47,7 +47,7 @@ public class UMLRole extends GenericShape {
         traceStyledLine(posX - w2, posY + h2, posX - w4, posY, canvas);
         traceStyledCircle(posX, posY - h4, h4, canvas);
         canvas.restore();
-        //canvas.drawPath(p, style.getBorderPaint());
+        animate();
     }
 
     @Override

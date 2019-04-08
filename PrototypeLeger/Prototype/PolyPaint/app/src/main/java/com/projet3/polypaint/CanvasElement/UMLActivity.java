@@ -25,8 +25,10 @@ public class UMLActivity extends GenericShape {
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        int w2 = width/2;
-        int h2 = height/2;
+        int w2 = displayWidth/2;
+        int h2 = displayHeight/2;
+
+        System.out.println("Display size : " + displayWidth + " x " + displayHeight);
 
         Path p = new Path();
 
@@ -47,6 +49,7 @@ public class UMLActivity extends GenericShape {
         traceStyledLine(posX + w2 - h2, posY + h2, posX - w2, posY + h2, canvas);
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
         canvas.restore();
+        animate();
     }
 
     @Override

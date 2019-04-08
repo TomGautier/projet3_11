@@ -73,6 +73,7 @@ public class ConnectionForm extends GenericShape {
         this.thick = thick;
         initializeProperties();
         initializeVertices(verticesX,verticesY);
+        isAnimating = false;
     }
 
     private void initializeProperties(){

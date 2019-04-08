@@ -14,9 +14,11 @@ public class TextBox extends GenericTextShape {
 
     public TextBox(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height,style,angle);
+        isAnimating = false;
     }
     public TextBox(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
         super(id, x, y, width, height, style, contents, angle);
+        isAnimating = false;
     }
 
     @Override
