@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class ChatFragment extends Fragment implements NewMessageListener {
+public class ChatFragment extends Fragment implements ChatListener {
 
 
 
@@ -69,7 +69,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
             currentConversation = new Conversation("GENERAL");
         }
         initializeChat();
-        SocketManager.currentInstance.setupNewMessageListener(this);
+        SocketManager.currentInstance.setupChatListener(this);
         return rootView;
     }
 
@@ -105,8 +105,6 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         Utilities.setButtonEffect(removeConversationButton);
         Utilities.setButtonEffect(chatEnterButton);
         Utilities.setButtonEffect(chatExpendButton);
-
-
     }
 
     /*private Point getScreenSize() {
@@ -375,6 +373,48 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                 WriteMessage(message,true);
             }
         });
+    }
+
+    @Override
+    public void onInviteToConversation(final String from, final String conversation) {
+        LayoutInflater inflater = (LayoutInflater)
+                getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final View popupView = inflater.inflate(R.layout.response_to_invite, null);
+        TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
+        text.setText(from + " vous a invité à la conversation " + conversation);
+
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (v != popupView){
+                    SocketManager.currentInstance.sendResponseToInvitation(from,false);
+                    popupWindow.dismiss() ;
+                }
+                return true;
+            }
+        });
+        ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SocketManager.currentInstance.sendResponseToInvitation(from,true);
+                popupWindow.dismiss() ;
+            }
+        });
+        ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
+        declineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SocketManager.currentInstance.sendResponseToInvitation(from,false);
+                popupWindow.dismiss() ;
+            }
+        });
+
     }
 
     @Override

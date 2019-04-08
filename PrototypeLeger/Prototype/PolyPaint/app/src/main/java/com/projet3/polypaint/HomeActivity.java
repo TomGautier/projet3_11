@@ -4,20 +4,24 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 //import android.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.DrawingCollabSession.CollabShape;
-import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
 import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
@@ -26,7 +30,7 @@ import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements HomeActivityListener {
 
 	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
 	//private UserInformation userInformation;
@@ -199,6 +203,51 @@ public class HomeActivity extends AppCompatActivity {
 		SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
 	}
+
+	@Override
+	public void onInviteToDrawingSession(final String from, final String imageId) {
+		LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+		boolean focusable = true;
+		final View popupView = inflater.inflate(R.layout.response_to_invite, null);
+		TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
+		text.setText(from + " vous a invité à la session collaborative " + imageId);
+
+		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+		popupView.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if (v != popupView){
+					SocketManager.currentInstance.sendResponseToInvitation(from,false);
+					popupWindow.dismiss() ;
+				}
+				return true;
+			}
+		});
+		ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+		acceptButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SocketManager.currentInstance.sendResponseToInvitation(from,true);
+				popupWindow.dismiss() ;
+			}
+		});
+		ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
+		declineButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SocketManager.currentInstance.sendResponseToInvitation(from,false);
+				popupWindow.dismiss() ;
+			}
+		});
+	}
+
+    @Override
+    public void onResponseToInvitation(boolean response) {
+
+    }
 }
 
 
