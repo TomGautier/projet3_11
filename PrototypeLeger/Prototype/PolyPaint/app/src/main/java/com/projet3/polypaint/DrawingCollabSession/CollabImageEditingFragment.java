@@ -49,11 +49,15 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     private CollabShape currentShape;
     private boolean isEditingNewShape = false;
     private static final String IMAGE_ID_TAG = "IMAGE_ID";
+    private static final String VISIBILTY_TAG = "visibility";
+    private static final String PASSWORD_TAG = "password";
 
-    public static CollabImageEditingFragment newInstance(String sessionId){
+    public static CollabImageEditingFragment newInstance(String sessionId, String visibility, String password){
         CollabImageEditingFragment fragment = new CollabImageEditingFragment();
         Bundle args = new Bundle();
         args.putString(IMAGE_ID_TAG, sessionId);
+        args.putString(VISIBILTY_TAG, visibility);
+        args.putString(PASSWORD_TAG, password);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,8 +74,12 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         client = new Player(FetchManager.currentInstance.getUserUsername(), selectedColorCpt);
 
         String imageId = getArguments().getString(IMAGE_ID_TAG);
-        if (imageId == null || imageId.equals("")) joinNewDrawingSession();
-        else joinDrawingSession(imageId);
+        if (imageId == null || imageId.equals("")) {
+            joinNewDrawingSession(getArguments().getString(VISIBILTY_TAG), getArguments().getString(PASSWORD_TAG));
+        }
+        else {
+            joinDrawingSession(imageId);
+        }
         return rootView;
     }
 
@@ -79,10 +87,10 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         SocketManager.currentInstance.joinCollabSession(imageId);
     }
-    public void joinNewDrawingSession() {
+    public void joinNewDrawingSession(String visibility, String password) {
         SocketManager.currentInstance.setupDrawingCollabSessionListener(this);
         String id = FetchManager.currentInstance.getUserUsername() + "_" + (new Date()).getTime();
-        RequestManager.currentInstance.postImage(id, "public", "protected", FetchManager.currentInstance.getUserUsername());
+        RequestManager.currentInstance.postImage(id, visibility, password, FetchManager.currentInstance.getUserUsername());
         SocketManager.currentInstance.joinCollabSession(id);
     }
     @Override
