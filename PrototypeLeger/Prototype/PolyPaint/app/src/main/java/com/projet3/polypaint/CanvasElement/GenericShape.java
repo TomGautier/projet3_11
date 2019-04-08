@@ -54,10 +54,10 @@ public abstract class GenericShape {
         rotationPath.addCircle(posX,posY,(float)(Math.sqrt(Math.pow(width,2) + Math.pow(height,2)) + ROTATION_BOX_OFFSET), Path.Direction.CW);
     }
     public String getFillingColor(){
-        return String.format("#%06X", (0xFFFFFF & style.getBackgroundPaint().getColor()));
+        return Integer.toHexString(style.getBackgroundPaint().getColor());
     }
     public String getBorderColor(){
-        return String.format("#%06X", (0xFFFFFF & style.getBorderPaint().getColor()));
+        return Integer.toHexString(style.getBorderPaint().getColor());
     }
 
     public void recuperateConnectionStatus(GenericShape shape){
@@ -151,15 +151,15 @@ public abstract class GenericShape {
 
     }
 
-    public void updateAnchor(ConnectionForm connection){
+    public boolean updateAnchor(ConnectionForm connection){
        /* Pair pair = connection.getDockingPair();
         if (pair == null || pair.first == null)
             return;*/
         boolean changedAnchor = false;
-       ConnectionFormVertex vertex = connection.getSelectedVertex();
+       //ConnectionFormVertex vertex = connection.getSelectedVertex();
 
-        if (vertex == null || vertex.getIndex() == -1)
-            return;
+      //  if (vertex == null || vertex.getIndex() == -1)
+          //  return;
         if (anchorPoints != null && anchorPoints.size() > 0){
             for (AnchorPoint anchorPoint : anchorPoints){
                /* if (!anchorPoint.isConnected() && anchorPoint.intersect(vertex.getBox())){
@@ -170,20 +170,22 @@ public abstract class GenericShape {
                     anchorPoint.removeConnection();
                     //connection.removeConnection(vertex.getIndex());
                 }*/
-               if (anchorPoint.intersect(vertex.getBox())){
-                   anchorPoint.setConnection(vertex);
-                   connection.setConnection(anchorPoint.getIndex(),getId(),vertex.getIndex());
+               if (anchorPoint.intersect(connection.getSelectedVertex().getBox())){
+                   anchorPoint.setConnection(connection.getSelectedVertex());
+                   connection.setConnection(anchorPoint.getIndex(),getId(),connection.getSelectedVertex().getIndex());
                    changedAnchor = true;
                }
-               else if(anchorPoint.getConnectionVertex() == vertex){
+               else if(anchorPoint.getConnectionVertex() == connection.getSelectedVertex()){
                    anchorPoint.removeConnection();
                    //connection.removeConnection(vertex.getIndex());
                }
             }
-            if (!changedAnchor){
-                connection.removeConnection(vertex.getIndex());
-            }
+            //if (!changedAnchor){
+              //  connection.removeConnection(vertex.getIndex());
+           // }
+            return changedAnchor;
         }
+        return false;
     }
     public void removeAnchorConnection(int anchorPointIndex){
         anchorPoints.get(anchorPointIndex).removeConnection();
@@ -281,14 +283,14 @@ public abstract class GenericShape {
         return 0;
     }
 
-    public String getAttributes(){
-        return "";
+    public ArrayList<String> getAttributes(){
+        return new ArrayList<>();
     }
-    public String getMethods(){
-        return "";
+    public ArrayList<String> getMethods(){
+        return new ArrayList<>();
     }
     public String getLabel() {return ""; }
-    public String getBorderType() {return "";}
+    public PaintStyle.StrokeType getBorderType() {return style.getStrokeType();}
     public String getId() {
         return id;
     }
@@ -307,12 +309,14 @@ public abstract class GenericShape {
     protected void traceStyledLine(int x1, int y1, int x2, int y2, Canvas canvas) {
         switch (style.getStrokeType()) {
             case full :
+            case solid :
                 canvas.drawLine(x1, y1, x2, y2, style.getBorderPaint());
                 break;
             case dotted :
                 traceDottedLine(x1, y1, x2, y2, canvas);
                 break;
             case dashed :
+            case dash :
                 traceDashedLine(x1, y1, x2, y2, canvas);
                 break;
         }
@@ -361,12 +365,14 @@ public abstract class GenericShape {
     protected void traceStyledCircle(int x, int y, int radius, Canvas canvas) {
         switch (style.getStrokeType()) {
             case full :
+            case solid :
                 canvas.drawCircle(x, y, radius, style.getBorderPaint());
                 break;
             case dotted :
                 traceDottedCircle(x, y, radius, canvas);
                 break;
             case dashed :
+            case dash :
                 traceDashedCircle(x, y, radius, canvas);
                 break;
         }

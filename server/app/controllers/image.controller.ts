@@ -26,6 +26,9 @@ export class ImageController implements ImageControllerInterface {
                 
                 this.imageService.getById(req.params.imageId).then(image => {
                     res.json(image);
+                })
+                .catch(err => {
+                    res.json(400);
                 });
             });
 
@@ -39,44 +42,24 @@ export class ImageController implements ImageControllerInterface {
                     case 'public': 
                         this.imageService.getAll().then(images => {
                             res.json(images);
+                        })
+                        .catch(err => {
+                            res.json(400);
                         });
                         break;
                     case 'private':
                         this.imageService.getAllByAuthor(req.params.username).then(images => {
                             res.json(images);
+                        })
+                        .catch(err => {
+                            res.json(400);
                         });
                         break;
                     default:
                         break;
                 }
             });
-/*
-        router.get("/:sessionId/:username",
-            (req: Request, res: Response, next: NextFunction) => {
-                // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
-                
-                    this.imageService.getAllByAuthor(req.params.username).then(image => {
-                        res.json(image);
-                    });
-                this.imageService.getAllByAuthor(req.params.username).then(image => {
-                    
-                    res.json(image);
-                });
-            });
-            
-        router.get("/common/:sessionId/:username",
-            (req: Request, res: Response, next: NextFunction) => {
-                // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
 
-                this.imageService.getAll().then(image => {
-                    res.json(image);
-                });
-            }); 
-*/
         router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
@@ -88,6 +71,9 @@ export class ImageController implements ImageControllerInterface {
                                         req.body.protection)
                     .then(image => {
                         res.json(image);
+                    })
+                    .catch(err => {
+                        res.json(400);
                     });
             });
 
@@ -99,6 +85,10 @@ export class ImageController implements ImageControllerInterface {
                 this.imageService.updateThumbnail(req.params.imageId, req.body.thumbnail, req.body.thumbnailTimestamp)
                     .then(image => {
                         res.json(image);
+                        console.log("POST DU THUMBNAIL REUSSI");
+                    })
+                    .catch(err => {
+                        res.json(400);
                     });
 
             });

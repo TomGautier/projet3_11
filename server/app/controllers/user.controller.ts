@@ -22,7 +22,10 @@ export class UserController {
                 // Send the request to the service and send the response
                 this.userService.getAll().then(users => {
                     res.json(users);
-            });
+                })
+                .catch(err => {
+                    res.json(400);
+                });
         });
 
         return router;

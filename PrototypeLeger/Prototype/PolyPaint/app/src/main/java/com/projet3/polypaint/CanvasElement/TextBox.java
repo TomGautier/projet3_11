@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
+import java.util.Date;
+
 public class TextBox extends GenericTextShape {
 
     public static final String TYPE = "Text";
@@ -15,7 +17,7 @@ public class TextBox extends GenericTextShape {
     public TextBox(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height,style,angle);
     }
-    private TextBox(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
+    public TextBox(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
         super(id, x, y, width, height, style, contents, angle);
     }
 
@@ -28,7 +30,7 @@ public class TextBox extends GenericTextShape {
     }
 
     public TextBox clone() {
-        return new TextBox(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text, angle);
+        return new TextBox(id +"_" + (new Date()).getTime(),this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text, angle);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {

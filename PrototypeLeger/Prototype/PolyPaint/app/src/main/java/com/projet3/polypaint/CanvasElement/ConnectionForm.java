@@ -27,6 +27,7 @@ import org.w3c.dom.UserDataHandler;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Vector;
 
 public class ConnectionForm extends GenericShape {
@@ -63,14 +64,19 @@ public class ConnectionForm extends GenericShape {
     private Paint arrowPaint;
     private boolean isResizing;
     private float thick;
+    private String q1;
+    private String q2;
 
 
-    public ConnectionForm(String id, String type, String fillingColor, String borderColor, float thick, Integer[] verticesX, Integer[] verticesY){
+    public ConnectionForm(String id, String type, String fillingColor, String borderColor, float thick, Integer[] verticesX, Integer[] verticesY
+    ,String q1, String q2){
         this.id = id;
         this.type = type;
         this.fillingColor = fillingColor;
         this.borderColor = borderColor;
         this.thick = thick;
+        this.q1 = q1;
+        this.q2 = q2;
         initializeProperties();
         initializeVertices(verticesX,verticesY);
     }
@@ -154,7 +160,7 @@ public class ConnectionForm extends GenericShape {
         first = new ConnectionFormVertex(points.get(0),vertex2, this,0);
     }
     public ConnectionForm clone() {
-        return new ConnectionForm(id + "clone", this.type, fillingColor, borderColor, thick, getVerticesXPos(CLONE_OFFSET), getVerticesYPos(CLONE_OFFSET));
+        return new ConnectionForm(id +"_" + (new Date()).getTime(), this.type, fillingColor, borderColor, thick, getVerticesXPos(CLONE_OFFSET), getVerticesYPos(CLONE_OFFSET),q1,q2);
     }
     public void setConnection(int anchorPointIndex, String shapeId, int vertexIndex){
         switch(vertexIndex){
@@ -245,6 +251,12 @@ public class ConnectionForm extends GenericShape {
     public float getThick(){
         return thick;
     }
+    public String getQ1(){
+        return q1;
+    }
+    public String getQ2(){
+        return q2;
+    }
 
     public void relativeVertexMove(int x, int y, int index) {
        switch(index){
@@ -274,7 +286,7 @@ public class ConnectionForm extends GenericShape {
         ArrayList<Integer> list = new ArrayList<>();
         ConnectionFormVertex current = first;
         while (current != null){
-            list.add(current.x());
+            list.add(current.x() + offset);
             current = current.getNext();
         }
         return list.toArray(new Integer[list.size()]);
@@ -283,7 +295,7 @@ public class ConnectionForm extends GenericShape {
         ArrayList<Integer> list = new ArrayList<>();
         ConnectionFormVertex current = first;
         while (current != null){
-            list.add(current.y());
+            list.add(current.y() + offset);
             current = current.getNext();
         }
         return list.toArray(new Integer[list.size()]);

@@ -6,6 +6,8 @@ import android.graphics.Path;
 
 import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
+import java.util.Date;
+
 public class UMLPhase extends GenericTextShape {
     protected final static int DEFAULT_WIDTH = 451;
     protected final static int DEFAULT_HEIGHT = 350;
@@ -15,10 +17,10 @@ public class UMLPhase extends GenericTextShape {
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
         super(id, x, y, width, height, style,angle);
         this.width = width;
-        this.height = height;
     }
     public UMLPhase(String id, int x, int y, int width, int height, PaintStyle style, String contents, float angle) {
         super(id, x, y, width, height, style, contents,angle);
+        this.width = width;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class UMLPhase extends GenericTextShape {
     }
 
     public UMLPhase clone() {
-        return new UMLPhase(id + "clone",this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text,angle);
+        return new UMLPhase(id +"_" + (new Date()).getTime(),this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET, width, height, this.style, text,angle);
     }
 
     public void showEditingDialog(FragmentManager fragmentManager) {
@@ -59,16 +61,5 @@ public class UMLPhase extends GenericTextShape {
 
     @Override
     public String getType() { return TYPE; }
-    @Override
-    public void setAnchorPoints() {
-        //no anchor points for connectionForms
-    }
-    @Override
-    public void drawAnchorPoints(Canvas canvas){
-        //no anchor points
-    }
-    @Override
-    public void rotateAnchorPoints(){
-        //no anchor points
-    }
+
 }

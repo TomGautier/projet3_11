@@ -10,6 +10,7 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class UMLClass extends GenericTextShape {
     protected final static int DEFAULT_WIDTH = 124;
@@ -23,24 +24,21 @@ public class UMLClass extends GenericTextShape {
     public static final String TYPE = "UmlClass";
 
     public UMLClass(String id, int x, int y, int width, int height, PaintStyle style, float angle) {
-        super(id, x, y, width,height, style,angle);
+        super(id, x, y, width, height, style, angle);
 
         attributes = new ArrayList<>();
         methods = new ArrayList<>();
 
-        if (width > this.width) this.width = width;
-        this.height = height;
-
         initializePaint();
     }
-    public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style, float angle) {
-        super(id, x, y,width,height,style, name,angle);
 
+    public UMLClass(String id, int x, int y, int width, int height, String name, String attributes, String methods, PaintStyle style, float angle) {
+        super(id, x, y, width, height, style, name, angle);
+
+        this.attributes = new ArrayList<>();
+        this.methods = new ArrayList<>();
         setAttributes(attributes);
         setMethods(methods);
-
-        if (width > this.width) this.width = width;
-        this.height = height;
 
         initializePaint();
     }
@@ -51,26 +49,26 @@ public class UMLClass extends GenericTextShape {
     }
 
     public UMLClass clone() {
-        return new UMLClass(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,
+        return new UMLClass(id +"_" + (new Date()).getTime(), this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,
                 width, height, text, concatenateList(attributes), concatenateList(methods), this.style, angle);
     }
 
     @Override
     public void drawOnCanvas(Canvas canvas) {
-        int w2 = width/2;
-        int h2 = height/2;
+        int w2 = width / 2;
+        int h2 = height / 2;
 
         Path p = new Path();
 
         p.addRect(posX - w2, posY - h2, posX + w2, posY + h2, Path.Direction.CW);
 
         //for (AnchorPoint anchorPoint : anchorPoints)
-          //  anchorPoint.drawOnCanvas(canvas);
+        //  anchorPoint.drawOnCanvas(canvas);
         canvas.save(Canvas.MATRIX_SAVE_FLAG);
-        canvas.rotate(angle,posX,posY);
+        canvas.rotate(angle, posX, posY);
         canvas.drawPath(p, style.getBackgroundPaint());
 
-        canvas.drawPath(p, style.getBorderPaint());
+        //canvas.drawPath(p, style.getBorderPaint());
 
         //canvas.drawPath(p, style.getBorderPaint());
         traceStyledLine(posX - w2, posY - h2, posX + w2, posY - h2, canvas);
@@ -79,17 +77,17 @@ public class UMLClass extends GenericTextShape {
         traceStyledLine(posX - w2, posY + h2, posX - w2, posY - h2, canvas);
 
         // Separators between class name, attributes and methods
-        traceStyledLine(posX - w2, posY - h2 + FONT_SIZE + 2*PADDING, posX + w2, posY - h2 + FONT_SIZE + 2*PADDING, canvas);
-        traceStyledLine(posX - w2, posY - h2 + (attributes.size() + 1) * FONT_SIZE + 4*PADDING,
-                posX + w2, posY - h2 + (attributes.size() + 1) * FONT_SIZE + 4*PADDING, canvas);
+        traceStyledLine(posX - w2, posY - h2 + FONT_SIZE + 2 * PADDING, posX + w2, posY - h2 + FONT_SIZE + 2 * PADDING, canvas);
+        traceStyledLine(posX - w2, posY - h2 + (attributes.size() + 1) * FONT_SIZE + 4 * PADDING,
+                posX + w2, posY - h2 + (attributes.size() + 1) * FONT_SIZE + 4 * PADDING, canvas);
 
         // Text
         canvas.drawText(text, posX, posY - h2 + FONT_SIZE + PADDING, style.getTextPaint());
         for (int i = 0; i < attributes.size(); i++) {
-            canvas.drawText(attributes.get(i), posX - w2 + PADDING, posY - h2 + (2 + i) * FONT_SIZE + 3*PADDING, leftAlignedText);
+            canvas.drawText(attributes.get(i), posX - w2 + PADDING, posY - h2 + (2 + i) * FONT_SIZE + 3 * PADDING, leftAlignedText);
         }
         for (int i = 0; i < methods.size(); i++) {
-            canvas.drawText(methods.get(i), posX - w2 + PADDING, posY - h2 + (2 + i + attributes.size()) * FONT_SIZE + 5*PADDING, leftAlignedText);
+            canvas.drawText(methods.get(i), posX - w2 + PADDING, posY - h2 + (2 + i + attributes.size()) * FONT_SIZE + 5 * PADDING, leftAlignedText);
         }
         canvas.restore();
     }
@@ -110,7 +108,7 @@ public class UMLClass extends GenericTextShape {
     }
 
     private void adjustHeightToText() {
-        int textHeight = (attributes.size() + methods.size() + 1) * FONT_SIZE + 6*PADDING;
+        int textHeight = (attributes.size() + methods.size() + 1) * FONT_SIZE + 6 * PADDING;
         if (textHeight > height) height = textHeight;
     }
 
@@ -123,6 +121,7 @@ public class UMLClass extends GenericTextShape {
         }
         else this.attributes = new ArrayList<>();
     }
+
     public void setMethods(String methods) {
         if (methods != null && !methods.isEmpty()) {
             String[] m = methods.split("\n");
@@ -150,14 +149,17 @@ public class UMLClass extends GenericTextShape {
         }
     }
 
-    public String getType() { return TYPE; }
+    public String getType() {
+        return TYPE;
+    }
 
     @Override
-    public String getAttributes(){
-        return concatenateList(attributes);
+    public ArrayList<String> getAttributes() {
+        return attributes;
     }
+
     @Override
-    public String getMethods(){
-        return concatenateList(methods);
+    public ArrayList<String> getMethods() {
+        return methods;
     }
 }

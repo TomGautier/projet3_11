@@ -22,15 +22,18 @@ export class ConversationController implements ConversationControllerInterface {
                 // Send the request to the service and send the response
                 if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
                     { res.json(403); return; };
-                this.conversationService.getAllByUsername(req.params.username).then(conversations => {
+                this.conversationService.getAll().then(conversations => {
                     res.json(conversations);
+                })
+                .catch(err => {
+                    res.json(400);
                 });
             });
 
         router.post("/:sessionId/:username/:conversationName",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
                 
                 this.conversationService.create(req.params.conversationName, req.params.username).then(conversation => {
                     res.json(conversation)
@@ -38,6 +41,9 @@ export class ConversationController implements ConversationControllerInterface {
                     if (err.name === 'MongoError' && err.code === 11000) {
                         // Duplicate conv name
                         res.json(409);
+                    }
+                    else {
+                        res.json(400);
                     }
                 });
             });
