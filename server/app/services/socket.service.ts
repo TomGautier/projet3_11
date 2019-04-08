@@ -41,7 +41,7 @@ export class SocketService {
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
             socket.on(SocketEvents.MessageSent, args => this.handleEvent(SocketEvents.MessageSent, socket.id, args));
             socket.on(SocketEvents.UserJoinedConversation, args => this.handleEvent(SocketEvents.UserJoinedConversation, socket.id, args));
-            socket.on(SocketEvents.InviteToConversation, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
+            socket.on(SocketEvents.InviteToConversation, args => this.handleEvent(SocketEvents.InviteToConversation, socket.id, args));
             socket.on(SocketEvents.RespondToConversationInvite, args => this.handleEvent(SocketEvents.RespondToConversationInvite, socket.id, args));
 
             socket.on(SocketEvents.JoinDrawingSession, args => this.handleEvent(SocketEvents.JoinDrawingSession, socket.id, args));
