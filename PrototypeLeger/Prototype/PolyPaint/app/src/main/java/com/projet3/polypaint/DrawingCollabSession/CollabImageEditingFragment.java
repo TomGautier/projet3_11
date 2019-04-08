@@ -349,8 +349,6 @@ public class CollabImageEditingFragment extends ImageEditingFragment
                     ,connection.getTailAnchorPointIndex(), connection.getFrontAnchorPointIndex());
         }
         else {
-           // String backgroundColor = String.format("#%06X", (0xFFFFFF & shape.getStyle().getBackgroundPaint().getColor()));
-            //String borderColor = String.format("#%06X", (0xFFFFFF & shape.getStyle().getBorderPaint().getColor()));
             properties = new CollabShapeProperties(currentShapeType.toString(), shape.getFillingColor(),
                     shape.getBorderColor(),shape.getAttributes(),shape.getMethods(),shape.getLabel(),shape.getBorderType(),
                     shape.getCenterCoord(), shape.getHeight(),shape.getWidth(),(int)shape.getAngle());
@@ -366,14 +364,14 @@ public class CollabImageEditingFragment extends ImageEditingFragment
         if(currentShapeType.toString().equals(ShapeType.Arrow.toString())){
             int fillingColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormFillingColor,null);
             int borderColor = ResourcesCompat.getColor(getResources(), R.color.DefaultConnectionFormBorderColor,null);
-            String hexFillingColor = String.format("#%06X", (0xFFFFFF & fillingColor));
-            String hexBorderColor = String.format("#%06X", (0xFFFFFF & borderColor));
+            String hexFillingColor = "#" + Integer.toHexString(fillingColor);
+            String hexBorderColor = "#" + Integer.toHexString(borderColor);
             properties = new CollabConnectionProperties(ConnectionForm.generateDefaultX(posX), ConnectionForm.generateDefaultY(posY),
                     ConnectionForm.DEFAULT_THICK,currentShapeType.toString(), currentConnectionFormType.toString(),hexFillingColor,hexBorderColor,"","",-1,-1);
         }
         else{
-            String backgroundColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBackgroundPaint().getColor()));
-            String borderColor = String.format("#%06X", (0xFFFFFF & defaultStyle.getBorderPaint().getColor()));
+            String backgroundColor = "#" + Integer.toHexString(defaultStyle.getBackgroundPaint().getColor());
+            String borderColor = "#" + Integer.toHexString(defaultStyle.getBorderPaint().getColor());
             String shapeType = currentShapeType.toString();
 
             properties = new CollabShapeProperties(shapeType, backgroundColor,
@@ -500,9 +498,11 @@ public class CollabImageEditingFragment extends ImageEditingFragment
     @Override
     public void onJoinedSession(String drawingSessionId_) {
         imageID = drawingSessionId_;
-        ArrayList<GenericShape> newShapes = RequestManager.currentInstance.getAllShapes(imageID);
+        ArrayList<CollabShape> newShapes = RequestManager.currentInstance.getAllShapes(imageID);
         if (newShapes != null) {
-            shapes.addAll(newShapes);
+            for (CollabShape s : newShapes) {
+                shapes.add(createGenShape(s));
+            }
             drawAllShapes();
         }
     }

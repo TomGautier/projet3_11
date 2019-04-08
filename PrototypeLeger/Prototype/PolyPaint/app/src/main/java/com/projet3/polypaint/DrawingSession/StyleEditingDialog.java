@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -92,22 +93,30 @@ public class StyleEditingDialog extends DialogFragment {
         backgroundColor = style.getBackgroundPaint().getColor();
         borderColor = style.getBorderPaint().getColor();
 
-        redSliderBG.setProgress((backgroundColor & (0xff0000)) / (0x10000));
-        greenSliderBG.setProgress((backgroundColor & (0xff00)) / (0x100));
-        blueSliderBG.setProgress(backgroundColor & (0xff));
-        backgroundPreview.setBackgroundColor(backgroundColor);
+        System.out.println("-------------------------------- " + borderColor);
 
-        redSliderFG.setProgress((borderColor & (0xff0000)) / (0x10000));
+        redSliderBG.setProgress(Color.red(backgroundColor));
+        greenSliderBG.setProgress(Color.green(backgroundColor));
+        blueSliderBG.setProgress(Color.blue(backgroundColor));
+        /*redSliderBG.setProgress((backgroundColor & (0xff0000)) / (0x10000));
+        greenSliderBG.setProgress((backgroundColor & (0xff00)) / (0x100));
+        blueSliderBG.setProgress(backgroundColor & (0xff));*/
+        setBackgroundPreviewColor();
+
+        redSliderFG.setProgress(Color.red(borderColor));
+        greenSliderFG.setProgress(Color.green(borderColor));
+        blueSliderFG.setProgress(Color.blue(borderColor));
+        /*redSliderFG.setProgress((borderColor & (0xff0000)) / (0x10000));
         greenSliderFG.setProgress((borderColor & (0xff00)) / (0x100));
-        blueSliderFG.setProgress(borderColor & (0xff));
-        borderPreview.setBackgroundColor(borderColor);
+        blueSliderFG.setProgress(borderColor & (0xff));*/
+        setBorderPreviewColor();
     }
 
     private void setSliderListeners() {
         redSliderBG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 backgroundColor = (backgroundColor & (0xff00ffff)) + (progress * (0x010000));
-                backgroundPreview.setBackgroundColor(backgroundColor);
+                setBackgroundPreviewColor();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Do nothing
@@ -120,7 +129,7 @@ public class StyleEditingDialog extends DialogFragment {
         greenSliderBG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 backgroundColor = (backgroundColor & (0xffff00ff)) + (progress * (0x0100));
-                backgroundPreview.setBackgroundColor(backgroundColor);
+                setBackgroundPreviewColor();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Do nothing
@@ -133,7 +142,7 @@ public class StyleEditingDialog extends DialogFragment {
         blueSliderBG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 backgroundColor = (backgroundColor & (0xffffff00)) + (progress);
-                backgroundPreview.setBackgroundColor(backgroundColor);
+                setBackgroundPreviewColor();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Do nothing
@@ -146,7 +155,7 @@ public class StyleEditingDialog extends DialogFragment {
         redSliderFG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 borderColor = (borderColor & (0xff00ffff)) + (progress * (0x010000));
-                borderPreview.setBackgroundColor(borderColor);
+                setBorderPreviewColor();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Do nothing
@@ -159,7 +168,7 @@ public class StyleEditingDialog extends DialogFragment {
         greenSliderFG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 borderColor = (borderColor & (0xffff00ff)) + (progress * (0x0100));
-                borderPreview.setBackgroundColor(borderColor);
+                setBorderPreviewColor();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Do nothing
@@ -172,7 +181,7 @@ public class StyleEditingDialog extends DialogFragment {
         blueSliderFG.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 borderColor = (borderColor & (0xffffff00)) + (progress);
-                borderPreview.setBackgroundColor(borderColor);
+                setBorderPreviewColor();
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
                 // Do nothing
@@ -200,7 +209,14 @@ public class StyleEditingDialog extends DialogFragment {
                 break;
         }
 
-        style.setBackgroundColor(backgroundColor);
-        style.setBorderColor(borderColor);
+        style.setBackgroundColor(backgroundColor + 0xff000000);
+        style.setBorderColor(borderColor + 0xff000000);
+    }
+
+    private void setBackgroundPreviewColor() {
+        backgroundPreview.setBackgroundColor(backgroundColor + 0xff000000);
+    }
+    private void setBorderPreviewColor() {
+        borderPreview.setBackgroundColor(borderColor + 0xff000000);
     }
 }

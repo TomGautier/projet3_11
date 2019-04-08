@@ -64,12 +64,14 @@ public class CollabShapeProperties {
             type = obj.getString(TYPE_TAG);
             fillingColor = obj.getString(FILLING_COLOR_TAG);
             borderColor = obj.getString(BORDER_COLOR_TAG);
-            borderType = PaintStyle.StrokeType.valueOf(obj.getString(BORDER_TYPE_TAG));
             for (int i = 0; i < 2; i++)
                 middlePointCoord[i] = (int)obj.getJSONArray(MIDDLE_POINT_TAG).get(i);
             height= Integer.parseInt(obj.getString(HEIGHT_TAG));
             width = Integer.parseInt(obj.getString(WIDTH_TAG));
             rotation =Integer.parseInt(obj.getString(ROTATION_TAG));
+
+            if (obj.has(BORDER_TYPE_TAG) && !obj.getString(BORDER_TYPE_TAG).isEmpty())
+                borderType = PaintStyle.StrokeType.valueOf(obj.getString(BORDER_TYPE_TAG).toLowerCase());
 
             if (obj.has(LABEL_TAG))
                 label = obj.getString(LABEL_TAG);
@@ -170,21 +172,25 @@ public class CollabShapeProperties {
     }
 
     public void setStyle(PaintStyle style) {
-        borderColor = Integer.toHexString(style.getBorderPaint().getColor() & 0xffffff);
-        fillingColor = Integer.toHexString(style.getBackgroundPaint().getColor() & 0xffffff);
+        borderColor = Integer.toHexString(style.getBorderPaint().getColor());
+        fillingColor = Integer.toHexString(style.getBackgroundPaint().getColor());
         borderType = style.getStrokeType();
     }
     public PaintStyle getStyle() {
         Paint backgroundPaint = new Paint();
         Paint borderPaint = new Paint();
-        try {
-            backgroundPaint.setColor(Integer.decode(fillingColor) + 0xff000000);
-            borderPaint.setColor(Integer.decode(borderColor) + 0xff000000);
-        } catch (NumberFormatException nfe) {
-            backgroundPaint.setColor(Integer.decode("#" + fillingColor) + 0xff000000);
-            borderPaint.setColor(Integer.decode("#" + borderColor) + 0xff000000);
-        }
+
+        backgroundPaint.setColor(formatColorInt(fillingColor));
+        borderPaint.setColor(formatColorInt(borderColor));
+
         return new PaintStyle(borderPaint, backgroundPaint, new Paint(borderPaint), borderType);
+    }
+
+    private int formatColorInt(String color) {
+        int cutNb = 0;
+        if (color.length() == 8) cutNb = 2;
+        else if (color.length() == 9) cutNb = 3;
+        return Integer.decode("#" + color.substring(cutNb)) + 0xff000000;
     }
 
 }
