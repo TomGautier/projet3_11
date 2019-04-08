@@ -219,7 +219,14 @@ namespace PolyPaint.Modeles
         public void LoadLocally(string json)
         {
             this.ResetCanvas();
-            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            string[] split = json.Split(new string[1] { "%%%!" },new StringSplitOptions());
+            string[] dimensions = split[1].Split(new char[1] { ',' });
+            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(split[0]);
+            int width = (int)Double.Parse(dimensions[0]);
+            int height = (int)Double.Parse(dimensions[1]);
+            this.CanvasHeight = height;
+            this.CanvasWidth = width;
+            ProprieteModifiee("CanvasSize");
             foreach (Shape shape in datalist)
             {
                 this.AddForm(shape, false);

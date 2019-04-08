@@ -88,12 +88,14 @@ namespace PolyPaint.VueModeles
             set
             {
                 editeur.IsOffline = value;
-                if (!editeur.IsOffline)
-                {
-                    SendLocalCanvas();
-                }
             }
         }
+               // if (!editeur.IsOffline)
+               // {
+                   // SendLocalCanvas();
+               // }
+            
+        
         public StrokeCollection LastCut
         {
             get { return editeur.LastCut; }
@@ -391,7 +393,7 @@ namespace PolyPaint.VueModeles
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
-            LoadLocally(shapes); // TODO : Verify it works
+            editeur.LoadFromServer(shapes); // TODO : Verify it works
         }
 
         public void CreateNewSession(string visibility, string protection)
@@ -494,7 +496,7 @@ namespace PolyPaint.VueModeles
                 //this.SessionId = "MockSessionId";
                 editeur.initializeSocketEvents();
                 //SocketManager.JoinDrawingSession("MockSessionID");
-               // this.SendLocalCanvas();
+                this.SendLocalCanvas();
             }
             else
             {
@@ -544,8 +546,12 @@ namespace PolyPaint.VueModeles
             }
             foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
             {
-                string contents = File.ReadAllText(file);
-
+                string json = File.ReadAllText(file);
+                string[] split = json.Split(new string[1] { "%%%!" }, new StringSplitOptions());
+                string[] dimensions = split[1].Split(new char[1] { ',' });
+                //List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(split[0]);
+                int width = (int)Double.Parse(dimensions[0]);
+                int height = (int)Double.Parse(dimensions[1]);
                 var parameters = new
                 {
                     author = this.Username,
@@ -560,7 +566,7 @@ namespace PolyPaint.VueModeles
 
                 string canvas = new JavaScriptSerializer().Serialize(new
                 {
-                    shapes = contents
+                    shapes = split[0]
 
                 });
                 this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
