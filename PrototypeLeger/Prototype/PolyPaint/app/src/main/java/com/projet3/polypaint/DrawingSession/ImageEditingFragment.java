@@ -590,9 +590,9 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 break;
             case Arrow:
                 nShape = new ConnectionForm(id, currentConnectionFormType.toString(),
-                        String.format("#%06x", ContextCompat.getColor(getActivity(),
-                                R.color.DefaultConnectionFormFillingColor)),String.format("#%06x",ContextCompat.getColor(getActivity(),
-                        R.color.DefaultConnectionFormBorderColor)),ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultX(posX),
+                        Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.DefaultConnectionFormFillingColor)),
+                        Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.DefaultConnectionFormBorderColor)),
+                        ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultX(posX),
                         ConnectionForm.generateDefaultY(posY));
         }
         if (nShape != null) {
