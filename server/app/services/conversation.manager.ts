@@ -23,7 +23,7 @@ export class ConversationManager {
         const d = Date.now();
         const date = (new Date(Date.now())).toLocaleTimeString();
         
-        const messageJson = {date: date, username: args.username, message: args.message};
+        const messageJson = {date: date, username: args.username, message: args.message, conversationId: args.conversationId};
         this.socketService.emit(args.conversationId, SocketEvents.MessageSent, messageJson);
     }
 
