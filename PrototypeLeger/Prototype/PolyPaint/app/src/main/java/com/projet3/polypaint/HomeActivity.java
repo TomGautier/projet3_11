@@ -32,7 +32,7 @@ import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
-public class HomeActivity extends AppCompatActivity implements AccessibilityManager.AccessibilityDialogSubscriber {
+public class HomeActivity extends AppCompatActivity implements AccessibilityManager.AccessibilityDialogSubscriber, HomeActivityListener {
 
 	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
 	//private UserInformation userInformation;
