@@ -85,6 +85,7 @@ export class ImageController implements ImageControllerInterface {
                 this.imageService.updateThumbnail(req.params.imageId, req.body.thumbnail, req.body.thumbnailTimestamp)
                     .then(image => {
                         res.json(image);
+                        console.log("POST DU THUMBNAIL REUSSI");
                     })
                     .catch(err => {
                         res.json(400);

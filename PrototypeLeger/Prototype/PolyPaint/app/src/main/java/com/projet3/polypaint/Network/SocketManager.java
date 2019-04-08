@@ -419,8 +419,8 @@ public class SocketManager  {
                         .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
                         .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
                         .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
-                        .put(CollabConnectionProperties.Q1_TAG,null)
-                        .put(CollabConnectionProperties.Q2_TAG,null);
+                        .put(CollabConnectionProperties.Q1_TAG,properties.getQ1())
+                        .put(CollabConnectionProperties.Q2_TAG,properties.getQ2());
             }
             else{
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())
@@ -474,8 +474,8 @@ public class SocketManager  {
                             .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
                             .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
                             .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
-                            .put(CollabConnectionProperties.Q1_TAG,null)
-                            .put(CollabConnectionProperties.Q2_TAG,null);
+                            .put(CollabConnectionProperties.Q1_TAG,properties.getQ1())
+                            .put(CollabConnectionProperties.Q2_TAG,properties.getQ2());
                 }
                 else{
                     shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shapes[i].getProperties().getType())
@@ -534,8 +534,8 @@ public class SocketManager  {
                             .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
                             .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
                             .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
-                            .put(CollabConnectionProperties.Q1_TAG,null)
-                            .put(CollabConnectionProperties.Q2_TAG,null);
+                            .put(CollabConnectionProperties.Q1_TAG,properties.getQ1())
+                            .put(CollabConnectionProperties.Q2_TAG,properties.getQ2());
                 }
                 else{
 
@@ -593,8 +593,8 @@ public class SocketManager  {
                             .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
                             .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
                             .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
-                            .put(CollabConnectionProperties.Q1_TAG,null)
-                            .put(CollabConnectionProperties.Q2_TAG,null);
+                            .put(CollabConnectionProperties.Q1_TAG,properties.getQ1())
+                            .put(CollabConnectionProperties.Q2_TAG,properties.getQ2());
                 }
                 else{
 
@@ -696,8 +696,8 @@ public class SocketManager  {
                         .put(CollabConnectionProperties.ID_SHAPE2_TAG,properties.getIdShape2())
                         .put(CollabConnectionProperties.INDEX1_TAG,properties.getIndex1())
                         .put(CollabConnectionProperties.INDEX2_TAG, properties.getIndex2())
-                        .put(CollabConnectionProperties.Q1_TAG,null)
-                        .put(CollabConnectionProperties.Q2_TAG,null);
+                        .put(CollabConnectionProperties.Q1_TAG,properties.getQ1())
+                        .put(CollabConnectionProperties.Q2_TAG,properties.getQ2());
             }
             else{
                 shapePropertiesJson = new JSONObject().put(CollabShapeProperties.TYPE_TAG, shape.getProperties().getType())

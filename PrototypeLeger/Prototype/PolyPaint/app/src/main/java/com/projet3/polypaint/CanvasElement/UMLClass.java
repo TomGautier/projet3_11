@@ -10,6 +10,7 @@ import com.projet3.polypaint.DrawingSession.ImageEditingDialogManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class UMLClass extends GenericTextShape {
     protected final static int DEFAULT_WIDTH = 124;
@@ -48,7 +49,7 @@ public class UMLClass extends GenericTextShape {
     }
 
     public UMLClass clone() {
-        return new UMLClass(id + "clone", this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,
+        return new UMLClass(id +"_" + (new Date()).getTime(), this.posX + CLONE_OFFSET, this.posY + CLONE_OFFSET,
                 width, height, text, concatenateList(attributes), concatenateList(methods), this.style, angle);
     }
 

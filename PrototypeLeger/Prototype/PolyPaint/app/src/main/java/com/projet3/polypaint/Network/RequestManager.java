@@ -273,8 +273,9 @@ public class RequestManager {
             task.execute(url);
         } catch (JSONException e) { e.printStackTrace(); }
 
-        try {
-            boolean response = task.get(TIMEOUT_DELAY, TimeUnit.SECONDS) != null;
+       /* try {
+            //boolean response = task.get(TIMEOUT_DELAY, TimeUnit.SECONDS) != null;
+           // task.get();
 
             if (response)
                 System.out.println("Successfully posted thumbnail");
@@ -287,7 +288,7 @@ public class RequestManager {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public ArrayList<CollabShape> getAllShapes(String imageId) {
