@@ -73,7 +73,7 @@
                                         <Style TargetType="{x:Type Button}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ConnectionStatus}" Value="1">
+                                                <DataTrigger Binding="{Binding connected}" Value="1">
                                                     <Setter Property="IsEnabled" Value="True"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
@@ -85,15 +85,15 @@
                                         <Style TargetType="{x:Type Button}">
                                             <Setter Property="IsEnabled" Value="False"/>
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding ConnectionStatus}" Value="1">
+                                                <DataTrigger Binding="{Binding connected}" Value="1">
                                                     <Setter Property="IsEnabled" Value="True"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
                                     </Button.Style>
                                 </Button>
-                                <TextBlock Grid.Column="2" Text="{Binding Username}" Margin="5,0,0,0"/>
-                                <ProgressBar Grid.Column="3" Minimum="0" Maximum="1" Value="{Binding ConnectionStatus}" />
+                                <TextBlock Grid.Column="2" Text="{Binding username}" Margin="5,0,0,0"/>
+                                <ProgressBar Grid.Column="3" Minimum="0" Maximum="1" Value="{Binding connected}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

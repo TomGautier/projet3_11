@@ -401,12 +401,12 @@ namespace PolyPaint.VueModeles
 
             foreach (var user in users)
             {
-                if (user.Username == Username)
+                if (user.username == Username)
                     continue;
-                userItems.Add(new ChatControl.UserItem() { Username = user.Username, ConnectionStatus = user.ConnectionStatus ? 1 : 0 });
+                userItems.Add(new ChatControl.UserItem() { username = user.username, connected = user.connected ? 1 : 0 });
             }
 
-            return userItems.OrderByDescending(x => x.ConnectionStatus).ToList(); ;
+            return userItems.OrderByDescending(x => x.connected).ToList(); ;
         }
 
         private class channelTemplate
