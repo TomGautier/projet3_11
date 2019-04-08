@@ -21,7 +21,7 @@
             <ColumnDefinition Width="125"/>
             <ColumnDefinition Width="125"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Name="BackBtn" Height="23" Padding="2" Margin="6" Command="{Binding NavigateHome}">
+        <Button Grid.Column="0" Name="BackBtn" Height="23" Padding="2" Margin="6" Command="{Binding NavigateMainMenu}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Content" Value="Retour"/>
@@ -104,8 +104,9 @@
                               </Button.Style>
                             </Button>
                             <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
-                          
-                          <Grid Visibility="Collapsed">
+
+                            </Grid>
+                            <Grid Visibility="Collapsed" Background="LightGray">
                             <Grid.ColumnDefinitions>
                               <ColumnDefinition Width="1*"/>
                               <ColumnDefinition Width="2*"/>
@@ -139,7 +140,6 @@
                                 </Style>
                               </Button.Style>
                             </Button>
-                          </Grid>
                           </Grid>
                       </StackPanel>
                     </DataTemplate>
