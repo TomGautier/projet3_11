@@ -284,14 +284,22 @@ namespace PolyPaint.VueModeles
 
         public async void Login(string password)
         {
-            SessionId = await networkManager.LoginAsync(Username, password);
-            if (SessionId == "")
+            try
             {
-                MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
+                SessionId = await networkManager.LoginAsync(Username, password);
+                if (SessionId == "")
+                {
+                    MessageBox.Show((Localization == "fr") ? "Informations de connexion invalides" : "Wrong login informations", "Error");
+                    return;
+                }
+                ChatManager.Connect();
+                SwitchView = 3;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show((Localization == "fr") ? "Erreur de communication avec le serveur" : "Error contacting the server", "Error");
                 return;
             }
-            ChatManager.Connect();
-            SwitchView = 3;
         }
         public async void RequestPwd(string email)
         {
@@ -308,15 +316,23 @@ namespace PolyPaint.VueModeles
 
         public async void Signup(string password)
         {
-            SessionId = await networkManager.SignupAsync(Username, password);
-            if (SessionId == "")
+            try
+            { 
+                SessionId = await networkManager.SignupAsync(Username, password);
+                if (SessionId == "")
+                {
+
+                    MessageBox.Show((Localization == "fr") ? "Le nom d'utilisateur existe déjà" : "Username already exists", "Error");
+
+                    return;
+                }
+                SwitchView = 3;
+            }
+            catch (Exception)
             {
-
-                MessageBox.Show((Localization == "fr") ? "Le nom d'utilisateur existe déjà" : "Username already exists", "Error");
-
+                MessageBox.Show((Localization == "fr") ? "Erreur de communication avec le serveur" : "Error contacting the server", "Error");
                 return;
             }
-            SwitchView = 3;
         }
 
         public void JoinNewDrawSession(string joinningImageID)
