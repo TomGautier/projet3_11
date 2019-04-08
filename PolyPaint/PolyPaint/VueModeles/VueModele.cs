@@ -457,11 +457,7 @@ namespace PolyPaint.VueModeles
 
         public void notifyConnection()
         {
-            var body = new
-            {
-                username = this.Username
-            };
-            SocketManager.Socket.Emit("UserConnected", JsonConvert.SerializeObject(body));
+            SocketManager.Socket.Emit("UserConnected", Username);
         }
 
         /// <summary>
@@ -556,7 +552,7 @@ namespace PolyPaint.VueModeles
                         conversationId = formatedData.conversationId,
                         response = true
                     };
-                    SocketManager.Socket.Emit("RespondToConversationInvite", res);
+                    SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
                     if (!ChatManager.RoomsID.Contains(formatedData.conversationId))
                     {
                         ChatManager.RoomsID.Add(formatedData.conversationId);
@@ -573,7 +569,7 @@ namespace PolyPaint.VueModeles
                         conversationId = formatedData.conversationId,
                         response = false
                     };
-                    SocketManager.Socket.Emit("RespondToConversationInvite", res);
+                    SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
                 }
             });
 
@@ -597,7 +593,7 @@ namespace PolyPaint.VueModeles
                         imageId = formatedData.imageId,
                         response = true
                     };
-                    SocketManager.Socket.Emit("RespondToDrawingInvite", res);
+                    SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
                     SocketManager.JoinDrawingSession(formatedData.imageId);
                     SwitchView = 5;
                 }
@@ -610,7 +606,7 @@ namespace PolyPaint.VueModeles
                         imageId = formatedData.imageId,
                         response = false
                     };
-                    SocketManager.Socket.Emit("RespondToDrawingInvite", res);
+                    SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
                 }
             });
         }
