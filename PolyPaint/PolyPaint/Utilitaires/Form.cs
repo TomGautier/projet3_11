@@ -157,11 +157,11 @@ namespace PolyPaint.Utilitaires
             //pen.Thickness = 3;
            switch (this.BorderStyle)
             {
-                case "Dash":
+                case "Dashed":
                     pen.DashStyle = DashStyles.Dash;
                     break;
 
-                case "Dot":
+                case "Dotted":
                     pen.DashStyle = DashStyles.Dot;
                     break;
 

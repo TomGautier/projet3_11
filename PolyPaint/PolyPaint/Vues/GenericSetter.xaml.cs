@@ -25,7 +25,7 @@ namespace PolyPaint.Vues
         {
             this.Label = label;
             InitializeComponent();
-            DataContext = new VueModele();
+           // DataContext = new VueModele();
             borderList.SelectedIndex = 0;
             //borderList.Text = border;
             txtLabel.Text = this.Label;

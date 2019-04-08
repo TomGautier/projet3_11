@@ -76,7 +76,7 @@
                     <Setter Property="Content" Value="Unidirectionnelle"/>
                     <Style.Triggers>
                       <DataTrigger Binding="{Binding Localization}" Value="en">
-                        <Setter Property="Content" Value="Unidirectionnal"/>
+                        <Setter Property="Content" Value="Unidirectional"/>
                       </DataTrigger>
                     </Style.Triggers>
                   </Style>

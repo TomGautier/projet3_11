@@ -36,7 +36,7 @@ namespace PolyPaint.Vues
         {
             InitializeComponent();
             //DataContext = new VueModele();
-            
+           // (DataContext as VueModele).Localization = "fr";
             //this.surfaceDessin.AllowSelection = false;
             //this.surfaceDessin.IsDraging = false;
             this.surfaceDessin.LastSelection = new MemoryStream();
@@ -46,6 +46,7 @@ namespace PolyPaint.Vues
             this.Loaded += new RoutedEventHandler((s, e) =>
             {
                 (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+                (DataContext as VueModele).Localization = "fr";
                 this.surfaceDessin.AllowSelection = false;
                 this.surfaceDessin.IsDraging = false;
             });
@@ -228,6 +229,9 @@ namespace PolyPaint.Vues
             string color = (sender as ConnectorSetter).selecteurCouleur.SelectedColor.ToString();
             string q1 = (sender as ConnectorSetter).Quantification1List.Text;
             string q2 = (sender as ConnectorSetter).Quantification2List.Text;
+
+            border = TranslateBorder(border);
+            type = TranslateType(type);
             //Console.WriteLine(type);
             surfaceDessin.Visibility = Visibility.Visible;
 
@@ -277,6 +281,8 @@ namespace PolyPaint.Vues
             List<string> methods = (sender as UmlClassSetter).Methods;
             List<string> attributes = (sender as UmlClassSetter).Attributes;
 
+            border = TranslateBorder(border);
+
             (DataContext as VueModele).HandleUmlTextChange(name, border, methods, attributes);
         }
         private void GenericSetterClosingHandler(object sender, CancelEventArgs e)
@@ -284,6 +290,7 @@ namespace PolyPaint.Vues
             surfaceDessin.Visibility = Visibility.Visible;
             string label = (sender as GenericSetter).Label;
             string border = (sender as GenericSetter).borderList.Text;
+            border = TranslateBorder(border);
             (DataContext as VueModele).HandleLabelChange(label, border);
         }
 
@@ -337,6 +344,40 @@ namespace PolyPaint.Vues
         {
             //this.surfaceDessin.IsDraging = false;
             (DataContext as VueModele).HandleDrag();
+        }
+        private string TranslateType(string type)
+        {
+            switch (type)
+            {
+                case "Unidirectionnelle":
+                        return "Unidirectional";
+                case "Bidirectionnelle":
+                        return "Bidirectional";
+                case "Héritage":
+                    return "Inheritance";
+                case "Aggregation":
+                    return "Aggregation";
+                case "Compostion":
+                    return "Composition";
+                default:
+                    return type;
+                             
+            }
+            
+        }
+        private string TranslateBorder(string border)
+        {
+            switch (border)
+            {
+                case "Pleine":
+                    return "Full";
+                case "Tiret":
+                    return "Dashed";
+                case "Pointillé":
+                    return "Dotted";
+                default:
+                    return border;
+            }
         }
         
     }

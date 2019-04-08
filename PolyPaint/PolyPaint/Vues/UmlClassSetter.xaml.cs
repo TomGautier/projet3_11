@@ -29,7 +29,7 @@ namespace PolyPaint.Vues
             Methods = methods;
             Attributes = attributes;      
             InitializeComponent();
-            DataContext = new VueModele();
+            //DataContext = new VueModele();
             txtName.Text = Name;
             //borderList.Text = border;
             borderList.SelectedIndex = 0; 
