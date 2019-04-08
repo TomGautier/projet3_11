@@ -382,7 +382,9 @@ namespace PolyPaint.VueModeles
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
-            this.editeur.LoadFromServer(shapes);
+            string data = await networkManager.LoadImageData(Username, SessionId, joinningImageID);
+
+            this.editeur.LoadFromServer(shapes,data);
             //LoadLocally(shapes); // TODO : Verify it works
             return true;
         }
@@ -407,7 +409,8 @@ namespace PolyPaint.VueModeles
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
-            editeur.LoadFromServer(shapes); // TODO : Verify it works
+            string data = await networkManager.LoadImageData(Username, SessionId, joinningImageID);
+            editeur.LoadFromServer(shapes,data); // TODO : Verify it works
         }
 
         public void CreateNewSession(string visibility, string protection)

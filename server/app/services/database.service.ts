@@ -112,7 +112,7 @@ export class DatabaseService {
 
     public async updateMultiple(model: any, doc: any): Promise<{}> {
         return new Promise((resolve, reject) => {
-            model.update({id: doc.imageId},{$set:{canvasX: doc.canvasX, canvasY: doc.canvasY}},{multi:true,new:true}
+            model.update({id: doc.imageId},{$set:{x: doc.x, y: doc.y}},{multi:true,new:true}
                 , (err: any, document: any) => {
                     if(err) { return reject(err); }; 
                     resolve(document);

@@ -232,15 +232,19 @@ namespace PolyPaint.Modeles
                 this.AddForm(shape, false);
             }
         }
-        public void LoadFromServer(string json)
+        public void LoadFromServer(string json, string data)
         {
             this.ResetCanvas();
             List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            Image image = JsonConvert.DeserializeObject<Image>(data);
+            this.CanvasHeight = image.y *HC_PROP;
+            this.CanvasWidth = image.x * HC_PROP;
             foreach (Shape shape in datalist)
             {
                 ConvertToHC(shape);
                 this.AddForm(shape, false);
             }
+            ProprieteModifiee("CanvasSize");
         }
         public void HandleChangeSelection(StrokeCollection strokes)
         {
