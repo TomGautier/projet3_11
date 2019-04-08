@@ -86,6 +86,7 @@ public class SocketManager  {
     private final String MESSAGE_TAG = "message";
     private final String SESSION_ID_TAG = "sessionId";
     private final String CONVERSATION_ID_TAG = "conversationId";
+    private final String USER_CONNECTED_TAG = "UserConnected";
 
 
     public static SocketManager currentInstance;
@@ -878,6 +879,10 @@ public class SocketManager  {
         }
         if(json != null)
             socket.emit(RESPOND_TO_CONVERSATION_INVITATION, json.toString());
+    }
+
+    public void sendUsername(){
+        socket.emit(USER_CONNECTED_TAG,FetchManager.currentInstance.getUserUsername());
     }
 
 
