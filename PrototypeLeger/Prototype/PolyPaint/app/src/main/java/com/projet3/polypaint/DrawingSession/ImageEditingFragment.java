@@ -30,6 +30,7 @@ import android.widget.RelativeLayout;
 
 import com.projet3.polypaint.CanvasElement.Comment;
 import com.projet3.polypaint.CanvasElement.ConnectionForm;
+import com.projet3.polypaint.CanvasElement.ConnectionFormVertex;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.GenericTextShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
@@ -593,7 +594,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                         Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.DefaultConnectionFormFillingColor)),
                         Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.DefaultConnectionFormBorderColor)),
                         ConnectionForm.DEFAULT_THICK, ConnectionForm.generateDefaultX(posX),
-                        ConnectionForm.generateDefaultY(posY));
+                        ConnectionForm.generateDefaultY(posY),"","");
         }
         if (nShape != null) {
             shapes.add(nShape);
@@ -665,12 +666,19 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
         drawAllShapes();
         iView.invalidate();
     }
-    protected void tryToAnchor(ConnectionForm connection, int x, int y){
+    protected void tryToAnchor(ConnectionForm connection){
+        boolean changedAnchor = false;
+        ConnectionFormVertex selectedVertex = connection.getSelectedVertex();
+        if (selectedVertex == null || selectedVertex.getIndex() == -1)
+            return;
         for (GenericShape shape : shapes) {
-            if (shape != connection && !shape.getClass().equals(ConnectionForm.class)) {
-                shape.updateAnchor(connection);
+            if (!shape.getClass().equals(ConnectionForm.class)) {
+                if (shape.updateAnchor(connection))
+                    changedAnchor = true;
             }
         }
+        if (!changedAnchor)
+            connection.removeConnection(connection.getSelectedVertex().getIndex());
     }
     protected void resizeShape(MotionEvent event){
         int posX = (int)event.getX(0);
@@ -689,7 +697,7 @@ public class ImageEditingFragment extends Fragment implements ImageEditingDialog
                 lastTouchPosY = posY;
                 break;
             case MotionEvent.ACTION_UP:
-                tryToAnchor(connectionForm,posX, posY);
+                tryToAnchor(connectionForm);
                 connectionForm.finishResize();
                 break;
         }

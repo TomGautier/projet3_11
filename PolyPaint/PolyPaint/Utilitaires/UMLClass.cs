@@ -185,6 +185,14 @@ namespace PolyPaint.Utilitaires
             drawingContext.DrawText(text, origin);//new FormattedText(this.Label, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 10, brush), origin);
 
             drawingContext.Pop();
+            if (text.Width > this.Width)
+            {
+                while (text.Width > this.Width)
+                {
+                    this.Width += 10;
+                }
+                
+            }
             /* rotatingMatrix.RotateAt(degrees, Center.X, Center.Y);                   //apply rotation
              Stroke copy = this.Clone();
              copy.Transform(rotatingMatrix, false);
@@ -201,12 +209,20 @@ namespace PolyPaint.Utilitaires
                 Point origin = new Point(this.StylusPoints[5].ToPoint().X + 2*widthDirection.X, this.StylusPoints[5].ToPoint().Y + 4*widthDirection.Y);
                 RotateTransform RT = new RotateTransform(this.CurrentRotation, origin.X, origin.Y);
                 drawingContext.PushTransform(RT);
-
-                int increment = 15;
+                double height = 0;
+                double maxWidth = 0;
+                int increment = 12;
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 for (int i = 0; i < this.Attributes.Count; i++)
                 {
-                    drawingContext.DrawText(new FormattedText("+ " + this.Attributes[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 10, Brushes.Black), origin);
+                    FormattedText text = new FormattedText("+ " + this.Attributes[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 10, Brushes.Black);
+                    drawingContext.DrawText(text, origin);
+                    //height += text.Height;
+                    height += increment;
+                    if (text.Width > maxWidth)
+                    {
+                        maxWidth = text.Width;
+                    }
                     origin.Y += increment;
                     /*drawingContext.Pop();
                     if (Math.Abs(this.StylusPoints[8].Y - origin.Y) < 15)
@@ -217,6 +233,14 @@ namespace PolyPaint.Utilitaires
                         
                     }
                     drawingContext.PushTransform(RT);*/
+                }
+                while (maxWidth > this.Width)
+                {
+                    this.Width += 10;
+                }
+                while(height > ((this.Height /2.3) - (this.Height/7)))
+                {
+                    this.Height += 10;
                 }
                 drawingContext.Pop();
             }
@@ -231,19 +255,35 @@ namespace PolyPaint.Utilitaires
                 Point origin = new Point(this.StylusPoints[8].ToPoint().X + 2*widthDirection.X, this.StylusPoints[8].ToPoint().Y + 4*widthDirection.Y);
                 RotateTransform RT = new RotateTransform(this.CurrentRotation, origin.X, origin.Y);
                 drawingContext.PushTransform(RT);
-
-                int increment = 15;
+                double height = 0;
+                double maxWidth = 0;
+                int increment = 12;
                 Typeface typeFace = new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
                 for (int i = 0; i < this.Methods.Count; i++)
                 {
-                    drawingContext.DrawText(new FormattedText("+ " + this.Methods[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 10, Brushes.Black), origin);
+                    FormattedText text = new FormattedText("+ " + this.Methods[i], CultureInfo.CurrentUICulture, FlowDirection.LeftToRight, typeFace, 10, Brushes.Black);
+                    drawingContext.DrawText(text, origin);
 
+                    //height += text.Height;
+                     height += increment; 
+                    if (text.Width > maxWidth)
+                    {
+                        maxWidth = text.Width;
+                    }
                     origin.Y += increment;
                    /* if (Math.Abs(this.StylusPoints[2].Y - origin.Y) < 15)
                     {
                         this.StylusPoints[2] = new StylusPoint(this.StylusPoints[2].X, this.StylusPoints[2].Y + increment);
                         this.StylusPoints[3] = new StylusPoint(this.StylusPoints[3].X, this.StylusPoints[3].Y + increment);
                     }*/
+                }
+                while (maxWidth > this.Width)
+                {
+                    this.Width += 10;
+                }
+                while (height > ((this.Height) - (this.Height/2.3)))
+                {
+                    this.Height += 10;
                 }
                 drawingContext.Pop();
             }

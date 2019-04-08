@@ -7,29 +7,95 @@
              mc:Ignorable="d" 
                      d:DesignHeight="250" d:DesignWidth="300">
     <StackPanel>
-        <Button Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
+        <Button Name="BackBtn" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Retour"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Back"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Visibility : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Visibilité :"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Visibility :"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <RadioButton Grid.Column="1" Name="public" VerticalContentAlignment="Center" IsChecked="True">
-                <Label Content="Pubic"/>
+                <Label >
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Content" Value="Publique"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                    <Setter Property="Content" Value="Public"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
             </RadioButton>
             <RadioButton Grid.Column="2" Name="private" VerticalContentAlignment="Center">
-                <Label Content="Private"/>
+                <Label >
+                    <Label.Style>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="Content" Value="Privée"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                    <Setter Property="Content" Value="Private"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Label.Style>
+                </Label>
             </RadioButton>
         </Grid>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Password (optional) : "/>
+            <Label Grid.Column="0">
+                <Label.Style>
+                    <Style TargetType="{x:Type Label}">
+                        <Setter Property="Content" Value="Mot de passe (facultatif):"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Localization}" Value="en">
+                                <Setter Property="Content" Value="Password (optional) : "/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Label.Style>
+            </Label>
             <TextBox Grid.Column="1" Name="protection" VerticalContentAlignment="Center"/>
         </Grid>
-        <Button Name="Confirm" Margin="9" Content="Confirmer" Click="Confirm_Click"/>
+        <Button Name="Confirm" Margin="9" Click="Confirm_Click">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Confirmer"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Confirm"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 </UserControl>

@@ -44,14 +44,14 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
 
 
     public CollabConnectionProperties(Integer[] verticesX, Integer[] verticesY, float thick, String type, String connectionType, String fillingColor, String borderColor
-    ,String idShape1, String idShape2, int index1, int index2){
+    ,String idShape1, String idShape2, int index1, int index2, String q1, String q2){
         super(type,fillingColor,borderColor);
         this.idShape1 = idShape1;
         this.idShape2 = idShape2;
         this.index1 = index1;
         this.index2 = index2;
-        this.q1 = null;
-        this.q2 = null;
+        this.q1 = q1;
+        this.q2 = q2;
         this.verticesX = verticesX;
         this.verticesY = verticesY;
         this.connectionType = connectionType;
@@ -64,7 +64,6 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
         connectionType = obj.getString(CATEGORY_TAG);
         JSONArray array = obj.getJSONArray(VERTICESX_TAG);
         ArrayList<Integer> list = new ArrayList();
-        int index = 0;
         for (int i = 0; i < array.length(); i++) {
             list.add(array.getInt(i));
         }
@@ -103,6 +102,12 @@ public class CollabConnectionProperties extends CollabShapeProperties  {
     }
     public float getThick(){
         return thick;
+    }
+    public String getQ1(){
+        return q1;
+    }
+    public String getQ2(){
+        return q2;
     }
     /*public String getBorderColor(){
         return borderColor;

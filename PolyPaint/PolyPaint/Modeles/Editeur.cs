@@ -113,9 +113,10 @@ namespace PolyPaint.Modeles
 
                     for (int i = 0; i < selectedStrokes.Count; i++)
                     {
-                        if ((selectedStrokes[i] as Form).DrawingAttributes.Color != (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee))
+                        if ((selectedStrokes[i] as Form).BorderColor != (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee))//if ((selectedStrokes[i] as Form).DrawingAttributes.Color != (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee))
                         {
                             (selectedStrokes[i] as Form).DrawingAttributes.Color = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
+                            (selectedStrokes[i] as Form).BorderColor = (Color)System.Windows.Media.ColorConverter.ConvertFromString(couleurSelectionnee);
                             shapes.Add((selectedStrokes[i] as Form).ConvertToShape(this.SocketManager.SessionID));
                         }
                     }
@@ -186,7 +187,7 @@ namespace PolyPaint.Modeles
             if (strokes.Count > 0)
             {
                 //selectedStrokes = strokes;
-                CouleurSelectionnee = strokes[0].DrawingAttributes.Color.ToString();
+                CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();//strokes[0].DrawingAttributes.Color.ToString();
                 RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
                 // ProprieteModifiee("TEST");
             }
@@ -218,7 +219,14 @@ namespace PolyPaint.Modeles
         public void LoadLocally(string json)
         {
             this.ResetCanvas();
-            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(json);
+            string[] split = json.Split(new string[1] { "%%%!" },new StringSplitOptions());
+            string[] dimensions = split[1].Split(new char[1] { ',' });
+            List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(split[0]);
+            int width = (int)Double.Parse(dimensions[0]);
+            int height = (int)Double.Parse(dimensions[1]);
+            this.CanvasHeight = height;
+            this.CanvasWidth = width;
+            ProprieteModifiee("CanvasSize");
             foreach (Shape shape in datalist)
             {
                 this.AddForm(shape, false);
@@ -368,7 +376,7 @@ namespace PolyPaint.Modeles
             {
                 for (int i = 0; i < form.EncPoints.Length; i++)
                 {
-                    if (Math.Abs(Point.Subtract(form.EncPoints[i], pts).Length) < 20)
+                    if (Math.Abs(Point.Subtract(form.EncPoints[i], pts).Length) < 8)
                     {
 
                         if (index == 0)
@@ -433,7 +441,7 @@ namespace PolyPaint.Modeles
             {
                 for (int i = 0; i < form.EncPoints.Length; i++)
                 {
-                    if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 20)
+                    if (Math.Abs(Point.Subtract(form.EncPoints[i], p).Length) < 8)
                     {
                         this.FormConnectorManager.SetParameters(this.ConnectorLabel, this.ConnectorType, this.ConnectorBorderStyle, this.ConnectorSize, this.ConnectorColor, this.ConnectorQ1, this.ConnectorQ2);
                         newArrowCreated = this.FormConnectorManager.update(new StylusPoint(form.EncPoints[i].X, form.EncPoints[i].Y), true, form, i);
@@ -1058,48 +1066,25 @@ namespace PolyPaint.Modeles
         }
         public void ConvertToHC(Shape shape)
         {
-            if (shape.properties.type == "Arrow")
-            {
-                shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                shape.properties.width = (int)(shape.properties.width * HC_PROP);
-                for (int i = 0; i < shape.properties.pointsX.Length; i++)
-                {
-                    shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * HC_PROP);
-                    shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * HC_PROP);
-                }
-
-            }
-            else
-            {
-                shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                shape.properties.width = (int)(shape.properties.width * HC_PROP);
-                shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * HC_PROP);
-                shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * HC_PROP);
-            }
-        }
-        public void ConvertToHC(Shape[] shapes)
-        {
-            foreach (Shape shape in shapes)
-            {
                 if (shape.properties.type == "Arrow")
                 {
-                    shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                    shape.properties.width = (int)(shape.properties.width * HC_PROP);
+                    shape.properties.height = (int)Math.Ceiling(shape.properties.height * HC_PROP);
+                    shape.properties.width = (int)Math.Ceiling(shape.properties.width * HC_PROP);
                     for (int i = 0; i < shape.properties.pointsX.Length; i++)
                     {
-                        shape.properties.pointsX[i] = (int)(shape.properties.pointsX[i] * HC_PROP);
-                        shape.properties.pointsY[i] = (int)(shape.properties.pointsY[i] * HC_PROP);
+                        shape.properties.pointsX[i] = (int)Math.Ceiling(shape.properties.pointsX[i] * HC_PROP);
+                        shape.properties.pointsY[i] = (int)Math.Ceiling(shape.properties.pointsY[i] * HC_PROP);
                     }
 
                 }
                 else
                 {
-                    shape.properties.height = (int)(shape.properties.height * HC_PROP);
-                    shape.properties.width = (int)(shape.properties.width * HC_PROP);
-                    shape.properties.middlePointCoord[0] = (int)(shape.properties.middlePointCoord[0] * HC_PROP);
-                    shape.properties.middlePointCoord[1] = (int)(shape.properties.middlePointCoord[1] * HC_PROP);
+                    shape.properties.height = (int)Math.Ceiling(shape.properties.height * HC_PROP);
+                    shape.properties.width = (int)Math.Ceiling(shape.properties.width * HC_PROP);
+                    shape.properties.middlePointCoord[0] = (int)Math.Ceiling(shape.properties.middlePointCoord[0] * HC_PROP);
+                    shape.properties.middlePointCoord[1] = (int)Math.Ceiling(shape.properties.middlePointCoord[1] * HC_PROP);
                 }
-            }
+            
         }
 
 
