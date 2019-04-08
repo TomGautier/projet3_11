@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyPaint.VueModeles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace PolyPaint.Vues
             Methods = methods;
             Attributes = attributes;      
             InitializeComponent();
+            DataContext = new VueModele();
             txtName.Text = Name;
             borderList.Text = border;
             SetMethodList();
