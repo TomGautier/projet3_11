@@ -17,6 +17,7 @@ export class SocketService {
     private users: Map<string, string> = new Map();
 
     private addUserSocketId(socketId: string, username: string) {
+        console.log("username ",socketId);
         this.users.set(username, socketId);
     }
 
@@ -35,7 +36,7 @@ export class SocketService {
         this.server.on("connection", (socket: SocketIO.Socket) => {
             this.sockets.set(socket.id, socket);
             console.log("Socket id", socket.id, "connected.");
-            socket.on(SocketEvents.UserConnected, args => this.addUserSocketId(args[0], args[1]));
+            socket.on(SocketEvents.UserConnected, args => this.addUserSocketId(socket.id, args));
 
             socket.on(SocketEvents.LoginAttempt, args => this.handleEvent(SocketEvents.LoginAttempt, socket.id, args));
             socket.on(SocketEvents.UserLeft, args => this.handleEvent(SocketEvents.UserLeft, socket.id, args));
