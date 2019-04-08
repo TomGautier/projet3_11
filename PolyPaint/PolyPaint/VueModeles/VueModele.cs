@@ -90,7 +90,7 @@ namespace PolyPaint.VueModeles
                 editeur.IsOffline = value;
                 if (!editeur.IsOffline)
                 {
-                    //SendLocalCanvas();
+                    SendLocalCanvas();
                 }
             }
         }
@@ -517,7 +517,9 @@ namespace PolyPaint.VueModeles
         {
             int compteur = 0;
             if (!Directory.Exists(Directory.GetCurrentDirectory() + "/Backup"))
+            {
                 return;
+            }
             foreach (string file in Directory.EnumerateFiles(Directory.GetCurrentDirectory() + "/Backup/", "*.txt"))
             {
                 string contents = File.ReadAllText(file);
