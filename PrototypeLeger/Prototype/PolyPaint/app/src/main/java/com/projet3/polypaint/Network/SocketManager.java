@@ -130,15 +130,17 @@ public class SocketManager  {
                     String date = "";
                     String message = "";
                     String username = "";
+                    String conversation = "";
                     try {
                         //JSONObject json = new JSONObject((JSONObject)args[0]);
                         JSONObject json = (JSONObject)args[0];
                         date = json.getString(DATE_TAG);
                         username = json.getString(USERNAME_TAG);
                         message = json.getString(MESSAGE_TAG);
+                        conversation = json.getString(CONVERSATION_ID_TAG);
                     }
                     catch(JSONException e) {}
-                    chatListener.onNewMessage(formatMessage(date,username,message));
+                    chatListener.onNewMessage(formatMessage(date,username,message), conversation);
                 }
             });
             socket.on(NEW_USER_CONNECTED_TAG, new Emitter.Listener() {
