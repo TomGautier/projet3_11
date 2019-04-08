@@ -23,7 +23,7 @@ export class DrawingSessionManager {
         this.socketService.subscribe(SocketEvents.JoinDrawingSession, args => this.joinSession(args[0], JSON.parse(args[1][0])));
         this.socketService.subscribe(SocketEvents.LeaveDrawingSession, args => this.leaveSession(args[0], JSON.parse(args[1][0])));
         // args[0] contains the socket id, args[1] is a json with the session id, username and properties of the object.
-        this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], JSON.parse(args[1][0]), this.addElement));
+        this.socketService.subscribe(SocketEvents.AddElement, args => this.addElement(JSON.parse(args[1][0])));
         this.socketService.subscribe(SocketEvents.DeleteElements, args => this.deleteElements(JSON.parse(args[1][0])));//this.verifyAndAct(args[0], args[1][0], this.deleteElements));
         this.socketService.subscribe(SocketEvents.ModifyElement, args =>this.modifyElement(JSON.parse(args[1][0])));// this.verifyAndAct(args[0], args[1][0], this.modifyElement));
         
@@ -82,9 +82,7 @@ export class DrawingSessionManager {
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public addElement(doc: any) {
-        this.deleteUserSelection(doc.username);
-
-        console.log(doc);
+        this.deleteUserSelection(doc.shape.author);
         this.drawingSessionService.addElement(doc.shape.id,doc.shape.imageId, doc.shape.author, doc.shape.properties)
             .then(() => {
                 this.selectedObjects.set(doc.shape.id, doc.shape.author);
@@ -102,7 +100,6 @@ export class DrawingSessionManager {
             .catch(err => {
                 console.log('deleteElements:', err)
             });
-        console.log('deleteElements:', doc);
         const shapeIds = doc.elementIds as String[];
         for(const shape of shapeIds) {
             this.selectedObjects.delete(shape);
@@ -119,7 +116,6 @@ export class DrawingSessionManager {
                     console.log('modifyElement:', err)
                 });
         }
-        console.log(doc.shapes);
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
 
@@ -130,12 +126,10 @@ export class DrawingSessionManager {
         for(const selection in selections) {
             this.selectedObjects.set(selection, doc.username);
         }
-        console.log('selectedObjects', this.selectedObjects);
         this.socketService.emit(doc.imageId, SocketEvents.SelectedElements, doc);
     }
 
     public duplicateElements(doc: any) {
-        console.log('duplicate', doc);
         this.deleteUserSelection(doc.username);
 
         for (const shape of doc.shapes) {
@@ -158,8 +152,6 @@ export class DrawingSessionManager {
     }
 
     public cutElements(doc: any) {
-        console.log('cut', doc);
-
         this.drawingSessionService.deleteElements(doc.elementIds)
             .catch(err => {
                 console.log('cutElements:', err)
@@ -174,7 +166,6 @@ export class DrawingSessionManager {
     }
 
     public duplicateCutElements(doc : any){
-        console.log('duplicateCut', doc);
         this.deleteUserSelection(doc.username);
 
         for (const shape of doc.shapes) {
@@ -188,7 +179,6 @@ export class DrawingSessionManager {
     }
 
     public stackElements(doc: any) {
-        console.log("STACKING : ", doc);
         this.selectedObjects.delete(doc.imageId);
 
         this.drawingSessionService.deleteElements(doc.elementId)
@@ -200,8 +190,6 @@ export class DrawingSessionManager {
 
     public unstackElements(doc: any) {
         this.deleteUserSelection(doc.username);
-
-        console.log("UNSTACKING : ", doc);
         this.drawingSessionService.addElement(doc.shape.id, doc.shape.imageId, doc.shape.author, doc.shape.properties)
             .catch(err => {
                 console.log('unstackElements:', err)
@@ -227,18 +215,25 @@ export class DrawingSessionManager {
     }
 
     public verifyAndAct(socketId: string, doc: any, callback: (doc: any) => void) {
+        console.log('verifyAndAct1');
+        /*
         if(!this.isUserLoggedIn(doc.sessionId, doc.username)) {
             this.socketService.emit(socketId, SocketEvents.UserIsNotLogged);
+            console.log('verifyAndAct2');
             return;
-        }
+        }*/
+        console.log('verifyAndAct3');
         if (!this.isObjectSelected(doc.objectId)) { 
+            console.log('verifyAndAct4');
             this.socketService.emit(socketId, SocketEvents.ObjectIsntSelected);
             return;
         }
         else if (!this.isObjectSelectedBy(doc.sessionId, doc.objectId)) {
+            console.log('verifyAndAct6');
             this.socketService.emit(socketId, SocketEvents.ObjectSelectedByOtherUser)
         }
-        callback(doc.shape);
+        console.log('verifyAndAct', doc);
+        callback(doc);
     }
 
     private isUserLoggedIn(sessionId: string, username: string): Boolean {
