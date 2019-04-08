@@ -9,8 +9,7 @@ import { DatabaseService } from "./database.service";
 
 @injectable()
 export class DrawingSessionManager {
-    /*If it is selected: the key is the object id and the value is the user's sessionId who selected it.
-    Otherwise, it doesn't exist.*/
+    // Key: objectId, value: username
     private selectedObjects: Map<String, String> = new Map();
     // Key: username, value: imageId
     private connectedUsers : Map<String, String[]> = new Map();
@@ -47,11 +46,11 @@ export class DrawingSessionManager {
     public joinSession(socketId: string, doc : any) {
         console.log('Socket', socketId, 'joined session', doc.imageId);
         this.socketService.joinRoom(doc.imageId, socketId);
-        this.newUserJoined(doc);    
+        this.newUserJoined(socketId, doc);    
         this.socketService.emit(socketId, SocketEvents.JoinedDrawingSession, doc); 
     }
 
-    public newUserJoined(doc : any) {
+    public newUserJoined(socketId: string, doc : any) {
         if (this.connectedUsers.get(doc.imageId) == undefined){
             this.connectedUsers.set(doc.imageId, new Array<String>());
         }
@@ -61,16 +60,12 @@ export class DrawingSessionManager {
                 users.push(doc.username);
             }
             this.socketService.emit(doc.imageId,SocketEvents.NewUserJoined, users);
-        } 
+        }
+        this.socketService.emit(socketId, SocketEvents.NewUserJoinedSelections, this.selectedObjects) 
     }
 
     public leaveSession(socketId: string, doc: any) {
-        this.selectedObjects.forEach((value: String, key: String, map) =>
-        {
-            // TODO: Delete every user's selected objects when he leaves a session.
-            console.log(value, key);
-            map.delete(key);
-        });
+        this.deleteUserSelection(doc.username);
 
         this.socketService.leaveRoom(doc.imageId, socketId);
 
@@ -87,85 +82,131 @@ export class DrawingSessionManager {
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public addElement(doc: any) {
+        this.deleteUserSelection(doc.username);
+
         console.log(doc);
         this.drawingSessionService.addElement(doc.shape.id,doc.shape.imageId, doc.shape.author, doc.shape.properties)
-        .catch(err => {
-            console.log('addElement:', err)
-        });
+            .then(() => {
+                this.selectedObjects.set(doc.shape.id, doc.shape.author);
+                console.log('selected in add:', this.selectedObjects);
+            })
+            .catch(err => {
+                console.log('addElement:', err)
+            });
         this.socketService.emit(doc.shape.imageId, SocketEvents.AddedElement,doc);
     }
 
     // doc.elementIds should be an array containing the IDs of the shapes to delete.
     public deleteElements(doc: any) {
         this.drawingSessionService.deleteElements(doc.elementIds)
-        .catch(err => {
-            console.log('deleteElements:', err)
-        });
+            .catch(err => {
+                console.log('deleteElements:', err)
+            });
+        console.log('deleteElements:', doc);
+        const shapeIds = doc.elementIds as String[];
+        for(const shape of shapeIds) {
+            this.selectedObjects.delete(shape);
+        }
+
         this.socketService.emit(doc.imageId, SocketEvents.DeletedElements, doc);
     }
 
     // doc should be structured as a Shape. See: /schemas/shape.ts
     public modifyElement(doc: any) {
-        console.log('modify', doc);
-        for (const shape of doc.shapes){
+        for (const shape of (doc.shapes  as any[])) {
             this.drawingSessionService.modifyElement(shape)
-            .catch(err => {
-                console.log('modifyElement:', err)
-            });
+                .catch(err => {
+                    console.log('modifyElement:', err)
+                });
         }
         this.socketService.emit(doc.imageId, SocketEvents.ModifiedElement, doc);
     }
 
     public selectElements(doc : any) {
-        console.log("select", doc);
+        this.deleteUserSelection(doc.username);
+
+        const selections = doc.newElementIds as String[];
+        for(const selection in selections) {
+            this.selectedObjects.set(selection, doc.username);
+        }
+        console.log('selectedObjects', this.selectedObjects);
         this.socketService.emit(doc.imageId, SocketEvents.SelectedElements, doc);
     }
 
     public duplicateElements(doc: any) {
-        console.log('duplicate', doc);        
-        for (const shape of doc.shapes){
-         this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties)
-         .catch(err => {
-            console.log('duplicateElements:', err)
-        });
+        console.log('duplicate', doc);
+        this.deleteUserSelection(doc.username);
+
+        for (const shape of doc.shapes) {
+            this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties)
+                .catch(err => {
+                    console.log('duplicateElements:', err)
+                });
+            this.selectedObjects.set(shape.id, shape.author);
         }
        this.socketService.emit(doc.shapes[0].imageId, SocketEvents.DuplicatedElements, doc);
     }
 
+    public deleteUserSelection(username: string) {
+        this.selectedObjects.forEach((value: String, key: String, map) =>
+        {
+            // Delete every user's selected objects.
+            console.log('value, key', value, key);
+            if(value == username) { map.delete(key); }
+        });
+    }
+
     public cutElements(doc: any) {
         console.log('cut', doc);
+
         this.drawingSessionService.deleteElements(doc.elementIds)
-        .catch(err => {
-            console.log('cutElements:', err)
-        });
+            .catch(err => {
+                console.log('cutElements:', err)
+            });
+
+        const shapeIds = doc.elementIds as String[];
+        for(const shape of shapeIds) {
+            this.selectedObjects.delete(shape);
+        }
+
         this.socketService.emit(doc.imageId, SocketEvents.CutedElements, doc);
     }
+
     public duplicateCutElements(doc : any){
         console.log('duplicateCut', doc);
-        for (const shape of doc.shapes){
+        this.deleteUserSelection(doc.username);
+
+        for (const shape of doc.shapes) {
             this.drawingSessionService.addElement(shape.id, shape.imageId, shape.author, shape.properties)
-            .catch(err => {
-                console.log('duplicateCutElements:', err)
-            });
+                .catch(err => {
+                    console.log('duplicateCutElements:', err)
+                });
+            this.selectedObjects.set(shape.id, shape.author);
         }
         this.socketService.emit(doc.shapes[0].imageId, SocketEvents.DuplicatedCutElements, doc);
     }
 
     public stackElements(doc: any) {
         console.log("STACKING : ", doc);
+        this.selectedObjects.delete(doc.imageId);
+
         this.drawingSessionService.deleteElements(doc.elementId)
-        .catch(err => {
-            console.log('stackElements:', err)
-        });
+            .catch(err => {
+                console.log('stackElements:', err)
+            });
         this.socketService.emit(doc.imageId, SocketEvents.StackedElement, doc);
     }
 
     public unstackElements(doc: any) {
+        this.deleteUserSelection(doc.username);
+
         console.log("UNSTACKING : ", doc);
         this.drawingSessionService.addElement(doc.shape.id, doc.shape.imageId, doc.shape.author, doc.shape.properties)
-        .catch(err => {
-            console.log('unstackElements:', err)
-        });
+            .catch(err => {
+                console.log('unstackElements:', err)
+            });
+        this.selectedObjects.set(doc.shape.id, doc.shape.author);
+            
         
         this.socketService.emit(doc.shape.imageId, SocketEvents.UnstackedElement, doc);
     }
