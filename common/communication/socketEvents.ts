@@ -7,8 +7,11 @@ export default {
     UserLeftConversation:"UserLeftConversation",
     CreateConversation:"CreateConversation",
     CreatedConversation:"CreatedConversation",
+    
     InviteToConversation:"InviteToConversation",
     InvitedToConversation:"InvitedToConversation",
+    RespondToConversationInvite:"RespondToConversationInvite",
+    RespondedToConversationInvite:"RespondedToConversationInvite",
     // Connexion
     LoginAttempt:"LoginAttempt",
     SignUp:"SignUp",
@@ -28,6 +31,8 @@ export default {
 
     InviteToDrawingSession:"InviteToDrawingSession",
     InvitedToDrawingSession:"InvitedToDrawingSession",
+    RespondToDrawingInvite:"RespondToDrawingInvite",
+    RespondedToDrawingInvite:"RespondedToDrawingInvite",
 
     ObjectIsntSelected:"ObjectIsntSelected",
     ObjectSelectedByOtherUser:"ObjectSelectedByOtherUser",
