@@ -763,10 +763,13 @@ namespace PolyPaint.Modeles
                 }
                 else if (newIds.Contains((s as Form).Id))
                 {
-                    if (username == this.SocketManager.UserName)
+                    if (username == this.SocketManager.UserName && !selectedStrokes.Contains(s))
                     {
-                        selectedStrokes.Add(s);
-                        (s as Form).CanRotate = true;
+                            if (!(s as Form).IsSelectedByOther)
+                            {
+                                selectedStrokes.Add(s);
+                                (s as Form).CanRotate = true;
+                            }
                     }
                     else
                     {
