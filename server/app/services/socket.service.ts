@@ -19,7 +19,7 @@ export class SocketService {
     private addUserSocketId(socketId: string, username: string) {
         console.log("username ",username, socketId);
         this.users.set(username, socketId);
-        console.log("checked", this.getUserSocketId(username);
+        console.log("checked", this.getUserSocketId(username));
     }
 
     public getUserSocketId(username: string): string | undefined {

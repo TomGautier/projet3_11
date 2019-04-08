@@ -386,18 +386,18 @@ public class ChatFragment extends Fragment implements ChatListener {
 
     @Override
     public void onNewMessage(final String message, final String conversation) {
-        Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
-        if (convo != null && convo.getName().equals(currentConversation.getName())){
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    WriteMessage(message,true);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
+                if (convo != null){
+                    if(convo.getName().equals(currentConversation.getName()))
+                        WriteMessage(message, true);
+                    //else
+                        //convo.addToHistory(message);
                 }
-            });
-        }
-        else
-            convo.addToHistory(message);
-
+            }
+        });
     }
 
     @Override
@@ -431,13 +431,21 @@ public class ChatFragment extends Fragment implements ChatListener {
                     @Override
                     public void onClick(View v) {
                         SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,true);
-                        SocketManager.currentInstance.joinConversation(conversation);
                         RequestManager.currentInstance.fetchUserConversations();
+                        SocketManager.currentInstance.joinConversation(conversation);
                         setupChatConversationSpinner();
-                        int position = spinnerArrayAdapter.getPosition(conversation);
-                        currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
-                        conversationSpinner.setSelection(position);
-                        loadConversation();
+                        Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
+                        if (convo != null){
+                            currentConversation = convo;
+                            conversationSpinner.setSelection(spinnerArrayAdapter.getPosition(currentConversation.getName()));
+                            loadConversation();
+                        }
+                        else
+                            Toast.makeText(getContext(),"La conversation n'existe pas", Toast.LENGTH_LONG).show();
+                        //int position = spinnerArrayAdapter.getPosition(conversation);
+                        //currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+                        //conversationSpinner.setSelection(position);
+                       // loadConversation();
                         popupWindow.dismiss() ;
                     }
                 });
@@ -464,10 +472,22 @@ public class ChatFragment extends Fragment implements ChatListener {
                     RequestManager.currentInstance.fetchUserConversations();
                     SocketManager.currentInstance.joinConversation(conversation);
                     setupChatConversationSpinner();
-                    int position = spinnerArrayAdapter.getPosition(conversation);
-                    currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
-                    conversationSpinner.setSelection(position);
-                    loadConversation();
+                    //int position = spinnerArrayAdapter.getPosition(conversation);
+                    //currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+                    //conversationSpinner.setSelection(position);
+                    Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
+                    if (convo != null){
+                        currentConversation = convo;
+                        conversationSpinner.setSelection(spinnerArrayAdapter.getPosition(currentConversation.getName()));
+                        loadConversation();
+                    }
+                    else
+                        Toast.makeText(getContext(),"La conversation n'existe pas", Toast.LENGTH_LONG).show();
+                   // loadConversation();
+                    //int position = spinnerArrayAdapter.getPosition(conversation);
+                    //currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+                    //conversationSpinner.setSelection(position);
+
                 }
                 else
                     Toast.makeText(getContext(),"L'utilisateur " + username + "a refusé votre invitation à la conversation "
