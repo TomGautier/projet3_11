@@ -111,6 +111,7 @@ namespace PolyPaint.VueModeles
         }
 
         private ChatManager chatManager = new ChatManager();
+
         public ChatManager ChatManager
         {
             get { return chatManager; }
@@ -415,6 +416,22 @@ namespace PolyPaint.VueModeles
             JoinNewDrawSession(newDrawingId);
         }
 
+        public bool canChangeProtection(string author)
+        {
+            if (author != username)
+            {
+                MessageBox.Show((Localization == "fr") ? "Vous ne pouvez pas changer la protection de l'image d'un autre" : "You cannot change the protection of someone else's drawing", "Error");
+                return false;
+            }
+            return true;
+        }
+
+        public void ChangeProtection(string drawingId, string protection)
+        {
+            GalleryItems.Find(x => x.id == drawingId).protection = protection;
+            //TODO : Call server to change
+        }
+
         public async void LoadGallery(string galleryType)
         {
             string gallery;
@@ -469,7 +486,7 @@ namespace PolyPaint.VueModeles
             }
             catch (Exception)
             {
-                MessageBox.Show("Chanel already exists", "Error");
+                MessageBox.Show((Localization == "fr") ? "Le canal existe déjà" : "Chanel already exists", "Error");
                 return;
             }
             ChatManager.RoomsID.Add(ChatManager.NewRoomID);
