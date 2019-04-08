@@ -36,7 +36,7 @@ namespace PolyPaint.Vues
             string sessionID = ((Grid)((Button)sender).Parent).Children.OfType<Label>().AsEnumerable().Single(x => x.Name == "SessionID").Content.ToString();
             if (!await ((VueModele)DataContext).JoinDrawSession(sessionID))
             {
-                ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().Last().Visibility = Visibility.Visible;
+                ((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().Last().Visibility = (((StackPanel)((Grid)((Button)sender).Parent).Parent).Children.OfType<Grid>().AsEnumerable().Last().Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyPaint.VueModeles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace PolyPaint.Vues
         public ConnectorSetter()
         {
             InitializeComponent();
+            //DataContext = new VueModele();
             for (int i = 1; i <= 20; i++)
             {
                 sizeList.Items.Add(i + " px");

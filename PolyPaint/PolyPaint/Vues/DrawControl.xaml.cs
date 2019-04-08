@@ -36,7 +36,7 @@ namespace PolyPaint.Vues
         {
             InitializeComponent();
             //DataContext = new VueModele();
-            
+           // (DataContext as VueModele).Localization = "fr";
             //this.surfaceDessin.AllowSelection = false;
             //this.surfaceDessin.IsDraging = false;
             this.surfaceDessin.LastSelection = new MemoryStream();
@@ -46,6 +46,7 @@ namespace PolyPaint.Vues
             this.Loaded += new RoutedEventHandler((s, e) =>
             {
                 (DataContext as VueModele).SendCanvas(this.surfaceDessin);
+                //(DataContext as VueModele).Localization = "fr";
                 this.surfaceDessin.AllowSelection = false;
                 this.surfaceDessin.IsDraging = false;
             });
@@ -183,9 +184,9 @@ namespace PolyPaint.Vues
             {
                 myStream = new StreamWriter(save.OpenFile());
                 System.IO.Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/Backup");
-                System.IO.File.WriteAllText(Directory.GetCurrentDirectory()+ "/Backup/" +save.SafeFileName, (DataContext as VueModele).ConvertCanvasToString());
+                //System.IO.File.WriteAllText(Directory.GetCurrentDirectory()+ "/Backup/" +save.SafeFileName, (DataContext as VueModele).ConvertCanvasToString() + "%" + this.surfaceDessin.Width + ","+ this.surfaceDessin.Height);
 
-                myStream.Write((DataContext as VueModele).ConvertCanvasToString());
+                myStream.Write((DataContext as VueModele).ConvertCanvasToString()+ "%%%!" + this.surfaceDessin.Width + "," + this.surfaceDessin.Height);
                 myStream.Dispose();
 
                 myStream.Close();
@@ -213,6 +214,7 @@ namespace PolyPaint.Vues
         private void surfaceDessin_OpenConnectorSettings(object sender, RoutedEventArgs e)
         {
             ConnectorSetter menu = new ConnectorSetter();
+            menu.DataContext = (DataContext as VueModele);
             surfaceDessin.Visibility = Visibility.Hidden;
             menu.Show();
             menu.Closing += new CancelEventHandler(ConnectorSetterClosingHandler);
@@ -228,6 +230,9 @@ namespace PolyPaint.Vues
             string color = (sender as ConnectorSetter).selecteurCouleur.SelectedColor.ToString();
             string q1 = (sender as ConnectorSetter).Quantification1List.Text;
             string q2 = (sender as ConnectorSetter).Quantification2List.Text;
+
+            border = TranslateBorder(border);
+            type = TranslateType(type);
             //Console.WriteLine(type);
             surfaceDessin.Visibility = Visibility.Visible;
 
@@ -238,12 +243,37 @@ namespace PolyPaint.Vues
         {
             if (surfaceDessin.GetSelectedStrokes().Count > 1)
             {
-                MessageBox.Show("Error : Too many elements selected");
+                if ((DataContext as VueModele).Localization == "en")
+                {
+                    MessageBox.Show("Error : Too many elements selected");
+                }
+                else
+                {
+                    MessageBox.Show("Erreur : Veuillez sélectionner 1 seul élément");
+                }
             }
             else if (surfaceDessin.GetSelectedStrokes().Count == 0)
             {
-                MessageBox.Show("Error : No element selected");
+                if ((DataContext as VueModele).Localization == "en")
+                {
+                    MessageBox.Show("Error : No element selected");
+                }
+                else
+                {
+                    MessageBox.Show("Erreur : Aucun élément sélectionné");
+                }
             }
+           /* else if ((surfaceDessin.GetSelectedStrokes()[0] as Form).Type == "Text")
+            {
+                if ((DataContext as VueModele).Localization == "en")
+                {
+                    MessageBox.Show("Error : Selected element must be a Form");
+                }
+                else
+                {
+                    MessageBox.Show("Erreur : L'élément sélectionné doit être une forme");
+                }
+            }*/
             else if ((surfaceDessin.GetSelectedStrokes()[0] as Form).Type == "UmlClass")
             {
                 string name = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Label;
@@ -252,6 +282,7 @@ namespace PolyPaint.Vues
                 List<string> attributes = (surfaceDessin.GetSelectedStrokes()[0] as UMLClass).Attributes;
 
                 UmlClassSetter menu = new UmlClassSetter(name, border, methods, attributes);
+                menu.DataContext = (DataContext as VueModele);
                 surfaceDessin.Visibility = Visibility.Hidden;
                 menu.Show();
                 menu.Closing += new CancelEventHandler(UMLSetterClosingHandler);
@@ -262,6 +293,7 @@ namespace PolyPaint.Vues
                 string label = (surfaceDessin.GetSelectedStrokes()[0] as Form).Label;
                 string border = (surfaceDessin.GetSelectedStrokes()[0] as Form).BorderStyle;
                 GenericSetter menu = new GenericSetter(label, border);
+                menu.DataContext = (DataContext as VueModele);
                 surfaceDessin.Visibility = Visibility.Hidden;
                 menu.Show();
                 menu.Closing += new CancelEventHandler(GenericSetterClosingHandler);
@@ -277,6 +309,8 @@ namespace PolyPaint.Vues
             List<string> methods = (sender as UmlClassSetter).Methods;
             List<string> attributes = (sender as UmlClassSetter).Attributes;
 
+            border = TranslateBorder(border);
+
             (DataContext as VueModele).HandleUmlTextChange(name, border, methods, attributes);
         }
         private void GenericSetterClosingHandler(object sender, CancelEventArgs e)
@@ -284,6 +318,7 @@ namespace PolyPaint.Vues
             surfaceDessin.Visibility = Visibility.Visible;
             string label = (sender as GenericSetter).Label;
             string border = (sender as GenericSetter).borderList.Text;
+            border = TranslateBorder(border);
             (DataContext as VueModele).HandleLabelChange(label, border);
         }
 
@@ -337,6 +372,40 @@ namespace PolyPaint.Vues
         {
             //this.surfaceDessin.IsDraging = false;
             (DataContext as VueModele).HandleDrag();
+        }
+        private string TranslateType(string type)
+        {
+            switch (type)
+            {
+                case "Unidirectionnelle":
+                        return "Unidirectional";
+                case "Bidirectionnelle":
+                        return "Bidirectional";
+                case "Héritage":
+                    return "Inheritance";
+                case "Aggregation":
+                    return "Aggregation";
+                case "Compostion":
+                    return "Composition";
+                default:
+                    return type;
+                             
+            }
+            
+        }
+        private string TranslateBorder(string border)
+        {
+            switch (border)
+            {
+                case "Pleine":
+                    return "Full";
+                case "Tiret":
+                    return "Dashed";
+                case "Pointillé":
+                    return "Dotted";
+                default:
+                    return border;
+            }
         }
         
     }

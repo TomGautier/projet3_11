@@ -21,9 +21,42 @@
             <ColumnDefinition Width="125"/>
             <ColumnDefinition Width="125"/>
         </Grid.ColumnDefinitions>
-        <Button Grid.Column="0" Name="BackBtn" Content="Retour" Height="23" Padding="2" Margin="6" Command="{Binding NavigateBack}"/>
-        <Button Grid.Column="2" Name="PublicBtn" Content="Galerie publique" Height="23" Padding="2" Margin="6"  Click="PublicBtn_Click"/>
-        <Button Grid.Column="3" Name="PrivateBtn" Content="Galerie privée" Height="23" Padding="2" Margin="6" Click="PrivateBtn_Click"/>
+        <Button Grid.Column="0" Name="BackBtn" Height="23" Padding="2" Margin="6" Command="{Binding NavigateMainMenu}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Retour"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Back"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Grid.Column="2" Name="PublicBtn" Height="23" Padding="2" Margin="6"  Click="PublicBtn_Click">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Galerie publique"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Public Gallery"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Grid.Column="3" Name="PrivateBtn" Height="23" Padding="2" Margin="6" Click="PrivateBtn_Click">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Galerie privée"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Private Gallery"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
         <ScrollViewer Grid.Row="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch"  VerticalScrollBarVisibility="Auto">
             <ItemsControl Name="Gallery" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GalleryItems}">
                 <ItemsControl.ItemsPanel>
@@ -33,48 +66,82 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
-                            <Grid Width="100" Height="125" Margin="10" Background="LightGray">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="50"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="*"/>
-                                    <RowDefinition Height="25"/>
-                                </Grid.RowDefinitions>
-                                <Image Grid.ColumnSpan="3" Grid.Row="0" Source="{Binding thumbnail, Converter={StaticResource Base64ImageConverter}}"/>
-                                <Label Grid.Column="0" Grid.Row="1" Content="{Binding author}"/>
-                                <Label>
-                                    <Label.Style>
-                                        <Style TargetType="{x:Type Label}">
-                                            <Setter Property="Content" Value="🔒"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding protection}" Value="">
-                                                    <Setter Property="Content" Value=""/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Label.Style>
-                                </Label>
-                                <Button Grid.Column="2" Grid.Row="1" Content="Joindre" Name="JoinDrawSession" Click="JoinDrawSession_Click"/>
-                                <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
+                      <StackPanel>
+                          <Grid Width="100" Height="125" Margin="10" Background="Gray">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="50"/>
+                              <ColumnDefinition Width="*"/>
+                              <ColumnDefinition Width="50"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                              <RowDefinition Height="*"/>
+                              <RowDefinition Height="25"/>
+                            </Grid.RowDefinitions>
+                            <Image Grid.ColumnSpan="3" Grid.Row="0" Source="{Binding thumbnail, Converter={StaticResource Base64ImageConverter}}"/>
+                            <Label Grid.Column="0" Grid.Row="1" Content="{Binding author}" Background="LightGray"/>
+                            <Label>
+                              <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                  <Setter Property="Content" Value="🔒"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding protection}" Value="">
+                                      <Setter Property="Content" Value=""/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Label.Style>
+                            </Label>
+                            <Button Grid.Column="2" Grid.Row="1" Name="JoinDrawSession" Click="JoinDrawSession_Click">
+                              <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                  <Setter Property="Content" Value="Joindre"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                                      <Setter Property="Content" Value="Join"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Button.Style>
+                            </Button>
+                            <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
+
                             </Grid>
-                            <Grid Visibility="Collapsed">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*"/>
-                                    <ColumnDefinition Width="2*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                </Grid.RowDefinitions>
-                                <Label Grid.Column="0" Grid.Row="0" Content="Password"/>
-                                <TextBox Name="PwdTextBox" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center"/>
-                                <Button Name="SecuredBtn" Grid.Row="1" Grid.ColumnSpan="2" Content="Join" Click="SecuredBtn_Click"/>
-                            </Grid>
-                        </StackPanel>
+                            <Grid Visibility="Collapsed" Background="LightGray">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="1*"/>
+                              <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                              <RowDefinition/>
+                              <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label Grid.Column="0" Grid.Row="0">
+                              <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                  <Setter Property="Content" Value="Code : "/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                                      <Setter Property="Content" Value="Password :"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Label.Style>
+                            </Label>
+                            <TextBox Name="PwdTextBox" Grid.Column="1" Grid.Row="0"/>
+                            <Button Name="SecuredBtn" Grid.Row="1" Grid.ColumnSpan="2" Click="SecuredBtn_Click">
+                              <Button.Style>
+                                <Style TargetType="{x:Type Button}">
+                                  <Setter Property="Content" Value="Connecter"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                                      <Setter Property="Content" Value="Login"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </Button.Style>
+                            </Button>
+                          </Grid>
+                      </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
