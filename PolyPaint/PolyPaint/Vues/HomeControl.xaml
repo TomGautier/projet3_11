@@ -21,7 +21,7 @@
                 </Label.Style>
             </Label>
         </DockPanel>
-        <Button Name="Login" Height="25" Width="60" Margin="10" Command="{Binding NavigateLogin}">
+        <Button Name="Login" Height="25" Width="120" Margin="10" Command="{Binding NavigateLogin}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Content" Value="Connexion"/>
@@ -33,13 +33,25 @@
                 </Style>
             </Button.Style>
         </Button>
-        <Button Name="SignUp" Height="25" Width="60" Command="{Binding NavigateSignup}">
+        <Button Name="SignUp" Height="25" Width="120" Margin="10"  Command="{Binding NavigateSignup}">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
                     <Setter Property="Content" Value="S'inscrire"/>
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Localization}" Value="en">
                             <Setter Property="Content" Value="Sign up"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
+        <Button Margin="10" Height="25" Width="120"  Command="{Binding ChangeLanguage}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Change Language"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Changer la langue"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
