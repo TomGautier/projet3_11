@@ -112,5 +112,10 @@ namespace PolyPaint.Utilitaires
 
             return await response.Content.ReadAsStringAsync();
         }
+
+        public void changeProtection(string sessionId, string username, string imageId, string newProtection)
+        {
+            client.PostAsync("http://" + ipAddress + ":3000/api/images/protection/" + sessionId + "/" + username + "/" + imageId + "/" + newProtection, null);
+        }
     }
 }

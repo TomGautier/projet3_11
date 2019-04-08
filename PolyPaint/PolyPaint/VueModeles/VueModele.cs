@@ -429,7 +429,7 @@ namespace PolyPaint.VueModeles
         public void ChangeProtection(string drawingId, string protection)
         {
             GalleryItems.Find(x => x.id == drawingId).protection = protection;
-            //TODO : Call server to change
+            networkManager.changeProtection(SessionId, Username, drawingId, protection);
         }
 
         public async void LoadGallery(string galleryType)
