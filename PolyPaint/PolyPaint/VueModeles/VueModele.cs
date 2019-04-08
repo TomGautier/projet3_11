@@ -59,7 +59,7 @@ namespace PolyPaint.VueModeles
             set
             {
                 sessionId = value;
-                ChatManager.SessionID = value;
+                ChatManager.SessionID = value;                
                 ProprieteModifiee();
             }
         }
