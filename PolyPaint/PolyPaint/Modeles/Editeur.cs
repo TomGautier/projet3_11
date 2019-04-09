@@ -184,14 +184,14 @@ namespace PolyPaint.Modeles
         }
         public void ChangeSelection(StrokeCollection strokes)
         {
-            if (strokes.Count > 0)
+            if (strokes.Count == 1)
             {
                 //selectedStrokes = strokes;
                 CouleurSelectionnee = (strokes[0] as Form).BorderColor.ToString();//strokes[0].DrawingAttributes.Color.ToString();
                 RemplissageSelectionne = (strokes[0] as Form).Remplissage.ToString();
                 // ProprieteModifiee("TEST");
             }
-            else
+            else if (strokes.Count == 0)
             {
                 //selectedStrokes.Clear(); //= null;
                 CouleurSelectionnee = "Black";
