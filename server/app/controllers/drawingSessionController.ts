@@ -20,8 +20,8 @@ export class DrawingSessionController implements DrawingSessionControllerInterfa
         router.get("/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
+                  //  { res.json(403); return; }
                 
                 this.drawingSessionService.getShapesByImage(req.params.imageId)
                     .then(shapes => {
@@ -35,8 +35,8 @@ export class DrawingSessionController implements DrawingSessionControllerInterfa
         router.get("/connections/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
+                  //  { res.json(403); return; }
                 
                 this.drawingSessionService.getShapeConnectionsByImage(req.params.imageId)
                     .then(shapeConnections => {
