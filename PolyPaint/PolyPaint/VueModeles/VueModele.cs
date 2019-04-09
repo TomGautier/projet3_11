@@ -35,6 +35,7 @@ namespace PolyPaint.VueModeles
         private Editeur editeur = new Editeur();
         private NetworkManager networkManager = new NetworkManager();
 
+        public string currentGalleryType;
         private string localization = "fr";
         public string Localization
         {
@@ -111,6 +112,7 @@ namespace PolyPaint.VueModeles
         }
 
         private ChatManager chatManager = new ChatManager();
+
         public ChatManager ChatManager
         {
             get { return chatManager; }
@@ -245,6 +247,7 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
         public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
         public ICommand NavigateMainMenu { get { return new RelayCommand(OnNavigateMainMenu, () => { return true; }); } }
+        public ICommand NavigateTutorial { get { return new RelayCommand(OnNavigateTutorial, () => { return true; }); } }
         public ICommand ChangeLanguage { get { return new RelayCommand(OnChangeLanguage, () => { return true; }); } }
         public ICommand NavigateOffline { get { return new RelayCommand(OnNavigateOffline, () => { return true; }); } }
 
@@ -293,6 +296,11 @@ namespace PolyPaint.VueModeles
             SwitchView = 6;
         }
 
+        private void OnNavigateTutorial()
+        {
+            SwitchView = 8;
+        }
+
         private void OnNavigateBack()
         {
             SwitchView = previousView;
@@ -317,7 +325,7 @@ namespace PolyPaint.VueModeles
                 }
                 initializeVueModele();
                 notifyConnection();
-                ChatManager.Connect();
+                ChatManager.Connect(Localization);
                 SwitchView = 3;
             }
             catch (Exception)
@@ -355,7 +363,7 @@ namespace PolyPaint.VueModeles
                 }
                 initializeVueModele();
                 notifyConnection();
-                SwitchView = 3;
+                SwitchView = 8;
             }
             catch (Exception)
             {
@@ -435,10 +443,26 @@ namespace PolyPaint.VueModeles
             JoinNewDrawSession(newDrawingId);
         }
 
+        public bool canChangeProtection(string author)
+        {
+            if (author != username)
+            {
+                MessageBox.Show((Localization == "fr") ? "Vous ne pouvez pas changer la protection de l'image d'un autre" : "You cannot change the protection of someone else's drawing", "Error");
+                return false;
+            }
+            return true;
+        }
+
+        public void ChangeProtection(string drawingId, string protection)
+        {
+            networkManager.changeProtection(SessionId, Username, drawingId, protection);
+            LoadGallery(currentGalleryType);
+        }
+
         public async void LoadGallery(string galleryType)
         {
-            string gallery;
-            gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
+            currentGalleryType = galleryType;
+            string gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
             if(GalleryItems != null)
                 GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -493,7 +517,7 @@ namespace PolyPaint.VueModeles
             }
             catch (Exception)
             {
-                MessageBox.Show("Chanel already exists", "Error");
+                MessageBox.Show((Localization == "fr") ? "Le canal existe déjà" : "Chanel already exists", "Error");
                 return;
             }
             ChatManager.RoomsID.Add(ChatManager.NewRoomID);
@@ -1122,6 +1146,11 @@ namespace PolyPaint.VueModeles
 
                 networkManager.PostThumbnail(Username, SessionId, SocketManager.SessionID, b64);
             }
+        }
+
+        internal void OnWindowClosing()
+        {
+            SocketManager.Socket.Emit("UserLeft", Username);
         }
     }
 }
