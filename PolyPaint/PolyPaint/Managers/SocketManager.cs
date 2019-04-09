@@ -16,7 +16,7 @@ namespace PolyPaint.Managers
 {
     class SocketManager
     {
-        private const string SERVER_ADDRESS = "10.200.9.188";//"127.0.0.1";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
+        private const string SERVER_ADDRESS = "127.0.0.1";//"10.200.9.188";//"127.0.0.1";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
         private const string SERVER_PORT = "3000";
         public const double S_PROP = 2.256d;
         public Socket Socket;
