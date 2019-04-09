@@ -9,7 +9,7 @@ export class UserManager {
     private connectedUsers: Map<String, String> = new Map();
 
     public constructor(@inject(TYPES.SocketService) private socketService: SocketService) { 
-        this.socketService.subscribe(SocketEvents.UserLeft, args => this.removeUser(args[1]));
+        this.socketService.subscribe(SocketEvents.UserLeft, args => this.removeUser(args[1][0]));
     }
 
     public addUser(sessionId: string, username: string) {
@@ -19,6 +19,7 @@ export class UserManager {
 
     public removeUser(username: string) {
         this.connectedUsers.delete(username);
+        this.socketService.broadcast(SocketEvents.UserLeft, username);
     }
 
     public isConnected(username: string): boolean {

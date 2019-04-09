@@ -30,41 +30,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:background="@color/chatToolbar"
-            android:src="@drawable/ic_add" />
-
-        <ImageButton
-            android:id="@+id/removeConversationImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="50dp"
-            android:background="@color/chatToolbar"
-            android:src="@drawable/ic_minus" />
+            android:layout_marginRight="15dp"/>
 
         <ImageButton
             android:id="@+id/refreshConversationButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="86dp"
-            android:background="@color/chatToolbar"
-            android:src="@drawable/ic_refresh" />
-
+            android:layout_marginRight="50dp"/>
         <Spinner
             android:id="@+id/conversationSpinner"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="110dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:textAlignment="textEnd" />
+            android:layout_marginRight="75dp"/>
 
     </RelativeLayout>
 

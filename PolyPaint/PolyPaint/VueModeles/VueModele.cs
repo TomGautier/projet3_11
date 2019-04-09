@@ -60,7 +60,7 @@ namespace PolyPaint.VueModeles
             set
             {
                 sessionId = value;
-                ChatManager.SessionID = value;                
+                ChatManager.SessionID = value;
                 ProprieteModifiee();
             }
         }
@@ -76,7 +76,8 @@ namespace PolyPaint.VueModeles
         public string CouleurSelectionnee
         {
             get { return editeur.CouleurSelectionnee; }
-            set {
+            set
+            {
                 editeur.CouleurSelectionnee = value;
             }
         }
@@ -91,12 +92,12 @@ namespace PolyPaint.VueModeles
                 editeur.IsOffline = value;
             }
         }
-               // if (!editeur.IsOffline)
-               // {
-                   // SendLocalCanvas();
-               // }
-            
-        
+        // if (!editeur.IsOffline)
+        // {
+        // SendLocalCanvas();
+        // }
+
+
         public StrokeCollection LastCut
         {
             get { return editeur.LastCut; }
@@ -119,7 +120,8 @@ namespace PolyPaint.VueModeles
             set { ProprieteModifiee(); }
 
         }
-        public SocketManager SocketManager {
+        public SocketManager SocketManager
+        {
             get { return editeur.SocketManager; }
             set { editeur.SocketManager = value; }
         }
@@ -257,12 +259,12 @@ namespace PolyPaint.VueModeles
         }
         private void OnNavigateOffline()
         {
-            
+
             //SessionId = "raqrwfw";
             this.IsOffline = true;
-           // this.editeur = new Editeur();
-           initializeVueModele();
-           SwitchView = 5;
+            // this.editeur = new Editeur();
+            initializeVueModele();
+            SwitchView = 5;
         }
 
         private void OnNavigateMainMenu()
@@ -308,7 +310,7 @@ namespace PolyPaint.VueModeles
 
         private void OnChangeLanguage()
         {
-            Localization = (Localization == "fr" ? "en" : "fr"); 
+            Localization = (Localization == "fr" ? "en" : "fr");
         }
 
         public async void Login(string password)
@@ -352,7 +354,7 @@ namespace PolyPaint.VueModeles
             if (password == "" || Username == "")
                 return;
             try
-            { 
+            {
                 SessionId = await networkManager.SignupAsync(Username, password);
                 if (SessionId == "")
                 {
@@ -381,7 +383,7 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-
+            SocketManager.UserName = Username;
             SocketManager.JoinDrawingSession(joinningImageID);
         }
 
@@ -399,13 +401,13 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-            SocketManager.UserName = this.Username;
+            SocketManager.UserName = Username;
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
             string data = await networkManager.LoadImageData(Username, SessionId, joinningImageID);
 
-            this.editeur.LoadFromServer(shapes,data);
+            this.editeur.LoadFromServer(shapes, data);
             //LoadLocally(shapes); // TODO : Verify it works
             return true;
         }
@@ -426,12 +428,12 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-            SocketManager.UserName = this.Username;
+            SocketManager.UserName = Username;
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
             string data = await networkManager.LoadImageData(Username, SessionId, joinningImageID);
-            editeur.LoadFromServer(shapes,data); // TODO : Verify it works
+            editeur.LoadFromServer(shapes, data); // TODO : Verify it works
         }
 
         public void CreateNewSession(string visibility, string protection)
@@ -463,7 +465,7 @@ namespace PolyPaint.VueModeles
         {
             currentGalleryType = galleryType;
             string gallery = await networkManager.LoadGalleryAsync(Username, SessionId, galleryType);
-            if(GalleryItems != null)
+            if (GalleryItems != null)
                 GalleryItems.Clear();
             GalleryItems = JsonConvert.DeserializeObject<List<GalleryControl.GalleryItem>>(gallery, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
         }
@@ -474,7 +476,7 @@ namespace PolyPaint.VueModeles
             string userList = await networkManager.LoadUsersAsync(Username, SessionId);
 
             List<ChatControl.UserItem> userItems = new List<ChatControl.UserItem>();
-            
+
             var users = JsonConvert.DeserializeObject<List<ChatControl.UserItemTemplate>>(userList);
 
             foreach (var user in users)
@@ -615,49 +617,51 @@ namespace PolyPaint.VueModeles
             if (!this.IsOffline)
             {
                 SocketManager.Socket.On("InvitedToConversation", (data) =>
-                {
-                    var dataFormat = new
-                    {
-                        username = "",
-                        invitedUsername = "",
-                        conversationId = ""
-                    };
-                    var formatedData = JsonConvert.DeserializeAnonymousType(data.ToString(), dataFormat);
-                    if (formatedData.conversationId == ChatManager.RoomID)
-                        return;
-                    string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre la discussion " : " invited you to join the chatroom ") + formatedData.conversationId;
-                    string captation = "Invitation";
-                    if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
-                    {
-                        var res = new
-                        {
-                            username = formatedData.username,
-                            invitedUsername = formatedData.invitedUsername,
-                            conversationId = formatedData.conversationId,
-                            response = true
-                        };
-                        SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
-                        if (!ChatManager.RoomsID.Contains(formatedData.conversationId))
-                        {
-                            ChatManager.RoomsID.Add(formatedData.conversationId);
-                        }
-                        ChatManager.RoomID = formatedData.conversationId;
-                        ChatManager.JoinChannel(Localization);
-                    }
-                    else
-                    {
-                        var res = new
-                        {
-                            username = formatedData.username,
-                            invitedUsername = formatedData.invitedUsername,
-                            conversationId = formatedData.conversationId,
-                            response = false
-                        };
-                        SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
-                    }
-                });
-
-                SocketManager.Socket.On("InvitedToDrawingSession", async (data) =>
+                     {
+                         var dataFormat = new
+                         {
+                             username = "",
+                             invitedUsername = "",
+                             conversationId = ""
+                         };
+                         var formatedData = JsonConvert.DeserializeAnonymousType(data.ToString(), dataFormat);
+                         if (formatedData.conversationId == ChatManager.RoomID)
+                             return;
+                         string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre la discussion " : " invited you to join the chatroom ") + formatedData.conversationId;
+                         string captation = "Invitation";
+                         if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
+                         {
+                             Application.Current.Dispatcher.Invoke(() =>
+              {
+                  var res = new
+                  {
+                      username = formatedData.username,
+                      invitedUsername = formatedData.invitedUsername,
+                      conversationId = formatedData.conversationId,
+                      response = true
+                  };
+                  SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
+                  if (!ChatManager.RoomsID.Contains(formatedData.conversationId))
+                  {
+                      ChatManager.RoomsID.Add(formatedData.conversationId);
+                  }
+                  ChatManager.RoomID = formatedData.conversationId;
+                  ChatManager.JoinChannel(Localization);
+              });
+                         }
+                         else
+                         {
+                             var res = new
+                             {
+                                 username = formatedData.username,
+                                 invitedUsername = formatedData.invitedUsername,
+                                 conversationId = formatedData.conversationId,
+                                 response = false
+                             };
+                             SocketManager.Socket.Emit("RespondToConversationInvite", JsonConvert.SerializeObject(res));
+                         }
+                     });
+                SocketManager.Socket.On("InvitedToDrawingSession", (data) =>
                 {
                     var dataFormat = new
                     {
@@ -670,8 +674,6 @@ namespace PolyPaint.VueModeles
                         return;
                     string text = formatedData.username + (this.Localization == "fr" ? " vous invite à joindre sa session de dessin" : " invited you to join his drawing session");
                     string captation = "Invitation";
-                    ; string shapes = "";
-                    string sizes = "";
                     if (MessageBox.Show(text, captation, MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
                     {
                         var res = new
@@ -682,16 +684,9 @@ namespace PolyPaint.VueModeles
                             response = true
                         };
                         SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
-                        SocketManager.UserName = this.Username;
+                        SocketManager.UserName = Username;
                         SocketManager.JoinDrawingSession(formatedData.imageId);
-                        await Application.Current.Dispatcher.Invoke(async () =>
-                        {
-                            shapes = await networkManager.LoadShapesAsync(Username, SessionId, formatedData.imageId);
-                            sizes = await networkManager.LoadImageData(Username, SessionId, formatedData.imageId);
-                            editeur.LoadFromServer(shapes, sizes);
-                        });
-                    //TODO SET CANVAS TO IMAGEID
-                    SwitchView = 5;
+                        SwitchView = 5;
                     }
                     else
                     {
@@ -733,19 +728,20 @@ namespace PolyPaint.VueModeles
                     visibility = "public",
                     protection = ""
 
-                    
+
                 };
                 //compteur++;
                 split[0] = split[0].Replace("offlineSessionId", this.Username + "_" + compteur);
                 compteur++;
-                this.networkManager.CreateImage(parameters,this.SessionId,this.Username);
+                this.networkManager.CreateImage(parameters, this.SessionId, this.Username);
+
                 string canvas = new JavaScriptSerializer().Serialize(new
                 {
                     shapes = split[0]
-                    
+
                 });
                 this.networkManager.SendLocalCanvas(this.Username, this.SessionId, canvas);
-               
+
 
             }
             string[] filePaths = Directory.GetFiles(Directory.GetCurrentDirectory() + "/Backup");
@@ -875,9 +871,9 @@ namespace PolyPaint.VueModeles
             else if (strokes.Count == 1 && !strokes[0].HitTest(LastMousePos) && this.isDragging)
             {
                 editeur.HandleChangeSelection(strokes);
-                
+
                 //this.StrokeBeingLassoed = strokes[0];
-                  //this.HandlePreviewMouseDown((strokes[0] as Form).Center);
+                //this.HandlePreviewMouseDown((strokes[0] as Form).Center);
             }
             this.isDragging = false;
             //TODO : Send socket -> selection was changed
@@ -954,7 +950,8 @@ namespace PolyPaint.VueModeles
             string parameters = serializer.Serialize(shapes_);
             return parameters;
         }
-        public void LoadLocally(string json) {
+        public void LoadLocally(string json)
+        {
             this.editeur.LoadLocally(json);
         }
 
@@ -1060,8 +1057,8 @@ namespace PolyPaint.VueModeles
                 editeur.HandleMouseDown(mousePos);
             }
         }
-            
-        
+
+
         public void HandlePreviewMouseUp(Point mousePos)
         {
             LastMousePos = mousePos;
@@ -1070,7 +1067,7 @@ namespace PolyPaint.VueModeles
             {
                 editeur.ShowEncrage = false;
                 this.Canvas.EditingMode = InkCanvasEditingMode.Select;
-                editeur.UpdateArrow(this.StrokeBeingDragged, this.IndexBeingDragged,mousePos);
+                editeur.UpdateArrow(this.StrokeBeingDragged, this.IndexBeingDragged, mousePos);
                 //this.StrokeBeingDragged.StylusPoints[this.IndexBeingDragged] = new StylusPoint(mousePos.X, mousePos.Y);
                 Shape[] shapes = new Shape[1];
                 shapes[0] = (this.StrokeBeingDragged as Form).ConvertToShape(this.SocketManager.SessionID);
@@ -1083,7 +1080,7 @@ namespace PolyPaint.VueModeles
                 this.IndexBeingDragged = -1;
             }
             else if (this.StrokeBeingRotated != null)
-            {               
+            {
                 //this.Canvas.EditingMode = InkCanvasEditingMode.Select;
                 this.Canvas.MoveEnabled = true;
                 Shape[] shapes = new Shape[1];
@@ -1095,7 +1092,7 @@ namespace PolyPaint.VueModeles
                 }
                 this.StrokeBeingRotated = null;
             }
-            
+
         }
         public void HandleRotation(Point rotatePoint)
         {
@@ -1136,7 +1133,7 @@ namespace PolyPaint.VueModeles
             System.Windows.Media.Imaging.RenderTargetBitmap renderBitmap =
             new System.Windows.Media.Imaging.RenderTargetBitmap(width, height, 96d, 96d, PixelFormats.Default);
             renderBitmap.Render(Canvas);
-            
+
             using (System.IO.MemoryStream memStream = new System.IO.MemoryStream())
             {
                 System.Windows.Media.Imaging.JpegBitmapEncoder encoder = new System.Windows.Media.Imaging.JpegBitmapEncoder();
@@ -1153,6 +1150,7 @@ namespace PolyPaint.VueModeles
             if (SocketManager.Socket != null)
             {
                 SocketManager.Socket.Emit("UserLeft", Username);
+
             }
         }
     }

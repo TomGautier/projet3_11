@@ -133,6 +133,8 @@ public class RequestManager {
                              general = convo;
                              SocketManager.currentInstance.joinConversation(name);
                          }
+                        // else
+                            // conversations.add(convo);
                      }
                  } catch (JSONException e) {
                      e.printStackTrace();

@@ -81,6 +81,7 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
+			SocketManager.currentInstance.setupHomeListener(this);
 			createTutorialFragment();
 		}
 		/*int[] position = {1,2};
@@ -282,50 +283,64 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 
 	@Override
 	public void onInviteToDrawingSession(final String from, final String imageId) {
-		LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-		boolean focusable = true;
-		final View popupView = inflater.inflate(R.layout.response_to_invite, null);
-		TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
-		text.setText(from + " vous a invité à la session collaborative " + imageId);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+				int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+				int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+				boolean focusable = true;
+				final View popupView = inflater.inflate(R.layout.response_to_invite, null);
+				TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
+				text.setText(from + " vous a invité à une session collaborative");
 
-		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-		popupView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (v != popupView){
-					SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
-					popupWindow.dismiss() ;
-				}
-				return true;
+				final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+				popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+				popupView.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if (v != popupView){
+							SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
+							popupWindow.dismiss() ;
+						}
+						return true;
+					}
+				});
+				ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+				acceptButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,true);
+						joinCollabEditingSession(imageId);
+						popupWindow.dismiss() ;
+					}
+				});
+				ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
+				declineButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
+						popupWindow.dismiss() ;
+					}
+				});
 			}
 		});
-		ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
-		acceptButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,true);
-				popupWindow.dismiss() ;
-			}
-		});
-		ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
-		declineButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
-				popupWindow.dismiss() ;
-			}
-		});
+
 	}
 
 	@Override
-	public void onResponseToDrawingSessionInvitation(String username, String imageId, boolean response) {
-		if (response){
-			//ECRIRE UN MESSAGE QUE LE USER A ACCEPTE L'INVITATION
-			Toast.makeText(getBaseContext(),"",Toast.LENGTH_LONG).show();
-		}
+	public void onResponseToDrawingSessionInvitation(final String username, String imageId, final boolean response) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (response){
+					Toast.makeText(getBaseContext(),"L'utilisateur " + username + " s'est connecté à la session",Toast.LENGTH_LONG).show();
+				}
+				else
+					Toast.makeText(getBaseContext(),"L'utilisateur " + username + " a refusé votre invitation à la session collaborative",Toast.LENGTH_LONG).show();
+			}
+		});
+
 	}
 }
 
