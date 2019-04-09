@@ -139,7 +139,7 @@ public class RequestManager {
                  }
 
              }
-             conversations.remove(general);
+             //conversations.remove(general);
              conversations.set(0,general);
              return conversations;
         }
