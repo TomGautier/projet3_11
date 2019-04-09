@@ -25,13 +25,15 @@ import com.projet3.polypaint.Chat.ChatFragment;
 import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.ImageAccessibility.AccessibilityManager;
 import com.projet3.polypaint.Network.FetchManager;
+import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
 import com.projet3.polypaint.Others.TutorialFragment;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
-public class HomeActivity extends AppCompatActivity implements HomeActivityListener {
+public class HomeActivity extends AppCompatActivity implements AccessibilityManager.AccessibilityDialogSubscriber, HomeActivityListener {
 
 	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
 	//private UserInformation userInformation;
@@ -52,6 +54,9 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 	private CollabImageEditingFragment collabImageEditingFragment;
 	private GalleryFragment galleryFragment;
 
+	private String sessionPassword = "";
+	private String imageId = "";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -67,9 +72,11 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
 		tutorialFragmentLayout = (FrameLayout) findViewById(R.id.tutorialFragment);
 
+		AccessibilityManager.getInstance().subscribe(this);
+
 		if (savedInstanceState == null){
 			createUsersListFragment();
-			//createChatFragment();
+			createChatFragment();
 			createImageEditingFragment();
 			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
@@ -104,11 +111,11 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
         transaction.addToBackStack(null);
         transaction.commit();
 	}
-	private void createCollabImageEditingFragment(String imageId){
+	private void createCollabImageEditingFragment(String imageId, String visibility, String password){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 
-		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId);
+		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId, visibility, password);
 		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
 		transaction.commit();
@@ -130,6 +137,12 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	public void onStop() {
+		AccessibilityManager.getInstance().unsubscribe(this);
+		super.onStop();
 	}
 
 	@Override
@@ -185,13 +198,19 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			collabImageEditingFragmentLayout.setVisibility(View.GONE);
 		else {
-			createCollabImageEditingFragment(null);
-			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+			AccessibilityManager.getInstance().showAccessibilityDialog(getFragmentManager());
+			//createCollabImageEditingFragment(null);
+			//collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
 		}
 	}
 	public void joinCollabEditingSession(String imageId) {
-		createCollabImageEditingFragment(imageId);
-		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		sessionPassword = RequestManager.currentInstance.getImagePassword(imageId);
+		this.imageId = imageId;
+		if (sessionPassword == null || sessionPassword.isEmpty()) {
+			createCollabImageEditingFragment(imageId, null, null);
+			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else AccessibilityManager.getInstance().showPasswordDialog(getFragmentManager());
 	}
 
 	private void createGalleryFragment(){
@@ -229,6 +248,36 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 	public void onBackPressed() {
 		SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
+	}
+
+	@Override
+	public void onAccessibilityPositiveResponse(boolean isPrivate, boolean isProtected, String password) {
+		String privacy = isPrivate ? "private" : "public";
+		String pass = isProtected ? password : "";
+    	createCollabImageEditingFragment(null, privacy, pass);
+		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onAccessibilityNegativeResponse() {
+		// Do nothing
+	}
+
+	@Override
+	public void onPasswordPositiveResponse(String password) {
+    	System.out.println("Passwords : " + password + " - " + sessionPassword);
+		if (!imageId.isEmpty() && password.equals(sessionPassword)) {
+			createCollabImageEditingFragment(imageId, null, null);
+			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else {
+			toggleGalleryVisibility();
+			Toast.makeText(this, "Mot de passe incorrect", Toast.LENGTH_SHORT).show();
+		}
+	}
+    @Override
+	public void onPasswordNegativeResponse(){
+    	toggleGalleryVisibility();
 	}
 
 	@Override
@@ -278,7 +327,6 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 			Toast.makeText(getBaseContext(),"",Toast.LENGTH_LONG).show();
 		}
 	}
-
 }
 
 

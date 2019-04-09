@@ -30,8 +30,6 @@ public class LoginActivity extends Activity  {
 	private final String AZURE_IP = "40.122.119.160";
 	private final String IP = /*"192.168.43.201";*/"10.200.29.11";
 
-
-
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
 	EditText usernameEntry;
