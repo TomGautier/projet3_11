@@ -17,6 +17,11 @@ android {
         minSdkVersion 23
         targetSdkVersion 25
     }
+    lintOptions {
+
+        checkReleaseBuilds false
+
+    }
 
     buildTypes {
         release {
