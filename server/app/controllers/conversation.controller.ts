@@ -20,8 +20,8 @@ export class ConversationController implements ConversationControllerInterface {
         router.get("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; };
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
+                  //  { res.json(403); return; };
                 this.conversationService.getAll().then(conversations => {
                     res.json(conversations);
                 })

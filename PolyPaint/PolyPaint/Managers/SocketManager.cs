@@ -41,7 +41,7 @@ namespace PolyPaint.Managers
             else
             {
                 this.UserName = "offlinePlayer";
-                this.SessionID = "offline";
+                this.SessionID = "offlineSessionId";
             }
             this.Compteur = 0;
         }

@@ -20,11 +20,11 @@ export let imageSchema: Schema = new Schema({
         type: String,
         required: false
     },
-    canvasX: {
+    x: {
         type: Number,
         required: false
     },
-    canvasY: {
+    y: {
         type: Number,
         required: false
     },

@@ -29,6 +29,7 @@ import com.projet3.polypaint.ImageAccessibility.AccessibilityManager;
 import com.projet3.polypaint.Network.FetchManager;
 import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.Others.TutorialFragment;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
@@ -47,6 +48,7 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 	private FrameLayout imageEditingFragmentLayout;
 	private FrameLayout galleryFragmentLayout;
 	private FrameLayout collabImageEditingFragmentLayout;
+	private FrameLayout tutorialFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
 	private CollabImageEditingFragment collabImageEditingFragment;
@@ -68,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
 		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
+		tutorialFragmentLayout = (FrameLayout) findViewById(R.id.tutorialFragment);
 
 		AccessibilityManager.getInstance().subscribe(this);
 
@@ -79,6 +82,7 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
 			SocketManager.currentInstance.setupHomeListener(this);
+			createTutorialFragment();
 		}
 		/*int[] position = {1,2};
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
@@ -115,6 +119,14 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId, visibility, password);
 		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	private void createTutorialFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.tutorialFragment,new TutorialFragment(),"Tutorial");
+		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -158,9 +170,24 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 			case R.id.collabImageEditingAction:
 				toggleCollabImageEditingVisibility();
 				break;
+			case R.id.tutorialAction:
+				toggleTutorial();
+				break;
 		}
 		return true;
 	}
+
+	private void toggleTutorial() {
+		if (tutorialFragmentLayout.getVisibility() == View.VISIBLE) {
+			tutorialFragmentLayout.setVisibility(View.GONE);
+			//usersListFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else {
+			tutorialFragmentLayout.setVisibility(View.VISIBLE);
+			//usersListFragmentLayout.setVisibility(View.GONE);
+		}
+	}
+
 	private void toggleImageEditingVisibility(){
 		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			imageEditingFragmentLayout.setVisibility(View.GONE);

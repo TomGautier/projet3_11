@@ -186,17 +186,4 @@ public class LoginActivity extends Activity  {
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
 	}
-
-	/*Fonction temporaire pour passer directement à l'édition d'images*/
-	public void gotoImageEditing(View button) {
-		SocketManager.currentInstance = new SocketManager("122123","");
-		FetchManager.currentInstance = new FetchManager(new UserInformation("allo", "allo"));
-		FetchManager.currentInstance.setUserConversations(new ArrayList<Conversation>());
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.chatFragment,new ChatFragment(),"CHAT_FRAGMENT");
-		transaction.addToBackStack(null);
-		transaction.commit();
-
-	}
 }

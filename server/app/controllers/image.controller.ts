@@ -21,8 +21,8 @@ export class ImageController implements ImageControllerInterface {
         router.get("/single/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
+                  //  { res.json(403); return; }
                 
                 this.imageService.getById(req.params.imageId).then(image => {
                     res.json(image);
@@ -35,8 +35,8 @@ export class ImageController implements ImageControllerInterface {
         router.get("/:sessionId/:username/:visibility",
             (req: Request, res: Response, next: NextFunction) => {
                 // Send the request to the service and send the response
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username)) 
+                  //  { res.json(403); return; }
                 
                 switch(req.params.visibility) {
                     case 'public': 
@@ -60,11 +60,23 @@ export class ImageController implements ImageControllerInterface {
                 }
             });
 
+        router.post("/offline/:sessionId/:username",
+            (req: Request, res: Response, next: NextFunction) => {
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
+                console.log("offline", req.params.username, req.body.shapes);
+                this.imageService.createMultiple(JSON.parse(req.body.shapes))
+                    .then(image => {
+                        console.log("offline response", image);
+                        res.json(image);
+                    });
+        });
+
+
         router.post("/:sessionId/:username",
             (req: Request, res: Response, next: NextFunction) => {
                 //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                   //  { res.json(403); return; }
-                console.log("body", req.body);
                 this.imageService.create(req.body.imageId, 
                                         req.body.author,
                                         req.body.visibility,
@@ -92,8 +104,8 @@ export class ImageController implements ImageControllerInterface {
 
         router.post("/thumbnail/:sessionId/:username/:imageId",
             (req: Request, res: Response, next: NextFunction) => {
-                if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
-                    { res.json(403); return; }
+                //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
+                  //  { res.json(403); return; }
                 
                 this.imageService.updateThumbnail(req.params.imageId, req.body.thumbnail, req.body.thumbnailTimestamp)
                     .then(image => {
