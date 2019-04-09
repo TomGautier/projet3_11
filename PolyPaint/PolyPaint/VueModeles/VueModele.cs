@@ -1108,5 +1108,10 @@ namespace PolyPaint.VueModeles
                 networkManager.PostThumbnail(Username, SessionId, SocketManager.SessionID, b64);
             }
         }
+
+        internal void OnWindowClosing()
+        {
+            SocketManager.Socket.Emit("UserLeft", Username);
+        }
     }
 }
