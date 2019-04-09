@@ -27,6 +27,7 @@ import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
 import com.projet3.polypaint.Network.FetchManager;
 import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.Others.TutorialFragment;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
@@ -45,6 +46,7 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 	private FrameLayout imageEditingFragmentLayout;
 	private FrameLayout galleryFragmentLayout;
 	private FrameLayout collabImageEditingFragmentLayout;
+	private FrameLayout tutorialFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
 	private CollabImageEditingFragment collabImageEditingFragment;
@@ -63,14 +65,16 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
 		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
+		tutorialFragmentLayout = (FrameLayout) findViewById(R.id.tutorialFragment);
 
 		if (savedInstanceState == null){
 			createUsersListFragment();
-			createChatFragment();
+			//createChatFragment();
 			createImageEditingFragment();
 			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
+			createTutorialFragment();
 		}
 		/*int[] position = {1,2};
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
@@ -110,6 +114,14 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 		transaction.commit();
 	}
 
+	private void createTutorialFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.tutorialFragment,new TutorialFragment(),"Tutorial");
+		transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
 		super.onSaveInstanceState(savedInstanceState);
@@ -144,9 +156,24 @@ public class HomeActivity extends AppCompatActivity implements HomeActivityListe
 			case R.id.collabImageEditingAction:
 				toggleCollabImageEditingVisibility();
 				break;
+			case R.id.tutorialAction:
+				toggleTutorial();
+				break;
 		}
 		return true;
 	}
+
+	private void toggleTutorial() {
+		if (tutorialFragmentLayout.getVisibility() == View.VISIBLE) {
+			tutorialFragmentLayout.setVisibility(View.GONE);
+			//usersListFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else {
+			tutorialFragmentLayout.setVisibility(View.VISIBLE);
+			//usersListFragmentLayout.setVisibility(View.GONE);
+		}
+	}
+
 	private void toggleImageEditingVisibility(){
 		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			imageEditingFragmentLayout.setVisibility(View.GONE);

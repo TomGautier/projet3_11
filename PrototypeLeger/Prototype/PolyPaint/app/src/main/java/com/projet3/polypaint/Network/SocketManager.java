@@ -22,7 +22,7 @@ import io.socket.emitter.Emitter;
 
 public class SocketManager  {
 
-    //Chat
+    //chat
     public final String SENDMESSAGE_TAG = "MessageSent";
     public final String LOGINATTEMPT_TAG = "LoginAttempt";
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
