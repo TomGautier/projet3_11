@@ -83,7 +83,7 @@ public class CollabShape {
             case "Comment":
                 ImageEditingDialogManager.getInstance().showTextAndStyleDialog(fragmentManager, style, properties.getLabel());
                 break;
-            case "text_box":
+            case "Text":
                 ImageEditingDialogManager.getInstance().showTextEditingDialog(fragmentManager, style, properties.getLabel());
                 break;
         }
