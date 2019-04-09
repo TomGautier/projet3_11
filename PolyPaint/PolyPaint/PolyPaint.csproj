@@ -175,6 +175,7 @@
     <Compile Include="Utilitaires\FormProperties.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
     <Compile Include="Utilitaires\Role.cs" />
+    <Compile Include="Utilitaires\Image.cs" />
     <Compile Include="Utilitaires\Shape.cs" />
     <Compile Include="Utilitaires\ShapeProperties.cs" />
     <Compile Include="Utilitaires\UMLClass.cs" />

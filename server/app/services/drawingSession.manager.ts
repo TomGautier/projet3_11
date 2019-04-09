@@ -172,7 +172,6 @@ export class DrawingSessionManager {
         this.selectedObjects.forEach((value: String, key: String, map) =>
         {
             // Delete every user's selected objects.
-            console.log('value, key', value, key);
             if(value == username) { map.delete(key); }
         });
     }

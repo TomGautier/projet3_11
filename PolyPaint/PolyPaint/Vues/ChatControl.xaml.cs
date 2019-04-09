@@ -32,8 +32,9 @@ namespace PolyPaint.Vues
                 textBox.ScrollToEnd();
             };
             chatWindow = null;
-
-            this.Loaded += new RoutedEventHandler((s, e) => { UpdateUserList(); (DataContext as VueModele).LoadChannelAsync(); });
+           
+                this.Loaded += new RoutedEventHandler((s, e) => { UpdateUserList(); (DataContext as VueModele).LoadChannelAsync(); });
+            
         }
 
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
@@ -90,7 +91,9 @@ namespace PolyPaint.Vues
 
         private async void UpdateUserList()
         {
-            UsersList.ItemsSource = await ((VueModele)DataContext).LoadUsersAsync();
+            if (!(DataContext as VueModele).IsOffline){
+                UsersList.ItemsSource = await ((VueModele)DataContext).LoadUsersAsync();
+            }
         }
         
         public class UserItem
