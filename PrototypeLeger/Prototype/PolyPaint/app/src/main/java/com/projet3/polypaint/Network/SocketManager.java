@@ -156,6 +156,12 @@ public class SocketManager  {
                     //}
                 }
             });
+            socket.on(USERLEFT_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    usersListListener.onUserDisconnected((String)args[0]);
+                }
+            });
             socket.on(CREATED_COLLAB_SESSION_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {

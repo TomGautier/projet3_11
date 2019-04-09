@@ -235,6 +235,18 @@ public class UsersListFragment extends Fragment implements UsersListListener {
 
 
     }
+
+    @Override
+    public void onUserDisconnected(String username) {
+        if (FetchManager.currentInstance.changeConnectedState(username, false)){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupListView();
+                }
+            });
+        }
+    }
 }
 
 

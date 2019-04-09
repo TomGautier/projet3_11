@@ -133,13 +133,15 @@ public class RequestManager {
                              general = convo;
                              SocketManager.currentInstance.joinConversation(name);
                          }
+                        // else
+                            // conversations.add(convo);
                      }
                  } catch (JSONException e) {
                      e.printStackTrace();
                  }
 
              }
-             conversations.remove(general);
+             //conversations.remove(general);
              conversations.set(0,general);
              return conversations;
         }
