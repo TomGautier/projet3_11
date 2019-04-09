@@ -86,7 +86,18 @@
             <Button  Click="textSetter_RemoveSelectedAttribute" Content="Remove" Grid.Row="3" Grid.Column="2" Margin="3"/>
             <TextBox x:Name="txtAttributes"  Grid.Column="3" Grid.Row="3" Margin="3" MinWidth="100" HorizontalAlignment="Left"/>
             <Button  Click="textSetter_ApplyAttributeAdding" Content="Add" Grid.Row="3" Grid.Column="4" Margin="3"/>
-            <Button  Click="textSetter_ApplyChanges" Content="APPLY" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20"/>
+          <Button  Click="textSetter_ApplyChanges" Content="APPLY" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20">
+            <Button.Style>
+              <Style TargetType="{x:Type Button}">
+                <Setter Property="Content" Value="APPLIQUER"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Content" Value="APPLY"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Button.Style>
+          </Button>
             <TextBlock Text="Border Style" Grid.Row="4" Margin="3"/>
             <ComboBox x:Name="borderList" Width="100" Grid.Column="1" Grid.Row="4" RenderTransformOrigin="-0.04,0.731">
               <ComboBoxItem >

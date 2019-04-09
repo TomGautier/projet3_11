@@ -104,7 +104,18 @@
 
             </ComboBox>
 
-            <Button  Click="genericSetter_ApplyChanges" Content="APPLY" FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20"/>
+      <Button  Click="genericSetter_ApplyChanges"  FontWeight="Bold" Grid.Row="4" Grid.Column="2" Margin="6,26,0,-20">
+        <Button.Style>
+          <Style TargetType="{x:Type Button}">
+            <Setter Property="Content" Value="APPLIQUER"/>
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding Localization}" Value="en">
+                <Setter Property="Content" Value="APPLY"/>
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+      </Button>
 
     </Grid>
 </Grid>
