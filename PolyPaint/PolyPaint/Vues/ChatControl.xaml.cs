@@ -75,7 +75,9 @@ namespace PolyPaint.Vues
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ((VueModele)DataContext).ChatManager.JoinChannel(((VueModele)DataContext).Localization);
+            if (DataContext != null){
+                ((VueModele)DataContext).ChatManager.JoinChannel(((VueModele)DataContext).Localization);
+            }
         }
 
         private void ShowAddChannelForm_Click(object sender, RoutedEventArgs e)
