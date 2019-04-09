@@ -2,6 +2,9 @@ package com.projet3.polypaint.Chat;
 
 import android.app.Fragment;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -251,13 +254,20 @@ public class ChatFragment extends Fragment implements ChatListener {
         });
     }
     public void WriteMessage(String message, boolean withHistory) {
-        TextView newView = (TextView)View.inflate(getContext(), R.layout.chat_message, null);
+        TextView newView = (TextView) View.inflate(getContext(), R.layout.chat_message, null);
         chatMessageZoneTable.addView(newView);
         newView.setText(message);
         if (withHistory)
             currentConversation.addToHistory(newView.getText().toString());
 
         scrollDownMessages();
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessage(String message) {
