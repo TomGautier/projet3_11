@@ -391,7 +391,7 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-
+            SocketManager.UserName = this.Username;
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
@@ -418,7 +418,7 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-            
+            SocketManager.UserName = this.Username;
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
@@ -658,6 +658,7 @@ namespace PolyPaint.VueModeles
                             response = true
                         };
                         SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
+                        SocketManager.UserName = this.Username;
                         SocketManager.JoinDrawingSession(formatedData.imageId);
                         await Application.Current.Dispatcher.Invoke(async () =>
                         {
@@ -710,15 +711,16 @@ namespace PolyPaint.VueModeles
 
                     
                 };
+                //compteur++;
+                split[0] = split[0].Replace("offlineSessionId", this.Username + "_" + compteur);
                 compteur++;
                 this.networkManager.CreateImage(parameters,this.SessionId,this.Username);
-
                 string canvas = new JavaScriptSerializer().Serialize(new
                 {
                     shapes = split[0]
-
+                    
                 });
-                this.networkManager.SendLocalCanvas(this.SocketManager.UserName, this.SessionId, canvas);
+                this.networkManager.SendLocalCanvas(this.Username, this.SessionId, canvas);
                
 
             }
@@ -916,7 +918,9 @@ namespace PolyPaint.VueModeles
             List<Shape> shapes_ = new List<Shape>();
             foreach (Stroke s in Traits)
             {
-                shapes_.Add((s as Form).ConvertToShape(this.SocketManager.SessionID));
+                Shape a = (s as Form).ConvertToShape(this.SocketManager.SessionID);
+                SocketManager.ConvertToMobile(a);
+                shapes_.Add(a);//(s as Form).ConvertToShape(this.SocketManager.SessionID));
             }
             /* string parameters = new JavaScriptSerializer().Serialize(new
              {            

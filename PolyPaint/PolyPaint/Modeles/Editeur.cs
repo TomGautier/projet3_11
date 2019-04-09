@@ -224,11 +224,12 @@ namespace PolyPaint.Modeles
             List<Shape> datalist = JsonConvert.DeserializeObject<List<Shape>>(split[0]);
             int width = (int)Double.Parse(dimensions[0]);
             int height = (int)Double.Parse(dimensions[1]);
-            this.CanvasHeight = height;
-            this.CanvasWidth = width;
+            this.CanvasHeight = height; //* HC_PROP;
+            this.CanvasWidth = width; //* HC_PROP;
             ProprieteModifiee("CanvasSize");
             foreach (Shape shape in datalist)
             {
+                ConvertToHC(shape);
                 this.AddForm(shape, false);
             }
         }

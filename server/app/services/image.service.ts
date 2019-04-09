@@ -26,8 +26,8 @@ export class ImageService implements ImageServiceInterface {
             author: author,
             visibility: visibility,
             protection: protection,
-            canvasX: 1726,
-            canvasY: 1185
+            x: 1726,
+            y: 1185
         });
             
         return await this.databaseService.create(Image, image)

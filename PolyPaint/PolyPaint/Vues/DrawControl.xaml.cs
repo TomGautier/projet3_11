@@ -185,9 +185,9 @@ namespace PolyPaint.Vues
             {
                 myStream = new StreamWriter(save.OpenFile());
                 System.IO.Directory.CreateDirectory(Directory.GetCurrentDirectory() + "/Backup");
-                System.IO.File.WriteAllText(Directory.GetCurrentDirectory()+ "/Backup/" +save.SafeFileName, (DataContext as VueModele).ConvertCanvasToString() + "%%%!" + this.surfaceDessin.Width + ","+ this.surfaceDessin.Height);
+                System.IO.File.WriteAllText(Directory.GetCurrentDirectory()+ "/Backup/" +save.SafeFileName, (DataContext as VueModele).ConvertCanvasToString() + "%%%!" + (int)this.surfaceDessin.Width *2.256d + ","+ (int)this.surfaceDessin.Height*2.256d);
 
-                myStream.Write((DataContext as VueModele).ConvertCanvasToString()+ "%%%!" + this.surfaceDessin.Width + "," + this.surfaceDessin.Height);
+                myStream.Write((DataContext as VueModele).ConvertCanvasToString()+ "%%%!" + (int)this.surfaceDessin.Width + "," + (int)this.surfaceDessin.Height);
                 myStream.Dispose();
 
                 myStream.Close();

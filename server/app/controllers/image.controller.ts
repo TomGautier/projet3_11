@@ -64,9 +64,10 @@ export class ImageController implements ImageControllerInterface {
             (req: Request, res: Response, next: NextFunction) => {
                 //if(!this.userManager.verifySession(req.params.sessionId, req.params.username))
                   //  { res.json(403); return; }
-            
-                this.imageService.createMultiple(req.body.shapes)
+                console.log("offline", req.params.username, req.body.shapes);
+                this.imageService.createMultiple(JSON.parse(req.body.shapes))
                     .then(image => {
+                        console.log("offline response", image);
                         res.json(image);
                     });
         });
