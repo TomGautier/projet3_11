@@ -368,7 +368,7 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-
+            SocketManager.UserName = Username;
             SocketManager.JoinDrawingSession(joinningImageID);
         }
 
@@ -386,7 +386,7 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-
+            SocketManager.UserName = Username;
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
@@ -411,7 +411,7 @@ namespace PolyPaint.VueModeles
                 username = Username,
                 imageId = joinningImageID
             };
-            
+            SocketManager.UserName = Username;
             SocketManager.JoinDrawingSession(joinningImageID);
 
             string shapes = await networkManager.LoadShapesAsync(Username, SessionId, joinningImageID);
@@ -659,6 +659,7 @@ namespace PolyPaint.VueModeles
                         response = true
                     };
                     SocketManager.Socket.Emit("RespondToDrawingInvite", JsonConvert.SerializeObject(res));
+                    SocketManager.UserName = Username;
                     SocketManager.JoinDrawingSession(formatedData.imageId);
                     SwitchView = 5;
                 }
