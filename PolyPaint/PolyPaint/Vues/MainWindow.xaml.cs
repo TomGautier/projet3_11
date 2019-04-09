@@ -25,7 +25,7 @@ namespace PolyPaint
             InitializeComponent();
             Loaded += new RoutedEventHandler((s, e) =>
             {
-               Closing+= (DataContext as VueModele).OnWindowClosing;
+                Closing += (DataContext as VueModele).OnWindowClosing;
             });
         }
     }

@@ -29,6 +29,7 @@ import com.projet3.polypaint.ImageAccessibility.AccessibilityManager;
 import com.projet3.polypaint.Network.FetchManager;
 import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.Others.TutorialFragment;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
@@ -47,6 +48,7 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 	private FrameLayout imageEditingFragmentLayout;
 	private FrameLayout galleryFragmentLayout;
 	private FrameLayout collabImageEditingFragmentLayout;
+	private FrameLayout tutorialFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
 	private CollabImageEditingFragment collabImageEditingFragment;
@@ -68,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
 		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
+		tutorialFragmentLayout = (FrameLayout) findViewById(R.id.tutorialFragment);
 
 		AccessibilityManager.getInstance().subscribe(this);
 
@@ -78,6 +81,8 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
+			SocketManager.currentInstance.setupHomeListener(this);
+			createTutorialFragment();
 		}
 		/*int[] position = {1,2};
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
@@ -114,6 +119,14 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId, visibility, password);
 		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	private void createTutorialFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.tutorialFragment,new TutorialFragment(),"Tutorial");
+		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -157,9 +170,24 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 			case R.id.collabImageEditingAction:
 				toggleCollabImageEditingVisibility();
 				break;
+			case R.id.tutorialAction:
+				toggleTutorial();
+				break;
 		}
 		return true;
 	}
+
+	private void toggleTutorial() {
+		if (tutorialFragmentLayout.getVisibility() == View.VISIBLE) {
+			tutorialFragmentLayout.setVisibility(View.GONE);
+			//usersListFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else {
+			tutorialFragmentLayout.setVisibility(View.VISIBLE);
+			//usersListFragmentLayout.setVisibility(View.GONE);
+		}
+	}
+
 	private void toggleImageEditingVisibility(){
 		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			imageEditingFragmentLayout.setVisibility(View.GONE);
@@ -255,50 +283,64 @@ public class HomeActivity extends AppCompatActivity implements AccessibilityMana
 
 	@Override
 	public void onInviteToDrawingSession(final String from, final String imageId) {
-		LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
-		int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-		int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-		boolean focusable = true;
-		final View popupView = inflater.inflate(R.layout.response_to_invite, null);
-		TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
-		text.setText(from + " vous a invité à la session collaborative " + imageId);
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+				int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+				int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+				boolean focusable = true;
+				final View popupView = inflater.inflate(R.layout.response_to_invite, null);
+				TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
+				text.setText(from + " vous a invité à une session collaborative");
 
-		final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-		popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-		popupView.setOnTouchListener(new View.OnTouchListener() {
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if (v != popupView){
-					SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
-					popupWindow.dismiss() ;
-				}
-				return true;
+				final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+				popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+				popupView.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if (v != popupView){
+							SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
+							popupWindow.dismiss() ;
+						}
+						return true;
+					}
+				});
+				ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+				acceptButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,true);
+						joinCollabEditingSession(imageId);
+						popupWindow.dismiss() ;
+					}
+				});
+				ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
+				declineButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
+						popupWindow.dismiss() ;
+					}
+				});
 			}
 		});
-		ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
-		acceptButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,true);
-				popupWindow.dismiss() ;
-			}
-		});
-		ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
-		declineButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
-				popupWindow.dismiss() ;
-			}
-		});
+
 	}
 
 	@Override
-	public void onResponseToDrawingSessionInvitation(String username, String imageId, boolean response) {
-		if (response){
-			//ECRIRE UN MESSAGE QUE LE USER A ACCEPTE L'INVITATION
-			Toast.makeText(getBaseContext(),"",Toast.LENGTH_LONG).show();
-		}
+	public void onResponseToDrawingSessionInvitation(final String username, String imageId, final boolean response) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (response){
+					Toast.makeText(getBaseContext(),"L'utilisateur " + username + " s'est connecté à la session",Toast.LENGTH_LONG).show();
+				}
+				else
+					Toast.makeText(getBaseContext(),"L'utilisateur " + username + " a refusé votre invitation à la session collaborative",Toast.LENGTH_LONG).show();
+			}
+		});
+
 	}
 }
 

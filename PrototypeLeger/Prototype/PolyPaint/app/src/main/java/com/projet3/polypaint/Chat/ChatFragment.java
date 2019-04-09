@@ -42,7 +42,6 @@ public class ChatFragment extends Fragment implements ChatListener {
     public ImageButton chatEnterButton;
     private ImageButton chatExpendButton;
     private ImageButton addConversationButton;
-    private ImageButton removeConversationButton;
     private ImageButton refreshButton;
     public LinearLayout chatMessageZoneTable;
     private RelativeLayout chatMessageZone;
@@ -87,7 +86,6 @@ public class ChatFragment extends Fragment implements ChatListener {
         chatExpendButton = (ImageButton) rootView.findViewById(R.id.chatExtendButton);
         refreshButton = (ImageButton)rootView.findViewById(R.id.refreshConversationButton);
         addConversationButton = (ImageButton)rootView.findViewById(R.id.addConversationImageButton);
-        removeConversationButton = (ImageButton)rootView.findViewById(R.id.removeConversationImageButton);
         chatMessageZone = (RelativeLayout)rootView.findViewById(R.id.chatMessageZone);
         chatToolbar = (RelativeLayout)rootView.findViewById(R.id.chatToolbar);
         chatMessageZoneTable = (LinearLayout)rootView.findViewById(R.id.chatMessageZoneTable);
@@ -107,7 +105,6 @@ public class ChatFragment extends Fragment implements ChatListener {
         setupChatConversationSpinner();
 
         Utilities.setButtonEffect(addConversationButton);
-        Utilities.setButtonEffect(removeConversationButton);
         Utilities.setButtonEffect(chatEnterButton);
         Utilities.setButtonEffect(chatExpendButton);
         Utilities.setButtonEffect(refreshButton);
@@ -120,7 +117,7 @@ public class ChatFragment extends Fragment implements ChatListener {
         display.getSize(size);
         return  size;
     }*/
-    public void createRemoveConversationPopup(){
+    /*public void createRemoveConversationPopup(){
         LayoutInflater inflater = (LayoutInflater)
                 getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -155,7 +152,7 @@ public class ChatFragment extends Fragment implements ChatListener {
                 popupWindow.dismiss();
             }
         });
-    }
+    }*/
 
     public void createAddConversationPopup(){
         LayoutInflater inflater = (LayoutInflater)
@@ -203,12 +200,6 @@ public class ChatFragment extends Fragment implements ChatListener {
             @Override
             public void onClick(View v) {
                 createAddConversationPopup();
-            }
-        });
-        removeConversationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createRemoveConversationPopup();
             }
         });
         chatToolbar.setOnClickListener(new View.OnClickListener() {

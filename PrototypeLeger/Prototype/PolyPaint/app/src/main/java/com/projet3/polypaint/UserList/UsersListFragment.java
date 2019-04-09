@@ -205,12 +205,15 @@ public class UsersListFragment extends Fragment implements UsersListListener {
                                     popupWindow.dismiss();
                                 }
                                 else
-                                    Toast.makeText(getContext(),"veuillez entrer un nom de conversation valide",Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getContext(),"Veuillez entrer un nom de conversation valide",Toast.LENGTH_LONG).show();
                             }
                         });
                         break;
                     case R.id.inviteToDrawSession:
-                        SocketManager.currentInstance.sendInviteToDrawingSession(user.getUsername());
+                        if (SocketManager.currentInstance.isInDrawingSession())
+                            SocketManager.currentInstance.sendInviteToDrawingSession(user.getUsername());
+                        else
+                            Toast.makeText(getContext(),"Veuillez joindre une session collaborative",Toast.LENGTH_LONG).show();
                         break;
                 }
                 return true;
@@ -231,6 +234,18 @@ public class UsersListFragment extends Fragment implements UsersListListener {
         }
 
 
+    }
+
+    @Override
+    public void onUserDisconnected(String username) {
+        if (FetchManager.currentInstance.changeConnectedState(username, false)){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupListView();
+                }
+            });
+        }
     }
 }
 

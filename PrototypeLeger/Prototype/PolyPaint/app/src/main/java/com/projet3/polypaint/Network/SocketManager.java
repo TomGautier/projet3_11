@@ -22,7 +22,7 @@ import io.socket.emitter.Emitter;
 
 public class SocketManager  {
 
-    //Chat
+    //chat
     public final String SENDMESSAGE_TAG = "MessageSent";
     public final String LOGINATTEMPT_TAG = "LoginAttempt";
     public final String USEREXIST_TAG = "UsernameAlreadyExists";
@@ -150,10 +150,19 @@ public class SocketManager  {
                     //JSONObject obj = (JSONObject)args[0];
                     //String username = obj.getString(USERNAME_TAG);
                     String username = (String)args[0];
-                    usersListListener.onUserConnected(username);
+                    if (usersListListener != null)
+                        usersListListener.onUserConnected(username);
                     //} //catch (JSONException e) {
                     // e.printStackTrace();
                     //}
+                }
+            });
+            socket.on(USERLEFT_TAG, new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    String username = (String)args[0];
+                    if (usersListListener != null)
+                        usersListListener.onUserDisconnected(username);
                 }
             });
             socket.on(CREATED_COLLAB_SESSION_TAG, new Emitter.Listener() {
@@ -377,7 +386,7 @@ public class SocketManager  {
                     String imageId = "";
                     try{
                         username = obj.getString(USERNAME_TAG);
-                        imageId = obj.getString(IMAGE_TAG);
+                        imageId = obj.getString(CollabShape.IMAGE_ID_TAG);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -896,6 +905,9 @@ public class SocketManager  {
     public void leave(String username) {
         socket.emit(USERLEFT_TAG, username);
         socket.disconnect();
+    }
+    public boolean isInDrawingSession(){
+        return imageId != null && !imageId.isEmpty();
     }
 
     private String formatIpToUri(String ip) {

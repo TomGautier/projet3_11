@@ -28,7 +28,10 @@ public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
 	private final String AZURE_IP = "40.122.119.160";
-	private final String IP = "10.200.6.173";
+
+	private final String IP = /*"192.168.43.201";*/
+            "10.200.27.215";
+
 
 	ImageButton userConnexionButton;
     ImageButton serverConnexionButton;
@@ -182,18 +185,5 @@ public class LoginActivity extends Activity  {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-	/*Fonction temporaire pour passer directement à l'édition d'images*/
-	public void gotoImageEditing(View button) {
-		SocketManager.currentInstance = new SocketManager("122123","");
-		FetchManager.currentInstance = new FetchManager(new UserInformation("allo", "allo"));
-		FetchManager.currentInstance.setUserConversations(new ArrayList<Conversation>());
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.chatFragment,new ChatFragment(),"CHAT_FRAGMENT");
-		transaction.addToBackStack(null);
-		transaction.commit();
-
 	}
 }
