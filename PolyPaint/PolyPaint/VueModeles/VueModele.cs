@@ -1110,7 +1110,7 @@ namespace PolyPaint.VueModeles
             }
         }
 
-        internal void OnWindowClosing()
+        internal void OnWindowClosing(object sender, CancelEventArgs e)
         {
             SocketManager.Socket.Emit("UserLeft", Username);
         }
