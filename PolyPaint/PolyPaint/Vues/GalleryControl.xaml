@@ -58,7 +58,7 @@
             </Button.Style>
         </Button>
         <ScrollViewer Grid.Row="1" Grid.ColumnSpan="4" HorizontalContentAlignment="Stretch"  VerticalScrollBarVisibility="Auto">
-            <ItemsControl Name="Gallery" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GalleryItems}">
+            <ItemsControl Name="Gallery" HorizontalContentAlignment="Stretch" ItemsSource="{Binding GalleryItems, UpdateSourceTrigger=PropertyChanged}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <WrapPanel IsItemsHost="True" Orientation="Horizontal"/>
@@ -66,82 +66,118 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                      <StackPanel>
-                          <Grid Width="100" Height="125" Margin="10" Background="Gray">
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="50"/>
-                              <ColumnDefinition Width="*"/>
-                              <ColumnDefinition Width="50"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                              <RowDefinition Height="*"/>
-                              <RowDefinition Height="25"/>
-                            </Grid.RowDefinitions>
-                            <Image Grid.ColumnSpan="3" Grid.Row="0" Source="{Binding thumbnail, Converter={StaticResource Base64ImageConverter}}"/>
-                            <Label Grid.Column="0" Grid.Row="1" Content="{Binding author}" Background="LightGray"/>
-                            <Label>
-                              <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                  <Setter Property="Content" Value="🔒"/>
-                                  <Style.Triggers>
-                                    <DataTrigger Binding="{Binding protection}" Value="">
-                                      <Setter Property="Content" Value=""/>
-                                    </DataTrigger>
-                                  </Style.Triggers>
-                                </Style>
-                              </Label.Style>
-                            </Label>
-                            <Button Grid.Column="2" Grid.Row="1" Name="JoinDrawSession" Click="JoinDrawSession_Click">
-                              <Button.Style>
-                                <Style TargetType="{x:Type Button}">
-                                  <Setter Property="Content" Value="Joindre"/>
-                                  <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Localization}" Value="en">
-                                      <Setter Property="Content" Value="Join"/>
-                                    </DataTrigger>
-                                  </Style.Triggers>
-                                </Style>
-                              </Button.Style>
-                            </Button>
-                            <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
+                        <StackPanel>
+                            <Grid Width="125" Height="150" Margin="10" Background="Gray">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50"/>
+                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="50"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="25"/>
+                                </Grid.RowDefinitions>
+                                <Image Grid.ColumnSpan="3" Grid.Row="0" Source="{Binding thumbnail, Converter={StaticResource Base64ImageConverter}}"/>
+                                <Label Grid.Column="0" Grid.Row="1" Content="{Binding author}" Name="Author" Background="LightGray"/>
+                                <Label>
+                                    <Label.Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Content" Value="🔒"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding protection, UpdateSourceTrigger=PropertyChanged}" Value="">
+                                                    <Setter Property="Content" Value=""/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                                <Button Grid.Column="1" Grid.Row="1" Name="TryEditProtection" Content="🔒" Click="TryEditProtection_Click"/>
+                                <Button Grid.Column="2" Grid.Row="1" Name="JoinDrawSession" Click="JoinDrawSession_Click">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="Content" Value="Joindre"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                                    <Setter Property="Content" Value="Join"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Label Name="SessionID" Content="{Binding id}" Visibility="Collapsed"/>
 
                             </Grid>
+                            <Grid Visibility="Collapsed" Background="LightGray" Name="EditProtectionGrid">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Column="0" Grid.Row="0">
+                                    <Label.Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Content" Value="Code : "/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                                    <Setter Property="Content" Value="Password :"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                                <TextBox Name="NewCode" Grid.Column="1" Grid.Row="0"/>
+                                <Button Name="ChangeBtn" Grid.Row="1" Grid.ColumnSpan="2" Click="ChangeBtn_Click">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="Content" Value="Changer"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                                    <Setter Property="Content" Value="Change"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
                             <Grid Visibility="Collapsed" Background="LightGray">
-                            <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="1*"/>
-                              <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                              <RowDefinition/>
-                              <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Label Grid.Column="0" Grid.Row="0">
-                              <Label.Style>
-                                <Style TargetType="{x:Type Label}">
-                                  <Setter Property="Content" Value="Code : "/>
-                                  <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Localization}" Value="en">
-                                      <Setter Property="Content" Value="Password :"/>
-                                    </DataTrigger>
-                                  </Style.Triggers>
-                                </Style>
-                              </Label.Style>
-                            </Label>
-                            <TextBox Name="PwdTextBox" Grid.Column="1" Grid.Row="0"/>
-                            <Button Name="SecuredBtn" Grid.Row="1" Grid.ColumnSpan="2" Click="SecuredBtn_Click">
-                              <Button.Style>
-                                <Style TargetType="{x:Type Button}">
-                                  <Setter Property="Content" Value="Connecter"/>
-                                  <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Localization}" Value="en">
-                                      <Setter Property="Content" Value="Login"/>
-                                    </DataTrigger>
-                                  </Style.Triggers>
-                                </Style>
-                              </Button.Style>
-                            </Button>
-                          </Grid>
-                      </StackPanel>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Column="0" Grid.Row="0">
+                                    <Label.Style>
+                                        <Style TargetType="{x:Type Label}">
+                                            <Setter Property="Content" Value="Code : "/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                                    <Setter Property="Content" Value="Password :"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Label.Style>
+                                </Label>
+                                <TextBox Name="PwdTextBox" Grid.Column="1" Grid.Row="0"/>
+                                <Button Name="SecuredBtn" Grid.Row="1" Grid.ColumnSpan="2" Click="SecuredBtn_Click">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}">
+                                            <Setter Property="Content" Value="Connecter"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Localization}" Value="en">
+                                                    <Setter Property="Content" Value="Login"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

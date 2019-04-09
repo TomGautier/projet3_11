@@ -270,6 +270,34 @@ public class RequestManager {
         }
     }
 
+    public String getImagePassword(String imageId) {
+        url = formatUrl(Request.SingleImage, imageId,null);
+        SingleObjectGetTask task = new SingleObjectGetTask();
+        task.execute(url);
+        try{
+            return configureGetImagePassword(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private String configureGetImagePassword(JSONObject obj) {
+        String password = "";
+
+        try {
+            //JSONObject obj = jsons.getJSONObject(0);
+
+            if (obj.has("protection"))
+                password = obj.getString("protection");
+        } catch (JSONException e) { /*Do nothing*/ }
+
+        return password;
+    }
+
     public void postImage(String id, String visibility, String protection, String author) {
         url = formatUrl(Request.Images, null,null);
         UserJsonPostTask task = new UserJsonPostTask();
@@ -393,6 +421,7 @@ final class Request {
     public static final String Sign_Up = "/connection/signup/";
     public static final String Conversations = "/api/chat/";
     public static final String Images = "/api/images/";
+    public static final String SingleImage = "/api/images/single/";
     public static final String ImagesCommon = "/api/images/common/";
     public static final String Thumbnail = "/api/images/thumbnail/";
     public static final String Users_Fetch ="/api/user/";

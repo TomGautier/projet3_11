@@ -208,8 +208,15 @@ namespace PolyPaint.Managers
             //});
         }
 
-        public void Connect()
+        public void Connect(string Localization)
         {
+
+            if (RoomsID.Contains("General"))
+            {
+                RoomsID.Add("General");
+            }
+            RoomID = "General";
+            JoinChannel(Localization);
             socket.On("MessageSent", (data) =>
             {
                 var messageFormat = new
