@@ -42,7 +42,7 @@
                         </Label.Style>
                     </Label>
                     <ComboBox Height="23" Width="100" IsEditable="True" IsTextSearchCaseSensitive="True" ItemsSource="{Binding ChatManager.RoomsID}" SelectedItem="{Binding ChatManager.RoomID, UpdateSourceTrigger=PropertyChanged}" SelectionChanged="ComboBox_SelectionChanged"/>
-                    <Button Name="ShowAddChannelForm" Padding="3" Height="30" Margin="5" Content="Créer..." Click="ShowAddChannelForm_Click">
+                    <Button Name="ShowAddChannelForm" Padding="3" Height="30" Margin="5" Click="ShowAddChannelForm_Click">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}">
                                 <Setter Property="Content" Value="Créer..."/>
@@ -63,9 +63,31 @@
                             <GradientStop Color="#FFE0E0E0" Offset="1"/>
                         </LinearGradientBrush>
                     </StackPanel.Background>
-                    <Label Content="Nom du canal :" VerticalAlignment="Center"/>
+                    <Label VerticalAlignment="Center">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Content" Value="Nom du canal :"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                                        <Setter Property="Content" Value="Channel name : "/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
                     <TextBox Height="23" Width="100" Text="{Binding ChatManager.NewRoomID}" VerticalContentAlignment="Center"/>
-                    <Button Name="AddChannel" Padding="3" Height="25" Margin="5" Content="Ajouter" Click="AddChannel_Click"/>
+                    <Button Name="AddChannel" Padding="3" Height="25" Margin="5" Click="AddChannel_Click">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Content" Value="Ajouter"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Localization}" Value="en">
+                                        <Setter Property="Content" Value="Add"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </StackPanel>
             </StackPanel>
         </Border>
@@ -102,7 +124,7 @@
             </Grid>
             <Separator Margin="0,5,0,3"/>
             <StackPanel Orientation="Horizontal">
-                <ListBox Name="UsersList" HorizontalContentAlignment="Stretch" MinHeight="60" Width="235" Margin="4">
+                <ListBox Name="UsersList" HorizontalContentAlignment="Stretch" MinHeight="60" Width="235" Margin="4" MaxHeight="240">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="0,2">

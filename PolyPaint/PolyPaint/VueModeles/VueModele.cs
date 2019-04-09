@@ -244,6 +244,7 @@ namespace PolyPaint.VueModeles
         public ICommand NavigateForgotPWD { get { return new RelayCommand(OnNavigateForgotPwd, () => { return true; }); } }
         public ICommand NavigateHome { get { return new RelayCommand(OnNavigateHome, () => { return true; }); } }
         public ICommand NavigateMainMenu { get { return new RelayCommand(OnNavigateMainMenu, () => { return true; }); } }
+        public ICommand NavigateTutorial { get { return new RelayCommand(OnNavigateTutorial, () => { return true; }); } }
         public ICommand ChangeLanguage { get { return new RelayCommand(OnChangeLanguage, () => { return true; }); } }
 
         private void OnNavigateHome()
@@ -280,6 +281,11 @@ namespace PolyPaint.VueModeles
         private void OnNavigateForgotPwd()
         {
             SwitchView = 6;
+        }
+
+        private void OnNavigateTutorial()
+        {
+            SwitchView = 8;
         }
 
         private void OnNavigateBack()
@@ -344,7 +350,7 @@ namespace PolyPaint.VueModeles
                 }
                 initializeVueModele();
                 notifyConnection();
-                SwitchView = 3;
+                SwitchView = 8;
             }
             catch (Exception)
             {
@@ -1101,6 +1107,11 @@ namespace PolyPaint.VueModeles
 
                 networkManager.PostThumbnail(Username, SessionId, SocketManager.SessionID, b64);
             }
+        }
+
+        internal void OnWindowClosing()
+        {
+            SocketManager.Socket.Emit("UserLeft", Username);
         }
     }
 }

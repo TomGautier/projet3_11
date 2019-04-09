@@ -57,6 +57,12 @@
                 <Vues:NewSessionControl/>
             </DockPanel>
         </DataTemplate>
+
+        <DataTemplate x:Key="TutorialView" DataType="{x:Type VueModels:VueModele}">
+            <DockPanel>
+                <Vues:Tutorial/>
+            </DockPanel>
+        </DataTemplate>
     </Window.Resources>
 
     <Window.DataContext>
@@ -99,6 +105,9 @@
                             <Setter Property="ContentTemplate" Value="{StaticResource NewSessionView}" />
                             <Setter Property="VerticalAlignment" Value="Center"/>
                             <Setter Property="MaxWidth" Value="300"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SwitchView}" Value="8">
+                            <Setter Property="ContentTemplate" Value="{StaticResource TutorialView}" />
                         </DataTrigger>
                     </Style.Triggers>
                     
