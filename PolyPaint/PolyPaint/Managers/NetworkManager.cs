@@ -11,7 +11,7 @@ namespace PolyPaint.Utilitaires
     public class NetworkManager
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string ipAddress = "10.200.27.215";//"10.200.9.188";// "127.0.0.1";//"10.200.6.173";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
+        private readonly string ipAddress = "52.173.73.94";
 
         public NetworkManager() { }
 
@@ -32,12 +32,12 @@ namespace PolyPaint.Utilitaires
         public void CreateImage(object parameters, string sessionId, string username)
         {
             var body = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
-            var response =  client.PostAsync("http://127.0.0.1:3000/api/images/" + sessionId + "/" + username, body);
+            var response =  client.PostAsync("http://" + ipAddress + ":3000/api/images/" + sessionId + "/" + username, body);
         }
         public void SendLocalCanvas(string username, string sessionId, string canvasString)
         {
             var body = new StringContent((canvasString), Encoding.UTF8, "application/json");
-            var response = client.PostAsync("http://127.0.0.1:3000/api/images/offline/" + sessionId + "/" + username, body);
+            var response = client.PostAsync("http://"+ ipAddress +":3000/api/images/offline/" + sessionId + "/" + username, body);
         }
         public async Task RequestPwdAsync(string username, string email)
         {

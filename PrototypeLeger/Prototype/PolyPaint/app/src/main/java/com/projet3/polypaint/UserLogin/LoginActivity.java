@@ -27,10 +27,10 @@ import java.util.ArrayList;
 public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
-	private final String AZURE_IP = "40.122.119.160";
+	private final String AZURE_IP = "52.173.73.94";
 
 	private final String IP = /*"192.168.43.201";*/
-            "10.200.27.215";
+            "52.173.73.94";
 
 
 	ImageButton userConnexionButton;

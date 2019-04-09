@@ -284,8 +284,11 @@ namespace PolyPaint.VueModeles
 
         private void OnNavigateGallery()
         {
-            LoadGallery("public");
-            SwitchView = 4;
+            if (!this.IsOffline)
+            {
+                LoadGallery("public");
+                SwitchView = 4;
+            }
         }
 
         private void OnNavigateNewSession()
