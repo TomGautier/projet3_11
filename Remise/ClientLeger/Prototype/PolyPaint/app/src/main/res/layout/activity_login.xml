@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--<RelativeLayout
+        android:id="@+id/IpLayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/stroke_bg">
+
+    <RelativeLayout
+        android:id="@+id/ipModule"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp">
+        <TextView
+            android:id="@+id/ipTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ip"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"/>
+        <EditText
+            android:id="@+id/ipEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:gravity="center_horizontal"
+            android:layout_below="@id/ipTextView"
+            android:background="@drawable/chat_entry"
+            android:inputType="text"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"/>
+        <ImageButton
+            android:id="@+id/connectServerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_arrow_forward_24px"
+            android:background="@color/chat"
+            android:layout_below="@id/ipEditText"
+            android:layout_marginRight="5dp"
+            android:layout_alignParentRight="true"
+            android:scaleY="0.7"/>
+    </RelativeLayout>
+    </RelativeLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/connexionLayout"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/stroke_bg">
+        <LinearLayout
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp">
+        <Switch
+            android:id="@+id/signUpSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/loginOption"
+            android:textAppearance="@style/TextAppearance.AppCompat"
+            android:textColor="@android:color/black"
+            android:typeface="normal" />
+            <TextView
+                android:id="@+id/loginTextView"
+                android:layout_alignRight="@+id/signUpSwitch"
+                android:fontFamily="sans-serif"
+                android:text="@string/signUpOption"
+                android:layout_width="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/usernameModule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp">
+
+            <TextView
+                android:id="@+id/usernameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/username"/>
+            <EditText
+                android:id="@+id/usernameEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/chat_entry"
+                android:layout_below="@id/usernameTextView"
+                android:inputType="text"
+                android:gravity="center_horizontal"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/passwordModule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_below="@id/usernameModule">
+            <TextView
+                android:id="@+id/passwordTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/password"/>
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/chat_entry"
+                android:layout_below="@id/passwordTextView"
+                android:inputType="text"
+                android:gravity="center_horizontal"/>
+        </RelativeLayout>
+        <ProgressBar
+            android:id="@+id/loginProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/passwordModule"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:visibility="visible"
+            style="@style/MyProgressBar"/>
+
+
+        <ImageButton
+            android:id="@+id/connectUserButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/ic_baseline_arrow_forward_24px"
+            android:background="@color/chat"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:scaleY="0.7"/>
+
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/chatFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"></FrameLayout>
+
+</RelativeLayout>

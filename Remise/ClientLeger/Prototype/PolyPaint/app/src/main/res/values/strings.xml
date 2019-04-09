@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PolyPaint</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="chatTitle">Prototype de Chat :</string>
+    <string name="username">Nom d\'utilisateur :</string>
+    <string name="password">Mot de passe :</string>
+    <string name="ip">Adresse IP :</string>
+    <string name="loginToast">Veuillez entrer vos identifiants de connexion.</string>
+    <string name="loginUserAlreadyExistsToast">Ce nom d\'utilisateur est déjà pris. Veuillez en choisir un autre.</string>
+    <string name="loginImpossibleConnection">La connexion au server est impossible</string>
+    <string name="loginInvalidIp">Format de l\'adresse IP invalide</string>
+    <string name="loginFailedSocketConnect">La connexion a échouée. Veuillez réessayez. </string>
+    <string name="loginSuccessSocketConnect">La connexion a réussie.</string>
+    <string name="ok">Confirmer</string>
+    <string name="cancel">Annuler</string>
+    <string name="signupSucess">L\'inscription a réussi</string>
+    <string name="signupFail">L\'inscription a échoué</string>
+
+    <!-- IMAGE EDITING -->
+    <string name="buttonClass">Classe</string>
+    <string name="buttonActivity">Activité</string>
+    <string name="buttonRole">Rôle</string>
+    <string name="buttonArtefact">Artéfact</string>
+    <string name="buttonConnectionForm">Connection</string>
+    <string name="buttonSelection">Sélection</string>
+    <string name="buttonPhase">Phase</string>
+    <string name="buttonComment">Commentaire</string>
+    <string name="buttonLasso">Lasso</string>
+    <string name="buttonDelete">Effacer</string>
+    <string name="buttonDuplicate">Dupliquer</string>
+    <string name="buttonReset">Réinitialiser</string>
+    <string name="buttonMove">Déplacer</string>
+    <string name="buttonCut">Couper</string>
+    <string name="buttonStack">Empiler</string>
+    <string name="buttonUnstack">Dépiler</string>
+    <string name="buttonRotate">Tourner</string>
+
+    <!-- MAIN TOOLBAR -->
+    <string name="mainToolbarGalleryTag">Galerie</string>
+    <string name="mainToolbarImageEditionTag">Édition d\'image</string>
+    <string name="mainToolbarCollabImageEditionTag">Édition d\'image collaborative</string>
+    <string name="buttonTextBox">Texte</string>
+    <string name="textEditing">Texte</string>
+
+    <!-- CHAT TOOLBAR -->
+    <string name="chatToolbarAddConversation">Ajouter une conversation</string>
+    <string name="chatToolbarRemoveConversation">Retirer une conversation</string>
+    <string name="chatToolbarHideShow">Montrer/Cacher</string>
+
+    <!-- CONVERSATION POPUP -->
+    <string name="addConversationTextView">Entrez le nom de la nouvelle conversation :</string>
+    <string name="removeConversationTextView">Choisir la conversation à retirer:</string>
+    <string name="conversationButton">Terminé</string>
+
+    <!-- USERS LIST -->
+    <string name="userListTitle">Liste d\'utilisateurs</string>
+    <string name="userListInviteToConversation">Inviter à une conversation</string>
+    <string name="userListInviteToFriends">Inviter à être amis</string>
+    <string name="userListInviteToDrawSession">Inviter à une session</string>
+
+    <!-- CONNECTION FORMS -->
+    <string name="connectionFormAgregation">Agrégation</string>
+    <string name="connectionFormComposition">Composition</string>
+    <string name="connectionFormInheritance">Héritage</string>
+    <string name="connectionFormBidirectional">Bidirectionnelle</string>
+    <string name="connectionFormUnidirectional">Unidirectionnelle</string>
+    <string name="connectionFormLine">Ligne</string>
+
+
+
+
+    <string name="styleFull">Plein</string>
+    <string name="styleDotted">Pointillé</string>
+    <string name="styleDashed">Tirets</string>
+    <string name="revertDefault">Style par défaut</string>
+    <string name="backgroundColor">Couleur de remplissage</string>
+    <string name="borderColor">Couleur de trait</string>
+    <string name="lineStyle">Style de trait</string>
+
+    <!-- COLOR SLIDERS -->
+    <string name="sliderRed">R</string>
+    <string name="sliderGreen">G</string>
+    <string name="sliderBlue">B</string>
+    <string name="textColor">Couleur du texte</string>
+    <string name="borderAndTextColor">Couleur de trait / texte</string>
+    <string name="classTitle">Nom de classe</string>
+    <string name="classAttributes">Attributs</string>
+    <string name="classMethods">Méthodes</string>
+    <string name="publicGallery">Galerie publique</string>
+    <string name="privateGallery">Galerie privée</string>
+    <string name="signUpOption">S\'inscrire</string>
+    <string name="loginOption">Se connecter</string>
+
+
+</resources>
