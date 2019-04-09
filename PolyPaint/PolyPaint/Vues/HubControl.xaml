@@ -31,5 +31,17 @@
                 </Style>
             </Button.Style>
         </Button>
+        <Button Margin="5" Command="{Binding NavigateTutorial}">
+            <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Content" Value="Rejouer tutoriel"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Localization}" Value="en">
+                            <Setter Property="Content" Value="Replay tutorial"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Button.Style>
+        </Button>
     </StackPanel>
 </UserControl>

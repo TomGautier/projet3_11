@@ -4,9 +4,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Base64;
+import android.widget.ArrayAdapter;
 import android.widget.RelativeLayout;
 
 import com.projet3.polypaint.CanvasElement.Comment;
+import com.projet3.polypaint.CanvasElement.ConnectionForm;
 import com.projet3.polypaint.CanvasElement.GenericShape;
 import com.projet3.polypaint.CanvasElement.PaintStyle;
 import com.projet3.polypaint.CanvasElement.TextBox;
@@ -81,16 +83,28 @@ public class RequestManager {
 
         return (response_ == null || response_.isEmpty()) ? false : true;
     }
-
+    private ArrayList<Conversation> retrieveHistory(ArrayList<Conversation> olds, ArrayList<Conversation> news){
+        for (int i = 0; i < news.size(); i++){
+            for (int j = 0; j < olds.size(); j++){
+                if (news.get(i).getName().equals(olds.get(j).getName())){
+                    news.get(i).setHistory(olds.get(j).getHistory());
+                    break;
+                }
+            }
+        }
+        return news;
+    }
     public ArrayList<Conversation> fetchUserConversations() {
+        ArrayList<Conversation> oldConversations = FetchManager.currentInstance.getUserConversations();
         url = formatUrl(Request.Conversations,null,null);
         UserGetTask task = new UserGetTask();
         task.execute(url);
         try{
             ArrayList<Conversation> userConversations = configureFetchConversationsResponse(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
-            if (!userConversations.isEmpty())
-                FetchManager.currentInstance.setUserConversations(userConversations);
-            return userConversations;
+            ArrayList<Conversation> conversations = retrieveHistory(oldConversations,userConversations);
+            if (!conversations.isEmpty())
+                FetchManager.currentInstance.setUserConversations(conversations);
+            return conversations;
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -102,6 +116,7 @@ public class RequestManager {
     }
     private ArrayList<Conversation> configureFetchConversationsResponse(JSONArray jsons){
         ArrayList<Conversation> conversations = new ArrayList<>();
+        Conversation general = null;
         if (jsons == null || jsons.length() == 0)
             return conversations;
         else{
@@ -112,14 +127,22 @@ public class RequestManager {
                      jsonObject = jsons.getJSONObject(i);
                      name = jsonObject.getString("name");
                      if (!name.isEmpty()){
-                         conversations.add(new Conversation(name, new ArrayList()));
-                         SocketManager.currentInstance.joinConversation(name);
+                         Conversation convo = new Conversation(name, new ArrayList());
+                         conversations.add(convo);
+                         if (name.equals("General")){
+                             general = convo;
+                             SocketManager.currentInstance.joinConversation(name);
+                         }
+                        // else
+                            // conversations.add(convo);
                      }
                  } catch (JSONException e) {
                      e.printStackTrace();
                  }
 
              }
+             //conversations.remove(general);
+             conversations.set(0,general);
              return conversations;
         }
     }
@@ -247,6 +270,34 @@ public class RequestManager {
         }
     }
 
+    public String getImagePassword(String imageId) {
+        url = formatUrl(Request.SingleImage, imageId,null);
+        SingleObjectGetTask task = new SingleObjectGetTask();
+        task.execute(url);
+        try{
+            return configureGetImagePassword(task.get(TIMEOUT_DELAY, TimeUnit.SECONDS));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    private String configureGetImagePassword(JSONObject obj) {
+        String password = "";
+
+        try {
+            //JSONObject obj = jsons.getJSONObject(0);
+
+            if (obj.has("protection"))
+                password = obj.getString("protection");
+        } catch (JSONException e) { /*Do nothing*/ }
+
+        return password;
+    }
+
     public void postImage(String id, String visibility, String protection, String author) {
         url = formatUrl(Request.Images, null,null);
         UserJsonPostTask task = new UserJsonPostTask();
@@ -370,6 +421,7 @@ final class Request {
     public static final String Sign_Up = "/connection/signup/";
     public static final String Conversations = "/api/chat/";
     public static final String Images = "/api/images/";
+    public static final String SingleImage = "/api/images/single/";
     public static final String ImagesCommon = "/api/images/common/";
     public static final String Thumbnail = "/api/images/thumbnail/";
     public static final String Users_Fetch ="/api/user/";

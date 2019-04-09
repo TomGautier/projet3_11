@@ -4,29 +4,36 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 //import android.widget.Toolbar;
 import android.support.v7.widget.Toolbar;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projet3.polypaint.Chat.ChatFragment;
-import com.projet3.polypaint.DrawingCollabSession.CollabShape;
-import com.projet3.polypaint.DrawingCollabSession.CollabShapeProperties;
 import com.projet3.polypaint.Gallery.GalleryFragment;
 import com.projet3.polypaint.DrawingCollabSession.CollabImageEditingFragment;
 import com.projet3.polypaint.DrawingSession.ImageEditingFragment;
+import com.projet3.polypaint.ImageAccessibility.AccessibilityManager;
 import com.projet3.polypaint.Network.FetchManager;
+import com.projet3.polypaint.Network.RequestManager;
 import com.projet3.polypaint.Network.SocketManager;
+import com.projet3.polypaint.Others.TutorialFragment;
 import com.projet3.polypaint.UserLogin.LoginActivity;
 import com.projet3.polypaint.UserList.UsersListFragment;
 
-public class HomeActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity implements AccessibilityManager.AccessibilityDialogSubscriber, HomeActivityListener {
 
 	//private final String USER_INFORMATION_PARCELABLE_TAG = "USER_INFORMATION";
 	//private UserInformation userInformation;
@@ -41,10 +48,14 @@ public class HomeActivity extends AppCompatActivity {
 	private FrameLayout imageEditingFragmentLayout;
 	private FrameLayout galleryFragmentLayout;
 	private FrameLayout collabImageEditingFragmentLayout;
+	private FrameLayout tutorialFragmentLayout;
 	private FrameLayout usersListFragmentLayout;
 
 	private CollabImageEditingFragment collabImageEditingFragment;
 	private GalleryFragment galleryFragment;
+
+	private String sessionPassword = "";
+	private String imageId = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +70,9 @@ public class HomeActivity extends AppCompatActivity {
 		galleryFragmentLayout = (FrameLayout)findViewById(R.id.galleryFragment);
 		collabImageEditingFragmentLayout = (FrameLayout)findViewById(R.id.collabImageEditingFragment);
 		usersListFragmentLayout = (FrameLayout)findViewById(R.id.usersTableFragment);
+		tutorialFragmentLayout = (FrameLayout) findViewById(R.id.tutorialFragment);
+
+		AccessibilityManager.getInstance().subscribe(this);
 
 		if (savedInstanceState == null){
 			createUsersListFragment();
@@ -67,6 +81,8 @@ public class HomeActivity extends AppCompatActivity {
 			toggleImageEditingVisibility();
 			toggleCollabImageEditingVisibility();
 			createGalleryFragment();
+			SocketManager.currentInstance.setupHomeListener(this);
+			createTutorialFragment();
 		}
 		/*int[] position = {1,2};
 		CollabShapeProperties properties = new CollabShapeProperties("UmlClass","white","black",position,200,300,0);
@@ -96,13 +112,21 @@ public class HomeActivity extends AppCompatActivity {
         transaction.addToBackStack(null);
         transaction.commit();
 	}
-	private void createCollabImageEditingFragment(String imageId){
+	private void createCollabImageEditingFragment(String imageId, String visibility, String password){
 		FragmentManager manager = getFragmentManager();
 		FragmentTransaction transaction = manager.beginTransaction();
 
-		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId);
+		collabImageEditingFragment = CollabImageEditingFragment.newInstance(imageId, visibility, password);
 		transaction.replace(R.id.collabImageEditingFragment, collabImageEditingFragment, COLLAB_EDITING_TAG);
         transaction.addToBackStack(null);
+		transaction.commit();
+	}
+
+	private void createTutorialFragment(){
+		FragmentManager manager = getFragmentManager();
+		FragmentTransaction transaction = manager.beginTransaction();
+		transaction.add(R.id.tutorialFragment,new TutorialFragment(),"Tutorial");
+		transaction.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -114,6 +138,12 @@ public class HomeActivity extends AppCompatActivity {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
+	}
+
+	@Override
+	public void onStop() {
+		AccessibilityManager.getInstance().unsubscribe(this);
+		super.onStop();
 	}
 
 	@Override
@@ -140,9 +170,24 @@ public class HomeActivity extends AppCompatActivity {
 			case R.id.collabImageEditingAction:
 				toggleCollabImageEditingVisibility();
 				break;
+			case R.id.tutorialAction:
+				toggleTutorial();
+				break;
 		}
 		return true;
 	}
+
+	private void toggleTutorial() {
+		if (tutorialFragmentLayout.getVisibility() == View.VISIBLE) {
+			tutorialFragmentLayout.setVisibility(View.GONE);
+			//usersListFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else {
+			tutorialFragmentLayout.setVisibility(View.VISIBLE);
+			//usersListFragmentLayout.setVisibility(View.GONE);
+		}
+	}
+
 	private void toggleImageEditingVisibility(){
 		if (imageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			imageEditingFragmentLayout.setVisibility(View.GONE);
@@ -154,13 +199,19 @@ public class HomeActivity extends AppCompatActivity {
 		if (collabImageEditingFragmentLayout.getVisibility() == View.VISIBLE)
 			collabImageEditingFragmentLayout.setVisibility(View.GONE);
 		else {
-			createCollabImageEditingFragment(null);
-			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+			AccessibilityManager.getInstance().showAccessibilityDialog(getFragmentManager());
+			//createCollabImageEditingFragment(null);
+			//collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
 		}
 	}
 	public void joinCollabEditingSession(String imageId) {
-		createCollabImageEditingFragment(imageId);
-		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		sessionPassword = RequestManager.currentInstance.getImagePassword(imageId);
+		this.imageId = imageId;
+		if (sessionPassword == null || sessionPassword.isEmpty()) {
+			createCollabImageEditingFragment(imageId, null, null);
+			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else AccessibilityManager.getInstance().showPasswordDialog(getFragmentManager());
 	}
 
 	private void createGalleryFragment(){
@@ -198,6 +249,98 @@ public class HomeActivity extends AppCompatActivity {
 	public void onBackPressed() {
 		SocketManager.currentInstance.leave(FetchManager.currentInstance.getUserUsername());
 		startActivity(new android.content.Intent(getBaseContext(), LoginActivity.class));
+	}
+
+	@Override
+	public void onAccessibilityPositiveResponse(boolean isPrivate, boolean isProtected, String password) {
+		String privacy = isPrivate ? "private" : "public";
+		String pass = isProtected ? password : "";
+    	createCollabImageEditingFragment(null, privacy, pass);
+		collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+	}
+
+	@Override
+	public void onAccessibilityNegativeResponse() {
+		// Do nothing
+	}
+
+	@Override
+	public void onPasswordPositiveResponse(String password) {
+    	System.out.println("Passwords : " + password + " - " + sessionPassword);
+		if (!imageId.isEmpty() && password.equals(sessionPassword)) {
+			createCollabImageEditingFragment(imageId, null, null);
+			collabImageEditingFragmentLayout.setVisibility(View.VISIBLE);
+		}
+		else {
+			toggleGalleryVisibility();
+			Toast.makeText(this, "Mot de passe incorrect", Toast.LENGTH_SHORT).show();
+		}
+	}
+    @Override
+	public void onPasswordNegativeResponse(){
+    	toggleGalleryVisibility();
+	}
+
+	@Override
+	public void onInviteToDrawingSession(final String from, final String imageId) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
+				int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+				int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+				boolean focusable = true;
+				final View popupView = inflater.inflate(R.layout.response_to_invite, null);
+				TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
+				text.setText(from + " vous a invité à une session collaborative");
+
+				final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+				popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+				popupView.setOnTouchListener(new View.OnTouchListener() {
+					@Override
+					public boolean onTouch(View v, MotionEvent event) {
+						if (v != popupView){
+							SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
+							popupWindow.dismiss() ;
+						}
+						return true;
+					}
+				});
+				ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+				acceptButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,true);
+						joinCollabEditingSession(imageId);
+						popupWindow.dismiss() ;
+					}
+				});
+				ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
+				declineButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						SocketManager.currentInstance.sendResponseToDrawingSessionInvitation(from,imageId,false);
+						popupWindow.dismiss() ;
+					}
+				});
+			}
+		});
+
+	}
+
+	@Override
+	public void onResponseToDrawingSessionInvitation(final String username, String imageId, final boolean response) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if (response){
+					Toast.makeText(getBaseContext(),"L'utilisateur " + username + " s'est connecté à la session",Toast.LENGTH_LONG).show();
+				}
+				else
+					Toast.makeText(getBaseContext(),"L'utilisateur " + username + " a refusé votre invitation à la session collaborative",Toast.LENGTH_LONG).show();
+			}
+		});
+
 	}
 }
 

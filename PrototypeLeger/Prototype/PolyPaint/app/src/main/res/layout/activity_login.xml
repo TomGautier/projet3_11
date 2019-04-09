@@ -149,17 +149,6 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/buttonCanvas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/IpLayout"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:onClick="gotoImageEditing"
-        android:text="(TEMP) Canvas" />
-
     <FrameLayout
         android:id="@+id/chatFragment"
         android:layout_width="wrap_content"

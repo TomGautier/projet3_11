@@ -19,7 +19,6 @@ export class ConnectionService implements ConnectionServiceInterface {
         @inject(TYPES.UserService) private userService: UserService,
         @inject(TYPES.SocketService) private socketService: SocketService
     ) {
-        this.socketService.subscribe(SocketEvents.UserLeft, args => this.userManager.removeUser(args[1]));
     }
 
     public async onUserLogin(username: string, password: string): Promise<string> {     

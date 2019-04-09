@@ -175,6 +175,7 @@
     <Compile Include="Utilitaires\FormProperties.cs" />
     <Compile Include="Utilitaires\RelayCommand.cs" />
     <Compile Include="Utilitaires\Role.cs" />
+    <Compile Include="Utilitaires\Image.cs" />
     <Compile Include="Utilitaires\Shape.cs" />
     <Compile Include="Utilitaires\ShapeProperties.cs" />
     <Compile Include="Utilitaires\UMLClass.cs" />
@@ -209,6 +210,9 @@
     </Compile>
     <Compile Include="Vues\NewSessionControl.xaml.cs">
       <DependentUpon>NewSessionControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vues\Tutorial.xaml.cs">
+      <DependentUpon>Tutorial.xaml</DependentUpon>
     </Compile>
     <Compile Include="Vues\UmlClassSetter.xaml.cs">
       <DependentUpon>UmlClassSetter.xaml</DependentUpon>
@@ -278,6 +282,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Vues\NewSessionControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Vues\Tutorial.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

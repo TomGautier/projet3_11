@@ -221,6 +221,18 @@
                   RecentColorsHeader="Récemment utilisées"
                   UsingAlphaChannel="True"
                   AdvancedButtonHeader="Personnalisé" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.765,0.806" Grid.ColumnSpan="2" Margin="2,23,0,0" Grid.RowSpan="2" />
+          <Button  Click="textSetter_ApplyChanges"  FontWeight="Bold" Grid.Row="8" Grid.Column="6" Height="40">
+            <Button.Style>
+              <Style TargetType="{x:Type Button}">
+                <Setter Property="Content" Value="APPLIQUER"/>
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding Localization}" Value="en">
+                    <Setter Property="Content" Value="APPLY"/>
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </Button.Style>
+          </Button>
         </Grid>
     </Grid>
 </Window>

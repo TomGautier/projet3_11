@@ -2,6 +2,9 @@ package com.projet3.polypaint.Chat;
 
 import android.app.Fragment;
 import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -11,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -33,7 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 
-public class ChatFragment extends Fragment implements NewMessageListener {
+public class ChatFragment extends Fragment implements ChatListener {
 
 
 
@@ -41,12 +45,13 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     public ImageButton chatEnterButton;
     private ImageButton chatExpendButton;
     private ImageButton addConversationButton;
-    private ImageButton removeConversationButton;
+    private ImageButton refreshButton;
     public LinearLayout chatMessageZoneTable;
     private RelativeLayout chatMessageZone;
     private RelativeLayout chatToolbar;
     private ScrollView chatMessageZoneScrollView;
     private Spinner conversationSpinner;
+    private ArrayAdapter spinnerArrayAdapter;
 
     public Conversation currentConversation;
     private boolean chatIsExpended;
@@ -63,13 +68,14 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.activity_chat, container, false);
 //        RequestManager.currentInstance.fetchUserConversations();
-        if (FetchManager.currentInstance.getUserConversationsNames().size() != 0) {
+        /*if (FetchManager.currentInstance.getUserConversationsNames().size() != 0) {
             currentConversation = FetchManager.currentInstance.getUserConversationAt(0);
         } else {
             currentConversation = new Conversation("GENERAL");
-        }
+        }*/
+        currentConversation = FetchManager.currentInstance.getUserConversationAt(0);
         initializeChat();
-        SocketManager.currentInstance.setupNewMessageListener(this);
+        SocketManager.currentInstance.setupChatListener(this);
         return rootView;
     }
 
@@ -81,8 +87,8 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         chatEntry = (EditText)rootView.findViewById(R.id.chatEditText);
         chatEnterButton = (ImageButton)rootView.findViewById(R.id.chatEnterButton);
         chatExpendButton = (ImageButton) rootView.findViewById(R.id.chatExtendButton);
+        refreshButton = (ImageButton)rootView.findViewById(R.id.refreshConversationButton);
         addConversationButton = (ImageButton)rootView.findViewById(R.id.addConversationImageButton);
-        removeConversationButton = (ImageButton)rootView.findViewById(R.id.removeConversationImageButton);
         chatMessageZone = (RelativeLayout)rootView.findViewById(R.id.chatMessageZone);
         chatToolbar = (RelativeLayout)rootView.findViewById(R.id.chatToolbar);
         chatMessageZoneTable = (LinearLayout)rootView.findViewById(R.id.chatMessageZoneTable);
@@ -102,11 +108,9 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         setupChatConversationSpinner();
 
         Utilities.setButtonEffect(addConversationButton);
-        Utilities.setButtonEffect(removeConversationButton);
         Utilities.setButtonEffect(chatEnterButton);
         Utilities.setButtonEffect(chatExpendButton);
-
-
+        Utilities.setButtonEffect(refreshButton);
     }
 
     /*private Point getScreenSize() {
@@ -116,7 +120,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         display.getSize(size);
         return  size;
     }*/
-    public void createRemoveConversationPopup(){
+    /*public void createRemoveConversationPopup(){
         LayoutInflater inflater = (LayoutInflater)
                 getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -151,7 +155,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                 popupWindow.dismiss();
             }
         });
-    }
+    }*/
 
     public void createAddConversationPopup(){
         LayoutInflater inflater = (LayoutInflater)
@@ -201,12 +205,6 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                 createAddConversationPopup();
             }
         });
-        removeConversationButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createRemoveConversationPopup();
-            }
-        });
         chatToolbar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -219,6 +217,18 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                     chatMessageZone.setVisibility(View.VISIBLE);
                     isOpen = true;
                 }
+            }
+        });
+        refreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String conversation = currentConversation.getName();
+                int index = spinnerArrayAdapter.getPosition(conversation);
+                RequestManager.currentInstance.fetchUserConversations();
+                setupChatConversationSpinner();
+                currentConversation = FetchManager.currentInstance.getUserConversationAt(index);
+                conversationSpinner.setSelection(spinnerArrayAdapter.getPosition(conversation));
+                loadConversation();
             }
         });
 
@@ -244,13 +254,20 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         });
     }
     public void WriteMessage(String message, boolean withHistory) {
-        TextView newView = (TextView)View.inflate(getContext(), R.layout.chat_message, null);
+        TextView newView = (TextView) View.inflate(getContext(), R.layout.chat_message, null);
         chatMessageZoneTable.addView(newView);
         newView.setText(message);
         if (withHistory)
             currentConversation.addToHistory(newView.getText().toString());
 
         scrollDownMessages();
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone r = RingtoneManager.getRingtone(getContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void sendMessage(String message) {
@@ -282,7 +299,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
         return stringConversations;
     }*/
     private void setupChatConversationSpinner() {
-        android.widget.ArrayAdapter<String> spinnerArrayAdapter = new android.widget.ArrayAdapter<>
+        spinnerArrayAdapter = new android.widget.ArrayAdapter<>
                 (getContext(), android.R.layout.simple_spinner_item, FetchManager.currentInstance.getUserConversationsNames());
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout
                 .simple_spinner_dropdown_item);
@@ -295,6 +312,7 @@ public class ChatFragment extends Fragment implements NewMessageListener {
                     for (int j = 0; j < FetchManager.currentInstance.getUserConversationsNames().size(); j++) {
                         Conversation current = FetchManager.currentInstance.getUserConversationAt(j);
                         if (current.getName() == selected && current.getName() != currentConversation.getName()){
+                            SocketManager.currentInstance.joinConversation(current.getName());
                             currentConversation = current;
                             loadConversation();
                             break;
@@ -368,13 +386,116 @@ public class ChatFragment extends Fragment implements NewMessageListener {
     }
 
     @Override
-    public void onNewMessage(final String message) {
+    public void onNewMessage(final String message, final String conversation) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                WriteMessage(message,true);
+                Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
+                if (convo != null){
+                    if(convo.getName().equals(currentConversation.getName()))
+                        WriteMessage(message, true);
+                    //else
+                        //convo.addToHistory(message);
+                }
             }
         });
+    }
+
+    @Override
+    public void onInviteToConversation(final String from, final String conversation) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LayoutInflater inflater = (LayoutInflater)
+                        getActivity().getSystemService(getActivity().LAYOUT_INFLATER_SERVICE);
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                boolean focusable = true;
+                final View popupView = inflater.inflate(R.layout.response_to_invite, null);
+                TextView text = (TextView)popupView.findViewById(R.id.inviteToTextView);
+                text.setText(from + " vous a invité à la conversation " + conversation);
+
+                final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+                popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+                popupView.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        if (v != popupView){
+                            SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,false);
+                            popupWindow.dismiss() ;
+                        }
+                        return true;
+                    }
+                });
+                ImageButton acceptButton = (ImageButton)popupView.findViewById(R.id.acceptButton);
+                acceptButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,true);
+                        RequestManager.currentInstance.fetchUserConversations();
+                        SocketManager.currentInstance.joinConversation(conversation);
+                        setupChatConversationSpinner();
+                        Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
+                        if (convo != null){
+                            currentConversation = convo;
+                            conversationSpinner.setSelection(spinnerArrayAdapter.getPosition(currentConversation.getName()));
+                            loadConversation();
+                        }
+                        else
+                            Toast.makeText(getContext(),"La conversation n'existe pas", Toast.LENGTH_LONG).show();
+                        //int position = spinnerArrayAdapter.getPosition(conversation);
+                        //currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+                        //conversationSpinner.setSelection(position);
+                       // loadConversation();
+                        popupWindow.dismiss() ;
+                    }
+                });
+                ImageButton declineButton = (ImageButton)popupView.findViewById(R.id.declineButton);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        SocketManager.currentInstance.sendResponseToConversationInvitation(from, conversation,false);
+                        popupWindow.dismiss();
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    @Override
+    public void onResponseToConversationInvitation(final String username, final String conversation, final boolean response) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (response){
+                    RequestManager.currentInstance.fetchUserConversations();
+                    SocketManager.currentInstance.joinConversation(conversation);
+                    setupChatConversationSpinner();
+                    //int position = spinnerArrayAdapter.getPosition(conversation);
+                    //currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+                    //conversationSpinner.setSelection(position);
+                    Conversation convo = FetchManager.currentInstance.getUserConversationByName(conversation);
+                    if (convo != null){
+                        currentConversation = convo;
+                        conversationSpinner.setSelection(spinnerArrayAdapter.getPosition(currentConversation.getName()));
+                        loadConversation();
+                    }
+                    else
+                        Toast.makeText(getContext(),"La conversation n'existe pas", Toast.LENGTH_LONG).show();
+                   // loadConversation();
+                    //int position = spinnerArrayAdapter.getPosition(conversation);
+                    //currentConversation = FetchManager.currentInstance.getUserConversationAt(position);
+                    //conversationSpinner.setSelection(position);
+
+                }
+                else
+                    Toast.makeText(getContext(),"L'utilisateur " + username + "a refusé votre invitation à la conversation "
+                            + conversation,Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
     @Override

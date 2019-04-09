@@ -27,9 +27,10 @@ import java.util.ArrayList;
 public class LoginActivity extends Activity  {
 
 	//private final int CONNECT_DELAY = 5000;
-	private final String AZURE_IP = "40.122.119.160";
-	private final String IP = /*"192.168.43.201";*/"10.200.6.173";
+	private final String AZURE_IP = "52.173.73.94";
 
+	private final String IP = /*"192.168.43.201";*/
+            "52.173.73.94";
 
 
 	ImageButton userConnexionButton;
@@ -91,6 +92,8 @@ public class LoginActivity extends Activity  {
 							RequestManager.currentInstance.fetchUserConversations();
 							progressBar.setProgress(50);
 							RequestManager.currentInstance.fetchUsers();
+							progressBar.setProgress(75);
+							SocketManager.currentInstance.sendUsername();
 							progressBar.setProgress(100);
 							android.content.Intent intent = new android.content.Intent(getBaseContext(), HomeActivity.class);
 							//intent.putParcelableArrayListExtra("CONVERSATIONS", fetchedConversations);
@@ -182,18 +185,5 @@ public class LoginActivity extends Activity  {
 	@Override
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
 		super.onRestoreInstanceState(savedInstanceState);
-	}
-
-	/*Fonction temporaire pour passer directement à l'édition d'images*/
-	public void gotoImageEditing(View button) {
-		SocketManager.currentInstance = new SocketManager("122123","");
-		FetchManager.currentInstance = new FetchManager(new UserInformation("allo", "allo"));
-		FetchManager.currentInstance.setUserConversations(new ArrayList<Conversation>());
-		FragmentManager manager = getFragmentManager();
-		FragmentTransaction transaction = manager.beginTransaction();
-		transaction.add(R.id.chatFragment,new ChatFragment(),"CHAT_FRAGMENT");
-		transaction.addToBackStack(null);
-		transaction.commit();
-
 	}
 }

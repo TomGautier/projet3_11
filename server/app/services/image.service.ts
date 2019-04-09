@@ -26,8 +26,8 @@ export class ImageService implements ImageServiceInterface {
             author: author,
             visibility: visibility,
             protection: protection,
-            canvasX: 1726,
-            canvasY: 1185
+            x: 1726,
+            y: 1185
         });
             
         return await this.databaseService.create(Image, image)
@@ -90,5 +90,20 @@ export class ImageService implements ImageServiceInterface {
         }
 
         return image;
+    }
+
+    public async updateProtection(imageId: string, protection: string) {
+        const doc = {
+            id: imageId,
+            protection: protection
+        };
+        try {
+            await this.databaseService.updateProtection(Image, doc);
+        }
+        catch(err) {
+            throw err;
+        }
+        return true;
+        
     }
 }
