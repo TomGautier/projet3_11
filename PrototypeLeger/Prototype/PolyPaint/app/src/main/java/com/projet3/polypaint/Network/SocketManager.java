@@ -150,7 +150,8 @@ public class SocketManager  {
                     //JSONObject obj = (JSONObject)args[0];
                     //String username = obj.getString(USERNAME_TAG);
                     String username = (String)args[0];
-                    usersListListener.onUserConnected(username);
+                    if (usersListListener != null)
+                        usersListListener.onUserConnected(username);
                     //} //catch (JSONException e) {
                     // e.printStackTrace();
                     //}
@@ -159,7 +160,9 @@ public class SocketManager  {
             socket.on(USERLEFT_TAG, new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    usersListListener.onUserDisconnected((String)args[0]);
+                    String username = (String)args[0];
+                    if (usersListListener != null)
+                        usersListListener.onUserDisconnected(username);
                 }
             });
             socket.on(CREATED_COLLAB_SESSION_TAG, new Emitter.Listener() {
