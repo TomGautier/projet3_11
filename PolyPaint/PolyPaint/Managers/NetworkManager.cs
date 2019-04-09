@@ -11,7 +11,8 @@ namespace PolyPaint.Utilitaires
     public class NetworkManager
     {
         private static readonly HttpClient client = new HttpClient();
-        private readonly string ipAddress = "127.0.0.1";//"10.200.6.173";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
+
+        private readonly string ipAddress = "127.0.0.1";//"10.200.9.188";// "127.0.0.1";//"10.200.6.173";//"127.0.0.1";//"10.200.9.112";//"127.0.0.1";
 
         public NetworkManager() { }
 
@@ -105,6 +106,13 @@ namespace PolyPaint.Utilitaires
 
             return await response.Content.ReadAsStringAsync();
         }
+        public async Task<string> LoadImageData(string username, string sessionId, string imageId)
+        {
+            var response = await client.GetAsync("http://" + ipAddress + ":3000/api/images/single/" + sessionId + "/" + username + "/" + imageId);
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
 
         public async Task<string> LoadShapesAsync(string username, string sessionId, string imageId)
         {
